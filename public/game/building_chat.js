@@ -8,7 +8,7 @@
 (function (root) {
   'use strict';
   var common = typeof module === 'object' && module.exports;
-  var E = common ? require('./colonia_edificios.js') : root.AtlasEdificios;
+  var E = common ? require('./colony_buildings.js') : root.AtlasEdificios;
 
   var INTENTS = ['help', 'what', 'status', 'offer'];
   // Each intent is recognised by whole words only. The order is the priority when a question holds two.
@@ -105,7 +105,7 @@
   function wantsIdeas(text) { return /(^|[^a-z])(ideas?|rack|study)([^a-z]|$)/i.test(String(text || '')); }
   function wantsVoices(text) { return /(^|[^a-z])(voices|who speaks)([^a-z]|$)/i.test(String(text || '')); }
   function wantsJewels(text) { return /(^|[^a-z])(jewels?|joyas?)([^a-z]|$)/i.test(String(text || '')); }
-  // A question with no script goes to the live door: Hexelion at the edge (aula_chat.js), only on the visitor's Send.
+  // A question with no script goes to the live door: Hexelion at the edge (classroom_chat.js), only on the visitor's Send.
   // Its context names the building, so the answer can be about where the visitor stands.
 
   // open(building, page) / ask(text): the DOM glue of /openworld/ (not run by the pure cases). page = { doc, state, entry,
@@ -162,7 +162,7 @@
   }
   function hexelion(b, text) {
     var w = page.doc.defaultView || root;
-    load('/game/aula_chat.js', 'AtlasAulaChat', function (A) {
+    load('/game/classroom_chat.js', 'AtlasAulaChat', function (A) {
       if (!A) { say('hexelion', 'NO_DATA · not_loaded: the door to Hexelion did not load.'); return; }
       var account = visit ? Promise.resolve(visit) : (root.AtlasVisitorAccount ? root.AtlasVisitorAccount.create(true) : Promise.reject(new Error('no visit')));
       account.then(function (v) {

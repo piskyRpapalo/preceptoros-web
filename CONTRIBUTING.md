@@ -188,7 +188,7 @@ If one of the three is left out, the frame is not finished.
 5. **Seal as a word** (`LIVE`, `STALE`, `NO_DATA`…), never as a colour only.
 6. No `Math.random`, no clock, no network inside a frame or its renderer: the same frame gives the same picture and the same sound.
 
-The audio is not optional. Today **0 of the 10 frames of the map sound** (measured 2026-11-02, `atlas/puros/acho_lee_casos.mjs`): giving the map its voice is open work, and a good first contribution.
+The audio is not optional. Today **0 of the 10 frames of the map sound** (measured 2026-11-02, `atlas/puros/acho_reads_cases.mjs`): giving the map its voice is open work, and a good first contribution.
 
 ## How a contribution flows
 
@@ -196,7 +196,7 @@ The audio is not optional. Today **0 of the 10 frames of the map sound** (measur
    it is substantial; small, understood work needs none.
 2. Open the PR (it carries its own measurement; an issue only carries an
    opinion).
-3. Checks green — run `python3 test_web.py` and `node arnes_sw.mjs` first;
+3. Checks green — run `python3 test_web.py` and `node sw_harness.mjs` first;
    the suite must be able to fail.
 4. Receipt — sizes, hashes, dates.
 5. Human signature on the exact head (`HITL` → `FIRMO`). A

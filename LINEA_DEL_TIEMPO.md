@@ -61,7 +61,7 @@ Ancla medida: la colonia caminante (#130→#133) y sus propios PRs miden el gap 
 **Decretos de la noche**
 - El HEXÁGONO es la forma del preceptor — aprobado por ojos del Soberano sobre el preview del fixture caminante (ciclo 4).
 - NIEBLA DE GUERRA: la niebla es el estado NO_DATA de la misma tabla (causa «celda no visitada»); el hexágono es lo que el usuario ENCUENTRA al levantar la niebla; regla de levantar PROPUESTA; niebla y «?» HITL son estados distintos, declarado en el panel.
-- Modelos de chat en la web (PR #396 en marcha): cerebros.json es la fuente de verdad registrada; la pestaña Tools pinta cada modelo con sus campos medidos.
+- Modelos de chat en la web (PR #396 en marcha): brains.json es la fuente de verdad registrada; la pestaña Tools pinta cada modelo con sus campos medidos.
 - Canal de firma externa opt-in (PR #396, propuesta medido-primero): hoy NO existe canal (medido: la web es offline y 0 peticiones por ley; counters cuenta contenido, no personas); propuesta de publicación explícita y consentida; el test exterior del Soberano es el caso de aceptación. Comisión espejo servida a codex (lado app: medir cédulas/R-NODO y proponer registro opt-in).
 - «The Sunken Forest» queda guardado como código antiguo en beelink — cantera de piezas para adaptar al bubble nuevo (audios, radio, matemáticas). «Say Hi»: reconstrucción como semilla S2. Orquestador mini: qwen3:1.7b confirmado.
 

@@ -18,7 +18,7 @@ Regla FIRMO del vocabulario: cada nombre de código y UI debe poder leerse en do
 
 **«Echoes» tiene hoy dos dueños:**
 1. Pestaña del panel de comunicación (`public/assets/radio_message_log.js:117` — `['echoes', T('channel_echoes', 'Echoes')]`), con NO_DATA medido en la línea 100.
-2. Pieza del mapa de nombres J11 «Echoes & Residue» (docs/mesa/PARA_LA_MESA.md:459) — el taller de disolución y lija (`ui-taller.js`, `primer_eco.js`).
+2. Pieza del mapa de nombres J11 «Echoes & Residue» (docs/mesa/PARA_LA_MESA.md:459) — el taller de disolución y lija (`ui-workshop.js`, `primer_eco.js`).
 
 Mi recomendación: renombrar la **pestaña** y conservar «Echoes & Residue» para la pieza J11, porque J11 ya está en el mapa firmado de piezas y moverlo rompería el mapa; la pestaña es un canal de comunicación y tiene mejor anclaje legislativo propio.
 
@@ -70,7 +70,7 @@ Mi recomendación: renombrar la **pestaña** y conservar «Echoes & Residue» pa
 ### 1.8 «Forest incubator → WavesCraft» ya cubierto (0): sin duplicar decisión.
 
 ### 1.9 «Workshop dust» → mantener; recoger su anclaje ya implícito
-- **Actual:** `public/game/ui-taller.js:142` — «Workshop dust» y «Static residue» como moneda interna del Taller.
+- **Actual:** `public/game/ui-workshop.js:142` — «Workshop dust» y «Static residue» como moneda interna del Taller.
 - **Propuesto:** ninguno. J12 «Tuning» del mapa firmado ya ancla la pieza; «dust/residue» son recursos del motor, no dinero, y el cerco de «moneda» se cumple porque no son intercambiables fuera del Taller.
 - **Por qué:** no toco lo que ya está firmado y es coherente. Prioridad informativa.
 
@@ -95,7 +95,7 @@ Los J1–J15 del mapa firmado no se tocan ni se renumeran aquí.
 
 ## 3 · NO_DATA (con causa)
 
-- No encontré «Echoes & Residue» como fichero ni función: vive solo como entrada del mapa de nombres J11 en docs/mesa/PARA_LA_MESA.md:459. La pieza real son `taller.js`/`ui-taller.js`/`primer_eco.js`. Si el Soberano quiere renombrar la pieza J11, es decisión nueva, no de esta propuesta.
+- No encontré «Echoes & Residue» como fichero ni función: vive solo como entrada del mapa de nombres J11 en docs/mesa/PARA_LA_MESA.md:459. La pieza real son `workshop.js`/`ui-workshop.js`/`primer_eco.js`. Si el Soberano quiere renombrar la pieza J11, es decisión nueva, no de esta propuesta.
 - No pude medir si `preceptoros-2026-17-abho` está ya en el repo: el espejo dice `abgm` (docs/mesa/PARA_LA_MESA.md, cierre OCEANO). Si `abho` está desplegado, su recibo vive en el rack: NO_DATA aquí, confirmado por la Mesa como en producción.
 
 ---

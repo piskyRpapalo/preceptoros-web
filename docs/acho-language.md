@@ -7,7 +7,7 @@ Signed by the Sovereign on 2026-10-18: *the language of preceptoros is created b
 One state, many renders. A **frame** is a *syllable* of the Acho language: a small JSON object, always under 1,024 UTF-8 bytes, that a small model can read and write and a person can audit. The renderer turns it into a comic picture by mathematics. The picture is rich because the math is rich, not because the frame is big.
 
 - **Deterministic.** Same frame, same picture. No `Math.random`, no clock, no network. Variation comes from a seeded hash.
-- **Named colour only.** Every colour is a band name: `ink`, `paper`, `ocean`, `cyan`, the signed accents `vermilion.base` and `comic yellow.base` (plus their `brillo`, `sombra`, `contorno`), and the seal bands of `tabla_semantica.js` only where they carry their literal meaning (for example `FIRMADO.base`: signed). Colour always travels with text.
+- **Named colour only.** Every colour is a band name: `ink`, `paper`, `ocean`, `cyan`, the signed accents `vermilion.base` and `comic yellow.base` (plus their `brillo`, `sombra`, `contorno`), and the seal bands of `semantic_table.js` only where they carry their literal meaning (for example `FIRMADO.base`: signed). Colour always travels with text.
 - **Readable.** Each word carries a plain sentence (`r`) of what it shows. The six reader fields map one to one: elements = `atoms`, colours = `bands`, changes = `change`, sounds = `sound`/`soundCause`, text = `r`, state = `t`/`id`.
 - **Family friendly by construction.** No primitive can make a spike, a tooth or a crack (section 6).
 
@@ -116,7 +116,7 @@ A reader that cannot see answers four questions from the frame alone: *which sec
 
 ## 8 · API
 
-**What it reuses.** The colour vocabulary is not new: band names resolve to `comic_tokens.js` (W1: `ink`, `paper`, `ocean`, `cyan`), to `comic_accents.js` (the two signed accents) and to `tabla_semantica.js` (the seal bands). The wave is the house formula, `AtlasGacha.punto` in `gacha.js`. The language adds geometry and light, never a colour.
+**What it reuses.** The colour vocabulary is not new: band names resolve to `comic_tokens.js` (W1: `ink`, `paper`, `ocean`, `cyan`), to `comic_accents.js` (the two signed accents) and to `semantic_table.js` (the seal bands). The wave is the house formula, `AtlasGacha.punto` in `gacha.js`. The language adds geometry and light, never a colour.
 
 
-`AtlasAcho = { compile(frame) → items, define(name, fn), words(), hash32(s), rng(key), wavePoints(h, n), smoothPath(pts, closed) }`. The items are the painter list of `public/game/comic_atoms.js` (`rect`, `circle`, `ellipse`, `path`, `text`, `group`), with literal colours resolved from the band names by `comic_tokens.js`, `comic_accents.js` and `tabla_semantica.js`.
+`AtlasAcho = { compile(frame) → items, define(name, fn), words(), hash32(s), rng(key), wavePoints(h, n), smoothPath(pts, closed) }`. The items are the painter list of `public/game/comic_atoms.js` (`rect`, `circle`, `ellipse`, `path`, `text`, `group`), with literal colours resolved from the band names by `comic_tokens.js`, `comic_accents.js` and `semantic_table.js`.
