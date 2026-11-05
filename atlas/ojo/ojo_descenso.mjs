@@ -106,7 +106,7 @@ function abreCdp(wsUrl) {
   });
 }
 
-// Espera a que Chrome publique su pestana en /json (como sin_undefined.mjs). Sin ella: NO_DATA con causa.
+// Espera a que Chrome publique su pestana en /json (como no_undefined.mjs). Sin ella: NO_DATA con causa.
 async function paginaCdp(chrome) {
   for (let i = 0; i < 80 && !chrome.failure(); i++) {
     await espera(250);
