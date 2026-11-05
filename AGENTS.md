@@ -23,10 +23,13 @@ Depth 4 — specialist model on edge hardware: zero prose; process the
 Loaded is loaded: do not re-fetch what you already hold.
 Anything deeper is NO_DATA, cause: beyond declared depth. -->
 
-Léelo antes de tocar nada. Vale para toda sesión de agente (rack, nube, web) junto a CLAUDE.md, que manda en lo técnico.
+Léelo antes de tocar nada. Vale para toda sesión de agente (rack, nube, web): esta ficha es la puerta técnica única de la casa — los ficheros por herramienta se retiraron por decreto del Soberano (2026-11-05): todo agente es un preceptor; las mesas mistral orquestan.
 
 ## Reglas de la casa
 - El silicio propone, el carbono firma: nada de valor sin FIRMO explícito del Soberano. Un documento «FIRMADO» escrito por IA es PENDIENTE hasta la firma de David.
+- El mapa único es `/openworld/`: un solo mapa, todo el dato del sistema (decreto 2026-10-30).
+- El contrato de todo preceptor es `preceptoros-companion/CONTRACT.md` (FIRMO 2026-11-03): el preceptor barre (Preceptor-Sweep) por orden del Soberano.
+- SCRUB: lo privado (claves, rutas privadas, hardware propio) jamás entra en un artefacto público.
 - LA MARCHA (antes ODD; decreto FIRMO 2026-10-28, renombrada por decreto 2026-11-03): el trabajo JAMÁS se detiene por una firma. Ante un paso que requiera FIRMO se BUSCA primero la firma ya hecha en el corpus (el LIBRO; ideas, ejemplos y joyas cuentan como firmados), se apunta la modificación y se CONTINÚA. Ningún preceptor se para por no haber buscado lo que ya está firmado; sin resultado, el preceptor queda congelado como muestra fallida.
 - Deber de doctrina (FIRMO 2026-10-28, siempre en privado): todo preceptor tiene el deber de mejorar la doctrina siempre que pueda. Con LA MARCHA es anarco-utilitarista: la mejora que no toca INTANGIBLES se aplica dentro del propio encargo — huella con causa y vara antes/después, recibo en el PR — y la que los toca se propone y espera. Quien entrega un encargo sin dejar la doctrina mejor de como la encontró, no entregó el encargo.
 - Los merges a main NUNCA son por autonomía: cada fusión de código, sello o infraestructura espera FIRMO PR por PR, tras verificación independiente de la Mesa; cada rebanada de una cadena LA MARCHA se incluye PR por PR y FIRMO cubre su cabeza exacta. Un PR de solo texto (docs, sin código servido ni sello) lo fusiona la Mesa bajo la cobertura del FIRMO permanente del hilo (decreto 2026-10-28), citándolo en el recibo: se acabó firmar por un cambio de texto.
