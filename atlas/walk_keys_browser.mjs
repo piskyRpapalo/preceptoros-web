@@ -1,8 +1,9 @@
-// W-4 in a real browser: the keyboard walks the map. Arrow keys choose a visible neighbour, Enter walks there. The
-// native six-direction joystick lives over the map; it does not replace the keyboard node law. The page lists two LIVE nodes (the cabin
-// and its east neighbour). A click on the cabin enters it; a click on the neighbour walks there over the visible route
-// and arrival enters it; a click on an empty hex says NO_DATA and walks nowhere. Uso: node atlas/walk_avatar_browser.mjs
-// (Chrome headless por CDP). Prints one JSON line; exit 1 on failure.
+// W-4 in a real browser, after the controls retirement (odd/tasks/openworld-controls-retirement.md, 2026-11-05):
+// the six-direction pad and the arrow-walk are gone by the Sovereign's decree; walking is a tap on a hex, a node
+// place in the panel, and Enter. The view joystick (map_view_joystick.js) owns the arrows when focused. The page
+// lists two LIVE nodes (the cabin and its east neighbour). Enter on a focused node place walks there over the
+// visible route and arrival enters it; a tap on an empty hex with free walk off says NO_DATA and walks nowhere.
+// Uso: node atlas/walk_keys_browser.mjs (Chrome headless por CDP). Prints one JSON line; exit 1 on failure.
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
 import { resolve, extname } from 'node:path';
@@ -75,18 +76,23 @@ async function main() {
   ok(await hasta('!!document.getElementById("surface")', 15000), 'map loaded');
   ok(await hasta(`document.getElementById('state-tech').textContent.includes('Colony:')`, 15000), 'colony drawn from the state');
   await espera(300);
+  await ev(`(() => { const b = document.querySelector('.cats [data-cat=Welcome]'); if (b && b.getAttribute('aria-pressed') !== 'true') b.click(); return true; })()`);
 
   // 0 · free walk (visitor_walk.js) is on by default; this guard checks the W-4 node law, reachable by turning it off.
   await ev(`(() => { const f = document.getElementById('free-walk'); if (f) { f.checked = false; f.dispatchEvent(new Event('change')); } return true; })()`);
 
-  // 1 · the six touch directions stay native and named; no separate enter-node button is added.
-  const botones = await ev(`(() => [...document.querySelectorAll('#stage .walk-pad button')].map(b => b.textContent.trim()).concat([...document.querySelectorAll('#joy button')].filter(b=>b.textContent.includes('Skip tutorial')).map(b=>b.textContent.trim())))()`);
+  // 1 · the retirement, measured: no six-direction pad, no data-direction buttons, no arrow-walk; the view joystick stays.
+  const botones = await ev(`(() => [...document.querySelectorAll('#joy button')].filter(b=>b.textContent.includes('Skip tutorial')).map(b=>b.textContent.trim()))()`);
   medidas.botones = botones;
-  const joystick = await ev(`(() => { const p = document.querySelector('#stage .walk-pad'); return JSON.stringify({ label: p && p.getAttribute('aria-label'), directions: [...document.querySelectorAll('#stage .walk-pad button')].map(b => b.dataset.direction), heights: [...document.querySelectorAll('#stage .walk-pad button')].map(b => b.getBoundingClientRect().height), enter: [...document.querySelectorAll('#stage .walk-pad button')].some(b => /enter node/i.test(b.textContent)) }); })()`);
-  medidas.joystick = JSON.parse(joystick);
-  ok(medidas.joystick.label === 'Map joystick' && medidas.joystick.directions.join('|') === 'north-west|north-east|west|east|south-west|south-east' && medidas.joystick.heights.every((h) => h >= 44), 'the native map joystick is absent or below the touch target: ' + JSON.stringify(medidas.joystick));
-  ok(!medidas.joystick.enter, 'a separate enter-node button was added');
-  ok(await ev("!!document.querySelector('#joy button') && document.querySelector('#joy button').textContent.includes('Skip tutorial')"), 'the skip tutorial button stays');
+  const retiro = JSON.parse(await ev(`JSON.stringify((() => ({ pad: !!document.querySelector('.walk-pad'), dataDirections: document.querySelectorAll('[data-direction]').length, skipHeight: (document.querySelector('#joy button') || {getBoundingClientRect:()=>({height:0})}).getBoundingClientRect().height }))())`));
+  medidas.retiro = retiro;
+  ok(retiro.pad === false, 'the six-direction pad is still on the page');
+  ok(retiro.dataDirections === 0, 'direction buttons are still on the page: ' + retiro.dataDirections);
+  ok(retiro.skipHeight >= 44, 'the skip tutorial button is under 44 px: ' + retiro.skipHeight);
+  const joystick = JSON.parse(await ev(`JSON.stringify((() => { const g = document.querySelector('#stage #view-joystick'); const bs = g ? [...g.querySelectorAll('button')] : []; return { present: !!g, onStage: !!g && g.parentElement === document.getElementById('stage'), buttons: bs.length, minHeight: bs.length ? Math.min(...bs.map(b=>b.getBoundingClientRect().height)) : 0 }; })())`));
+  medidas.joystick = joystick;
+  ok(joystick.present && joystick.onStage, 'the view joystick is not on the map stage: ' + JSON.stringify(joystick));
+  ok(joystick.buttons === 2 && joystick.minHeight >= 44, 'the view joystick is not two 44 px controls: ' + JSON.stringify(joystick));
 
   // 2 · Enter with no choice says how to choose.
   await tecla('Enter');
@@ -94,25 +100,35 @@ async function main() {
   const sinEleccion = await estado();
   ok(/No node selected/.test(sinEleccion), 'Enter with no choice says how to choose: ' + sinEleccion.slice(0, 100));
 
-  // 3 · ArrowRight chooses ring-e; the status says so; Enter walks there and enters it.
+  // 3 · the arrow-walk is retired: a page-level arrow neither walks nor selects; the walker stays.
+  const antes = JSON.parse(await ev(`JSON.stringify({ h1: document.querySelector('h1').textContent, estado: (document.querySelector('#joy .state') || {}).textContent || '' })`));
   await tecla('ArrowRight');
   await espera(150);
-  const elegido = await estado();
-  ok(/selected ring-e/.test(elegido), 'ArrowRight chooses the east neighbour: ' + elegido.slice(0, 100));
-  await ev(`window.__dibujos = 0; document.getElementById('surface').addEventListener('visitor:draw', () => { window.__dibujos++; })`);
-  await tecla('Enter');
-  ok(await hasta(`/terminal: basic/.test(document.querySelector('#joy .state').textContent)`, 8000), 'Enter walks to the chosen node and enters it');
+  const despues = JSON.parse(await ev(`JSON.stringify({ h1: document.querySelector('h1').textContent, estado: (document.querySelector('#joy .state') || {}).textContent || '' })`));
+  medidas.retiro.arrowsWalk = !!(despues.h1 !== antes.h1 || despues.estado !== antes.estado);
+  ok(medidas.retiro.arrowsWalk === false, 'a page-level arrow still walks or selects: ' + JSON.stringify({ antes, despues }));
+
+  // 4 · the keyboard law survives on the node places: focus the east neighbour's place, Enter walks there and enters it.
+  await ev(`(() => { const b = document.querySelector('.cats [data-cat=Welcome]'); if (b && b.getAttribute('aria-pressed') !== 'true') b.click(); return true; })()`);
+  ok(await hasta(`(() => { const b = document.querySelector('#map-node-list [data-node=ring-e]'); return !!b && b.getBoundingClientRect().height >= 44; })()`, 8000), 'the east neighbour place never appeared in the panel');
+  await ev(`(() => { window.__dibujos = 0; document.getElementById('surface').addEventListener('visitor:draw', () => { window.__dibujos++; }); document.querySelector('#map-node-list [data-node=ring-e]').focus(); return true; })()`);
+  medidas.focus = await ev(`document.activeElement.outerHTML.slice(0, 300)`);
+  await cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, text: '\r', unmodifiedText: '\r' });
+  await cmd('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+  medidas.afterKey = await ev(`({ active: document.activeElement.outerHTML.slice(0, 200), state: document.querySelector('#joy .state').textContent })`);
+  ok(await hasta(`window.__dibujos >= 12`, 8000), 'the walk is drawn frame by frame');
+  ok(await hasta(`/terminal: basic/.test(document.querySelector('#joy .state').textContent)`, 8000), 'Enter on the focused node place does not walk there and enter it');
   const llegada = await estado();
   medidas.llegada = llegada.slice(0, 160);
   ok((await ev('window.__dibujos')) >= 12, 'the walk is drawn frame by frame');
 
-  // 4 · ArrowRight from ring-e has no visible node to the east: the page says so and walks nowhere.
-  await tecla('ArrowRight');
+  // 5 · a tap on an empty hex with free walk off says NO_DATA and walks nowhere.
+  await ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(); s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + r.width * 0.75, clientY: r.top + r.height * 0.25 })); return true; })()`);
   await espera(150);
   const sinVecino = await estado();
-  ok(/NO_DATA/.test(sinVecino), 'no visible neighbour is said as NO_DATA: ' + sinVecino.slice(0, 120));
+  ok(/NO_DATA/.test(sinVecino), 'no visible node is said as NO_DATA: ' + sinVecino.slice(0, 120));
 
-  // 5 · while a form field has focus, the arrow keys are the field's own: nothing is chosen.
+  // 6 · while a form field has focus, the arrow keys are the field's own: nothing is chosen.
   await ev(`(() => { const d = document.getElementById('state'); d.textContent = 'MARK'; return true; })()`);
   await tecla('ArrowLeft', true);
   await espera(150);

@@ -24,7 +24,7 @@
       name: 'Tutorial cabin',
       greeting: 'Welcome to the tutorial cabin. I am its guide, and I run in your browser only.',
       measures: 'I measure your tutorial walk in this visit: the steps you played and the steps you skipped.',
-      offers: 'I offer the first steps: walk with the arrow keys, Enter to go in, Escape to leave.',
+      offers: 'I offer the first steps: tap a hex to walk, Enter to go in, Escape to leave.',
       replies: {
         help: 'Ask me: what, status or offer. Escape or the Leave building button takes you out.',
         what: 'This cabin is the one place that is always here, even with zero live nodes.',
@@ -180,6 +180,9 @@
   }
   function open(building, p) {
     page = p;
+    // Engaging a building opens its existing conversation in the shared player.
+    if (root.AtlasRadioChat && typeof root.AtlasRadioChat.canal === 'function') root.AtlasRadioChat.canal('chat');
+    if (root.AtlasTerminalPanel && root.AtlasTerminalPanel.mounted) root.AtlasTerminalPanel.mounted.show('Communication');
     if (!leave) {
       leave = p.doc.createElement('button');
       leave.type = 'button'; leave.id = 'leave-building'; leave.textContent = 'Leave building';

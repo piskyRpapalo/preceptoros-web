@@ -80,7 +80,7 @@ async function main() {
   ok(llegada.look && llegada.ancho <= 390, 'no «Look around first» or sideways scroll: ' + JSON.stringify(llegada));
   await foto('dos-clics-welcome.png');
   await clic('#welcome-play', true); await espera(1500);
-  await ev("document.querySelector('.cats [data-cat=Map]').click()");
+  await ev("document.querySelector('.cats [data-cat=Welcome]').click()");
   // Ojo del Doogee (2026-11-02): after «Play now» the map stays in view, the summon buttons say place and cost in words, the zoom
   // plate is three labelled 44 px icons, and the place names on the map are legible (>= 12 CSS px) and never collide.
   const ojo = JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('surface'), m = c.getBoundingClientRect();
@@ -110,7 +110,7 @@ async function main() {
   await foto('dos-clics-playing.png');
   // «Look around first» and Escape: a fresh page, the card closes and the map is there.
   enMapa = false; await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
-  await ev("document.querySelector('.cats [data-cat=Start]').click()");
+  await ev("document.querySelector('.cats [data-cat=Welcome]').click()");
   await ev("document.getElementById('welcome-play').focus()");
   await cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
   await cmd('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });

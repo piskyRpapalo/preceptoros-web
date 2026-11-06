@@ -68,7 +68,7 @@ async function main() {
   await cmd('Runtime.enable'); await cmd('Page.enable');
   await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
-  await ev("document.querySelector('.cats [data-cat=Map]').click(), true");
+  await ev("document.querySelector('.cats [data-cat=Welcome]').click(), true");
 
   const caja = async () => JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('surface'), r = c.getBoundingClientRect(), b = document.getElementById('map-wide'), br = b ? b.getBoundingClientRect() : null;
     return { h: Math.round(r.height), w: Math.round(r.width), px: c.height, alto: innerHeight, chat: getComputedStyle(document.getElementById('chat')).display,
@@ -82,43 +82,45 @@ async function main() {
   ok(a.boton && a.boton.w >= 44 && a.boton.h >= 44, 'the Explore button is under 44 px: ' + JSON.stringify(a.boton));
   ok(a.boton && a.boton.enBarra === 'zoom-controls' && a.boton.pressed === 'false' && /Explore/.test(a.boton.label || ''), 'the Explore button is not a labelled toggle in the map tools: ' + JSON.stringify(a.boton));
   await foto('g1-antes.png');
-  await ev("document.querySelector('.cats [data-cat=Map]').click(), true");
+  await ev("document.querySelector('.cats [data-cat=Welcome]').click(), true");
 
   // The terminal controls belong below the map; panels cover the map, not the conversation.
   const terminal = await ev(`(() => { const stage = document.getElementById('stage'), voices = document.getElementById('voices'),
-    bar = document.querySelector('.cats'), chat = document.getElementById('chat'), pad = stage.querySelector('.walk-pad'),
-    composer = document.getElementById('entry'), buttons = bar && bar.querySelectorAll('button');
-    if (!bar || !pad || !buttons || buttons.length < 2) return null;
-    buttons[1].click();
+    bar = document.querySelector('.cats'), joy = stage.querySelector('#view-joystick'),
+    composer = document.getElementById('entry'), buttons = bar && [...bar.querySelectorAll('button')].filter(b=>!b.hidden);
+    if (!bar || !joy || !buttons || buttons.length !== 2) return null;
+    const welcome=bar.querySelector('[data-cat=Welcome]'); welcome.click();
+    const placesInWelcome=!!voices.querySelector('#map-node-list'); welcome.click();
+    const communication=bar.querySelector('[data-cat=Communication]'); communication.click();
     const out = { panelOnMap: voices.parentElement === stage && !voices.hidden,
       barBelowMap: bar.parentElement.id === 'map' && bar.getBoundingClientRect().top >= stage.getBoundingClientRect().bottom,
-      padOnMap: pad.parentElement === stage, chatVisible: getComputedStyle(chat).display !== 'none',
-      composerVisible: composer.getBoundingClientRect().height > 0 && composer.getBoundingClientRect().bottom <= innerHeight, pressed: buttons[1].getAttribute('aria-pressed'),
+      joyOnMap: joy.parentElement === stage, chatClosed: document.getElementById('chat').hidden,
+      composerVisible: composer.getBoundingClientRect().height >= 44 && composer.getBoundingClientRect().bottom <= innerHeight, pressed: communication.getAttribute('aria-pressed'),
       noInvisibleTargets: !stage.querySelector(':scope > #map-proxies, :scope > .hitl-mark'),
-      placesInPanel: !!voices.querySelector('#map-node-list') };
-    buttons[1].click(); out.closed = voices.hidden;
+      placesInPanel: placesInWelcome };
+    communication.click(); out.closed = voices.hidden;
     out.allPanels = Array.from(buttons).every(b => { b.click(); const ok = b.getAttribute('aria-pressed') === 'true' && !voices.hidden &&
       Array.from(voices.querySelectorAll('[data-speaker]')).some(v => v.dataset.cat === b.dataset.cat && getComputedStyle(v).display !== 'none'); b.click(); return ok && voices.hidden; });
     return out; })()`);
   medidas.terminal = terminal;
   ok(terminal && Object.values(terminal).every(v => v === true || v === 'true'), 'terminal layout or panel toggle failed: ' + JSON.stringify(terminal));
 
-  // 2 · Explore: the canvas grows, its pixels follow, and the chat remains available.
+  // 2 · Explore: the single-map showcase grows and its pixels follow.
   await ev("document.getElementById('map-wide').click(), true"); await espera(700);
   const b = await caja();
   medidas.explore = { alto_mapa: b.h, ventana: b.alto, fraccion: +(b.h / b.alto).toFixed(2), px: b.px, chat: b.chat };
-  ok(W < 900 ? b.h > a.h : b.w > a.w, 'Explore did not enlarge the map: ' + JSON.stringify(medidas.explore));
+  ok(b.h >= a.h && b.h / b.alto >= 0.8, 'Explore did not retain the full map showcase: ' + JSON.stringify(medidas.explore));
   ok(b.px >= b.h, 'the canvas pixels did not follow the new height (no redraw): ' + JSON.stringify(medidas.explore));
-  ok(b.chat !== 'none' && b.boton.pressed === 'true', 'the chat disappeared or the button is not pressed');
+  ok(b.chat === 'none' && b.boton.pressed === 'true', 'communication remains open or the button is not pressed');
   ok(/Explore/.test(b.say), 'Explore is not spoken: ' + b.say);
   await foto('g1-explore.png');
 
-  // 3 · Escape brings the chat back and the map its half.
+  // 3 · Escape closes Explore and restores the Welcome leaf.
   await cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
   await cmd('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 }); await espera(500);
   const c = await caja();
   medidas.escape = { alto_mapa: c.h, chat: c.chat };
-  ok(c.chat !== 'none' && c.boton.pressed === 'false' && (W < 900 ? c.h < b.h : c.w < b.w), 'Escape did not restore the map: ' + JSON.stringify(medidas.escape));
+  ok(c.chat === 'none' && c.boton.pressed === 'false' && (W < 900 ? c.h <= b.h : c.w <= b.w), 'Escape did not restore the map: ' + JSON.stringify(medidas.escape));
 
   console.log(JSON.stringify({ piece: 'g1-ventana-grande', sabotaje: SAB || null, receipt: fallos.length ? 'ROJO' : 'VERDE', medidas, fallos }));
 }
