@@ -38,6 +38,8 @@ Anything deeper is NO_DATA, cause: beyond declared depth. -->
 
 ## The ecosystem today — measured 2026-11-05
 
+Houses marked **PRIVATE** below are the house's own table: they exist and are named, but a reader outside the organization cannot open them — and nothing on the public side requires reading them. The public repositories are complete for any contributor: contract file, tests, pull requests. A merge waits for the human signature (FIRMA), served by the maintainers.
+
 Seventeen repositories measured — sixteen active after the compacting
 below. Nothing here is a promise; it is what each house holds today.
 
@@ -53,28 +55,28 @@ below. Nothing here is a promise; it is what each house holds today.
 - **Measured hardware** — [lab](https://github.com/piskyRpapalo/lab) (every
   figure with its machine, date and command)
 - **The governed surfaces** — **this repository** (the public site) ·
-  [preceptoros-terminal](https://github.com/piskyRpapalo/preceptoros-terminal)
+  [preceptoros-terminal · PRIVATE](https://github.com/piskyRpapalo/preceptoros-terminal)
   (the Sala — the terminal surface)
-- **Governance** — [buzon](https://github.com/piskyRpapalo/buzon) (the single
+- **Governance** — [buzon · PRIVATE](https://github.com/piskyRpapalo/buzon) (the single
   mailbox: FIRMA and decrees in #30, receipts in #19, claims and minutes in
-  #53) · [firmas](https://github.com/piskyRpapalo/firmas) (the LIBRO — the
-  ledger of signatures) · [roadmap](https://github.com/piskyRpapalo/roadmap)
+  #53) · [firmas · PRIVATE](https://github.com/piskyRpapalo/firmas) (the LIBRO — the
+  ledger of signatures) · [roadmap · PRIVATE](https://github.com/piskyRpapalo/roadmap)
   (the north)
-- **Infrastructure** — [p0x](https://github.com/piskyRpapalo/p0x) (the nodes:
+- **Infrastructure** — [p0x · PRIVATE](https://github.com/piskyRpapalo/p0x) (the nodes:
   fragua, vigia, torre, soberano) ·
-  [hexelion-nexo](https://github.com/piskyRpapalo/hexelion-nexo) (the
+  [hexelion-nexo · PRIVATE](https://github.com/piskyRpapalo/hexelion-nexo) (the
   connector and registry house) ·
-  [aduana](https://github.com/piskyRpapalo/aduana) (the D1 door and
+  [aduana · PRIVATE](https://github.com/piskyRpapalo/aduana) (the D1 door and
   passports) ·
-  [preceptoros-atlas](https://github.com/piskyRpapalo/preceptoros-atlas)
+  [preceptoros-atlas · PRIVATE](https://github.com/piskyRpapalo/preceptoros-atlas)
   (the Atlas — counters and the living map)
 - **Compacted into this repository** —
-  [preceptoros-coder](https://github.com/piskyRpapalo/preceptoros-coder)
+  [preceptoros-coder · PRIVATE](https://github.com/piskyRpapalo/preceptoros-coder)
   (codex's old house: a stale fork of this site — 8 languages and a 16 KB
   ceiling, measured against today's 9 and 25 MiB — folded back here on
   2026-11-06; the archive keeps its full history readable; record in
   `odd/tasks/compactamiento-coder-20261106.md`)
-- **Apart, untouchable** — [CineK](https://github.com/piskyRpapalo/CineK)
+- **Apart, untouchable** — [CineK · PRIVATE](https://github.com/piskyRpapalo/CineK)
   (the Soberano's own)
 
 This repository holds the public website of PreceptorOS. Its home page is a
@@ -172,3 +174,8 @@ where its numbers come from.
 ## Licence
 
 See `LICENSE`.
+
+
+## Public and private — what a contributor can reach
+
+Measured 2026-11-06: this organization keeps private repositories — the house's own table (governance, the signature ledger, the mailbox, the rack, the living map). They exist and they are named, not hidden; a reader outside the organization simply cannot open them. **Nothing on the public side requires reading them.** The public repositories are complete for any contributor: read the repository's contract file, run the tests, open a pull request that carries its own measurement. Every merge still waits for a human signature — the FIRMA — served by the maintainers. You never need access to a private repository to advance.
