@@ -12,10 +12,19 @@
   var MANIFEST = '/models/web-node/manifest.json', CACHE = 'web-node-brain-1';
   // The facts the guide may use: the real labels of this page. Small models invent when they are not given facts.
   var SYSTEM = 'You are the guide of the tutorial cabin on the PreceptorOS web map. Reply in one or two short sentences. ' +
-    'Facts: Tap a hex to walk; a node place in the panel walks to it, Enter goes in. Press "Start an ephemeral visit" to play. ' +
+    'Facts: Walk by tapping a hex or choosing a node place in the Map panel; Enter on a focused place goes in. The view joystick pans the map; its arrow keys work only while it has focus. Press "Start an ephemeral visit" to play. ' +
     '"Visit the beacon" gives 100 copper once per visit. "Summon at the Reef" summons a wave creature for 50 copper. ' +
     'Eggs hatch after some steps with "Sign adoption". Battles are practice and are replayed exactly. ' +
     'If the answer is not in these facts, say NO_DATA.';
+  var CONTROLS_ANSWER = 'Walk by tapping a hex or choosing a node place in the Map panel; press Enter on a focused place to go in. The view joystick pans the map, and its arrow keys work only while it has focus.';
+  // The model has repeatedly invented obsolete movement controls. Never present its wording as reliable for this
+  // question: return the controls measured by the current page and label their source separately from the model.
+  function groundAnswer(question, candidate) {
+    if (/\b(?:move|movement|walk|walking|controls?|directions?)\b/i.test(String(question || ''))) {
+      return { text: CONTROLS_ANSWER, source: 'page-controls' };
+    }
+    return { text: String(candidate || ''), source: 'model' };
+  }
   var state = { status: 'idle', engine: null, manifest: null, model: null, offline: false };
 
   function noData(cause, detail) { var e = new Error(detail || cause); e.cause = cause; return e; }
@@ -132,10 +141,12 @@
       out = out.split(/\n\s*\n/)[0].replace(/\s+/g, ' ');
       var two = out.match(/^(.*?[.!?])(\s.*?[.!?])?(\s|$)/); if (two) { out = (two[1] + (two[2] || '')).trim(); }
       if (!out) { throw noData('model_unavailable', 'The model returned no visible answer'); }
+      var grounded = groundAnswer(text, out);
+      out = grounded.text;
       while (new TextEncoder().encode(out).length > 600) { out = Array.from(out).slice(0, -1).join(''); }
-      return sha(new TextEncoder().encode(out)).then(function (h) { return { text: out, model: state.model, sha: h, verified: true }; });
+      return sha(new TextEncoder().encode(out)).then(function (h) { return { text: out, model: state.model, sha: h, verified: true, source: grounded.source }; });
     }).then(function (a) { state.status = 'ready'; return a; }, function (e) { state.status = 'ready'; throw e.cause ? e : noData('model_unavailable', e.message); });
   }
 
-  root.AtlasWebNodeBrain = { load: load, reply: reply, check: check, status: function () { return state.status; }, model: function () { return state.model; }, offline: function () { return state.offline; }, MANIFEST: MANIFEST };
+  root.AtlasWebNodeBrain = { load: load, reply: reply, check: check, groundAnswer: groundAnswer, status: function () { return state.status; }, model: function () { return state.model; }, offline: function () { return state.offline; }, MANIFEST: MANIFEST };
 })(globalThis);

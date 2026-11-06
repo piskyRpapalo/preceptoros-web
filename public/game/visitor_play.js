@@ -64,11 +64,12 @@
   }
   // Free walk: each accepted step on the floor is one game step of an active visit, so walking hatches eggs.
   box.addEventListener('visitor:advance', function () { if (!game || waiting) { return; } try { game.advance(); } catch (_) { return; } render(); });
-  // Voice Star: the web node brain dispatches brain:answer after each verified local answer.
+  // Voice Star rewards model answers, never the page-grounded controls response.
   doc.addEventListener('brain:answer', async function (event) {
     var log = doc.getElementById('state'), say = function (t) { if (log) { log.textContent = t; } };
     var d = event.detail || {};
     if (!game) { say('Voice Star: NO_DATA · start a visit first'); return; }
+    if (d.source !== 'model') { say('Voice Star: NO_DATA · page-grounded guide facts are not a model answer'); return; }
     try { var s = await game.echo({ verified: d.verified, model: d.model, text: d.text, sha: d.sha }); render(); doc.dispatchEvent(new CustomEvent('voicestar:granted', { detail: { copper: 25, sha: d.sha, echoes: s.echoes } })); say('Voice Star: +25 copper for a verified answer (' + s.echoes + ' of ' + s.echoCap + ')'); }
     catch (error) {
       var capped = false; try { capped = game && game.state().echoes >= game.state().echoCap; } catch (_) {}

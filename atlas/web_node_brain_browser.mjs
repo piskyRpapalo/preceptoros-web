@@ -62,12 +62,13 @@ async function main() {
     for (let i = 0; i < 900 && !heard.length; i++) await new Promise((r) => setTimeout(r, 100));
     const t2 = performance.now(), log = [...document.querySelectorAll('#log li')].map((li) => li.textContent);
     const a = heard[0] || {}, h = a.text ? Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(a.text))), (x) => x.toString(16).padStart(2, '0')).join('') : '';
-    return JSON.stringify({ load_ms: Math.round(t1 - t0), reply_ms: Math.round(t2 - t1), tall, ready, text: a.text || null, sha_ok: h === a.sha, verified: a.verified === true,
-      logged: log.some((l) => l.startsWith('SmolLM2-135M-Instruct-Q4_K_M · ')) }); })()`));
+    return JSON.stringify({ load_ms: Math.round(t1 - t0), reply_ms: Math.round(t2 - t1), tall, ready, text: a.text || null, source: a.source || null, sha_ok: h === a.sha, verified: a.verified === true,
+      logged: log.some((l) => l.startsWith('OpenWorld guide · page controls · Walk by tapping a hex')) }); })()`));
   ok(r.tall >= 44, 'the download button is below 44 px: ' + r.tall);
   ok(/ready on this device/.test(r.ready), 'the brain did not get ready: ' + r.ready);
   ok(r.verified && r.sha_ok && r.logged, 'no verified answer reached the chat log and brain:answer: ' + JSON.stringify(r));
-  ok(/arrow keys|stick/.test(r.text || ''), 'the guide does not use the page facts: ' + r.text);
+  ok(r.source === 'page-controls', 'movement answer was not grounded in the page controls: ' + JSON.stringify(r));
+  ok(r.text === 'Walk by tapping a hex or choosing a node place in the Map panel; press Enter on a focused place to go in. The view joystick pans the map, and its arrow keys work only while it has focus.', 'the guide did not give the real controls: ' + r.text);
   ok(modelos.length === 6, 'expected manifest + 5 chunks + nothing else from /models/: ' + modelos.length);
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
   const speaker = JSON.parse(await ev(`(async () => { const w=(ms)=>new Promise(r=>setTimeout(r,ms)), map=document.querySelector('.cats [data-cat=Map]'); map.click();
