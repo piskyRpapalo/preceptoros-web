@@ -37,7 +37,7 @@
   {
    "id": "ephemeral-title",
    "scripts": [
-    "/game/visitor_map_title.js"
+    "/game/visitor_play.js"
    ],
    "globals": [],
    "guards": [
