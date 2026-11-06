@@ -1,30 +1,29 @@
 #!/usr/bin/env python3
-"""translations.py · saca los textos traducibles de una pagina y los vuelve a meter.
+"""translations.py · takes the translatable texts out of a page and puts them back.
 
-    python3 translations.py segmentos ar          los textos de una lengua, para revisarlos
-    python3 translations.py segmentos ar --junto en    cada texto al lado del de otra lengua
-    python3 translations.py identidad              comprueba que sacar y meter no cambia nada
+    python3 translations.py segmentos ar          the texts of one language, for review
+    python3 translations.py segmentos ar --junto en    each text next to the other language
+    python3 translations.py identidad              proves that out and back changes nothing
 
-POR QUE EXISTE. El arabe entro el 2026-09-23 traduciendo 794 textos SIN tocar el
-marcado: se extraen los nodos de texto, los atributos con prosa (placeholder,
-aria-label, title, alt, data-hecho...), el contenido de los <meta> de
-descripcion y los valores de los bloques JSON; se traducen; y se reinsertan en
-el mismo sitio. Con la funcion identidad, la salida es byte a byte la entrada
---eso es `identidad`, y lo vigila el gate--.
+WHY IT EXISTS. Arabic entered on 2026-09-23: 794 texts translated WITHOUT
+touching the markup. The tool takes out the text nodes, the attributes with
+prose (placeholder, aria-label, title, alt, data-hecho...), the content of the
+description <meta> tags and the values of the JSON blocks; it translates them;
+and it puts them back in the same place. With the identity function, the output
+is byte for byte the input: that is `identidad`, and the gate watches it.
 
-Sirve para dos cosas que vienen: la REVISION NATIVA de las lenguas marcadas
-`pendiente-revision-nativa` (un revisor lee `segmentos ar --junto en`, no HTML),
-y la proxima lengua.
+It serves two things to come: the NATIVE REVIEW of the languages marked
+`pendiente-revision-nativa` (a reviewer reads `segmentos ar --junto en`, not
+HTML), and the next language.
 
-LO QUE NO DECIDE POR SI SOLO. Que una cadena sea codigo y no prosa lo decide la
-CLAVE que la contiene (`NO_TRANSLATE_KEYS`), no su forma. La forma engaña: la primera
-version trataba toda palabra suelta en minuscula como identificador y dejo
-`level`, `step` o `passes` sin traducir. Por eso `is_translatable()` ya no mira
-mayusculas.
+WHAT IT DOES NOT DECIDE ALONE. The KEY that holds a string decides if it is code
+or prose (`NO_TRANSLATE_KEYS`), not its shape. The shape lies: the first version
+treated every loose lowercase word as an identifier and left `level`, `step` or
+`passes` untranslated. That is why `is_translatable()` no longer looks at capital
+letters.
 
-Solo biblioteca estandar.
-"""
-import json
+Standard library only.
+"""import json
 import re
 
 # Latino, griego, cirilico y ARABE. El arabe falto en la primera version y
