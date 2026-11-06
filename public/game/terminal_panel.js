@@ -117,6 +117,21 @@
     if (details && guideVoice) { guideVoice.appendChild(details); }
     var modelPanel = doc.querySelector('#chat > #model-frames-panel'), modelVoice = voices.querySelector('[data-speaker="Models"]');
     if (modelPanel && modelVoice) { modelVoice.appendChild(modelPanel); }
+    var houseVoice = voices.querySelector('[data-speaker="House"]');
+    if (houseVoice && !doc.getElementById('historic-places')) {
+      var catalog = doc.createElement('details'); catalog.id = 'historic-places';
+      var heading = doc.createElement('summary'); heading.textContent = 'Historic places · proposals';
+      heading.style.cssText = 'min-height:44px;display:flex;align-items:center;cursor:pointer'; catalog.appendChild(heading);
+      var intro = doc.createElement('p'); intro.textContent = 'These places are historic designs awaiting selection and a verified node link. Their operational state is NO_DATA.'; catalog.appendChild(intro);
+      var list = doc.createElement('ul');
+      [ ['Pocket lighthouse', 'A small lighthouse for a portable node.'],
+        ['Sovereign hall', 'A hall for the colony’s central work.'],
+        ['The oven', 'A place for heavy computing.'],
+        ['Benchmark Lab', 'A proposed place for model benchmarks and adversarial safety exercises; results are not available.'] ].forEach(function (place) {
+        var item = doc.createElement('li'); item.textContent = place[0] + ' · proposed · ' + place[1] + ' Link NO_DATA: not verified.'; list.appendChild(item);
+      });
+      catalog.appendChild(list); houseVoice.appendChild(catalog);
+    }
     var show = categories(doc, voices);
     function tag(li) {
       if (li.nodeType !== 1 || li.dataset.speaker) { return; }
