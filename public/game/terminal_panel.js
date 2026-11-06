@@ -61,33 +61,56 @@
     li.className = 'turn ' + (id === 'you' ? 'me' : acho.seal === 'NO_DATA' ? 'nodata' : 'them');
     li.textContent = acho.atoms[0].r; log.appendChild(li); return li;
   }
-  // TF-2 (buzon#30, 2026-11-02): the voices go in four category buttons; one category is visible, the rest are buttons.
-  // The brain (#map-brain), the log and the form stay fixed under the panel: they are the single chatbot's surface.
-  var CATS = [['Start', ['Welcome', 'Guide']], ['Map', ['Map', 'Floor', 'Walkers', 'Zoom']], ['Tutorial', ['Tutorial']], ['House', ['House']], ['Army', ['Army']], ['Radio', ['Radio']], ['Models', ['Models']]];
-  // categoryOf(speaker) → its category; a speaker no category names goes to About, never lost.
+  // The showcase has one map and three leaves. Tools opens from Welcome; Profile exists only during a visit.
+  var CATS = [
+    { name: 'Welcome', voices: ['Welcome', 'Guide', 'Map', 'Floor', 'Walkers', 'Zoom', 'Tutorial'], button: true },
+    { name: 'Profile', voices: ['House', 'Army'], button: true, visit: true },
+    { name: 'Communication', voices: ['Radio'], button: true },
+    { name: 'Tools', voices: ['Models'], button: false }
+  ];
+  // categoryOf(speaker) → its leaf; every existing voice remains accounted for.
   function categoryOf(speaker) {
-    for (var i = 0; i < CATS.length; i++) { if (CATS[i][1].indexOf(speaker) >= 0) { return CATS[i][0]; } }
-    return 'Start';
+    for (var i = 0; i < CATS.length; i++) { if (CATS[i].voices.indexOf(speaker) >= 0) { return CATS[i].name; } }
+    return 'Welcome';
   }
   function categories(doc, voices) {
     var map = doc.getElementById('map'), stage = doc.getElementById('stage');
     if (!map || !stage || map.querySelector(':scope > .cats')) { return null; }
-    var bar = doc.createElement('div'), buttons = {}, current = null, icons = { Start: '◇', Map: '⌖', Tutorial: '?', House: '⌂', Army: '✧', Radio: '◉', Models: '⬡' };
-    bar.className = 'cats'; bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'Voices by category');
+    var bar = doc.createElement('div'), buttons = {}, current = null, hasVisit = false, icons = { Welcome: '◇', Profile: '♙', Communication: '◉' };
+    bar.className = 'cats'; bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'OpenWorld panels');
     voices.classList.add('map-voices');
     stage.appendChild(voices);
     function show(cat) {
+      if (cat === 'Profile' && !hasVisit) { cat = null; }
       current = cat; voices.hidden = !cat;
       voices.dataset.activeCategory = cat || '';
+      if (tools) { tools.setAttribute('aria-expanded', String(cat === 'Tools')); }
       Array.prototype.forEach.call(voices.querySelectorAll('[data-speaker]'), function (li) { li.style.display = li.dataset.cat === cat ? '' : 'none'; });
-      CATS.forEach(function (c) { var b = buttons[c[0]]; b.setAttribute('aria-pressed', String(c[0] === cat)); if (c[0] === cat) { b.textContent = icons[c[0]]; } });
+      Object.keys(buttons).forEach(function (name) { buttons[name].setAttribute('aria-pressed', String(name === cat)); });
     }
     CATS.forEach(function (c) {
-      var b = doc.createElement('button'); b.type = 'button'; b.textContent = icons[c[0]]; b.dataset.cat = c[0]; b.setAttribute('aria-label', c[0]); b.title = c[0];
-      b.setAttribute('aria-controls', 'voices');
-      b.addEventListener('click', function () { show(current === c[0] ? null : c[0]); });
-      buttons[c[0]] = b; bar.appendChild(b);
+      if (!c.button) { return; }
+      var b = doc.createElement('button'); b.type = 'button'; b.textContent = icons[c.name]; b.dataset.cat = c.name; b.setAttribute('aria-label', c.name); b.title = c.name;
+      b.setAttribute('aria-controls', 'voices'); b.hidden = !!c.visit;
+      b.addEventListener('click', function () { show(current === c.name ? null : c.name); });
+      buttons[c.name] = b; bar.appendChild(b);
     });
+    var tools = doc.getElementById('entry-tools');
+    if (tools) { tools.setAttribute('aria-controls', 'voices'); tools.setAttribute('aria-expanded', 'false'); tools.addEventListener('click', function () { show(current === 'Tools' ? null : 'Tools'); }); }
+    var skip = doc.querySelector('a.skip[href="#chat"]');
+    if (skip) { skip.addEventListener('click', function (event) {
+      event.preventDefault(); show('Communication');
+      var input = doc.getElementById('question'); if (input) { input.focus(); }
+    }); }
+    function visit(on) {
+      hasVisit = !!on; if (buttons.Profile) { buttons.Profile.hidden = !hasVisit; }
+      if (!hasVisit && current === 'Profile') { show('Welcome'); }
+    }
+    var visitor = doc.getElementById('visitor-play');
+    if (visitor) {
+      visitor.addEventListener('visitor:render', function () { visit(true); });
+      visitor.addEventListener('visitor:end', function () { visit(false); });
+    }
     // Under the voices, like a phone's bottom tabs: the door's «Play now» stays above the fold (measured 390×844).
     map.appendChild(bar);
     // A voice that speaks while its category is hidden marks its button («•»), so nothing said is lost from sight.
@@ -97,9 +120,11 @@
         if (li && li.dataset.cat !== current && buttons[li.dataset.cat]) { buttons[li.dataset.cat].textContent = icons[li.dataset.cat] + ' •'; }
       });
     }).observe(voices, { subtree: true, childList: true, characterData: true });
-    doc.addEventListener('keydown', function (e) { if (e.key === 'Escape' && current) { var b = buttons[current]; show(null); b.focus(); } });
+    doc.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && current) { var b = buttons[current] || (current === 'Tools' ? tools : null); show(null); if (b) { b.focus(); } }
+    });
     show(null);
-    return show;
+    return { show: show, visit: visit };
   }
   // mount(doc): give every voice its header, tag the log lines, and paint the Army voice from the visit.
   function mount(doc) {
@@ -142,7 +167,7 @@
       play.addEventListener('visitor:render', function (e) { paintArmy(e.detail && e.detail.state && e.detail.state.troops); });
       play.addEventListener('visitor:end', function () { paintArmy(null); });
     }
-    return { voices: voices.querySelectorAll('[data-speaker]').length, show: show };
+    return { voices: voices.querySelectorAll('[data-speaker]').length, show: show && show.show, visit: show && show.visit };
   }
   var P = { BYTES: BYTES, CATS: CATS, VOCES: VOCES, voz: voz, decir: decir, speechFrame: speechFrame, categoryOf: categoryOf, frame: frame, speakerOf: speakerOf, mount: mount };
   if (typeof module === 'object' && module.exports) { module.exports = P; }

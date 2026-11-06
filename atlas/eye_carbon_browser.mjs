@@ -75,24 +75,27 @@ async function main() {
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1800);
   const enMapa = JSON.parse(await ev(PEQUENOS));
   ok(enMapa.length === 0, '/openworld/ has targets under 44x44: ' + enMapa.join(' | '));
-  // Compact terminal: the one canvas, then the seven-button strip at the map edge; joystick stays on the right
-  // in the panel layer, while the chat and composer begin below the map and remain visible.
-  const orden = JSON.parse(await ev(`JSON.stringify((() => { const t = (s) => document.querySelector(s).getBoundingClientRect(), m=t('#map'), s=t('#surface'), c=t('#chat'), p=document.querySelector('#stage #view-joystick'), pr=p?.getBoundingClientRect(), b=t('#map .cats'); return { mapa:m.top, mapaFin:m.bottom, lienzoFin:s.bottom, chat:c.top, pad:!!p, padTop:pr?.top||0,padBottom:pr?.bottom||0,padRight:pr?.right||0,mapRight:m.right,barraTop:b.top,barraBottom:b.bottom,barCount:document.querySelectorAll('#map .cats button').length,hojas:document.querySelectorAll('.sheet,#map [role=tablist]').length,ancho:document.documentElement.scrollWidth }; })())`));
-  ok(orden.mapa < orden.chat && orden.mapaFin <= orden.chat + 1 && orden.pad && orden.padTop >= orden.mapa && orden.padBottom <= orden.mapaFin && orden.padRight <= orden.mapRight && orden.barraTop >= orden.lienzoFin && orden.barraBottom <= orden.mapaFin && orden.barCount === 7 && orden.hojas <= 1 && orden.ancho <= 390, 'the phone page is not one map with its controls and a fixed chat below: ' + JSON.stringify(orden));
+  // One full-map showcase; content leaves and communication stay closed until requested.
+  const orden = JSON.parse(await ev(`JSON.stringify((() => { const t = (s) => document.querySelector(s).getBoundingClientRect(), m=t('#map'), s=t('#surface'), c=t('#chat'), p=document.querySelector('#stage #view-joystick'), pr=p?.getBoundingClientRect(), b=t('#map .cats'); return { mapa:m.top, mapaFin:m.bottom, lienzoFin:s.bottom, chat:c.top, pad:!!p, padTop:pr?.top||0,padBottom:pr?.bottom||0,padRight:pr?.right||0,mapRight:m.right,barraTop:b.top,barraBottom:b.bottom,barCount:document.querySelectorAll('#map .cats button').length,profileHidden:document.querySelector('.cats [data-cat=Profile]').hidden,hojas:document.querySelectorAll('.sheet,#map [role=tablist]').length,ancho:document.documentElement.scrollWidth }; })())`));
+  ok(orden.mapa === 0 && orden.mapaFin >= 844 && orden.chat === 0 && orden.pad && orden.padTop >= orden.mapa && orden.padBottom <= orden.mapaFin && orden.padRight <= orden.mapRight && orden.barraTop >= orden.lienzoFin && orden.barraBottom <= orden.mapaFin && orden.barCount === 3 && orden.profileHidden && orden.hojas <= 1 && orden.ancho <= 390, 'the phone page is not a single full-map showcase with its controls: ' + JSON.stringify(orden));
 
   // 4 · Army (TF-2: in the Play category, opened first): its voice in the panel shows, honest content, the link to the full army page.
-  const army = JSON.parse(await ev(`(async () => { document.querySelector('.cats [data-cat=Army]').click(); const s = document.getElementById('army-visit').closest('li'), r = s.getBoundingClientRect(); return JSON.stringify({ visible: r.height > 0, texto: s.innerText, enlace: !!s.querySelector('a[href="/game/army.html"]'), quien: s.dataset.speaker }); })()`));
+  const army = JSON.parse(await ev(`(async () => { const p=document.querySelector('.cats [data-cat=Profile]'); document.querySelector('#visitor-start').click();
+    for(let i=0;i<30 && !document.querySelector('#visitor-end');i++) await new Promise(r=>setTimeout(r,100)); p.click();
+    const s = document.getElementById('army-visit').closest('li'), r = s.getBoundingClientRect(); return JSON.stringify({ visible: r.height > 0, texto: s.innerText, enlace: !!s.querySelector('a[href="/game/army.html"]'), quien: s.dataset.speaker }); })()`));
   ok(army.visible && army.quien === 'Army', 'the Army voice is not in the panel: ' + JSON.stringify(army));
   ok(/^Army\s+NO_DATA: no troops adopted in this visit yet|^Army\s+Troops of this visit/.test(army.texto) && army.enlace, 'the Army voice does not say its troops or NO_DATA with the army link: ' + army.texto);
   // the radio tabs: Echoes hides the Radio list, Radio shows it again.
-  const radio = JSON.parse(await ev(`(async () => { const p = () => new Promise((r) => setTimeout(r, 120)); document.querySelector('.cats [data-cat=Radio]').click(); const c = document.getElementById('radio-chat'); if (!c) { return JSON.stringify({ falta: true }); }
-    c.querySelector('.radio-chat-alterna').click(); await p(); const tabs = [...c.querySelectorAll('[role=tab]')], l = document.getElementById('radio-chat-lista');
+  const radio = JSON.parse(await ev(`(async () => { const p = () => new Promise((r) => setTimeout(r, 120)); document.querySelector('.cats [data-cat=Communication]').click(); const c = document.getElementById('radio-chat'); if (!c) { return JSON.stringify({ falta: true }); }
+    if (c.querySelector('.radio-chat-alterna').getAttribute('aria-expanded') !== 'true') c.querySelector('.radio-chat-alterna').click(); await p(); const tabs = [...c.querySelectorAll('[role=tab]')], l = document.getElementById('radio-chat-lista');
     const de = (n) => tabs.find((b) => b.textContent.trim() === n); de('Echoes').click(); await p(); const a = l.hidden; de('Radio').click(); await p();
-    return JSON.stringify({ echoesOcultaRadio: a, radioMuestra: !l.hidden, elegida: de('Radio').getAttribute('aria-selected') }); })()`));
-  ok(radio.falta || (radio.echoesOcultaRadio && radio.radioMuestra && radio.elegida === 'true'), 'the radio tabs do not switch panels: ' + JSON.stringify(radio));
+    const radioVisible = !l.hidden, radioSelected = de('Radio').getAttribute('aria-selected');
+    de('Chat').click(); await p(); const log = document.getElementById('log'), entry = document.getElementById('entry');
+    return JSON.stringify({ canales: tabs.map((b) => b.textContent.trim()), echoesOcultaRadio: a, radioMuestra: radioVisible, elegida: radioSelected, chatVisible: !log.hidden && !entry.hidden }); })()`));
+  ok(radio.falta || (radio.canales.join('/') === 'Radio/Echoes/Chat' && radio.echoesOcultaRadio && radio.radioMuestra && radio.elegida === 'true' && radio.chatVisible), 'Radio, Echoes, and Chat are not available in the Communication player: ' + JSON.stringify(radio));
 
   // 2 · «Check live nodes»: zero 404s after the click, and a sentence in #state.
-  await ev("document.querySelector('.cats [data-cat=Map]').click()");
+  await ev("document.querySelector('.cats [data-cat=Welcome]').click()");
   no404.length = 0;
   const frase = await ev(`(async () => { const b = document.getElementById('world-refresh'); const antes = document.getElementById('state').textContent; b.click(); for (let i = 0; i < 40 && document.getElementById('state').textContent === antes; i++) { await new Promise((r) => setTimeout(r, 100)); } return document.getElementById('state').textContent; })()`);
   ok(no404.length === 0, '«Check live nodes» requested a missing endpoint: ' + no404.join(' '));

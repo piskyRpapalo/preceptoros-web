@@ -30,7 +30,7 @@
       var text = showcase() ? (abierto ? 'Return to map controls' : 'Explore: show the full map') : label(abierto);
       b.setAttribute('aria-pressed', abierto ? 'true' : 'false'); b.setAttribute('aria-label', text); b.title = text;
       if (showcase() && raiz.AtlasTerminalPanel && raiz.AtlasTerminalPanel.mounted && before !== abierto) {
-        raiz.AtlasTerminalPanel.mounted.show(abierto ? null : 'Map');
+        raiz.AtlasTerminalPanel.mounted.show(abierto ? null : 'Welcome');
       }
       // The page sizes the canvas from its box on resize: ask it to measure again.
       var v = doc.defaultView; if (v && v.dispatchEvent) { v.dispatchEvent(new v.Event('resize')); }

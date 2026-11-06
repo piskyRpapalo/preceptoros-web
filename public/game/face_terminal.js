@@ -27,7 +27,7 @@
     var skip = doc.querySelector('a.skip[href="#chat"]');
     if (skip) skip.addEventListener('click', function (event) {
       event.preventDefault();
-      if (root.AtlasTerminalPanel && root.AtlasTerminalPanel.mounted) root.AtlasTerminalPanel.mounted.show('Radio');
+      if (root.AtlasTerminalPanel && root.AtlasTerminalPanel.mounted) root.AtlasTerminalPanel.mounted.show('Communication');
       C.canal('chat');
       var input = doc.getElementById('question'); if (input) input.focus();
     });

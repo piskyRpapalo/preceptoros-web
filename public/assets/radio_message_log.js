@@ -163,7 +163,7 @@
     R.boton.addEventListener('click', function () { alterna(); });
     R.tabs = el('div', 'radio-chat-tabs'); R.tabs.setAttribute('role', 'tablist'); R.tabs.setAttribute('aria-label', T('channel_aria', 'Communication channels'));
     R.canales = {};
-    [['echoes', T('channel_echoes', 'Echoes')], ['chat', T('channel_chat', 'Chat')], ['radio', T('channel_radio', 'Radio')]].forEach(function (x) {
+    [['radio', T('channel_radio', 'Radio')], ['echoes', T('channel_echoes', 'Echoes')], ['chat', T('channel_chat', 'Chat')]].forEach(function (x) {
       var b = el('button', 'radio-chat-tab', x[1]); b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', 'false');
       b.setAttribute('aria-controls', 'radio-chat-lista radio-chat-ecos radio-chat-no-data' + (x[0] === 'chat' ? ' log entry' : '')); b.addEventListener('click', function () { canal(x[0]); });
       b.addEventListener('keydown', function (e) {

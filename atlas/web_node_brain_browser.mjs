@@ -51,12 +51,13 @@ async function main() {
   // Before the click: nothing of the model is asked for, and the brain module is not even loaded.
   ok(modelos.length === 0 && (await ev('typeof window.AtlasWebNodeBrain')) === 'undefined', 'the brain loaded before the click');
   // The local brain is a Models panel action; expose that visible panel before measuring or consenting.
-  await ev("document.querySelector('.cats [data-cat=Models]').click()");
+  await ev("document.querySelector('.cats [data-cat=Welcome]').click(); document.getElementById('entry-tools').click()");
   const r = JSON.parse(await ev(`(async () => { const t0 = performance.now(), note = document.getElementById('chat-note'), heard = [];
     document.addEventListener('brain:answer', (e) => heard.push(e.detail));
     const b = document.getElementById('brain-load'); const tall = b.getBoundingClientRect().height; b.click();
     for (let i = 0; i < 600 && !/ready on this device/.test(note.textContent); i++) await new Promise((r) => setTimeout(r, 100));
     const t1 = performance.now(), ready = note.textContent;
+    document.querySelector('.cats [data-cat=Communication]').click();
     const q = document.getElementById('question'); q.value = 'How do I move my character?';
     document.getElementById('entry').requestSubmit();
     for (let i = 0; i < 900 && !heard.length; i++) await new Promise((r) => setTimeout(r, 100));
@@ -72,7 +73,7 @@ async function main() {
   ok(!/Map panel/i.test(r.text), 'the guide names a panel that does not exist in the final controls: ' + r.text);
   ok(modelos.length === 6, 'expected manifest + 5 chunks + nothing else from /models/: ' + modelos.length);
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
-  const speaker = JSON.parse(await ev(`(async () => { const w=(ms)=>new Promise(r=>setTimeout(r,ms)), map=document.querySelector('.cats [data-cat=Map]'); map.click();
+  const speaker = JSON.parse(await ev(`(async () => { const w=(ms)=>new Promise(r=>setTimeout(r,ms)), map=document.querySelector('.cats [data-cat=Welcome]'); map.click();
     for(let i=0;i<50;i++){const b=document.querySelector('#map-node-list [data-node=cabin]');if(b){b.click();break;}await w(100);}
     for(let i=0;i<50&&!/Tutorial cabin/.test(document.getElementById('chat-h').textContent);i++)await w(100);
     const inside=document.getElementById('chat-h').textContent, leave=document.getElementById('leave-building'); if(leave)leave.click();

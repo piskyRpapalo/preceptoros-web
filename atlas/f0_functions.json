@@ -240,7 +240,7 @@
    "guards": [
     {
      "file": "atlas/eye_carbon_browser.mjs",
-     "text": "the radio tabs do not switch panels"
+     "text": "Radio, Echoes, and Chat are not available in the Communication player"
     }
    ]
   },
@@ -328,7 +328,7 @@
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "a leaf or communication player is broken"
+     "text": "Welcome and Communication leaves are broken"
     },
     {
      "file": "atlas/openworld_browser.mjs",
@@ -346,7 +346,7 @@
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "Start panel must expose its next step without opening communication"
+     "text": "Welcome must show the next step without opening Communication"
     },
     {
      "file": "atlas/openworld_browser.mjs",

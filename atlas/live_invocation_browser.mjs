@@ -26,7 +26,7 @@ function sirve(raiz) {
 }
 const fallos = [], externas = [];
 // W-5: use the visible, accessible Map control. The old canvas pixel target was retired.
-const CLIC_CABINA = "(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)); const cat = document.querySelector('.cats [data-cat=Map]'); if (cat?.getAttribute('aria-pressed') !== 'true') cat?.click(); for (let i = 0; i < 50; i++) { const b = document.querySelector('#map-node-list [data-node=cabin]'); if (b && b.getBoundingClientRect().height >= 44) { b.click(); await w(300); return document.querySelector('#joy [aria-live]').textContent; } await w(100); } throw new Error('visible cabin control did not appear'); })()";
+const CLIC_CABINA = "(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)); const cat = document.querySelector('.cats [data-cat=Welcome]'); if (cat?.getAttribute('aria-pressed') !== 'true') cat?.click(); for (let i = 0; i < 50; i++) { const b = document.querySelector('#map-node-list [data-node=cabin]'); if (b && b.getBoundingClientRect().height >= 44) { b.click(); await w(300); return document.querySelector('#joy [aria-live]').textContent; } await w(100); } throw new Error('visible cabin control did not appear'); })()";
 const ok = (cond, que) => { if (!cond) { fallos.push(que); } };
 let ws = null, ch = null, srv = null, id = 0;
 const pend = new Map();
@@ -39,7 +39,7 @@ const VISITA = `(async () => { const w = (ms) => new Promise((r) => setTimeout(r
   return JSON.stringify({ state: $('state').textContent, burst: L && L.dataset.burst, frame: L && Number(L.dataset.frame || -1), hidden: L && L.getAttribute('aria-hidden') }); })()`;
 const ENTRA = `(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), $ = (i) => document.getElementById(i);
   const antes = document.querySelectorAll('#log li').length, L = () => $('invocation-layer');
-  const cat = document.querySelector('.cats [data-cat=Map]'); if (cat?.getAttribute('aria-pressed') !== 'true') cat?.click();
+  const cat = document.querySelector('.cats [data-cat=Welcome]'); if (cat?.getAttribute('aria-pressed') !== 'true') cat?.click();
   let cabina = null; for (let i = 0; i < 50; i++) { cabina = document.querySelector('#map-node-list [data-node=cabin]'); if (cabina && cabina.getBoundingClientRect().height >= 44) break; await w(100); }
   if (!cabina) throw new Error('visible cabin control did not appear'); cabina.click();
   await w(30); const corriendo = L() ? L().dataset.tunnel : null, renderer = L() && L().dataset.renderer,

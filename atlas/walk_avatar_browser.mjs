@@ -67,7 +67,7 @@ async function main() {
   const estado = () => ev(`(document.querySelector('#joy .state') || {}).textContent || ''`);
   // Map-panel node actions are visible 44 px buttons; selecting one walks the same route as keyboard input.
   const clicNodo = async (id) => {
-    await ev("(() => { const b=document.querySelector('.cats [data-cat=Map]'); if(b.getAttribute('aria-pressed')!=='true') b.click(); })()"); await espera(100);
+    await ev("(() => { const b=document.querySelector('.cats [data-cat=Welcome]'); if(b.getAttribute('aria-pressed')!=='true') b.click(); })()"); await espera(100);
     return ev(`(() => { const b=document.querySelector('#map-node-list [data-node=${JSON.stringify(id)}]'); if(!b || b.getBoundingClientRect().height<44) return false; b.click(); return true; })()`);
   };
   // A pointer click at a point of the canvas, in canvas pixels, remains a free-walk gesture.
