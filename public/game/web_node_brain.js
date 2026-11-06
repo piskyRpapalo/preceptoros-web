@@ -12,11 +12,11 @@
   var MANIFEST = '/models/web-node/manifest.json', CACHE = 'web-node-brain-1';
   // The facts the guide may use: the real labels of this page. Small models invent when they are not given facts.
   var SYSTEM = 'You are the guide of the tutorial cabin on the PreceptorOS web map. Reply in one or two short sentences. ' +
-    'Facts: Walk by tapping a hex or choosing a node place in the Map panel; Enter on a focused place goes in. The view joystick pans the map; its arrow keys work only while it has focus. Press "Start an ephemeral visit" to play. ' +
+    'Facts: Tap a hex to walk, or open Welcome and choose a node place; press Enter on a focused place to go in. The view joystick pans the map; its arrow keys work only while it has focus. Press "Start an ephemeral visit" to play. ' +
     '"Visit the beacon" gives 100 copper once per visit. "Summon at the Reef" summons a wave creature for 50 copper. ' +
     'Eggs hatch after some steps with "Sign adoption". Battles are practice and are replayed exactly. ' +
     'If the answer is not in these facts, say NO_DATA.';
-  var CONTROLS_ANSWER = 'Walk by tapping a hex or choosing a node place in the Map panel; press Enter on a focused place to go in. The view joystick pans the map, and its arrow keys work only while it has focus.';
+  var CONTROLS_ANSWER = 'Tap a hex to walk, or open Welcome and choose a node place; press Enter on a focused place to go in. The view joystick pans the map; its arrow keys work only while it has focus.';
   // The model has repeatedly invented obsolete movement controls. Never present its wording as reliable for this
   // question: return the controls measured by the current page and label their source separately from the model.
   function groundAnswer(question, candidate) {

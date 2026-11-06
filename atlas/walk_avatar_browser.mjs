@@ -1,4 +1,4 @@
-// W-3 in a real browser: the avatar walks the map. The page is served with two LIVE nodes; the Map panel's visible
+// W-3 in a real browser: the avatar walks the map. The page is served with two LIVE nodes; the Welcome leaf's visible
 // actions enter them without invisible canvas targets. Empty-hex taps still obey the free-walk law. Uso: node atlas/walk_avatar_browser.mjs
 // (Chrome headless por CDP). Prints one JSON line; exit 1 on failure.
 import { createServer } from 'node:http';
@@ -83,7 +83,7 @@ async function main() {
   // 1 · a click on the cabin enters it (the walker starts there): the key of the tutorial is played.
   const cabina = await anclaDe('cabin');
   ok(cabina && typeof cabina.x === 'number', 'cabin hex has an anchor');
-  ok(await clicNodo('cabin'), 'visible Map panel offers a touch-sized cabin action');
+  ok(await clicNodo('cabin'), 'visible Welcome leaf offers a touch-sized cabin action');
   await espera(300);
   const primero = await estado();
   ok(/tutorial: key played/.test(primero), 'click on the cabin enters it: ' + primero.slice(0, 140));
@@ -93,7 +93,7 @@ async function main() {
   const vecino = await anclaDe('ring-e');
   ok(vecino && typeof vecino.x === 'number', 'ring-e hex has an anchor');
   await ev(`window.__dibujos = 0; document.getElementById('surface').addEventListener('visitor:draw', () => { window.__dibujos++; })`);
-  ok(await clicNodo('ring-e'), 'visible Map panel offers a touch-sized ring-e action');
+  ok(await clicNodo('ring-e'), 'visible Welcome leaf offers a touch-sized ring-e action');
   await espera(60);
   const caminando = await estado();
   medidas.caminando = caminando.slice(0, 120);
