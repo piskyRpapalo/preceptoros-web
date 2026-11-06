@@ -76,9 +76,9 @@ async function main() {
   const enMapa = JSON.parse(await ev(PEQUENOS));
   ok(enMapa.length === 0, '/openworld/ has targets under 44x44: ' + enMapa.join(' | '));
   // Compact terminal: the one canvas, then the seven-button strip at the map edge; joystick stays on the right
-  // in the panel layer, while the chat and composer begin below the map and remain visible.
+  // in the panel layer; communication opens on demand over the showcase.
   const orden = JSON.parse(await ev(`JSON.stringify((() => { const t = (s) => document.querySelector(s).getBoundingClientRect(), m=t('#map'), s=t('#surface'), c=t('#chat'), p=document.querySelector('#stage .walk-pad'), pr=p?.getBoundingClientRect(), b=t('#map .cats'); return { mapa:m.top, mapaFin:m.bottom, lienzoFin:s.bottom, chat:c.top, pad:!!p, padTop:pr?.top||0,padBottom:pr?.bottom||0,padRight:pr?.right||0,mapRight:m.right,barraTop:b.top,barraBottom:b.bottom,barCount:document.querySelectorAll('#map .cats button').length,hojas:document.querySelectorAll('.sheet,#map [role=tablist]').length,ancho:document.documentElement.scrollWidth }; })())`));
-  ok(orden.mapa < orden.chat && orden.mapaFin <= orden.chat + 1 && orden.pad && orden.padTop >= orden.mapa && orden.padBottom <= orden.mapaFin && orden.padRight <= orden.mapRight && orden.padRight >= orden.mapRight - 44 && orden.barraTop >= orden.lienzoFin && orden.barraBottom <= orden.mapaFin && orden.barCount === 7 && orden.hojas <= 1 && orden.ancho <= 390, 'the phone page is not one map with its controls and a fixed chat below: ' + JSON.stringify(orden));
+  ok(orden.chat === 0 && orden.mapaFin >= 715 && orden.pad && orden.padTop >= orden.mapa && orden.padBottom <= orden.mapaFin && orden.padRight <= orden.mapRight && orden.padRight >= orden.mapRight - 44 && orden.barraTop >= orden.lienzoFin && orden.barraBottom <= orden.mapaFin && orden.barCount === 7 && orden.hojas <= 1 && orden.ancho <= 390, 'the phone page is not one unobstructed showcase with its controls: ' + JSON.stringify(orden));
 
   // 4 · Army (TF-2: in the Play category, opened first): its voice in the panel shows, honest content, the link to the full army page.
   const army = JSON.parse(await ev(`(async () => { document.querySelector('.cats [data-cat=Army]').click(); const s = document.getElementById('army-visit').closest('li'), r = s.getBoundingClientRect(); return JSON.stringify({ visible: r.height > 0, texto: s.innerText, enlace: !!s.querySelector('a[href="/game/army.html"]'), quien: s.dataset.speaker }); })()`));
@@ -86,7 +86,7 @@ async function main() {
   ok(/^Army\s+NO_DATA: no troops adopted in this visit yet|^Army\s+Troops of this visit/.test(army.texto) && army.enlace, 'the Army voice does not say its troops or NO_DATA with the army link: ' + army.texto);
   // the radio tabs: Echoes hides the Radio list, Radio shows it again.
   const radio = JSON.parse(await ev(`(async () => { const p = () => new Promise((r) => setTimeout(r, 120)); document.querySelector('.cats [data-cat=Radio]').click(); const c = document.getElementById('radio-chat'); if (!c) { return JSON.stringify({ falta: true }); }
-    c.querySelector('.radio-chat-alterna').click(); await p(); const tabs = [...c.querySelectorAll('[role=tab]')], l = document.getElementById('radio-chat-lista');
+    await p(); const tabs = [...c.querySelectorAll('[role=tab]')], l = document.getElementById('radio-chat-lista');
     const de = (n) => tabs.find((b) => b.textContent.trim() === n); de('Echoes').click(); await p(); const a = l.hidden; de('Radio').click(); await p();
     return JSON.stringify({ echoesOcultaRadio: a, radioMuestra: !l.hidden, elegida: de('Radio').getAttribute('aria-selected') }); })()`));
   ok(radio.falta || (radio.echoesOcultaRadio && radio.radioMuestra && radio.elegida === 'true'), 'the radio tabs do not switch panels: ' + JSON.stringify(radio));
