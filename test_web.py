@@ -487,7 +487,7 @@ class Estructura(unittest.TestCase):
             "contadores", RAIZ / "counters.py")
         _cont = importlib.util.module_from_spec(_esp)
         _esp.loader.exec_module(_cont)
-        _peso_sin_descargas = _cont.peso_del_sitio
+        _peso_sin_descargas = _cont.site_size
 
         def _peso_imagenes():
             return sum(q.stat().st_size for e in ("*.webp", "*.gif", "*.png",
@@ -512,7 +512,7 @@ class Estructura(unittest.TestCase):
                     "Remedio: python3 counters.py")
 
         fuente = (RAIZ / "counters.py").read_text(encoding="utf-8")
-        self.assertIn("conservando(previo", fuente,
+        self.assertIn("keep_other_keys(previo", fuente,
                       "counters.py vuelve a escribir `metricas` sin conservar")
         limpio = re.sub(r'""".*?"""', "", fuente, flags=re.S)
         self.assertNotIn('"metricas": medir()', limpio,
@@ -2052,19 +2052,19 @@ CLAVES_PERFIL = {
     'prRegistrar', 'prSinIdentidad', 'prSinRegistrar'}
 
 class LasTraduccionesSeSacanYSeMeten(unittest.TestCase):
-    """`traducciones.py` saca los textos y los reinserta sin tocar el marcado.
+    """`translations.py` saca los textos y los reinserta sin tocar el marcado.
 
     Entro con el arabe (2026-09-23). Si sacar y meter con la identidad cambiara
     un solo byte, la herramienta de la revision nativa --y de la proxima
     lengua-- estaria rompiendo paginas en silencio."""
 
     def test_la_identidad_no_cambia_ni_un_byte(self):
-        import traducciones as TR
+        import translations as TR
         for l in LENGUAS_DATOS:
-            for rel, tipo in TR.ficheros(l):
+            for rel, tipo in TR.language_files(l):
                 t = (PUBLICO / rel).read_text(encoding="utf-8")
                 with self.subTest(fichero=rel):
-                    self.assertEqual(TR.rehace(t, tipo, lambda s: s), t)
+                    self.assertEqual(TR.rewrite_text(t, tipo, lambda s: s), t)
 
     def test_ninguna_familia_lleva_un_rotulo_vacio(self):
         """El pie de Instalar salio como un triangulo SIN rotulo en ocho de nueve
@@ -2542,11 +2542,15 @@ class PanelPorCategorias(unittest.TestCase):
         voces = re.findall(r'<li class="voice[^>]*data-speaker="([^"]+)"', pagina)
         self.assertEqual(len(voces), 11, voces)
         guion = ("const P=require('./public/game/terminal_panel.js');"
-                 "process.stdout.write(JSON.stringify([P.CATS.map(c=>c[0]),process.argv.slice(1).map(P.categoryOf)]))")
-        cats, de = json.loads(subprocess.run(["node", "-e", guion, *voces], capture_output=True, text=True, cwd=RAIZ, check=True).stdout)
-        self.assertEqual(cats, ["Start", "Map", "Tutorial", "House", "Army", "Radio", "Models"])
-        esperado = {"Tutorial": "Tutorial", "Welcome": "Start", "Guide": "Start", "Map": "Map", "Floor": "Map",
-                    "Walkers": "Map", "Zoom": "Map", "House": "House", "Army": "Army", "Radio": "Radio", "Models": "Models"}
+                 "process.stdout.write(JSON.stringify([P.CATS.map(c=>c.name),P.CATS.filter(c=>c.button).map(c=>c.name),"
+                 "P.CATS.find(c=>c.name==='Profile').visit,process.argv.slice(1).map(P.categoryOf)]))")
+        cats, botoneras, profile_visits, de = json.loads(subprocess.run(["node", "-e", guion, *voces], capture_output=True, text=True, cwd=RAIZ, check=True).stdout)
+        self.assertEqual(cats, ["Welcome", "Profile", "Communication", "Tools"])
+        self.assertEqual(botoneras, ["Welcome", "Profile", "Communication"])
+        self.assertTrue(profile_visits)
+        self.assertIn('<button id="entry-tools">Tools</button>', pagina)
+        esperado = {"Tutorial": "Welcome", "Welcome": "Welcome", "Guide": "Welcome", "Map": "Welcome", "Floor": "Welcome",
+                    "Walkers": "Welcome", "Zoom": "Welcome", "House": "Profile", "Army": "Profile", "Radio": "Communication", "Models": "Tools"}
         self.assertEqual(dict(zip(voces, de)), esperado)
 
 

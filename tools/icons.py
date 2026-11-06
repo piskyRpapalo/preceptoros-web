@@ -29,10 +29,10 @@ CARA = AQUI / "caras" / "busto-icono.png"
 FUENTE = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 
 FONDO = (10, 8, 18)          # el negro de la casa, no un negro puro
-PILDORA = (38, 23, 137)      # --indigo fijo: el mismo de la nube de la portada
+BADGE = (38, 23, 137)      # --indigo fijo: el mismo de la nube de la portada
 TINTA = (242, 208, 138)      # --oro. Sobre indigo mide 9,04:1
 
-def compon(rotulo, lado, maskable):
+def make_icon(rotulo, lado, maskable):
     im = Image.new("RGBA", (lado, lado), FONDO + (255,))
     cara = Image.open(CARA).convert("RGBA")
 
@@ -71,7 +71,7 @@ def compon(rotulo, lado, maskable):
         x = int(lado * 0.07)
         y = lado - ph + int(ph * 0.17)
     r = ph // 2
-    d.rounded_rectangle([x, y, x + pw, y + ph], radius=r, fill=PILDORA + (255,),
+    d.rounded_rectangle([x, y, x + pw, y + ph], radius=r, fill=BADGE + (255,),
                         outline=TINTA + (255,), width=max(2, lado // 190))
     d.text((x + pad_x - izq, y + pad_y - arr), rotulo, font=f, fill=TINTA + (255,))
     # PALETA DE 256 COLORES, y no es tacañeria: el gate pone techo a lo que
@@ -83,8 +83,8 @@ def compon(rotulo, lado, maskable):
 def main():
     for clave, rotulo in (("app", "app"), ("pwa", "web")):
         for lado in (192, 512):
-            compon(rotulo, lado, False).save(AQUI / f"icon-{clave}-{lado}.png", optimize=True)
-        compon(rotulo, 512, True).save(AQUI / f"icon-{clave}-512-maskable.png", optimize=True)
+            make_icon(rotulo, lado, False).save(AQUI / f"icon-{clave}-{lado}.png", optimize=True)
+        make_icon(rotulo, 512, True).save(AQUI / f"icon-{clave}-512-maskable.png", optimize=True)
     print("seis iconos regenerados desde", CARA.name)
 
 if __name__ == "__main__":

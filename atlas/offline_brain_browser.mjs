@@ -61,7 +61,7 @@ async function main() {
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2000);
   const ctl = await ev(`(async () => { await navigator.serviceWorker.ready; for (let i = 0; i < 100 && !navigator.serviceWorker.controller; i++) await new Promise((r) => setTimeout(r, 100)); return !!navigator.serviceWorker.controller; })()`);
   ok(ctl === true, 'the service worker never controlled /openworld/');
-  await ev("document.querySelector('.cats [data-cat=Models]').click()");
+  await ev("document.querySelector('.cats [data-cat=Welcome]').click(); document.getElementById('entry-tools').click()");
   const uno = await ev(`(async () => { const note = document.getElementById('chat-note'); document.getElementById('brain-load').click();
     for (let i = 0; i < 900 && !/ready on this device/.test(note.textContent); i++) await new Promise((r) => setTimeout(r, 100)); return note.textContent; })()`);
   ok(/ready on this device/.test(uno || ''), 'the online download did not get ready: ' + uno);
@@ -70,7 +70,7 @@ async function main() {
   const AVION = { offline: true, latency: 0, downloadThroughput: -1, uploadThroughput: -1 };
   await cmd('Network.emulateNetworkConditions', AVION); for (const s of sesiones) { await cmd('Network.emulateNetworkConditions', AVION, s); }
   await cmd('Page.reload', { ignoreCache: false }); await espera(2500);
-  await ev("document.querySelector('.cats [data-cat=Models]').click()");
+  await ev("document.querySelector('.cats [data-cat=Welcome]').click(); document.getElementById('entry-tools').click()");
   const r = JSON.parse(await ev(`(async () => { const t0 = performance.now(), note = document.getElementById('chat-note'), heard = [], said = [];
     new MutationObserver(() => said.push(note.textContent)).observe(note, { childList: true, characterData: true, subtree: true });
     document.addEventListener('brain:answer', (e) => heard.push(e.detail));

@@ -40,8 +40,8 @@
     remoteNotice.hidden = mode.value !== 'hexelion';
     var heading = doc.getElementById('chat-h'); if (heading) heading.textContent = mode.value === 'hexelion' ? 'Hexelion' : (ready ? model : 'Guide');
   });
-  // LAS VOCES (terminal_panel.js): the visitor is «you»; the guide and its NO_DATA are the chunk model's voice, titled by its exact model.
-  function line(who, text) { var P = root.AtlasTerminalPanel; if (P && P.decir) { P.decir(doc, log, who === 'You' ? 'you' : who === 'Hexelion' ? 'hexelion' : 'chunk', text, who === 'You' || who === 'Companion' ? null : who); return; }
+  // LAS VOCES (terminal_panel.js): model answers and page-grounded guide facts have distinct speakers.
+  function line(who, text) { var P = root.AtlasTerminalPanel; if (P && P.decir) { P.decir(doc, log, who === 'You' ? 'you' : who === 'Hexelion' ? 'hexelion' : who.indexOf('OpenWorld guide') === 0 ? 'script' : 'chunk', text, who === 'You' || who === 'Companion' ? null : who); return; }
     var item = doc.createElement('li'); item.textContent = text.startsWith('NO_DATA') ? text : who + ' · ' + text; log.append(item); }
   function brain() {
     if (root.AtlasWebNodeBrain) { return Promise.resolve(root.AtlasWebNodeBrain); }
@@ -116,8 +116,10 @@
     if (!ready) { line('Companion', 'NO_DATA: choose and load the web node brain first.'); return; }
     busy = true; form.querySelector('button[type="submit"]').disabled = true;
     try {
-      var answer = await root.AtlasWebNodeBrain.reply(text, context); line(answer.model + (offline ? ' · offline' : ''), answer.text); note.textContent = 'Local answer from the web node brain · ' + context;
-      doc.dispatchEvent(new CustomEvent('brain:answer', { detail: { verified: answer.verified, model: answer.model, text: answer.text, sha: answer.sha } }));
+      var answer = await root.AtlasWebNodeBrain.reply(text, context);
+      var speaker = answer.source === 'page-controls' ? 'OpenWorld guide · page controls' : answer.model + (offline ? ' · offline' : '');
+      line(speaker, answer.text); note.textContent = answer.source === 'page-controls' ? 'Controls from this page · ' + context : 'Local answer from the web node brain · ' + context;
+      doc.dispatchEvent(new CustomEvent('brain:answer', { detail: { verified: answer.verified, source: answer.source, model: answer.model, text: answer.text, sha: answer.sha } }));
     }
     catch (error) { line('Companion', 'NO_DATA · ' + (error.cause || 'model_unavailable') + ': ' + error.message); }
     finally { busy = false; form.querySelector('button[type="submit"]').disabled = false; }

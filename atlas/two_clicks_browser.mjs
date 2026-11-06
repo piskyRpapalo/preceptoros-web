@@ -67,12 +67,20 @@ async function main() {
   ok(llegada.path === '/openworld/', 'click 1 did not reach /openworld/: ' + llegada.path);
   ok(llegada.shown && llegada.role === 'dialog' && llegada.modal === 'false', 'the welcome card is not a dialog voice at the top of the panel: ' + JSON.stringify(llegada));
   ok(llegada.title === 'Welcome to the sunken forest', 'the welcome title is wrong: ' + llegada.title);
+  const welcomeStatus = await ev(`(() => {
+    const el=document.getElementById('welcome-live');
+    document.dispatchEvent(new CustomEvent('world:summary',{detail:{ok:true,live:2}}));
+    const measured=el.textContent;
+    document.dispatchEvent(new CustomEvent('world:summary',{detail:{ok:false,cause:'offline'}}));
+    return {measured,offline:el.textContent};
+  })()`);
+  ok(welcomeStatus && welcomeStatus.measured.includes('Live nodes: 2.') && welcomeStatus.measured.includes('Live visitors: NO_DATA') && welcomeStatus.offline.includes('Live nodes: NO_DATA · offline'), 'Welcome must distinguish measured live nodes from unavailable counts');
   ok(llegada.focus === 'welcome-play', 'focus is not on «Play now»: ' + llegada.focus);
   ok(llegada.h >= 44 && llegada.w >= 44 && llegada.top >= 0 && llegada.bottom <= 844, 'the «Play now» button is below 44 px or off screen: ' + JSON.stringify(llegada));
   ok(llegada.look && llegada.ancho <= 390, 'no «Look around first» or sideways scroll: ' + JSON.stringify(llegada));
   await foto('dos-clics-welcome.png');
   await clic('#welcome-play', true); await espera(1500);
-  await ev("document.querySelector('.cats [data-cat=Map]').click()");
+  await ev("document.querySelector('.cats [data-cat=Welcome]').click()");
   // Ojo del Doogee (2026-11-02): after «Play now» the map stays in view, the summon buttons say place and cost in words, the zoom
   // plate is three labelled 44 px icons, and the place names on the map are legible (>= 12 CSS px) and never collide.
   const ojo = JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('surface'), m = c.getBoundingClientRect();
@@ -102,7 +110,7 @@ async function main() {
   await foto('dos-clics-playing.png');
   // «Look around first» and Escape: a fresh page, the card closes and the map is there.
   enMapa = false; await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
-  await ev("document.querySelector('.cats [data-cat=Start]').click()");
+  await ev("document.querySelector('.cats [data-cat=Welcome]').click()");
   await ev("document.getElementById('welcome-play').focus()");
   await cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
   await cmd('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });

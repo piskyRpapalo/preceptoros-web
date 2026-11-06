@@ -36,7 +36,7 @@ const fallos = [];
 await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'forced-colors', value: 'active' }] });
 await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2000);
 // The terminal opens with no voice overlay; the visitor chooses Start before tabbing its actions.
-await ev("document.querySelector('.cats [data-cat=Start]').click()");
+await ev("document.querySelector('.cats [data-cat=Welcome]').click()");
 const fc = JSON.parse(await ev(`JSON.stringify((() => {
   const reglas = [...document.styleSheets].flatMap((s) => { try { return [...s.cssRules]; } catch { return []; } })
     .filter((r) => /forced-colors/.test(r.conditionText || r.media?.mediaText || ''));
@@ -58,7 +58,7 @@ if (!(fc.contraste >= 7)) { fallos.push('panel text contrast ' + fc.contraste); 
 // 2 · Open the map panel; Tab reaches its visible cabin button and Enter enters.
 await cmd('Emulation.setEmulatedMedia', { features: [] });
 await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2000);
-await ev("(() => { const b = document.querySelector('.cats [data-cat=Map]'); if (b.getAttribute('aria-pressed') !== 'true') b.click(); })()");
+await ev("(() => { const b = document.querySelector('.cats [data-cat=Welcome]'); if (b.getAttribute('aria-pressed') !== 'true') b.click(); })()");
 let tabs = 0;
 for (; tabs < 80 && !(await ev("document.activeElement.matches('.map-place[data-node=\"cabin\"]')")); tabs++) { await tecla('Tab', 'Tab', 9); }
 await espera(200);
@@ -77,7 +77,7 @@ if (!/terminal: /.test(proxy.tras)) { fallos.push('Enter did not enter the cabin
 
 // 3 · the live region says its speaker in the accessibility tree; its textContent is untouched.
 // TF-2 (D3): only the open category is in the tree; Map lives in Explore, so the visitor opens it first.
-await ev("(() => { const b = document.querySelector('.cats [data-cat=Map]'); if (b.getAttribute('aria-pressed') !== 'true') b.click(); })()");
+await ev("(() => { const b = document.querySelector('.cats [data-cat=Welcome]'); if (b.getAttribute('aria-pressed') !== 'true') b.click(); })()");
 const ax = (await cmd('Accessibility.getFullAXTree')).result.nodes;
 const habla = ax.filter((n) => n.role?.value === 'StaticText' && /^(Map|Floor|Guide|Zoom|Walkers|Tutorial|Army|Radio|House|Welcome):\s?$/.test(n.name?.value || '')).map((n) => n.name.value.replace(/:\s?$/, ''));
 const vivo = { voces: [...new Set(habla)].sort(), textoMap: await ev("document.getElementById('state').textContent") };

@@ -1,42 +1,42 @@
 #!/usr/bin/env python3
-"""traducciones.py · saca los textos traducibles de una pagina y los vuelve a meter.
+"""translations.py · takes the translatable texts out of a page and puts them back.
 
-    python3 traducciones.py segmentos ar          los textos de una lengua, para revisarlos
-    python3 traducciones.py segmentos ar --junto en    cada texto al lado del de otra lengua
-    python3 traducciones.py identidad              comprueba que sacar y meter no cambia nada
+    python3 translations.py segmentos ar          the texts of one language, for review
+    python3 translations.py segmentos ar --junto en    each text next to the other language
+    python3 translations.py identidad              proves that out and back changes nothing
 
-POR QUE EXISTE. El arabe entro el 2026-09-23 traduciendo 794 textos SIN tocar el
-marcado: se extraen los nodos de texto, los atributos con prosa (placeholder,
-aria-label, title, alt, data-hecho...), el contenido de los <meta> de
-descripcion y los valores de los bloques JSON; se traducen; y se reinsertan en
-el mismo sitio. Con la funcion identidad, la salida es byte a byte la entrada
---eso es `identidad`, y lo vigila el gate--.
+WHY IT EXISTS. Arabic entered on 2026-09-23: 794 texts translated WITHOUT
+touching the markup. The tool takes out the text nodes, the attributes with
+prose (placeholder, aria-label, title, alt, data-hecho...), the content of the
+description <meta> tags and the values of the JSON blocks; it translates them;
+and it puts them back in the same place. With the identity function, the output
+is byte for byte the input: that is `identidad`, and the gate watches it.
 
-Sirve para dos cosas que vienen: la REVISION NATIVA de las lenguas marcadas
-`pendiente-revision-nativa` (un revisor lee `segmentos ar --junto en`, no HTML),
-y la proxima lengua.
+It serves two things to come: the NATIVE REVIEW of the languages marked
+`pendiente-revision-nativa` (a reviewer reads `segmentos ar --junto en`, not
+HTML), and the next language.
 
-LO QUE NO DECIDE POR SI SOLO. Que una cadena sea codigo y no prosa lo decide la
-CLAVE que la contiene (`NO_CLAVES`), no su forma. La forma engaña: la primera
-version trataba toda palabra suelta en minuscula como identificador y dejo
-`level`, `step` o `passes` sin traducir. Por eso `traducible()` ya no mira
-mayusculas.
+WHAT IT DOES NOT DECIDE ALONE. The KEY that holds a string decides if it is code
+or prose (`NO_TRANSLATE_KEYS`), not its shape. The shape lies: the first version
+treated every loose lowercase word as an identifier and left `level`, `step` or
+`passes` untranslated. That is why `is_translatable()` no longer looks at capital
+letters.
 
-Solo biblioteca estandar.
+Standard library only.
 """
 import json
 import re
 
 # Latino, griego, cirilico y ARABE. El arabe falto en la primera version y
 # ninguna cadena arabe contaba como texto: la revision nativa habria salido vacia.
-LETRA = re.compile(r"[A-Za-z\u00c0-\u00ff\u0370-\u03ff\u0400-\u04ff\u0600-\u06ff]")
+LETTER_RE = re.compile(r"[A-Za-z\u00c0-\u00ff\u0370-\u03ff\u0400-\u04ff\u0600-\u06ff]")
 # atributos con prosa
 ATTRS = ("placeholder", "aria-label", "title", "alt", "data-hecho", "data-manual",
          "data-texto", "data-cargando", "data-vacio", "data-ok", "data-fallo")
 META_PROSA = re.compile(r'(?:name|property)="(?:description|og:title|og:description|'
                         r'twitter:title|twitter:description|og:image:alt)"')
 # claves JSON que nunca se traducen
-NO_CLAVES = {"esquema", "idioma", "revision", "procedencia", "pendiente", "nota", "id", "clase", "modelo",
+NO_TRANSLATE_KEYS = {"esquema", "idioma", "revision", "procedencia", "pendiente", "nota", "id", "clase", "modelo",
              "tag", "url", "href", "src", "icono", "estado", "tipo", "orden", "ruta",
              "comando", "fichero", "sha256", "clave", "lang", "codigo", "@context",
              "@type", "operatingSystem", "applicationCategory", "license",
@@ -44,21 +44,21 @@ NO_CLAVES = {"esquema", "idioma", "revision", "procedencia", "pendiente", "nota"
 IDENT = re.compile(r"^[0-9_:.\-/@#?=&%+]+$|^[a-z0-9]+(?:[_:./\-][a-z0-9]+)+$")
 
 
-def traducible(s):
+def is_translatable(s):
     t = s.strip()
-    if not t or not LETRA.search(t):
+    if not t or not LETTER_RE.search(t):
         return False
     if IDENT.match(t) or t.startswith(("http://", "https://", "/", "./", "#")):
         return False
     return True
 
 
-def _json_rehace(obj, f, clave=None):
+def _rewrite_json(obj, f, clave=None):
     if isinstance(obj, dict):
-        return {k: (v if k in NO_CLAVES else _json_rehace(v, f, k)) for k, v in obj.items()}
+        return {k: (v if k in NO_TRANSLATE_KEYS else _rewrite_json(v, f, k)) for k, v in obj.items()}
     if isinstance(obj, list):
-        return [_json_rehace(v, f, clave) for v in obj]
-    if isinstance(obj, str) and traducible(obj):
+        return [_rewrite_json(v, f, clave) for v in obj]
+    if isinstance(obj, str) and is_translatable(obj):
         return f(obj)
     return obj
 
@@ -72,9 +72,9 @@ def _estilo_json(raw):
     return {"separators": sep}
 
 
-def json_rehace(raw, f):
+def rewrite_json(raw, f):
     obj = json.loads(raw)
-    nuevo = _json_rehace(obj, f)
+    nuevo = _rewrite_json(obj, f)
     est = _estilo_json(raw)
     out = json.dumps(nuevo, ensure_ascii=False, **est)
     if raw.endswith("\n") and not out.endswith("\n"):
@@ -83,7 +83,7 @@ def json_rehace(raw, f):
 
 
 def _texto(s, f):
-    if not traducible(s):
+    if not is_translatable(s):
         return s
     a = len(s) - len(s.lstrip())
     b = len(s.rstrip())
@@ -104,7 +104,7 @@ PIEZA = re.compile(r"<!--.*?-->|<script\b[^>]*>.*?</script>|<style\b[^>]*>.*?</s
                    re.S)
 
 
-def html_rehace(t, f):
+def rewrite_html(t, f):
     out, i = [], 0
     for m in PIEZA.finditer(t):
         out.append(_texto(t[i:m.start()], f))
@@ -113,7 +113,7 @@ def html_rehace(t, f):
             mm = re.match(r"(<script\b([^>]*)>)(.*?)(</script>)$", p, re.S)
             abre, attrs, cuerpo, cierra = mm.groups()
             if "application/json" in attrs or "application/ld+json" in attrs:
-                cuerpo = json_rehace(cuerpo, f)
+                cuerpo = rewrite_json(cuerpo, f)
             p = abre + cuerpo + cierra
         elif p.startswith("<!--") or p.startswith("<style"):
             pass
@@ -128,7 +128,7 @@ def html_rehace(t, f):
 CADENA = re.compile(r"'((?:[^'\\\n]|\\.)*)'|\"((?:[^\"\\\n]|\\.)*)\"")
 
 
-def js_rehace(t, f):
+def rewrite_js(t, f):
     """Solo literales de cadena; los comentarios no se tocan."""
     out, i = [], 0
     com = re.compile(r"/\*.*?\*/|//[^\n]*", re.S)
@@ -139,7 +139,7 @@ def js_rehace(t, f):
             q = ms.group(0)[0]
             s = ms.group(1) if q == "'" else ms.group(2)
             out.append(t[i:ms.start()])
-            if traducible(s) and " " in s.strip():
+            if is_translatable(s) and " " in s.strip():
                 s = f(s)
             out.append(q + s + q)
             i = ms.end()
@@ -152,13 +152,13 @@ def js_rehace(t, f):
     return "".join(out)
 
 
-def rehace(t, tipo, f):
-    return {"html": html_rehace, "json": json_rehace, "js": js_rehace}[tipo](t, f)
+def rewrite_text(t, tipo, f):
+    return {"html": rewrite_html, "json": rewrite_json, "js": rewrite_js}[tipo](t, f)
 
 
-def segmentos(t, tipo):
+def collect_segments(t, tipo):
     vistos = []
-    rehace(t, tipo, lambda s: (vistos.append(s), s)[1])
+    rewrite_text(t, tipo, lambda s: (vistos.append(s), s)[1])
     return vistos
 
 
@@ -172,7 +172,7 @@ PAGINAS = ("index", "instalar", "community", "benchmark", "onboarding",
            "playground", "profile")
 
 
-def ficheros(lengua):
+def language_files(lengua):
     """(ruta relativa, tipo) de todo lo traducible de una lengua."""
     out = [(f"{lengua}/{p}.html", "html") for p in PAGINAS
            if (PUBLICO / lengua / f"{p}.html").is_file()]
@@ -182,7 +182,7 @@ def ficheros(lengua):
     return out
 
 
-def lenguas():
+def languages():
     return sorted(d.name for d in PUBLICO.iterdir()
                   if d.is_dir() and len(d.name) == 2 and d.name.isalpha())
 
@@ -193,10 +193,10 @@ def _main(argv):
         return 2
     if argv[0] == "identidad":
         malos = 0
-        for l in lenguas():
-            for rel, tipo in ficheros(l):
+        for l in languages():
+            for rel, tipo in language_files(l):
                 t = (PUBLICO / rel).read_text(encoding="utf-8")
-                if rehace(t, tipo, lambda s: s) != t:
+                if rewrite_text(t, tipo, lambda s: s) != t:
                     malos += 1
                     print("  DIFIERE", rel)
         print(f"  identidad: {'OK' if not malos else str(malos) + ' ficheros difieren'}")
@@ -205,12 +205,12 @@ def _main(argv):
     otra = argv[argv.index("--junto") + 1] if "--junto" in argv else None
     import json as _json
     salida = {}
-    for rel, tipo in ficheros(lengua):
-        mios = segmentos((PUBLICO / rel).read_text(encoding="utf-8"), tipo)
+    for rel, tipo in language_files(lengua):
+        mios = collect_segments((PUBLICO / rel).read_text(encoding="utf-8"), tipo)
         if otra:
             rel_o = rel.replace(f"{lengua}/", f"{otra}/", 1).replace(f"-{lengua}.", f"-{otra}.")
             f_o = PUBLICO / rel_o
-            suyos = segmentos(f_o.read_text(encoding="utf-8"), tipo) if f_o.is_file() else []
+            suyos = collect_segments(f_o.read_text(encoding="utf-8"), tipo) if f_o.is_file() else []
             salida[rel] = [[s, suyos[i] if i < len(suyos) else None] for i, s in enumerate(mios)]
         else:
             salida[rel] = mios
