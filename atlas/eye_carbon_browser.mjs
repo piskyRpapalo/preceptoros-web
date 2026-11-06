@@ -92,7 +92,7 @@ async function main() {
     const radioVisible = !l.hidden, radioSelected = de('Radio').getAttribute('aria-selected');
     de('Chat').click(); await p(); const log = document.getElementById('log'), entry = document.getElementById('entry');
     return JSON.stringify({ canales: tabs.map((b) => b.textContent.trim()), echoesOcultaRadio: a, radioMuestra: radioVisible, elegida: radioSelected, chatVisible: !log.hidden && !entry.hidden }); })()`));
-  ok(radio.falta || (radio.canales.join('/') === 'Radio/Echoes/Chat' && radio.echoesOcultaRadio && radio.radioMuestra && radio.elegida === 'true' && radio.chatVisible), 'Radio, Echoes, and Chat are not available in the Communication player: ' + JSON.stringify(radio));
+  ok(!radio.falta && radio.canales.join('/') === 'Radio/Echoes/Chat' && radio.echoesOcultaRadio && radio.radioMuestra && radio.elegida === 'true' && radio.chatVisible, 'Radio, Echoes, and Chat are not available in the Communication player: ' + JSON.stringify(radio));
 
   // 2 · «Check live nodes»: zero 404s after the click, and a sentence in #state.
   await ev("document.querySelector('.cats [data-cat=Welcome]').click()");
