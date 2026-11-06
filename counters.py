@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-"""Mide el sitio y escribe public/counters.json. Biblioteca estandar, nada mas.
+"""Measures the site and writes public/counters.json. Standard library only.
 
-REGLA UNICA: solo escribe cifras que ha MEDIDO. Lo que no puede medir sale como
-NO_DATA con su causa y la hora de la ultima lectura. Nunca un 0 decorativo — un
-cero que en realidad significa "no lo se" es la mentira mas barata que hay.
+ONE RULE: it writes only figures it has MEASURED. What it cannot measure goes
+out as NO_DATA with its cause and the time of the last read. Never a decorative
+0: a 0 that really means "I do not know" is the cheapest lie there is.
 
-Lo que mide son cosas NUESTRAS (paginas, peso, peticiones externas declaradas).
-Lo que NO mide son cosas TUYAS: no hay analitica, ni identificadores, ni forma
-de contar visitas. Ese hueco es el producto, no una carencia.
-"""
+It measures OUR things (pages, weight, declared external requests). It does NOT
+measure YOUR things: there is no analytics, no identifiers, no way to count
+visits. That gap is the product, not a missing feature."""
 import json, os, sys, time
 from datetime import date, datetime, timezone
 from pathlib import Path
