@@ -12,6 +12,7 @@
   var quieto = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var CP = raiz.AtlasColoniaPagina, colonia_ocultos = 0, colonia = null, colonia_fuente = 'NO_DATA', colonia_error = '';
   var live = 'pending', live_fuente = 'NO_DATA'; // the heartbeat: pending, ok, or its cause
+  var visitorName = null;
   // Synthetic fixture, opt-in with ?fixture=sintetica: it is labelled SYNTHETIC on the page, never a live colony.
   var FIXTURE = { nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'ring-e', q: 1, r: 0 }, { id: 'ring-ne', q: 1, r: -1 }, { id: 'ring-nw', q: 0, r: -1 }, { id: 'ring-w', q: -1, r: 0 }, { id: 'ring-sw', q: -1, r: 1 }, { id: 'ring-se', q: 0, r: 1 }, { id: 'doggee-a', q: 2, r: 0 }, { id: 'doggee-b', q: 2, r: -1 }], buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' }, { id: 'b-ring-nw', node: 'ring-nw' }, { id: 'b-ring-sw', node: 'ring-sw' }, { id: 'b-doggee-a', node: 'doggee-a' }, { id: 'b-doggee-b', node: 'doggee-b' }], units: [] };
   // IC7-S4 (D11): the looks of the fixture's nodes; Doggee is the flat look. The live state carries its own looks.
@@ -68,7 +69,10 @@
     var B = raiz.AtlasAcho, P = raiz.AtlasComicAtoms;
     if (!surface || !B || !P || !raiz.AtlasAchoLetters) { return; }
     var position = CCT && CCT.walker(), location = doc.getElementById('map-h');
-    if (location) { location.textContent = position && Number.isFinite(position.q) && Number.isFinite(position.r) ? 'Location · ' + position.q + ', ' + position.r : 'Location · NO_DATA: visitor position unavailable'; }
+    if (location) {
+      var place = position && Number.isFinite(position.q) && Number.isFinite(position.r) ? 'Location · ' + position.q + ', ' + position.r : 'Location · NO_DATA: visitor position unavailable';
+      location.textContent = visitorName ? visitorName + ' · ' + place : place;
+    }
     var width = surface.clientWidth || 320, height = surface.clientHeight || 200;
     var dpr = Math.min(2, raiz.devicePixelRatio || 1);
     surface.width = Math.round(width * dpr); surface.height = Math.round(height * dpr);
@@ -88,7 +92,14 @@
   function visitorLayer() {
     surface.dispatchEvent(new CustomEvent('visitor:draw'));
   }
-  doc.getElementById('visitor-play').addEventListener('visitor:changed', draw);
+  var visitBox = doc.getElementById('visitor-play');
+  visitBox.addEventListener('visitor:changed', draw);
+  visitBox.addEventListener('visitor:render', function (event) {
+    try { visitorName = event.detail && event.detail.account ? event.detail.account.info().name : null; }
+    catch (_) { visitorName = null; }
+    draw();
+  });
+  visitBox.addEventListener('visitor:end', function () { visitorName = null; draw(); });
 
   function buttons() {
     press.innerHTML = '';
