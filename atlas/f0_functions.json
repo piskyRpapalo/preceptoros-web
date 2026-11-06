@@ -35,6 +35,19 @@
    ]
   },
   {
+   "id": "ephemeral-title",
+   "scripts": [
+    "/game/visitor_play.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/ephemeral_user_pass_browser.mjs",
+     "text": "map title must identify the active ephemeral visit"
+    }
+   ]
+  },
+  {
    "id": "cabin-entry",
    "scripts": [
     "/game/colony_controls.js"

@@ -3,6 +3,22 @@
   var doc = root.document, box = doc.getElementById('visitor-play');
   if (!box) { return; }
   var game = null, account = null, waiting = false;
+  var mapHeading = doc.getElementById('map-h'), mapSurface = doc.getElementById('surface'), visitName = null;
+  function updateMapHeading() {
+    var view = root.AtlasOpenworldView && root.AtlasOpenworldView(), controls = view && view.controls;
+    var p = controls && controls.walker ? controls.walker() : null;
+    var place = p && Number.isFinite(p.q) && Number.isFinite(p.r) ? 'Location · ' + p.q + ', ' + p.r : 'Location · NO_DATA: visitor position unavailable';
+    if (mapHeading) { mapHeading.textContent = (visitName ? visitName + ' · ' : '') + place; }
+  }
+  if (mapHeading && mapSurface) {
+    box.addEventListener('visitor:render', function (event) {
+      try { visitName = event.detail && event.detail.account ? event.detail.account.info().name : null; }
+      catch (_) { visitName = null; }
+      updateMapHeading();
+    });
+    box.addEventListener('visitor:end', function () { visitName = null; updateMapHeading(); });
+    mapSurface.addEventListener('visitor:draw', updateMapHeading);
+  }
   var heading = doc.createElement('h2'); heading.textContent = 'Play without a node'; box.append(heading);
   var notice = doc.createElement('p'); notice.textContent = 'Your visit key stays in memory and ends with this page. Only explicitly adopted troops are saved. After leaving, you can view those records but cannot sign for them. No persistent identity is created.'; box.append(notice);
   var status = doc.createElement('p'); status.setAttribute('role', 'status'); box.append(status);
