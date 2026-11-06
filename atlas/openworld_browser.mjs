@@ -174,6 +174,8 @@ async function main() {
     const joy=document.querySelector('#stage #view-joystick'); const before=document.querySelector('h1').textContent;
     place?.click();
     await new Promise(r=>setTimeout(r,600));
+    // The route can finish before building_chat mounts its exit control; wait for that measured state, not a fixed short delay.
+    for (let i=0;i<100;i++) { const exit=document.getElementById('leave-building'); if (exit && !exit.hidden) break; await new Promise(r=>setTimeout(r,50)); }
     return {joyOnStage:!!joy && joy.parentElement===document.getElementById('stage'),
       buttons:joy?joy.querySelectorAll('button').length:0, before, after:document.querySelector('h1').textContent,
       live:(document.querySelector('#joy [aria-live]')||{}).textContent || ''};
