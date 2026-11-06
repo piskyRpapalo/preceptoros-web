@@ -29,7 +29,7 @@ class Preflight(unittest.TestCase):
 
     def test_ci_runs_two_passes_rapido_one(self):
         self.assertEqual(len(P.plan(False)), 3)
-        self.assertRegex("\n".join(s for _, s in P.plan(False)), r"for pasada in 1 2; do")
+        self.assertRegex("\n".join(s for _, s in P.plan(False)), r"for pass in 1 2; do")
         rapido = "\n".join(s for _, s in P.plan(True))
         self.assertNotRegex(rapido, r"for \w+ in 1 2; do")
 
