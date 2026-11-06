@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
 
-# Ronda 208 (A3): un run superseded de la misma rama se cancela y no consume runners.
+# Round 208 (A3): a superseded run of the same branch cancels and consumes no runners.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

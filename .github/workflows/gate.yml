@@ -1,7 +1,7 @@
-# La batería de doctrina de preceptoros.org, en cada PR y en cada push a main.
-# Hasta hoy solo corría en la máquina de quien commiteaba: `main` no tenía
-# guardia. Es la misma orden que un contribuidor lanza en local, sin nada más:
-# biblioteca estándar más `jsonschema`, que valida `data/` contra su esquema.
+# The doctrine battery of preceptoros.org, on every PR and every push to main.
+# Until today it ran only on the machine of the person who committed: `main` had
+# no guard. It is the same order a contributor runs locally, nothing more:
+# the standard library plus `jsonschema`, which validates `data/` against its schema.
 name: gate
 
 on:
@@ -9,7 +9,7 @@ on:
   push:
     branches: [main]
 
-# Ronda 208 (A3): un run superseded de la misma rama se cancela y no consume runners.
+# Round 208 (A3): a superseded run of the same branch cancels and consumes no runners.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -43,10 +43,10 @@ jobs:
           node atlas/sweep_cases.mjs
           python test_web.py
 
-      - name: Gates completos n=2
+      - name: Full gates, two complete passes
         run: |
-          for pasada in 1 2; do
-            echo "Gate pass $pasada/2"
+          for pass in 1 2; do
+            echo "Gate pass $pass/2"
             python -m unittest tests.test_module_attribution
             python -m unittest tests.test_actions_alarm
             python -m unittest tests.test_hitl_fence
