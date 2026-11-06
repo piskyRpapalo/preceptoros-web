@@ -42,8 +42,8 @@ main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) m
 #voices.map-voices[hidden]{display:none}
 #voices>[data-speaker=Welcome]{order:0}
 #voices>[data-speaker]:not([data-speaker=Welcome]){order:1}
-.cats{display:flex;gap:4px;overflow-x:auto;flex:0 0 auto}
-.cats button{flex:1 0 44px;min-width:44px;min-height:44px;padding:4px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
+.cats{display:flex;justify-content:center;gap:4px;overflow-x:auto;flex:0 0 auto}
+.cats button{flex:0 0 44px;min-width:44px;min-height:44px;padding:4px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
 .cats button[aria-pressed="true"]{outline:3px solid currentColor;outline-offset:-4px}
 #map-actions{order:5}
 #map-brain,#radio-chat{order:6}
