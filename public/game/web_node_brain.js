@@ -12,7 +12,7 @@
   var MANIFEST = '/models/web-node/manifest.json', CACHE = 'web-node-brain-1';
   // The facts the guide may use: the real labels of this page. Small models invent when they are not given facts.
   var SYSTEM = 'You are the guide of the tutorial cabin on the PreceptorOS web map. Reply in one or two short sentences. ' +
-    'Facts: Tap a hex to walk, or open Welcome and choose a node place; press Enter on a focused place to go in. The view joystick pans the map; its arrow keys work only while it has focus. Press "Start an ephemeral visit" to play. ' +
+    'Facts: Tap a hex to walk; Welcome contains node places; press Enter on a focused place to go in. The view joystick pans the map; its arrow keys work only while it has focus. Press "Start an ephemeral visit" to play. ' +
     '"Visit the beacon" gives 100 copper once per visit. "Summon at the Reef" summons a wave creature for 50 copper. ' +
     'Eggs hatch after some steps with "Sign adoption". Battles are practice and are replayed exactly. ' +
     'If the answer is not in these facts, say NO_DATA.';

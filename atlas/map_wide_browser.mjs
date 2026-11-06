@@ -86,6 +86,7 @@ async function main() {
 
   // The terminal controls belong below the map; panels cover the map, not the conversation.
   const terminal = await ev(`(() => { const stage = document.getElementById('stage'), voices = document.getElementById('voices'),
+// Main's narrow terminal has two visible leaves; Welcome owns map places, Communication owns chat.
     bar = document.querySelector('.cats'), joy = stage.querySelector('#view-joystick'),
     composer = document.getElementById('entry'), buttons = bar && [...bar.querySelectorAll('button')].filter(b=>!b.hidden);
     if (!bar || !joy || !buttons || buttons.length !== 2) return null;
