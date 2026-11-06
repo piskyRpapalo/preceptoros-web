@@ -137,8 +137,6 @@
       li.setAttribute('aria-label', li.dataset.speaker);
       li.insertBefore(h, li.firstChild);
     });
-    var mapActions = doc.getElementById('map-actions'), zoomVoice = doc.getElementById('voice-zoom');
-    if (mapActions && zoomVoice) { zoomVoice.appendChild(mapActions); }
     var details = doc.querySelector('#chat > .tech'), guideVoice = voices.querySelector('[data-speaker="Guide"]');
     if (details && guideVoice) { guideVoice.appendChild(details); }
     var modelPanel = doc.querySelector('#chat > #model-frames-panel'), modelVoice = voices.querySelector('[data-speaker="Models"]');

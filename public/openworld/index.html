@@ -25,6 +25,7 @@
 <div id="stage" class="stage">
 <canvas class="surface" id="surface" role="img" aria-label="Hexagonal map. Tap a hex to walk; the joystick moves the view."></canvas>
 </div>
+<div id="map-actions" class="press" role="group" aria-label="Map controls"><div id="terrain-actions" class="press"><button type="button" id="t-cabin" aria-pressed="true" data-terrain="cabin">Tutorial cabin</button></div></div>
 </section>
 <section id="chat" aria-labelledby="chat-h">
 <h2 id="chat-h">Guide</h2>
@@ -66,7 +67,6 @@
 <input id="question" type="text" autocomplete="off" aria-describedby="chat-note">
 <button type="submit">Send</button>
 </form>
-<div id="map-actions" class="press" role="group" aria-label="Map controls"><div id="terrain-actions" class="press"><button type="button" id="t-cabin" aria-pressed="true" data-terrain="cabin">Tutorial cabin</button></div></div>
 <p class="state" id="chat-note">The guide is still asleep; you can wake it below.</p>
 <details class="tech"><summary>Technical details</summary><p>NO_DATA: no local answer model is connected until you download the optional browser brain.</p></details>
 </section>
