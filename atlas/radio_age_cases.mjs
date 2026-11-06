@@ -71,14 +71,15 @@ check('synthetic and unavailable source seals are preserved', () => {
 });
 check('three communication tabs expose only measured Radio and explicit causes', () => {
   const r = radio(), tabs = r.nodes.filter((n) => n.attrs.role === 'tab');
-  assert.deepEqual(tabs.map((n) => n.textContent), ['Echoes', 'Chat', 'Radio']);
-  tabs[1].events.click();
+  // Match the commissioned player order: Radio, then measured Echoes/Chat fallbacks.
+  assert.deepEqual(tabs.map((n) => n.textContent), ['Radio', 'Echoes', 'Chat']);
+  tabs[2].events.click();
   const list = r.nodes.find((n) => n.id === 'radio-chat-lista'), nd = r.nodes.find((n) => n.id === 'radio-chat-no-data');
   assert.equal(list.hidden, true); assert.equal(nd.hidden, false); assert.match(nd.textContent, /NO_DATA.*global chat.*tested repository channel/);
-  assert.equal(tabs[1].attrs['aria-selected'], 'true'); assert.equal(tabs[1].tabIndex, 0);
-  tabs[0].events.click(); assert.match(nd.textContent, /NO_DATA.*Echoes.*measured/);
-  const key = { key: 'ArrowRight', preventDefault() { this.prevented = true; } }; tabs[0].events.keydown(key);
-  assert.equal(key.prevented, true); assert.equal(tabs[1].focused, true);
-  tabs[2].events.click(); assert.equal(list.hidden, false); assert.equal(nd.hidden, true);
+  assert.equal(tabs[2].attrs['aria-selected'], 'true'); assert.equal(tabs[2].tabIndex, 0);
+  tabs[1].events.click(); assert.match(nd.textContent, /NO_DATA.*Echoes.*measured/);
+  const key = { key: 'ArrowRight', preventDefault() { this.prevented = true; } }; tabs[1].events.keydown(key);
+  assert.equal(key.prevented, true); assert.equal(tabs[2].focused, true);
+  tabs[0].events.click(); assert.equal(list.hidden, false); assert.equal(nd.hidden, true);
 });
 console.log(JSON.stringify({ cases: total, ok: true, fixture: 'SYNTHETIC DOM; actual source; no browser measurement' }));
