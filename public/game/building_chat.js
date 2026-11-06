@@ -180,6 +180,9 @@
   }
   function open(building, p) {
     page = p;
+    // Engaging a building opens its existing conversation in the shared player.
+    if (root.AtlasRadioChat && typeof root.AtlasRadioChat.canal === 'function') root.AtlasRadioChat.canal('chat');
+    if (root.AtlasTerminalPanel && root.AtlasTerminalPanel.mounted) root.AtlasTerminalPanel.mounted.show('Communication');
     if (!leave) {
       leave = p.doc.createElement('button');
       leave.type = 'button'; leave.id = 'leave-building'; leave.textContent = 'Leave building';

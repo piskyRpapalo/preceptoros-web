@@ -30,13 +30,13 @@ await cmd('Emulation.setDeviceMetricsOverride', { width: 1000, height: 800, devi
 await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/` }); await espera(2000);
 const say = () => ev(`(document.querySelector('#joy .state')||{}).textContent`);
 // W-5: use the accessible Map category and the real button for the cabin node.
-const clicCabina = () => ev(`(async () => { const c=document.querySelector('.cats [data-cat=Map]'); if(c?.getAttribute('aria-pressed')!=='true')c?.click(); for(let i=0;i<50;i++){const b=document.querySelector('#map-node-list [data-node=cabin]');if(b&&b.getBoundingClientRect().height>=44){b.click();return 'ok';} await new Promise(r=>setTimeout(r,100));}return 'NO_BUTTON';})()`);
+const clicCabina = () => ev(`(async () => { const c=document.querySelector('.cats [data-cat=Welcome]'); if(c?.getAttribute('aria-pressed')!=='true')c?.click(); for(let i=0;i<50;i++){const b=document.querySelector('#map-node-list [data-node=cabin]');if(b&&b.getBoundingClientRect().height>=44){b.click();return 'ok';} await new Promise(r=>setTimeout(r,100));}return 'NO_BUTTON';})()`);
 const teclaFlecha = (key) => ev(`(() => { document.body.dispatchEvent(new KeyboardEvent('keydown', { key: ${JSON.stringify(key)}, bubbles: true, cancelable: true })); return 'ok'; })()`);
-const press = (txt) => ev(`(() => { if(${JSON.stringify(txt)}==='Skip tutorial'){const c=document.querySelector('.cats [data-cat=Tutorial]');if(c?.getAttribute('aria-pressed')!=='true')c?.click();} const b=[...document.querySelectorAll('#joy button')].find(x=>x.textContent===${JSON.stringify(txt)}); if(!b) return 'NO_BUTTON'; b.click(); return 'ok'; })()`);
+const press = (txt) => ev(`(() => { if(${JSON.stringify(txt)}==='Skip tutorial'){const c=document.querySelector('.cats [data-cat=Welcome]');if(c?.getAttribute('aria-pressed')!=='true')c?.click();} const b=[...document.querySelectorAll('#joy button')].find(x=>x.textContent===${JSON.stringify(txt)}); if(!b) return 'NO_BUTTON'; b.click(); return 'ok'; })()`);
 const out = {};
 out.start = await say();
 await clicCabina(); await espera(900); out.enterCabin1 = await say();
-out.skipButtonHeight = await ev(`(() => { const c=document.querySelector('.cats [data-cat=Tutorial]');if(c?.getAttribute('aria-pressed')!=='true')c?.click();const b=[...document.querySelectorAll('button')].find(x=>x.textContent==='Skip tutorial'); return b ? b.getBoundingClientRect().height : 0; })()`);
+out.skipButtonHeight = await ev(`(() => { const c=document.querySelector('.cats [data-cat=Welcome]');if(c?.getAttribute('aria-pressed')!=='true')c?.click();const b=[...document.querySelectorAll('button')].find(x=>x.textContent==='Skip tutorial'); return b ? b.getBoundingClientRect().height : 0; })()`);
 await press('Skip tutorial'); await espera(200); out.afterSkip = await say();
 await clicCabina(); await espera(900); out.enterCabin2 = await say();
 await teclaFlecha('ArrowRight'); await espera(200); out.eastFromCabin = await say();

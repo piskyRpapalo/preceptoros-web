@@ -108,6 +108,14 @@
       T('channel_chat_nd', 'NO_DATA · global chat has no tested repository channel');
     var ecos = id === 'echoes' ? ecosDe() : [];
     R.lista.hidden = id !== 'radio'; R.ecos.hidden = !ecos.length; R.noData.hidden = id === 'radio' || ecos.length > 0;
+    // The map's own conversation is moved into this player, not duplicated.
+    var find = typeof R.caja.querySelector === 'function' ? R.caja.querySelector.bind(R.caja) : function () { return null; };
+    var log = find('#log'), form = find('#entry'), heading = find('#chat-h');
+    if (log && form) {
+      log.hidden = id !== 'chat'; form.hidden = id !== 'chat';
+      if (heading) heading.hidden = id !== 'chat';
+      if (id === 'chat') R.noData.hidden = true;
+    }
     R.noData.textContent = nd;
     pintaEcos(ecos);
   }
@@ -155,9 +163,9 @@
     R.boton.addEventListener('click', function () { alterna(); });
     R.tabs = el('div', 'radio-chat-tabs'); R.tabs.setAttribute('role', 'tablist'); R.tabs.setAttribute('aria-label', T('channel_aria', 'Communication channels'));
     R.canales = {};
-    [['echoes', T('channel_echoes', 'Echoes')], ['chat', T('channel_chat', 'Chat')], ['radio', T('channel_radio', 'Radio')]].forEach(function (x) {
+    [['radio', T('channel_radio', 'Radio')], ['echoes', T('channel_echoes', 'Echoes')], ['chat', T('channel_chat', 'Chat')]].forEach(function (x) {
       var b = el('button', 'radio-chat-tab', x[1]); b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', 'false');
-      b.setAttribute('aria-controls', 'radio-chat-lista radio-chat-ecos radio-chat-no-data'); b.addEventListener('click', function () { canal(x[0]); });
+      b.setAttribute('aria-controls', 'radio-chat-lista radio-chat-ecos radio-chat-no-data' + (x[0] === 'chat' ? ' log entry' : '')); b.addEventListener('click', function () { canal(x[0]); });
       b.addEventListener('keydown', function (e) {
         if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') { return; }
         e.preventDefault(); var ids = Object.keys(R.canales), at = ids.indexOf(x[0]), step = e.key === 'ArrowRight' ? 1 : -1;
@@ -177,5 +185,5 @@
   }
   function registro() { return lista.map(function (m) { return { quien: m.quien, sello: sello(m), fuente: m.fuente, ciclo: m.ciclo, texto: m.texto }; }); }
 
-  raiz.AtlasRadioChat = { VIEJO: VIEJO, monta: monta, dice: dice, alterna: alterna, registro: registro, selloDe: selloDe };
+  raiz.AtlasRadioChat = { VIEJO: VIEJO, monta: monta, dice: dice, alterna: alterna, canal: canal, registro: registro, selloDe: selloDe };
 })(this);

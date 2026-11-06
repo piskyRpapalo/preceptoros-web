@@ -76,7 +76,7 @@ async function main() {
   ok(await hasta('!!document.getElementById("surface")', 15000), 'map loaded');
   ok(await hasta(`document.getElementById('state-tech').textContent.includes('Colony:')`, 15000), 'colony drawn from the state');
   await espera(300);
-  await ev(`(() => { const b = document.querySelector('.cats [data-cat=Tutorial]'); if (b && b.getAttribute('aria-pressed') !== 'true') b.click(); return true; })()`);
+  await ev(`(() => { const b = document.querySelector('.cats [data-cat=Welcome]'); if (b && b.getAttribute('aria-pressed') !== 'true') b.click(); return true; })()`);
 
   // 0 · free walk (visitor_walk.js) is on by default; this guard checks the W-4 node law, reachable by turning it off.
   await ev(`(() => { const f = document.getElementById('free-walk'); if (f) { f.checked = false; f.dispatchEvent(new Event('change')); } return true; })()`);
@@ -109,7 +109,7 @@ async function main() {
   ok(medidas.retiro.arrowsWalk === false, 'a page-level arrow still walks or selects: ' + JSON.stringify({ antes, despues }));
 
   // 4 · the keyboard law survives on the node places: focus the east neighbour's place, Enter walks there and enters it.
-  await ev(`(() => { const b = document.querySelector('.cats [data-cat=Map]'); if (b && b.getAttribute('aria-pressed') !== 'true') b.click(); return true; })()`);
+  await ev(`(() => { const b = document.querySelector('.cats [data-cat=Welcome]'); if (b && b.getAttribute('aria-pressed') !== 'true') b.click(); return true; })()`);
   ok(await hasta(`(() => { const b = document.querySelector('#map-node-list [data-node=ring-e]'); return !!b && b.getBoundingClientRect().height >= 44; })()`, 8000), 'the east neighbour place never appeared in the panel');
   await ev(`(() => { window.__dibujos = 0; document.getElementById('surface').addEventListener('visitor:draw', () => { window.__dibujos++; }); document.querySelector('#map-node-list [data-node=ring-e]').focus(); return true; })()`);
   medidas.focus = await ev(`document.activeElement.outerHTML.slice(0, 300)`);

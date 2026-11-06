@@ -35,6 +35,19 @@
    ]
   },
   {
+   "id": "ephemeral-title",
+   "scripts": [
+    "/game/visitor_play.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/ephemeral_user_pass_browser.mjs",
+     "text": "map title must identify the active ephemeral visit"
+    }
+   ]
+  },
+  {
    "id": "cabin-entry",
    "scripts": [
     "/game/colony_controls.js"
@@ -240,7 +253,7 @@
    "guards": [
     {
      "file": "atlas/eye_carbon_browser.mjs",
-     "text": "the radio tabs do not switch panels"
+     "text": "Radio, Echoes, and Chat are not available in the Communication player"
     }
    ]
   },
@@ -328,7 +341,7 @@
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "a category panel or persistent chat is broken"
+     "text": "Welcome and Communication leaves are broken"
     },
     {
      "file": "atlas/openworld_browser.mjs",
@@ -346,7 +359,7 @@
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "Start panel does not expose the next step above the persistent composer"
+     "text": "Welcome must show the next step without opening Communication"
     },
     {
      "file": "atlas/openworld_browser.mjs",

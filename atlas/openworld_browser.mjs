@@ -80,18 +80,22 @@ async function main() {
       map: sr(map), stage: sr(stage), canvas: sr(canvas), bar: sr(bar), panelParent: voices.parentElement.id, panelHidden: voices.hidden,
       chat: sr(chat), form: sr(form), joy: joy && sr(joy), padGone: !document.querySelector('.walk-pad'),
       count: bar?.querySelectorAll('button').length, labels: [...(bar?.querySelectorAll('button') || [])].map(b=>b.getAttribute('aria-label')),
+      profileHidden: !!bar?.querySelector('[data-cat=Profile]')?.hidden, entryTools: !!document.getElementById('entry-tools'),
       intro: document.body.innerText }; })())`));
   ok(/^Location · /.test(initial.title || ''), 'map title does not identify the ephemeral account location: ' + initial.title);
   ok(initial.canvases === 1, 'OpenWorld renders more than one canvas: ' + initial.canvases);
   ok(initial.inkPixels > 2000, 'the map is blank: ' + initial.inkPixels);
   ok(initial.panelParent === 'stage' && initial.panelHidden, 'voice panels are not mounted as a closed overlay on the shared map');
-  ok(initial.count === 7 && initial.labels.join('|') === 'Start|Map|Tutorial|House|Army|Radio|Models', 'the seven compact voice controls are missing or unnamed: ' + JSON.stringify(initial.labels));
+  ok(initial.count === 3 && initial.labels.join('|') === 'Welcome|Profile|Communication', 'the three terminal leaves are missing or unnamed: ' + JSON.stringify(initial.labels));
+  ok(initial.profileHidden && initial.entryTools, 'Profile is visible before a visit or the entry Tools button is missing');
   ok(initial.bar[1] >= initial.stage[3] - 1, 'voice controls are not immediately below the map: ' + JSON.stringify(initial.bar));
-  ok(initial.chat[5] > 0 && initial.form[5] > 0 && initial.form[3] <= 844, 'chat or anchored composer is not visible on phone');
+// Main's three-leaf entry starts closed; this is intentional after the communication moved behind its own leaf.
+  ok(initial.chat[5] === 0 && initial.form[5] === 0, 'communication is open before it is requested');
   ok(initial.padGone, 'the retired six-direction pad is still on the map layer');
   ok(initial.joy && initial.joy[4] >= 88, 'the view joystick is not visible on the map layer: ' + JSON.stringify(initial.joy));
 
   const remoteChat = await evaluate(`(async () => {
+    document.querySelector('.cats [data-cat=Communication]').click();
     const mode = document.getElementById('chat-destination'), form = document.getElementById('entry'), input = document.getElementById('question');
     const script=document.createElement('script'); script.src='/game/classroom_chat.js'; await new Promise((resolve,reject)=>{script.onload=resolve;script.onerror=reject;document.head.append(script)});
     let calls = [], original = AtlasAulaChat.turn;
@@ -100,18 +104,22 @@ async function main() {
     input.value='before visit'; form.requestSubmit(); await new Promise(r=>setTimeout(r,30));
     const withoutVisit=calls.length, informed=document.getElementById('log').textContent.includes('Start an ephemeral visit');
     document.getElementById('visitor-start').click(); await new Promise(r=>setTimeout(r,700));
+    const profileAvailable=!document.querySelector('.cats [data-cat=Profile]').hidden;
+    document.querySelector('.cats [data-cat=Profile]').click();
+    const profileHasVisit=!!document.querySelector('#visitor-play #visitor-end');
+    document.querySelector('.cats [data-cat=Communication]').click();
     input.value='hello'; form.requestSubmit(); await new Promise(r=>setTimeout(r,100));
     const response=document.getElementById('log').textContent.includes('Fixture response');
     const sent=calls.slice(); document.getElementById('visitor-end').click(); await new Promise(r=>setTimeout(r,100));
     input.value='after visit'; form.requestSubmit(); await new Promise(r=>setTimeout(r,30));
-    const afterEnd=calls.length; AtlasAulaChat.turn=original; mode.value='local'; mode.dispatchEvent(new Event('change')); input.value='';
-    return {withoutVisit,informed,sent,response,afterEnd};
+    const afterEnd=calls.length, profileHiddenAfterEnd=document.querySelector('.cats [data-cat=Profile]').hidden; AtlasAulaChat.turn=original; mode.value='local'; mode.dispatchEvent(new Event('change')); input.value='';
+    return {withoutVisit,informed,sent,response,afterEnd,profileAvailable,profileHasVisit,profileHiddenAfterEnd};
   })()`);
-  ok(remoteChat && remoteChat.withoutVisit === 0 && remoteChat.informed && remoteChat.sent.length === 1 && /^[a-f0-9]{64}$/.test(remoteChat.sent[0].visit) && remoteChat.sent[0].page === '/openworld/' && remoteChat.response && remoteChat.afterEnd === 1, 'remote chat must use the active ephemeral visit only: ' + JSON.stringify(remoteChat));
+  ok(remoteChat && remoteChat.withoutVisit === 0 && remoteChat.informed && remoteChat.sent.length === 1 && /^[a-f0-9]{64}$/.test(remoteChat.sent[0].visit) && remoteChat.sent[0].page === '/openworld/' && remoteChat.response && remoteChat.afterEnd === 1 && remoteChat.profileAvailable && remoteChat.profileHasVisit && remoteChat.profileHiddenAfterEnd, 'Profile and remote chat must follow the active ephemeral visit only: ' + JSON.stringify(remoteChat));
 
   const panel = JSON.parse(await evaluate(`JSON.stringify((() => {
     const bar = document.querySelector('.cats'), buttons = [...bar.querySelectorAll('button')], voices = document.getElementById('voices');
-    const map = buttons.find(b=>b.dataset.cat==='Map'), sizes = buttons.map(b=>{const r=b.getBoundingClientRect();return [r.width,r.height]});
+    const map = buttons.find(b=>b.dataset.cat==='Welcome'), sizes = buttons.filter(b=>!b.hidden).map(b=>{const r=b.getBoundingClientRect();return [r.width,r.height]});
     map.click(); const opened = !voices.hidden && getComputedStyle(voices).display !== 'none';
     const stage = document.getElementById('stage'), chat = document.getElementById('chat');
     const overlap = voices.getBoundingClientRect().top < stage.getBoundingClientRect().bottom;
@@ -125,31 +133,32 @@ async function main() {
   ok(panel.opened && panel.overlap, 'Map voice does not open over the shared map: ' + JSON.stringify(panel));
   ok(panel.place && panel.placeTag === 'BUTTON' && panel.hasMapStatus, 'map destinations or status are not visible accessible panel content');
   ok(panel.cells > 1000 && /^Map loaded/.test(panel.floorText), 'the 2.5D floor is not painted: ' + JSON.stringify({ cells: panel.cells, floor: panel.floorText }));
-  ok(panel.closed && panel.chatVisible, 'closing a map panel hides chat or does not close the overlay');
+  ok(panel.closed && !panel.chatVisible, 'closing Welcome must restore the unobstructed map');
   ok(panel.sizes.every(([w,h]) => w >= 44 && h >= 44), 'a voice control is below the 44 px touch target: ' + JSON.stringify(panel.sizes));
+  ok(panel.sizes.every(([w]) => w <= 48), 'panel icons stretch across the map instead of remaining compact: ' + JSON.stringify(panel.sizes));
 
   const categories = JSON.parse(await evaluate(`JSON.stringify((() => {
-    const bs=[...document.querySelectorAll('.cats button')], voices=document.getElementById('voices'), chat=document.getElementById('chat');
+    const bs=[...document.querySelectorAll('.cats button')].filter(b=>!b.hidden), voices=document.getElementById('voices');
     const results=bs.map(b=>{b.click(); const cat=b.dataset.cat, own=[...voices.querySelectorAll('[data-speaker]')].filter(v=>v.dataset.cat===cat);
       const visible=own.some(v=>v.getBoundingClientRect().width>0 && getComputedStyle(v).display!=='none');
       const over=[...voices.querySelectorAll('[data-speaker]')].filter(v=>v.dataset.cat!==cat).every(v=>getComputedStyle(v).display==='none');
-      const stillChat=chat.getBoundingClientRect().height>0; b.click(); return {cat,visible,over,stillChat};});
+      const composer=document.getElementById('entry').getBoundingClientRect().height>0; b.click(); return {cat,visible,over,composer};});
     return results; })())`));
-  ok(categories.length === 7 && categories.every((row) => row.visible && row.over && row.stillChat), 'a category panel or persistent chat is broken: ' + JSON.stringify(categories));
-  const start = JSON.parse(await evaluate(`JSON.stringify((() => { const b=document.querySelector('.cats [data-cat=Start]'); b.click(); const p=document.getElementById('play-now');
-    const answer={play:!!p && p.getBoundingClientRect().height>=44,form:document.getElementById('entry').getBoundingClientRect().height>0}; b.click(); return answer; })())`));
-  ok(start.play && start.form, 'Start panel does not expose the next step above the persistent composer');
+  ok(categories.length === 2 && categories.every((row) => row.visible && row.over && row.composer === (row.cat === 'Communication')), 'Welcome and Communication leaves are broken: ' + JSON.stringify(categories));
+  const start = JSON.parse(await evaluate(`JSON.stringify((() => { const b=document.querySelector('.cats [data-cat=Welcome]'); b.click(); const p=document.getElementById('play-now');
+    const answer={play:!!p && p.getBoundingClientRect().height>=44,formClosed:document.getElementById('entry').getBoundingClientRect().height===0}; b.click(); return answer; })())`));
+  ok(start.play && start.formClosed, 'Welcome must show the next step without opening Communication');
 
-  const more = JSON.parse(await evaluate(`JSON.stringify((() => { const b=document.querySelector('.cats [data-cat=Radio]'); b.click();
+  const more = JSON.parse(await evaluate(`JSON.stringify((() => { const b=document.querySelector('.cats [data-cat=Communication]'); b.click();
     const d=document.getElementById('more'), select=document.querySelector('#more-look select');
     const folded=!!d && !d.open && !!select && d.contains(select); b.click(); return {folded}; })())`));
   ok(more.folded, 'the terminal look is not folded under More');
 
-  const models = JSON.parse(await evaluate(`(async () => { const b=document.querySelector('.cats [data-cat=Models]'); b.click();
+  const models = JSON.parse(await evaluate(`(async () => { const b=document.querySelector('.cats [data-cat=Welcome]'); b.click(); const t=document.getElementById('entry-tools'); t.click();
     const d=document.getElementById('model-catalog'); d.querySelector('summary').click(); await new Promise(r=>setTimeout(r,500));
     const result={frames:d.querySelectorAll('.model-frame').length,status:document.getElementById('model-catalog-state').textContent,
-      labels:[...d.querySelectorAll('canvas')].every(c=>c.getAttribute('role')==='img' && /residency NO_DATA/.test(c.getAttribute('aria-label')||''))};
-    d.querySelector('summary').click(); b.click(); return JSON.stringify(result); })()`));
+      labels:[...d.querySelectorAll('canvas')].every(c=>c.getAttribute('role')==='img' && /residency NO_DATA/.test(c.getAttribute('aria-label')||'')),toolsOpen:document.getElementById('voices').dataset.activeCategory==='Tools'};
+    d.querySelector('summary').click(); t.click(); return JSON.stringify(result); })()`));
   ok(models.frames > 0 && /declared model frames/.test(models.status) && models.labels, 'the model panel does not show declared Acho frames with honest NO_DATA');
 
   await key('e','KeyE',69,'e'); await wait(250);
@@ -158,7 +167,8 @@ async function main() {
   await key('Escape','Escape',27); await wait(100);
 
   const movement = await evaluate(`(async () => {
-    const cat=document.querySelector('.cats [data-cat=Map]'); if (cat && cat.getAttribute('aria-pressed') !== 'true') cat.click();
+// The merged three-leaf layout now puts node places under Welcome (the former Map leaf).
+    const cat=document.querySelector('.cats [data-cat=Welcome]'); if (cat && cat.getAttribute('aria-pressed') !== 'true') cat.click();
     await new Promise(r=>setTimeout(r,400));
     const place=document.querySelector('#map-node-list [data-node="cabin"]');
     const joy=document.querySelector('#stage #view-joystick'); const before=document.querySelector('h1').textContent;
@@ -171,8 +181,9 @@ async function main() {
   ok(movement.joyOnStage && movement.buttons === 2, 'the view joystick is not the two-control view panner on the map: ' + JSON.stringify(movement));
   ok(/terminal: basic \(the node\)/.test(movement.live), 'a node place click does not walk and enter the node: ' + JSON.stringify(movement));
 
-  // The place enters the cabin's scripted chat; leave it before testing the general model's NO_DATA answer.
-  await evaluate(`document.getElementById('leave-building')?.click()`);
+// Require a real Leave action before testing general chat; this catches a broken cabin exit.
+  const leaveStatus = await evaluate(`(() => { const b=document.getElementById('leave-building'); if(!b || b.hidden) return 'NO_LEAVE_CONTROL'; b.click(); return document.getElementById('state').textContent; })()`);
+  ok(/^Left building /.test(leaveStatus), 'the building conversation did not leave before general chat: ' + leaveStatus);
 
   await evaluate(`(() => { const q=document.getElementById('question'); q.value='hello'; document.getElementById('entry').requestSubmit(); })()`);
   await wait(800);
@@ -181,7 +192,7 @@ async function main() {
 
   hitlOn = true;
   await command('Page.navigate', { url: origin + '/openworld/' }); await wait(1700);
-  await evaluate("document.querySelector('.cats [data-cat=Map]').click()");
+  await evaluate("document.querySelector('.cats [data-cat=Welcome]').click()");
   const hitl = JSON.parse(await evaluate(`JSON.stringify((() => { const b=document.querySelector('#voice-walkers .hitl-mark');
     const r=b?.getBoundingClientRect(); return {exists:!!b, tag:b?.tagName, label:b?.getAttribute('aria-label'), width:r?.width||0,height:r?.height||0,
       visible:!!b && r.width>0 && getComputedStyle(b).display!=='none'}; })())`));
@@ -202,7 +213,7 @@ async function main() {
       s=document.getElementById('surface').getBoundingClientRect(), f=document.getElementById('entry').getBoundingClientRect();
       return {width:innerWidth,scroll:document.documentElement.scrollWidth,map:[m.left,m.top,m.right,m.bottom],chat:[c.left,c.top,c.right,c.bottom],surface:[s.width,s.height],formBottom:f.bottom}; })())`));
     ok(layout.scroll <= layout.width, 'page scrolls sideways at viewport ' + width + ': ' + JSON.stringify(layout));
-    ok(layout.map[2] <= layout.chat[0] + 1 || width < 900, 'desktop map does not sit beside the terminal: ' + JSON.stringify(layout));
+    ok(layout.map[2] >= layout.width - 1, 'the single map does not fill the viewport: ' + JSON.stringify(layout));
     ok(layout.formBottom <= height + 1, 'composer left the visible chat viewport: ' + JSON.stringify(layout));
   }
   ok(external.length === 0, 'browser tried to call an external host: ' + external.slice(0,3).join(', '));

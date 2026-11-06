@@ -51,8 +51,8 @@ async function main() {
   const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   const hasta = async (e, ms) => { for (let t = 0; t < ms; t += 250) { if (await ev(e)) { return true; } await espera(250); } return false; };
-  // The accessible Map panel exposes a real button for each place; never synthesize an invisible hit target.
-  const clicCabina = async () => { await ev("(() => { const b=document.querySelector('.cats [data-cat=Map]'); if(b.getAttribute('aria-pressed')!=='true')b.click(); })()"); await espera(100); return ev(`(() => { const b=document.querySelector('#map-node-list [data-node=cabin]'); if(!b || b.getBoundingClientRect().height<44)return false; b.click(); return true; })()`); };
+  // The accessible Welcome leaf exposes a real button for each place; never synthesize an invisible hit target.
+  const clicCabina = async () => { await ev("(() => { const b=document.querySelector('.cats [data-cat=Welcome]'); if(b.getAttribute('aria-pressed')!=='true')b.click(); })()"); await espera(100); return ev(`(() => { const b=document.querySelector('#map-node-list [data-node=cabin]'); if(!b || b.getBoundingClientRect().height<44)return false; b.click(); return true; })()`); };
   // Click the first button whose text matches; the page's own handler runs.
   const pulsa = (texto) => ev(`(() => { const b = [...document.querySelectorAll('button')].find(x => x.textContent.trim() === ${JSON.stringify(texto)}); if (!b) { return false; } b.click(); return true; })()`);
   const pulsaId = (idb) => ev(`(() => { const b = document.getElementById(${JSON.stringify(idb)}); if (!b || b.disabled) { return false; } b.click(); return true; })()`);
@@ -75,6 +75,8 @@ async function main() {
   ok(await hasta('!!document.getElementById("visitor-start")', 5000), 'visit start button shown');
   ok(await pulsaId('visitor-start'), 'visit started');
   ok(await hasta('!!document.getElementById("visitor-beacon")', 10000), 'visit panel shows beacon');
+  const titleDuringVisit = await ev(`document.getElementById('map-h').textContent`);
+  ok(/^Visitor-[a-f0-9]{8} · Location · -?\d+, -?\d+$/.test(titleDuringVisit), 'map title must identify the active ephemeral visit and its location: ' + titleDuringVisit);
   ok(await pulsaId('visitor-beacon'), 'beacon claimed');
   await espera(300);
   const panel = await ev(`document.getElementById('visitor-play').textContent`);
@@ -90,6 +92,8 @@ async function main() {
   ok(/visit ended/.test(fin) && /played: key/.test(fin) && /skipped: beacon/.test(fin), 'visit end report: key played, beacon skipped: ' + fin.slice(0, 160));
   medidas.fin_visita = fin.slice(0, 200);
   ok(await hasta('!!document.getElementById("visitor-start") && !document.getElementById("visitor-beacon")', 5000), 'account is gone after the visit ends');
+  const titleAfterVisit = await ev(`document.getElementById('map-h').textContent`);
+  ok(!/^Visitor-[a-f0-9]{8}/.test(titleAfterVisit) && /^Location · /.test(titleAfterVisit), 'map title must clear the ended visit identity: ' + titleAfterVisit);
 
   // 4 · the walk finishes: entering the cabin again plays the node step (the dead beacon is already resolved).
   ok(await clicCabina(), 'click on the cabin hex after the visit');

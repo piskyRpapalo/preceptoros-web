@@ -57,11 +57,15 @@ async function main() {
   // Voice Star: a fake verified brain:answer with a correct sha earns +25 copper and is announced in #state.
   ok(await ev('document.getElementById("visitor-voice-star").textContent') === 'Voice Star 0/4', 'Voice Star counter 0/4');
   const antes = await ev('Number(/Copper (\\d+)/.exec(document.getElementById("visitor-play").textContent)[1])');
-  await ev(`(async()=>{const text='The Navigator answers.';const sha=await AtlasVisitorAccount.digest(text);document.dispatchEvent(new CustomEvent('brain:answer',{detail:{verified:true,model:'tutorial',text,sha}}));})()`);
+  await ev(`(async()=>{const text='The Navigator answers.';const sha=await AtlasVisitorAccount.digest(text);document.dispatchEvent(new CustomEvent('brain:answer',{detail:{verified:true,source:'model',model:'tutorial',text,sha}}));})()`);
   ok(await hasta('document.getElementById("state").textContent === "Voice Star: +25 copper for a verified answer (1 of 4)"', 10000), 'Voice Star announced in #state');
   const despues = await ev('Number(/Copper (\\d+)/.exec(document.getElementById("visitor-play").textContent)[1])');
   ok(despues === antes + 25, 'Voice Star copper rose by 25'); medidas.voiceStar = { antes, despues };
   ok(await ev('document.getElementById("visitor-voice-star").textContent') === 'Voice Star 1/4', 'Voice Star counter 1/4');
+  await ev(`(async()=>{const text='Walk by tapping a hex.';const sha=await AtlasVisitorAccount.digest(text);document.dispatchEvent(new CustomEvent('brain:answer',{detail:{verified:true,source:'page-controls',model:'tutorial',text,sha}}));})()`);
+  ok(await hasta('document.getElementById("state").textContent === "Voice Star: NO_DATA · page-grounded guide facts are not a model answer"', 10000), 'page-grounded controls are excluded from Voice Star');
+  const trasDato = await ev('Number(/Copper (\\d+)/.exec(document.getElementById("visitor-play").textContent)[1])');
+  ok(trasDato === despues && await ev('document.getElementById("visitor-voice-star").textContent') === 'Voice Star 1/4', 'page-grounded controls did not earn copper');
   await ev('document.getElementById("visitor-beacon").click()');
   ok(await hasta('document.getElementById("visitor-beacon").disabled && !document.getElementById("visitor-summon-tc1").disabled',10000),'beacon granted once');
   await ev('document.getElementById("visitor-summon-tc1").click()');
@@ -74,7 +78,7 @@ async function main() {
   const result={record:saved[0].adopcion,signature:saved[0].firma,publicKey:saved[0].adopcion.clave_publica};
   ok(await ev('typeof Identity === "undefined"'),'no persistent identity used');
   // TF-2: House lives in the Play category; the visitor opens it before tapping, so the size is measured there.
-  await ev('document.querySelector(".cats [data-cat=House]").click()');
+  await ev('document.querySelector(".cats [data-cat=Profile]").click()');
   const sizes=await ev('Array.from(document.querySelectorAll("#visitor-play button")).map(x=>x.getBoundingClientRect().height)');
   ok(sizes.every(x=>x>=44),'accessible controls');
   const { createPublicKey, verify } = await import('node:crypto');
