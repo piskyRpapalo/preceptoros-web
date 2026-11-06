@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ru" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Проверка приватности · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta property="og:title" content="Probador de privacidad · PreceptorOS">
+<meta property="og:description" content="Вставь свой контекст и посмотри, что выйдет, прежде чем отдавать его облачному ИИ. В твоём браузере, без установки, с объявленными пробелами.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/ru/playground.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Вставь свой личный контекст и посмотри, что выйдет, прежде чем отдавать его облачному ИИ. Всё происходит в твоём браузере.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/agora.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
+  <div class="marca">
+    <h1>Проверка<b> · приватности</b></h1>
+    <p><a href="/ru/">Главная</a> · <a href="/ru/benchmark.html">Benchmark</a> · <a href="/ru/instalar.html">Установить</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="guia">Когда просишь помощи у облачного ИИ, приходится отдать ему свой контекст — и именно тут утекают пути, адреса и ключи. Вставь сюда то, что собирался отдать ему, и посмотри, что выйдет. В твоём браузере, без установки чего-либо.</p>
+
+<div class="panel">
+  <div class="dos">
+    <div>
+      <label class="cuenta" for="sucio">Твой контекст, как есть</label>
+      <textarea id="sucio" rows="12" spellcheck="false"></textarea>
+    </div>
+    <div>
+      <label class="cuenta" for="limpio">То, что можно вставить наружу</label>
+      <textarea id="limpio" rows="12" readonly spellcheck="false"></textarea>
+    </div>
+  </div>
+  <div class="fila"><button id="sanear" type="button">Очистить</button></div>
+  <div id="auditoria"></div>
+</div>
+
+<footer class="honest-footer">
+  <h2>Как это работает и чего не обещает</h2>
+  <ul>
+    <li><strong>Правила — те же, что у продукта.</strong> Этот фильтр ПОРОЖДАЕТСЯ из фильтра PreceptorOS, а не переписывается вручную. Проверено прогоном 36 случаев корпуса через обе реализации: одинаковый вердикт во всех 36 и ни одного уцелевшего фрагмента.</li>
+    <li><strong>Он не покидает твой браузер.</strong> Текст фильтруется прямо здесь. У этой страницы нет ни одного сетевого вызова, который бы его унёс, и это можно проверить инструментами браузера.</li>
+    <li><strong>Он не безошибочен, и потому говорит, куда не достаёт.</strong> Он детерминирован и проверяем, с объявленными пробелами: адреса почты, пути Windows и macOS, URL с учётными данными в пути и «token» с именем впереди. Всегда просматривай перед тем, как вставить.</li>
+  </ul>
+  <p><a href="/ru/community.html">Сообщество</a> ·
+     <a href="/hitos.html">Вехи</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "pgQuitado": "Убрано:",
+ "pgNada": "Фильтр отработал и не нашёл, что убрать.",
+ "pgHuecos": "Осторожно: это смотрит не всё. Оно не находит адреса почты, пути Windows или macOS, URL с учётными данными в пути и «token» с именем впереди. Просмотри, прежде чем вставлять наружу.",
+ "pgSinFiltro": "NO_DATA — не удалось загрузить фильтр.",
+ "pgEjemplo": "Скрипт лежит в /srv/proekt/poliv.py\nOPENAI_API_KEY=sk-proj-Xk29Lm44Qw81Zr03Tb77Nc55Vd\nssh -i /opt/despliegue/.ssh/id_rsa operador@",
+ "idPerfil": "Мой профиль",
+ "idEntrar": "Создать личность",
+ "idHola": "Привет,",
+ "idClave": "Показать мой отпечаток",
+ "idPublica": "Открытый ключ:",
+ "idFallo": "NO_DATA — не удалось создать личность:",
+ "idAviso": "Ключ создаётся в твоём браузере. Его нельзя ни выгрузить, ни скопировать на другое устройство: если стереть данные сайта, эта личность потеряна.",
+ "pgEjemploCola": "\nсообщи marta.lopez@example.com если не сработает"
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/sanitize.js"></script>
+<script src="/assets/playground.js"></script>
+<script src="/assets/auth.js"></script>
+
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

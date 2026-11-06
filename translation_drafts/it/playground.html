@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="it" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verificatore di privacy · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta property="og:title" content="Verificatore di privacy · PreceptorOS">
+<meta property="og:description" content="Incolla il tuo contesto e guarda cosa esce prima di darlo a un'IA nella nuvola. Nel tuo browser, senza installare nulla, con le lacune dichiarate.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/it/playground.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Incolla il tuo contesto privato e guarda cosa esce prima di darlo a un'IA nella nuvola. Tutto succede nel tuo browser.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/agora.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
+  <div class="marca">
+    <h1>Verificatore<b> · di privacy</b></h1>
+    <p><a href="/it/">Home</a> · <a href="/it/benchmark.html">Benchmark</a> · <a href="/it/instalar.html">Installa</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="guia">Quando chiedi aiuto a un'IA nella nuvola devi darle il tuo contesto, ed è lì che ti scappano percorsi, indirizzi e chiavi. Incolla qui quello che stavi per incollare a lei e guarda cosa esce. Nel tuo browser, senza installare nulla.</p>
+
+<div class="panel">
+  <div class="dos">
+    <div>
+      <label class="cuenta" for="sucio">Il tuo contesto, così com'è</label>
+      <textarea id="sucio" rows="12" spellcheck="false"></textarea>
+    </div>
+    <div>
+      <label class="cuenta" for="limpio">Quello che puoi incollare fuori</label>
+      <textarea id="limpio" rows="12" readonly spellcheck="false"></textarea>
+    </div>
+  </div>
+  <div class="fila"><button id="sanear" type="button">Ripulisci</button></div>
+  <div id="auditoria"></div>
+</div>
+
+<footer class="honest-footer">
+  <h2>Come funziona, e cosa non promette</h2>
+  <ul>
+    <li><strong>Le regole sono quelle del prodotto.</strong> Questo filtro si GENERA da quello di PreceptorOS, non si copia a mano. Verificato passando i 36 casi del corpus per le due implementazioni: stesso verdetto in tutti e 36 e nessun frammento sopravvissuto.</li>
+    <li><strong>Non esce dal tuo browser.</strong> Il testo si filtra qui stesso. Questa pagina non ha nessuna chiamata di rete che se lo porti via, e puoi verificarlo con gli strumenti del browser.</li>
+    <li><strong>Non è infallibile, e per questo dice dove non arriva.</strong> È deterministico e verificabile, con lacune dichiarate: indirizzi di posta, percorsi di Windows e di macOS, URL con credenziale nel percorso, e «token» con un nome proprio davanti. Controlla sempre prima di incollare.</li>
+  </ul>
+  <p><a href="/it/community.html">Comunità</a> ·
+     <a href="/hitos.html">Traguardi</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "pgQuitado": "Rimosso:",
+ "pgNada": "Il filtro è passato e non ha trovato nulla da rimuovere.",
+ "pgHuecos": "Attenzione: questo non guarda tutto. Non rileva indirizzi di posta, percorsi di Windows o macOS, URL con credenziale nel percorso, né «token» con un nome proprio davanti. Controllalo prima di incollarlo fuori.",
+ "pgSinFiltro": "NO_DATA — non è stato possibile caricare il filtro.",
+ "pgEjemplo": "Lo script vive in /srv/progetto/irrigare.py\nOPENAI_API_KEY=sk-proj-Xk29Lm44Qw81Zr03Tb77Nc55Vd\nssh -i /opt/despliegue/.ssh/id_rsa operador@",
+ "idPerfil": "Il mio profilo",
+ "idEntrar": "Crea identità",
+ "idHola": "Ciao,",
+ "idClave": "Vedi la mia impronta",
+ "idPublica": "Chiave pubblica:",
+ "idFallo": "NO_DATA — non è stato possibile creare l'identità:",
+ "idAviso": "Viene generata una chiave nel tuo browser. Non si può esportare né copiare su un altro apparecchio: se cancelli i dati del sito, questa identità si perde.",
+ "pgEjemploCola": "\navvisa marta.lopez@example.com se non funziona"
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/sanitize.js"></script>
+<script src="/assets/playground.js"></script>
+<script src="/assets/auth.js"></script>
+
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

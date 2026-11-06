@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="el" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Προφίλ · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="Το κυρίαρχο προφίλ σου: ψευδώνυμο παραγόμενο από το κλειδί σου Ed25519, επιλεγμένη προτομή, υπογεγραμμένες μετρήσεις και συνεισφορές. Χωρίς λογαριασμό και χωρίς διακομιστή.">
+<link rel="canonical" href="https://preceptoros.org/el/profile.html">
+<link rel="alternate" hreflang="el" href="https://preceptoros.org/el/profile.html">
+<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/profile.html">
+<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/profile.html">
+<meta property="og:title" content="Το προφίλ μου στο PreceptorOS">
+<meta property="og:description" content="Το κυρίαρχο προφίλ σου: ψευδώνυμο παραγόμενο από το κλειδί σου Ed25519, επιλεγμένη προτομή, υπογεγραμμένες μετρήσεις και συνεισφορές. Χωρίς λογαριασμό και χωρίς διακομιστή.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/el/profile.html">
+<meta property="og:type" content="profile">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfilePage","name":"PreceptorOS Profile","description":"Perfil soberano con identidad Ed25519 y contribuciones firmadas","url":"https://preceptoros.org/el/profile.html","inLanguage":"es"}</script>
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/agora.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
+  <div class="marca">
+    <h1>Προφίλ<b> · η καρτέλα σου</b></h1>
+    <p><a href="/el/">Αρχή</a> · <a href="/el/community.html">Κοινότητα</a> · <a href="/el/benchmark.html">Benchmark</a> · <a href="/el/instalar.html">Εγκατάσταση</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="guia"><strong>Αυτή η καρτέλα είναι δική σου και ζει στη συσκευή σου.</strong> Δεν υπάρχει λογαριασμός, δεν υπάρχει διακομιστής, και τίποτα από όσα γράφεις εδώ δεν βγαίνει μόνο του. Το ψευδώνυμο δεν το διαλέγεις: προκύπτει από το hash του κλειδιού σου, οπότε κανείς δεν μπορεί να ζητήσει το ξένο.</p>
+
+<section class="panel" aria-labelledby="h-yo">
+  <h2 id="h-yo">Η ταυτότητά σου</h2>
+  <div id="perfil-identidad"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-avatar">
+  <h2 id="h-avatar">Η προτομή σου</h2>
+  <div id="perfil-avatar"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-bio">
+  <h2 id="h-bio">Για σένα</h2>
+  <div id="perfil-bio"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-med">
+  <h2 id="h-med">Υπογεγραμμένες μετρήσεις</h2>
+  <div id="perfil-medidas"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-con">
+  <h2 id="h-con">Συνεισφορές</h2>
+  <div id="perfil-contribuciones"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-sh">
+  <h2 id="h-sh">Δείξε αυτή την καρτέλα</h2>
+  <div id="perfil-compartir"></div>
+</section>
+
+<footer class="honest-footer">
+  <h2>Τι υπάρχει εδώ και τι όχι</h2>
+  <ul>
+    <li><strong>Το ψευδώνυμο παράγεται, δεν επιλέγεται.</strong> Προκύπτει από το SHA-256 του δημόσιου κλειδιού σου. Για να αλλάξεις όνομα πρέπει να αλλάξεις κλειδί, και να αλλάξεις κλειδί σημαίνει να ξεκινήσεις από το μηδέν: αυτό είναι το τίμημα για να μην μπορεί κανείς να σε υποδυθεί χωρίς διακομιστή που να το εμποδίζει.</li>
+    <li><strong>Ό,τι γράφεις μένει στον περιηγητή σου.</strong> Η βιογραφία αποθηκεύεται στο IndexedDB και υπογράφεται με το κλειδί σου. Δεν ταξιδεύει ακόμη πουθενά γιατί δεν υπάρχει πού: η Αγορά δεν δημοσιεύει σημείο για προφίλ.</li>
+    <li><strong>Οι μετρήσεις δεν αυτοδηλώνονται.</strong> Προκύπτουν από το δημόσιο βιβλίο δοκιμών, φιλτραρισμένες με το ψευδώνυμό σου. Αν εκεί δεν υπάρχει τίποτα υπογεγραμμένο από σένα, εδώ βγαίνει μηδέν — και λέγεται γιατί.</li>
+  </ul>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "pfSinIdentidad": "NO_DATA — δεν υπάρχει ακόμη ταυτότητα σε αυτή τη συσκευή. Δημιούργησε μία με το κουμπί πάνω δεξιά και η καρτέλα γεμίζει μόνη της.",
+ "pfDerivado": "Παράγεται από το SHA-256 του δημόσιου κλειδιού σου. Δεν επιλέγεται.",
+ "pfVerClave": "Δες ολόκληρο το δημόσιο κλειδί μου",
+ "pfCargando": "Ανάγνωση του κλειδιού…",
+ "pfSinClave": "NO_DATA — δεν ήταν δυνατή η ανάγνωση του δημόσιου κλειδιού:",
+ "pfAvatar": "Διάλεξε την προτομή σου",
+ "pfSinBustos": "NO_DATA — δεν ήταν δυνατή η ανάγνωση του καταλόγου προτομών:",
+ "pfCompartir": "Μοιράσου αυτή την καρτέλα",
+ "pfCompartirSin": "Δημιούργησε ταυτότητα για να μπορείς να μοιραστείς την καρτέλα σου.",
+ "pfCompartirTexto": "Η καρτέλα μου στο PreceptorOS: {quien}",
+ "pfCompartido": "Μοιράστηκε.",
+ "pfCopiado": "Αντιγράφηκε στο πρόχειρο. Επικόλλησέ το όπου θέλεις.",
+ "pfSinCopiar": "Η αντιγραφή δεν έγινε. Αντίγραψέ το στο χέρι:",
+ "pfBioEtiqueta": "Η βιογραφία σου",
+ "pfBioBarra": "Εργαλεία δομής",
+ "pfBioTitulo": "Τίτλος",
+ "pfBioPunto": "Στοιχείο λίστας",
+ "pfBioGuardar": "Αποθήκευσε και υπόγραψε",
+ "pfBioVista": "Πώς θα φαίνεται",
+ "pfBioGuardada": "Αποθηκεύτηκε στη συσκευή σου και υπογράφηκε με το κλειδί σου. Δεν ταξιδεύει πουθενά. Υπογραφή:",
+ "pfBioGuardadaSinFirma": "Αποθηκεύτηκε στη συσκευή σου, ΧΩΡΙΣ υπογραφή: δεν υπάρχει ακόμη ταυτότητα.",
+ "pfBioSinFirma": "Αποθηκεύτηκε, αλλά δεν ήταν δυνατή η υπογραφή:",
+ "pfMedSinIdentidad": "Δημιούργησε ταυτότητα και εδώ θα βγουν οι μετρήσεις που έχεις υπογράψει.",
+ "pfMedEjemplo": "NO_DATA — το βιβλίο δοκιμών είναι σε ΠΑΡΑΔΕΙΓΜΑ: δεν έχει φτάσει ακόμη καμία υπογεγραμμένη γραμμή από κανέναν. Αληθινές υπογεγραμμένες γραμμές ως τώρα:",
+ "pfMedTuyas": "Μετρήσεις υπογεγραμμένες από σένα:",
+ "pfMedSinDatos": "NO_DATA — δεν ήταν δυνατή η ανάγνωση του βιβλίου δοκιμών:",
+ "pfConNoData": "NO_DATA — η Αγορά δεν δημοσιεύει ακόμη συνεισφορές. Αιτία: το /api/v1/threads απαντά 404 (μετρήθηκε στις 2026-08-30), και δεν υπάρχει σημείο για προφίλ.",
+ "pfConRemedio": "Λύση: μόλις υπάρξει αυτό το σημείο, η ενότητα γεμίζει μόνη της. Ένας μετρητής στο μηδέν ως τότε θα ήταν αισθητήρας που λέει ψέματα.",
+ "idPerfil": "Το προφίλ μου",
+ "idEntrar": "Δημιουργία ταυτότητας",
+ "idHola": "Γεια σου,",
+ "idClave": "Δες το αποτύπωμά μου",
+ "idPublica": "Δημόσιο κλειδί:",
+ "idFallo": "NO_DATA — δεν ήταν δυνατή η δημιουργία της ταυτότητας:",
+ "idAviso": "Δημιουργείται ένα κλειδί στον περιηγητή σου. Δεν εξάγεται ούτε αντιγράφεται σε άλλη συσκευή: αν σβήσεις τα δεδομένα του ιστότοπου, αυτή η ταυτότητα χάνεται και δεν ανακτάται. Κανένας κωδικός να ξεχάσεις, κανένας διακομιστής να τον φυλάει."
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/profile.js"></script>
+<script src="/assets/profile-obra.js"></script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ru" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PreceptorOS · Твой суверенный спутник</title>
+<meta name="description" content="PreceptorOS · Твой суверенный ИИ-спутник. Поставь его на свою машину: без облака, без телеметрии. Раздаётся со стойки, работающей на 99% от солнца. Твоя память, твоя личность, твоя частная жизнь.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta property="og:title" content="PreceptorOS · Твой ИИ, твоя память, твой суверенитет">
+<meta property="og:description" content="Твой ИИ-проводник дома: ставится и сразу идёт рядом. Постоянная память на твоей машине, контекст очищается прежде чем выйти наружу. Без учётных записей, без телеметрии, без обязательного облака.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/ru/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/chat.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/widget.css">
+<link rel="stylesheet" href="/assets/cabezal.css">
+<link rel="stylesheet" href="/assets/panel.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<!-- hreflang -->
+<link rel="alternate" hreflang="de" href="https://preceptoros.org/de/">
+<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/">
+<link rel="alternate" hreflang="ru" href="https://preceptoros.org/ru/">
+<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/">
+<link rel="alternate" hreflang="it" href="https://preceptoros.org/it/">
+<link rel="alternate" hreflang="pt" href="https://preceptoros.org/pt/">
+<link rel="alternate" hreflang="x-default" href="https://preceptoros.org/">
+<!-- hreflang -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"PreceptorOS","applicationCategory":"AI Companion","operatingSystem":"Linux, Windows, macOS, Android"}</script>
+</head>
+<body>
+<svg style="display:none"><symbol id="icon-key" viewBox="0 0 24 24"><path d="M7 14c-1.66 0-3 1.34-3 3 0 1.31 1.16 2.5 2.5 2.8.41.09.83.2 1.25.2.75 0 1.46-.21 2.08-.58l3.46 3.46 1.41-1.41-3.46-3.46c.37-.62.58-1.33.58-2.08 0-1.66-1.34-3-3-3zm0 4c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm13.71-9.37l-1.34-1.34-2.12 2.12 1.34 1.34 2.12-2.12zm-3.54 3.54l-1.34-1.34-4.95 4.95 1.34 1.34 4.95-4.95z"/></symbol></svg>
+<!-- El telon: el despertar del producto. Va PRIMERO en el cuerpo porque es
+     lo primero que se ve, y `aria-hidden` porque no dice nada que no diga
+     la pagina que hay debajo -- quien lee con los oidos no espera a una
+     cortina. -->
+<div class="telon" id="telon" aria-hidden="true">
+  <div class="telon-busto"></div>
+  <p class="telon-marca">Preceptor<b>OS</b></p>
+</div>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+  <header id="cabezal">
+    <div class="cab-fila">
+      <div class="lateral-zona">
+        <button class="lateral-boton" id="lateral-boton" type="button"
+                aria-expanded="false" aria-controls="panel-modelos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+               stroke-linecap="round" aria-hidden="true">
+            <path d="M 4 7 h16"></path><path d="M 4 12 h16"></path><path d="M 4 17 h10"></path>
+          </svg>
+          <span class="sr" data-rotulo="companeros"></span>
+        </button>
+        <section id="panel-modelos" class="cerrado"></section>
+      </div>
+      <div class="lateral-zona">
+        <button class="lateral-boton rueda" id="rueda" type="button"
+                aria-expanded="false" aria-controls="panel-ajustes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span class="sr" data-rotulo="ajustes"></span>
+        </button>
+        <section id="panel-ajustes" class="cerrado"></section>
+      </div>
+      <div class="marca"><h1>Preceptor<b>OS</b></h1><span id="cab-ident" class="cab-ident"></span></div>
+      <p class="cab-solar" id="cab-solar"></p>
+      <div id="identity" class="fila identity"></div>
+    </div>
+    <nav id="cab-nav"></nav>
+    <div class="presentacion"><div class="esfera" role="img"
+         aria-label="Preceptor"></div></div>
+  </header>
+  <section id="hub"></section>
+<div id="hub-layout"><div id="chat" class="panel">
+    <div id="dialogo"></div>
+    <textarea id="pregunta" class="chat-input" placeholder="Напиши свой первый вопрос..." rows="3"></textarea>
+    <div class="fila chat-acciones"><button id="enviar" type="button" class="boton enviar" aria-label="Отправить"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Отправить</span></button>
+      <div id="voice" class="fila"></div></div>
+    <div class="atajos" id="atajos" hidden></div>
+    <div id="motor"></div>
+    <p id="brain" class="brain"></p>
+  </div>
+  </div>
+  <footer class="honest-footer">
+      <ul id="pie-honesto"></ul>
+      <p class="proof"><b>617</b> зелёных тестов в приложении · <b>76</b> на этом сайте · <b>ноль</b> внешних запросов при загрузке · <b>16 КБ</b> предел на файл</p>
+    </footer>
+</main>
+<script type="application/json" id="i18n">{"brainAsleep": "Движок ещё не запущен", "brainBrowser": "ИИ браузера (Edge)", "brainLabel": "Модель:", "brainLive": "Живёт на твоей машине", "brainNone": "нет", "causaDesconocida": "Причина неизвестна.", "causaElegida": "Причина: ты выбрал JSON.", "causaEnBenchmark": "Причина: движок выбирают и измеряют в LoRAtelier.", "copiaManual": "Выдели и нажми Ctrl+C", "copiado": "Скопировано", "copiarPara": "Скопировать для", "destinos": ["Gemini", "ChatGPT", "Claude", "мой локальный ИИ"], "etiquetaJson": "Текст для копирования в твой ИИ", "falloRespuesta": "NO_DATA · не удалось получить ответ", "falloVacio": "NO_DATA — движок завершил работу, не выдав ни одного символа. Это не пустой ответ: этого хода вообще не было.", "idAviso": "Ключ создаётся в твоём браузере. Его нельзя ни выгрузить, ни скопировать на другое устройство: если стереть данные сайта, эта личность потеряна безвозвратно. Нет пароля, который можно забыть, и нет сервера, который его хранит.", "idClave": "Показать мой отпечаток", "idPerfil": "Мой профиль", "idEntrar": "Создать личность", "idFallo": "NO_DATA — не удалось создать личность:", "idHola": "Привет,", "idPublica": "Открытый ключ:", "laiListo": "Ты будешь говорить с", "llevate": "Возьми этот текст в тот ИИ, которым уже пользуешься.", "micEnAparato": "Диктовка на твоём устройстве. Звук отсюда не уходит.", "micEscuchando": "Слушаю… нажми, чтобы остановить", "micFallo": "NO_DATA — локальная диктовка не сработала:", "micHablar": "Говорить", "micSinLocal": "NO_DATA — твой браузер не даёт диктовки на устройстве. Кнопка остаётся выключенной: распознавание из облака не вернётся.", "mismoTexto": "Один и тот же текст годится для любого ИИ. В этом и смысл: не зависеть ни от одного.", "pie1f": "Пока ты не нажмёшь кнопку, эта страница ни с кем не говорила.", "pie1r": "Ноль внешних запросов при загрузке.", "pie2f": "Движок выбирают в LoRAtelier.", "pie2r": "Загрузки и измерения живут там, не здесь.", "pie3f": "Если движок не выбран,", "pie3r": "страница создаёт JSON, чтобы отнести его в тот ИИ, который у тебя уже есть.", "pieBenchmark": "LoRAtelier", "pieHitos": "Вехи", "pieInstalar": "Установить", "pieTablon": "Доска", "prefieroJson": "Я предпочитаю JSON", "sinMotor": "NO_DATA · в этом браузере нет доступного движка ИИ.", "tu": "Ты", "cabComunidad": "СООБЩЕСТВО", "cabBenchmark": "LORATELIER", "cabCola": "ПОДПИСЬ", "cabIdioma": "ЯЗЫК", "cabHome": "ГЛАВНАЯ", "cabEmpezar": "НАЧАТЬ ЗДЕСЬ", "rackSinAdaptador": "NO_DATA — для этого спутника на стойке пока не запущена ни одна модель.", "rackFallo": "NO_DATA — стойка не ответила.", "rackCausa": "Причина: стойка не ответила; публичный туннель ещё не поднят.", "cabInstala": "УСТАНОВИТЬ ЗДЕСЬ", "cabInstalaIos": "Чтобы установить: нажми «Поделиться» (стрелка вверх), затем «На экран Домой».", "cabSolar": "99% на солнце, кроме веб-провайдера", "atResume": "Сократи это", "atPasos": "Дай мне шаги", "atDudas": "Чего тебе не хватает", "companeros": "Агенты и спутники", "ajustes": "Настройки", "piel": "Оформление", "pielOscura": "Тёмное", "pielClara": "Светлое", "pleno": "Во весь экран", "plenoSalir": "Выйти из полного экрана", "agentes": {"instalador": {"name": "Установщик", "function": "Ставит тебе продукт и знакомит с остальными."}, "privacidad": {"name": "Таможенник", "function": "Вычёркивает личное, прежде чем оно покинет твоё устройство."}, "escritor": {"name": "Писатель", "function": "Пишет с тобой: сценарии, заметки и длинные тексты."}, "traductor": {"name": "Переводчик", "function": "Переводит локально, не отправляя текст ни в какое облако."}, "coder": {"name": "Мастеровой", "function": "Читает твой код, предлагает правку и пишет тест."}, "analista": {"name": "Аналитик", "function": "Смотрит на числа и следы и говорит, что изменилось."}, "aprendiz": {"name": "Ученик", "function": "Превращает то, что ты делаешь, в память, которую можно перечитать."}, "bibliotecario": {"name": "Библиотекарь", "function": "Наводит порядок в памяти: ищет, связывает и убирает повторы."}}}</script>
+<script src="/assets/prompts-ru.js"></script>
+<script src="/assets/fallback.js"></script>
+<script src="/assets/state.js"></script>
+<script src="/assets/rack.js"></script>
+<script src="/assets/chat.js"></script>
+<script src="/assets/voice.js"></script>
+<script src="/assets/copiar.js"></script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/pie.js"></script>
+<script src="/assets/hub.js"></script>
+<script src="/assets/hub-cola.js"></script>
+<script src="/assets/comandos.js"></script>
+<script src="/assets/corregir.js"></script>
+<script src="/assets/chat-panel.js"></script>
+<script src="/assets/chat-router.js"></script>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

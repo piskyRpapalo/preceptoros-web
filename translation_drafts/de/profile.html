@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="de" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profil · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="Dein souveränes Profil: Pseudonym abgeleitet aus deinem Ed25519-Schlüssel, gewählte Büste, signierte Messungen und Beiträge. Ohne Konto und ohne Server.">
+<link rel="canonical" href="https://preceptoros.org/de/profile.html">
+<link rel="alternate" hreflang="de" href="https://preceptoros.org/de/profile.html">
+<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/profile.html">
+<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/profile.html">
+<meta property="og:title" content="Mein Profil bei PreceptorOS">
+<meta property="og:description" content="Dein souveränes Profil: Pseudonym abgeleitet aus deinem Ed25519-Schlüssel, gewählte Büste, signierte Messungen und Beiträge. Ohne Konto und ohne Server.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/de/profile.html">
+<meta property="og:type" content="profile">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfilePage","name":"PreceptorOS Profile","description":"Perfil soberano con identidad Ed25519 y contribuciones firmadas","url":"https://preceptoros.org/de/profile.html","inLanguage":"es"}</script>
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/agora.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
+  <div class="marca">
+    <h1>Profil<b> · deine Karte</b></h1>
+    <p><a href="/de/">Start</a> · <a href="/de/community.html">Gemeinschaft</a> · <a href="/de/benchmark.html">Benchmark</a> · <a href="/de/instalar.html">Installieren</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="guia"><strong>Diese Karte gehört dir und lebt auf deinem Gerät.</strong> Es gibt kein Konto, keinen Server, und nichts von dem, was du hier schreibst, geht von allein hinaus. Das Pseudonym wählst du nicht: es entsteht aus dem Hash deines Schlüssels, also kann niemand das eines anderen verlangen.</p>
+
+<section class="panel" aria-labelledby="h-yo">
+  <h2 id="h-yo">Deine Identität</h2>
+  <div id="perfil-identidad"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-avatar">
+  <h2 id="h-avatar">Deine Büste</h2>
+  <div id="perfil-avatar"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-bio">
+  <h2 id="h-bio">Über dich</h2>
+  <div id="perfil-bio"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-med">
+  <h2 id="h-med">Signierte Messungen</h2>
+  <div id="perfil-medidas"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-con">
+  <h2 id="h-con">Beiträge</h2>
+  <div id="perfil-contribuciones"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-sh">
+  <h2 id="h-sh">Diese Karte zeigen</h2>
+  <div id="perfil-compartir"></div>
+</section>
+
+<footer class="honest-footer">
+  <h2>Was hier steht und was nicht</h2>
+  <ul>
+    <li><strong>Das Pseudonym ist abgeleitet, nicht gewählt.</strong> Es entsteht aus dem SHA-256 deines öffentlichen Schlüssels. Den Namen zu wechseln verlangt, den Schlüssel zu wechseln, und den Schlüssel zu wechseln heißt bei null anfangen: das ist der Preis dafür, dass niemand sich als du ausgeben kann, ohne dass ein Server es verhindern müsste.</li>
+    <li><strong>Was du schreibst, bleibt in deinem Browser.</strong> Die Biografie wird in IndexedDB gespeichert und mit deinem Schlüssel signiert. Sie reist noch nirgendwohin, weil es kein Wohin gibt: die Agora veröffentlicht keinen Endpunkt für Profile.</li>
+    <li><strong>Die Messungen erklären sich nicht selbst.</strong> Sie stammen aus dem öffentlichen Prüfbuch, gefiltert nach deinem Pseudonym. Steht dort nichts von dir Signiertes, steht hier null — und es wird gesagt, warum.</li>
+  </ul>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "pfSinIdentidad": "NO_DATA — auf diesem Gerät gibt es noch keine Identität. Lege mit dem Knopf oben rechts eine an, und diese Karte füllt sich von allein.",
+ "pfDerivado": "Abgeleitet aus dem SHA-256 deines öffentlichen Schlüssels. Nicht wählbar.",
+ "pfVerClave": "Meinen ganzen öffentlichen Schlüssel ansehen",
+ "pfCargando": "Schlüssel wird gelesen…",
+ "pfSinClave": "NO_DATA — der öffentliche Schlüssel konnte nicht gelesen werden:",
+ "pfAvatar": "Wähle deine Büste",
+ "pfSinBustos": "NO_DATA — der Büstenkatalog konnte nicht gelesen werden:",
+ "pfCompartir": "Diese Karte teilen",
+ "pfCompartirSin": "Lege eine Identität an, um deine Karte teilen zu können.",
+ "pfCompartirTexto": "Meine Karte bei PreceptorOS: {quien}",
+ "pfCompartido": "Geteilt.",
+ "pfCopiado": "In die Zwischenablage kopiert. Füge es ein, wo du willst.",
+ "pfSinCopiar": "Kopieren nicht möglich. Kopiere es von Hand:",
+ "pfBioEtiqueta": "Deine Biografie",
+ "pfBioBarra": "Werkzeuge für die Gliederung",
+ "pfBioTitulo": "Überschrift",
+ "pfBioPunto": "Listenpunkt",
+ "pfBioGuardar": "Speichern und signieren",
+ "pfBioVista": "So wird es aussehen",
+ "pfBioGuardada": "Auf deinem Gerät gespeichert und mit deinem Schlüssel signiert. Sie reist nirgendwohin. Signatur:",
+ "pfBioGuardadaSinFirma": "Auf deinem Gerät gespeichert, OHNE Signatur: es gibt noch keine Identität.",
+ "pfBioSinFirma": "Gespeichert, aber Signieren nicht möglich:",
+ "pfMedSinIdentidad": "Lege eine Identität an, und hier erscheinen die Messungen, die du signiert hast.",
+ "pfMedEjemplo": "NO_DATA — das Prüfbuch steht auf BEISPIEL: es ist noch keine signierte Zeile von irgendjemandem eingegangen. Echte signierte Zeilen bisher:",
+ "pfMedTuyas": "Von dir signierte Messungen:",
+ "pfMedSinDatos": "NO_DATA — das Prüfbuch konnte nicht gelesen werden:",
+ "pfConNoData": "NO_DATA — die Agora veröffentlicht noch keine Beiträge. Ursache: /api/v1/threads antwortet 404 (gemessen am 2026-08-30), und es gibt keinen Endpunkt für Profile.",
+ "pfConRemedio": "Abhilfe: sobald dieser Endpunkt existiert, füllt sich dieser Abschnitt von allein. Ein Zähler auf null wäre bis dahin ein Sensor, der lügt.",
+ "idPerfil": "Mein Profil",
+ "idEntrar": "Identität anlegen",
+ "idHola": "Hallo,",
+ "idClave": "Meinen Fingerabdruck ansehen",
+ "idPublica": "Öffentlicher Schlüssel:",
+ "idFallo": "NO_DATA — die Identität konnte nicht angelegt werden:",
+ "idAviso": "In deinem Browser wird ein Schlüssel erzeugt. Er lässt sich weder exportieren noch auf ein anderes Gerät kopieren: löschst du die Daten der Seite, ist diese Identität verloren und nicht wiederherstellbar. Kein Passwort zum Vergessen, kein Server, der ihn verwahrt."
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/profile.js"></script>
+<script src="/assets/profile-obra.js"></script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

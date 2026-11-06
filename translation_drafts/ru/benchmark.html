@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ru" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LoRAtelier benchmark's · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="Публичная Книга испытаний: какая модель на какой скорости, на какой машине, подписано тем, кто измерял.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/agora.css">
+<link rel="stylesheet" href="/assets/chat.css">
+<link rel="stylesheet" href="/assets/widget.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
+  <div class="marca">
+    <h1>LoRAtelier benchmark's<b> · Книга испытаний</b></h1>
+    <p><a href="/ru/">Главная</a> · <a href="/ru/community.html">Сообщество</a> · <a href="/ru/instalar.html">Установить</a></p>
+  </div>
+</header>
+
+<p class="guia">Какая модель на какой скорости, на какой машине и кто её измерил. Каждая строка подписана и несёт внутри sha256 файла модели: без этого хэша «llama-3.2-3b» не опознаёт ничего.</p>
+
+<div id="tabla" class="panel"></div>
+
+
+<section id="probador">
+  <h2>Выбери и измерь свой движок</h2>
+  <p class="guia">Здесь выбирают, с каким мозгом ты говоришь, и засекают результат. Это живёт в Benchmark, а не на главной, и намеренно: предлагать три загрузки по нескольку гигабайт сразу при открытии страницы дорого на телефоне, и большинство приходит не за этим.</p>
+  <div id="chat" class="panel">
+    <div id="dialogo"></div>
+    <textarea id="pregunta" class="chat-input" placeholder="Напиши ход, чтобы измерить его..." rows="3"></textarea>
+    <div class="fila chat-acciones"><button id="enviar" type="button" class="boton enviar" aria-label="Отправить"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Отправить</span></button></div>
+    <div id="motor"></div>
+    <div id="local-ai" class="fila"></div>
+    <p id="brain" class="brain"></p>
+  </div>
+  <textarea id="medida-json" rows="5" readonly hidden></textarea>
+  <button type="button" id="medida-copiar" data-copia="medida-json" data-hecho="Скопировано ✓" data-manual="Выдели и нажми Ctrl+C" hidden>Скопировать измерение</button>
+</section>
+
+<footer class="honest-footer">
+  <h2>Откуда берётся эта таблица</h2>
+  <ul>
+    <li><strong>Никто ничего не выкладывает нечаянно.</strong> Данные отправляет твой PreceptorOS с твоей машины, и только если ты попросишь. Установка ничего не публикует.</li>
+    <li><strong>Хэш и подпись — это и есть данные.</strong> Цифру без sha256 модели невозможно воспроизвести, а без подписи невозможно приписать. Два столбца стоят затем, чтобы таблицу можно было проверить, а не для украшения.</li>
+    <li><strong>Пробелы объявляются.</strong> Когда движок не сообщает, сколько токенов он выдал, в клетке стоит NO_DATA. Она не заполняется прикидкой.</li>
+  </ul>
+  <p><a href="/hitos.html">Вехи</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "bmColumnas": [
+  "Модель",
+  "sha256",
+  "Железо",
+  "tok/s",
+  "TTFT",
+  "Вердикт",
+  "Кто измерял",
+  "Подпись"
+ ],
+ "bmEjemplo": "Эти строки — ПРИМЕР, чтобы проверить вид таблицы.",
+ "bmFirmadas": "Подписанных строк получено на сегодня:",
+ "bmSinHash": "без хэша",
+ "bmSinFirma": "без подписи",
+ "bmFuente": "Источник:",
+ "bmSinDatos": "NO_DATA — не удалось прочитать таблицу.",
+ "bmLlevatelo": "забирай её целиком.",
+ "bmLeyenda": [
+  "tok/s — сколько кусочков слов он пишет в секунду. Важно, если оставишь его работать одного.",
+  "TTFT — сколько ждать первой буквы. Важно, если будешь сидеть и ждать.",
+  "sha256 — отпечаток файла модели. Два файла с одним именем могут оказаться разными моделями; отпечаток не врёт."
+ ],
+ "bmTablaAria": "Таблица Книги испытаний, прокручивается по горизонтали",
+ "arrancando": "Запускаю движок…",
+ "avisoCifra": "Это ~2 ГБ. Говорим об этом до нажатия, а не после.",
+ "avisoRed": "Скачивается по сети один раз. Дальше лежит в кэше твоего браузера.",
+ "bajando": "Загружается",
+ "bajarNavegador": "Скачать ИИ браузера (~2,7-4 ГБ)",
+ "brainAsleep": "Движок ещё не запущен",
+ "brainBrowser": "ИИ браузера (Edge)",
+ "brainLabel": "Мозг:",
+ "brainLive": "Живёт на твоей машине",
+ "brainNone": "нет",
+ "causaDesconocida": "Причина неизвестна.",
+ "causaElegida": "Причина: ты выбрал JSON.",
+ "causaEnBenchmark": "Причина: движок выбирают и измеряют в Benchmark.",
+ "causaError": "Причина: ошибка при опросе GPU.",
+ "causaSinAdaptador": "Причина: WebGPU есть, но нет пригодной GPU.",
+ "causaSinApi": "Причина: этот браузер не даёт ни WebGPU, ни LanguageModel.",
+ "copiaManual": "Выдели и нажми Ctrl+C",
+ "copiado": "Скопировано",
+ "copiarPara": "Скопировать для",
+ "descargar": "Скачать модель (~2 ГБ, один раз)",
+ "destinos": [
+  "Gemini",
+  "ChatGPT",
+  "Claude",
+  "мой локальный ИИ"
+ ],
+ "etiquetaJson": "Текст для копирования в твой ИИ",
+ "falloDescarga": "NO_DATA · не удалось скачать модель",
+ "falloNavegador": "NO_DATA · сбой с ИИ браузера",
+ "falloRespuesta": "NO_DATA · не удалось получить ответ",
+ "falloVacio": "NO_DATA — движок завершил работу, не выдав ни одного символа. Это не пустой ответ: этого хода вообще не было.",
+ "laiBuscando": "Спрашиваю 127.0.0.1:11434…",
+ "laiBuscar": "Найти локальный ИИ",
+ "laiEncontrados": "Найдены твои модели:",
+ "laiListo": "Ты будешь говорить с",
+ "laiMixto": "Со страницы https браузер разрешает говорить только с 127.0.0.1. Сетевой адрес он режет как смешанное содержимое.",
+ "laiNada": "NO_DATA — на 127.0.0.1:11434 локальный ИИ не найден. Причина:",
+ "laiOtra": "Другой адрес Ollama",
+ "laiProbar": "Проверить там",
+ "laiVacio": "NO_DATA — Ollama отвечает, но не имеет ни одной модели.",
+ "listoLocal": "Движок готов. Напиши свой вопрос.",
+ "llevate": "Возьми этот текст в тот ИИ, которым уже пользуешься.",
+ "medidaCalentado": "Измерено после скрытой очереди из 5 токенов: без неё засекаешь компилятор шейдеров, а не свою машину.",
+ "medidaEsperando": "Напиши ход, и всё измерится само. Ничего из этого не покидает твоё устройство.",
+ "medidaMotor": "движок:",
+ "medidaSinTokens": "tok/s NO_DATA — этот движок не сообщает, сколько токенов он выдал. Считать кусочки и звать их токенами значило бы выдумать цифру.",
+ "medidaSinTtft": "TTFT NO_DATA — движок не выдал ни одного кусочка, который можно было бы засечь.",
+ "medidaTitulo": "ТВОЯ МАШИНА · измерено здесь, ни с кем не сравнивается",
+ "medidaTurnos": "ходов:",
+ "mirandoGpu": "Опрашиваю GPU…",
+ "mirandoNavegador": "Опрашиваю ИИ браузера…",
+ "mismoTexto": "Один и тот же текст годится для любого ИИ. В этом и смысл: не зависеть ни от одного.",
+ "navBajado": "ИИ браузера скачан. Напиши свой вопрос.",
+ "navListo": "ИИ браузера готов. Напиши свой вопрос.",
+ "navPesa": "Это 2,7-4 ГБ. Говорим об этом до нажатия.",
+ "navYaEsta": "ИИ уже на твоём устройстве. Ноль загрузки.",
+ "papel": "Ты — Preceptor, установщик PreceptorOS. Твоя единственная задача — чтобы человек сумел поставить продукт на СВОЮ машину. ЖЁСТКИЕ ПРАВИЛА: 1) Сначала спроси, какая у него система: Linux, macOS, Windows или Android через Termux. 2) Дай шаги из руководства по установке этого же сайта и отправь туда за подробностями; не диктуй пути по памяти, они устаревают. 3) Если что-то не сработало, попроси точный текст ошибки и дай ТОЛЬКО ту команду, которая её исправляет. 4) Если чего-то не знаешь, скажи NO_DATA и скажи почему. Никогда не выдумывай команды и версии. 5) Не проси личных данных и не предлагай облачных служб: продукт работает на его устройстве. 6) Отвечай на языке человека. Будь сдержан и краток.",
+ "prefieroJson": "Я предпочитаю JSON",
+ "reglas": [
+  "Не предлагай облачных служб",
+  "Не проси личных данных",
+  "Если не знаешь, скажи NO_DATA"
+ ],
+ "sensorAviso": "Маленькая модель начинает забывать контекст. Сбросить разговор?",
+ "sensorBoton": "Сбросить",
+ "sensorRegistrado": "Сброс отмечен в этой сессии как измерение предела. Нигде не сохраняется: этот сайт не хранит ничего твоего.",
+ "sinMotor": "NO_DATA · в этом браузере нет доступного движка ИИ.",
+ "usarNavegador": "Использовать ИИ твоего браузера"
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/benchmark.js"></script>
+<script src="/assets/fallback.js"></script>
+<script src="/assets/state.js"></script>
+<script src="/assets/engine.js"></script>
+<script src="/assets/chat.js"></script>
+<script src="/assets/localai.js"></script>
+<script src="/assets/meter.js"></script>
+<script src="/assets/copiar.js"></script>
+
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

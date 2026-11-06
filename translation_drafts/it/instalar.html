@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="it" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Installa PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="Come installare PreceptorOS su un computer o su un telefono. Con quello che fa, quello che ancora non fa, e dove resta la tua memoria.">
+<link rel="stylesheet" href="../assets/base.css">
+<link rel="stylesheet" href="../assets/canon.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
+  <div class="marca">
+    <h1>Installa<b> · PreceptorOS</b></h1>
+    <p><a href="./">Torna alla home</a></p>
+  </div>
+</header>
+
+<p class="guia">Due apparecchi, due strade, e le due cominciano uguali: cloni il
+repository e lo avvii tu. Non c'è nessun installatore che chieda una password, e
+niente si scarica alle tue spalle.</p>
+
+<p class="nodata">NO_DATA · il «file da un clic» non esiste ancora.
+  <strong>Causa:</strong> il repository è pubblico, ma non ha pubblicato nessuna
+  <em>release</em> e <code>dist/aurelius</code> risponde 404. Verificato il
+  2026-08-27 contro l'API di GitHub. La guida del repository lo descrive come se
+  ci fosse; finché non sarà pubblicato, la strada qui sotto è quella che funziona.</p>
+
+<h2>Su un computer · Linux o macOS</h2>
+<ol class="pasos">
+  <li><div><h3>Verifica di avere Python.</h3>
+    <p><code>python3 -V</code> — serve la 3.10 o più recente. Se manca,
+    l'installatore <strong>lo dice e si ferma</strong>: non lo installa con <code>sudo</code>,
+    perché chiedere una password a metà di uno script è il modo in cui si
+    infilano le sorprese.</p></div></li>
+  <li><div><h3>Clona il repository.</h3>
+    <p><code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros</code></p></div></li>
+  <li><div><h3>Crea la porta.</h3>
+    <p><code>cd ~/preceptoros &amp;&amp; bash bin/instalar-pc</code> — mette l'icona nel
+    tuo menu delle applicazioni e nient'altro. <strong>Non avvia nulla alla fine:</strong>
+    crea la porta; entrare lo decidi tu. Per toglierlo,
+    <code>bash bin/instalar-pc --desinstalar</code>, che cancella l'icona e
+    <em>non tocca la tua memoria</em>.</p></div></li>
+  <li><div><h3>Crea la tua memoria.</h3>
+    <p><code>python3 preceptoros.py</code> — ti fa le domande del primo
+    avvio. Comincia vuota, e lo dice.</p></div></li>
+  <li><div><h3>Apri la faccia web.</h3>
+    <p><code>bin/preceptoros-servicio arranca</code> e vai su
+    <code>http://127.0.0.1:8740</code>. È la tua macchina che parla con se stessa: quel
+    <code>127.0.0.1</code> non esce da lì.</p></div></li>
+</ol>
+
+<h2>Su Windows · via WSL</h2>
+<p>Non ci sono passi propri: dentro <strong>WSL</strong>
+hai un Linux, quindi valgono quelli di sopra così come sono. Apri <code>wsl</code> e segui
+la sezione di Linux. Lo diciamo qui perché tu non lo cerchi.
+
+<h2 id="android">Su un telefono Android · via Termux</h2>
+<ol class="pasos">
+  <li><div><h3>Installa Termux <strong>da F-Droid</strong>.</h3>
+    <p>Non da Google Play: quella versione è abbandonata e non funziona. È l'errore
+    che fa perdere più gente nel primo minuto.</p></div></li>
+  <li><div><h3>Porta git e il repository.</h3>
+    <p><code>pkg install -y git</code><br>
+    <code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros</code></p></div></li>
+  <li><div><h3>Prepara il telefono.</h3>
+    <p><code>cd ~/preceptoros &amp;&amp; bash bin/instalar-android</code></p></div></li>
+  <li><div><h3>Memoria, scorciatoia e faccia web.</h3>
+    <p><code>python3 preceptoros.py</code><br>
+    <code>bin/crear-acceso-directo-android</code> (facoltativo, consigliato)<br>
+    <code>bin/preceptoros-servicio arranca</code>, e apri
+    <code>http://127.0.0.1:8740</code>.</p>
+    <p class="tenue">Perché la scorciatoia appaia come icona serve
+    <strong>Termux:Widget</strong> (anche questo da F-Droid). Se non c'è, lo script lo
+    dice e spiega cosa fare — non crea un'icona che poi non comparirà.</p></div></li>
+</ol>
+<p class="nodata">NO_DATA · l'APK che si installa e si apre senza terminale
+  <strong>non esiste ancora</strong>. Causa: nessuno l'ha costruito. Lo diciamo
+  prima che tu lo cerchi.</p>
+
+<h2>Cosa fa dal primo minuto, e cosa ancora no</h2>
+<p><strong>Sì fa:</strong> crea la tua memoria, ti fa le domande del primo
+avvio, conserva quello che gli racconti, e ti mostra <strong>la frontiera</strong> — il
+filtro che cancella chiavi, percorsi e indirizzi prima che un testo esca dalla tua
+macchina.</p>
+<p><strong>Non fa ancora: conversare.</strong> Per quello mancano due pezzi grandi
+che non ci stanno dentro e <strong>non si scaricano senza il tuo permesso</strong>:</p>
+<div class="panel">
+  <p><strong>Il motore</strong> · ~10 MB · È codice eseguibile di altri. Questo
+  progetto firma dati, non programmi.</p>
+  <p><strong>Il cervello</strong> · <span class="cifra">2,3 GB</span> · Si offre con
+  la sua licenza e la sua impronta davanti, e lo accetti tu.</p>
+  <p class="tenue">Senza quelli, PreceptorOS chiede e ricorda ma non conversa. È
+  la descrizione onesta, e non promette più di quello che ha dentro.</p>
+</div>
+
+<h2>Dove resta quello che è tuo</h2>
+<p>En <code>~/.preceptoros/memory.db</code>. <strong>Un solo file.</strong> Puoi
+copiarlo, portartelo su una chiavetta o cancellarlo. Niente esce dalla tua macchina
+se non lo esporti tu.</p>
+<p class="tenue">Se lo avevi già installato con il vecchio nome, la tua memoria resta dov'è e continua a funzionare: il prodotto adotta la casa vecchia invece di spostare i tuoi dati di sua iniziativa.</p>
+
+<h2>Errori comuni</h2>
+<div class="panel">
+  <p><strong>«PreceptorOS era già aperto».</strong> Lo è. Si è aperto il
+  browser e non se n'è avviato un secondo, perché due alla volta sulla stessa memoria
+  farebbero sì che tu veda una cosa e il file ne dica un'altra.</p>
+  <p><strong>«Il server non ha risposto».</strong> Qualcosa occupa la porta 8740.
+  <code>bin/preceptoros-servicio para</code> chiude quello che c'è.</p>
+  <p><strong>«manca python3».</strong> L'installatore si ferma lì apposta. Installalo
+  tu e torna.</p>
+  <p><strong>Termux si chiude o si comporta in modo strano.</strong> Quasi sempre è la versione di
+  Google Play. Disinstallala e metti quella di F-Droid.</p>
+</div>
+
+<h2>Ti sei bloccato? Chiedi all'IA che già usi</h2>
+<p>Non devi risolverlo da solo né aspettare nessuno. <strong>Davanti a
+qualsiasi dubbio di installazione, usa un'IA esterna</strong>: sa di terminali
+e del tuo sistema operativo più di questa pagina, e ti risparmia metà strada.
+Copia questo, incollaci sopra l'errore che ti è uscito, e dallo a Gemini, ChatGPT,
+Claude o alla tua IA locale.</p>
+<textarea id="atasco" readonly aria-label="Testo di aiuto da incollare nella tua IA">Sto installando PreceptorOS, un programma locale in Python che usa solo la libreria standard:
+https://github.com/piskyRpapalo/PreceptorOS
+
+Il mio sistema operativo e: [scrivi qui il tuo]
+
+I comandi della guida sono:
+  git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros
+  cd ~/preceptoros &amp;&amp; bash bin/instalar-pc
+  python3 preceptoros.py
+  bin/preceptoros-servicio arranca      # abre http://127.0.0.1:8740
+
+Mi sono bloccato qui:
+  [incolla il comando che non ha funzionato e il messaggio di errore completo]
+
+Spiegami cosa e successo e cosa fare. Due condizioni: non darmi un comando con
+sudo senza dirmi prima cosa tocca esattamente, e se non sei sicuro, dillo invece
+di inventarti un percorso o un pacchetto.</textarea>
+<div class="fila">
+  <button type="button" data-copia="atasco" data-hecho="Copiato ✓" data-manual="Seleziona e Ctrl+C">Copia per la mia IA</button>
+</div>
+<p class="tenue">Non importa quale usi: il testo non è legato a nessuna. L'idea è
+questa — che tu non dipenda da una sola, nemmeno per chiedere aiuto.</p>
+
+<h2>Le cinque tavole: falle disegnare alla tua IA</h2>
+<p>Questo sito è statico e non genera immagini: non ha un server che le faccia, e
+non ne fingeremo uno. Ma l'IA che già usi sì che può — e così la tua storia è
+tua. Il testo completo, con il personaggio descritto e la sua immagine di riferimento,
+vive nel repository del prodotto.</p>
+
+<footer class="honest-footer">
+  <h2>Quello che questa pagina fa, e quello che le costa</h2>
+  <ul>
+    <li><strong>Al caricamento non chiede nulla a nessuno.</strong> I collegamenti a GitHub sono
+      collegamenti: non fanno nessuna richiesta finché non li premi <em>tu</em>. Un collegamento
+      non è una risorsa caricata, e la differenza è esattamente quella che conta qui.</li>
+    <li><strong>I comandi sono quelli del repository, non una nostra versione.</strong>
+      Vengono da <code>bin/instalar-pc</code>, <code>bin/instalar-android</code> e
+      <code>INSTALACION_PC.md</code>, verificati uno a uno contro il repository
+      pubblico il 2026-08-27.</li>
+    <li><strong>I due NO_DATA qui sopra sono misurati.</strong> Zero release
+      pubblicate e <code>dist/aurelius</code> in 404. Non sono cautela: sono il
+      risultato di aver chiesto.</li>
+    <li><strong>Niente di quello che installi ha bisogno di questo sito.</strong> Se domani questo
+      dominio sparisce, i comandi continuano a funzionare e la tua memoria resta
+      tua. È tutta qui l'idea.</li>
+  </ul>
+  <p><a href="./community.html">Comunità</a> ·
+     <a href="../?cambiar">Cambia lingua</a></p>
+</footer>
+
+<script src="../assets/copiar.js"></script>
+<script src="../assets/ambient.js"></script>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

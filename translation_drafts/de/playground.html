@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="de" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Privatsphäre-Prüfstand · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta property="og:title" content="Probador de privacidad · PreceptorOS">
+<meta property="og:description" content="Füge deinen Kontext ein und schau, was herauskommt, bevor du ihn einer KI in der Wolke gibst. In deinem Browser, ohne etwas zu installieren, mit erklärten Lücken.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/de/playground.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Füge deinen privaten Kontext ein und schau, was herauskommt, bevor du ihn einer KI in der Wolke gibst. Alles geschieht in deinem Browser.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/agora.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
+  <div class="marca">
+    <h1>Prüfstand<b> · für Privatsphäre</b></h1>
+    <p><a href="/de/">Start</a> · <a href="/de/benchmark.html">Benchmark</a> · <a href="/de/instalar.html">Installieren</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="guia">Wenn du eine KI in der Wolke um Hilfe bittest, musst du ihr deinen Kontext geben, und genau dabei rutschen dir Pfade, Adressen und Schlüssel durch. Füge hier ein, was du ihr geben wolltest, und schau, was herauskommt. In deinem Browser, ohne etwas zu installieren.</p>
+
+<div class="panel">
+  <div class="dos">
+    <div>
+      <label class="cuenta" for="sucio">Dein Kontext, so wie er ist</label>
+      <textarea id="sucio" rows="12" spellcheck="false"></textarea>
+    </div>
+    <div>
+      <label class="cuenta" for="limpio">Was du draußen einfügen kannst</label>
+      <textarea id="limpio" rows="12" readonly spellcheck="false"></textarea>
+    </div>
+  </div>
+  <div class="fila"><button id="sanear" type="button">Bereinigen</button></div>
+  <div id="auditoria"></div>
+</div>
+
+<footer class="honest-footer">
+  <h2>Wie es funktioniert, und was es nicht verspricht</h2>
+  <ul>
+    <li><strong>Die Regeln sind die des Produkts.</strong> Dieser Filter wird aus dem von PreceptorOS ERZEUGT, nicht von Hand kopiert. Geprüft, indem die 36 Fälle des Korpus durch beide Umsetzungen liefen: dasselbe Urteil in allen 36 und kein überlebendes Fragment.</li>
+    <li><strong>Es verlässt deinen Browser nicht.</strong> Der Text wird genau hier gefiltert. Diese Seite hat keinen Netzaufruf, der ihn mitnimmt, und du kannst es mit den Werkzeugen des Browsers nachprüfen.</li>
+    <li><strong>Er ist nicht unfehlbar, und darum sagt er, wo er nicht hinreicht.</strong> Er ist deterministisch und prüfbar, mit erklärten Lücken: E-Mail-Adressen, Windows- und macOS-Pfade, URLs mit Zugangsdaten im Pfad, und «token» mit einem Eigennamen davor. Prüfe immer, bevor du einfügst.</li>
+  </ul>
+  <p><a href="/de/community.html">Gemeinschaft</a> ·
+     <a href="/hitos.html">Meilensteine</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "pgQuitado": "Entfernt:",
+ "pgNada": "Der Filter lief und fand nichts zu entfernen.",
+ "pgHuecos": "Achtung: das sieht nicht alles. Es erkennt keine E-Mail-Adressen, keine Windows- oder macOS-Pfade, keine URLs mit Zugangsdaten im Pfad und kein «token» mit einem Eigennamen davor. Prüfe es, bevor du es draußen einfügst.",
+ "pgSinFiltro": "NO_DATA — der Filter konnte nicht geladen werden.",
+ "pgEjemplo": "Das Skript liegt in /srv/projekt/giessen.py\nOPENAI_API_KEY=sk-proj-Xk29Lm44Qw81Zr03Tb77Nc55Vd\nssh -i /opt/despliegue/.ssh/id_rsa operador@",
+ "idPerfil": "Mein Profil",
+ "idEntrar": "Identität anlegen",
+ "idHola": "Hallo,",
+ "idClave": "Meinen Fingerabdruck ansehen",
+ "idPublica": "Öffentlicher Schlüssel:",
+ "idFallo": "NO_DATA — die Identität konnte nicht angelegt werden:",
+ "idAviso": "In deinem Browser wird ein Schlüssel erzeugt. Er lässt sich weder exportieren noch auf ein anderes Gerät kopieren: löschst du die Daten der Seite, ist diese Identität verloren.",
+ "pgEjemploCola": "\nbenachrichtige marta.lopez@example.com wenn es fehlschlägt"
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/sanitize.js"></script>
+<script src="/assets/playground.js"></script>
+<script src="/assets/auth.js"></script>
+
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

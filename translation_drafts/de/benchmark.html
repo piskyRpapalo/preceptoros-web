@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="de" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LoRAtelier benchmark's · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="Das öffentliche Prüfbuch: welches Modell wie schnell läuft, auf welcher Maschine, signiert von dem, der es gemessen hat.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/agora.css">
+<link rel="stylesheet" href="/assets/chat.css">
+<link rel="stylesheet" href="/assets/widget.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
+  <div class="marca">
+    <h1>LoRAtelier benchmark's<b> · das Prüfbuch</b></h1>
+    <p><a href="/de/">Start</a> · <a href="/de/community.html">Gemeinschaft</a> · <a href="/de/instalar.html">Installieren</a></p>
+  </div>
+</header>
+
+<p class="guia">Welches Modell wie schnell läuft, auf welcher Maschine, und wer es gemessen hat. Jede Zeile ist eine signierte Zeile mit dem sha256 der Modelldatei darin: ohne diesen Hash identifiziert «llama-3.2-3b» gar nichts.</p>
+
+<div id="tabla" class="panel"></div>
+
+
+<section id="probador">
+  <h2>Wähle und miss deinen Motor</h2>
+  <p class="guia">Hier wird gewählt, mit welchem Gehirn du sprichst, und das Ergebnis wird gestoppt. Das lebt im Benchmark und nicht auf der Startseite, und zwar mit Absicht: drei Downloads von mehreren Gigabyte anzubieten, kaum dass die Seite offen ist, ist auf einem Telefon teuer, und die meisten kommen nicht deswegen.</p>
+  <div id="chat" class="panel">
+    <div id="dialogo"></div>
+    <textarea id="pregunta" class="chat-input" placeholder="Schreib einen Zug, um ihn zu messen..." rows="3"></textarea>
+    <div class="fila chat-acciones"><button id="enviar" type="button" class="boton enviar" aria-label="Senden"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Senden</span></button></div>
+    <div id="motor"></div>
+    <div id="local-ai" class="fila"></div>
+    <p id="brain" class="brain"></p>
+  </div>
+  <textarea id="medida-json" rows="5" readonly hidden></textarea>
+  <button type="button" id="medida-copiar" data-copia="medida-json" data-hecho="Kopiert ✓" data-manual="Markieren und Strg+C" hidden>Die Messung kopieren</button>
+</section>
+
+<footer class="honest-footer">
+  <h2>Woher diese Tabelle kommt</h2>
+  <ul>
+    <li><strong>Niemand lädt ungewollt etwas hoch.</strong> Die Daten sendet dein PreceptorOS von deinem Rechner, und nur wenn du darum bittest. Installieren veröffentlicht nichts.</li>
+    <li><strong>Der Hash und die Signatur sind die Angabe.</strong> Eine Zahl ohne den sha256 des Modells lässt sich nicht nachstellen, und ohne Signatur nicht zuordnen. Die beiden Spalten stehen da, damit die Tabelle nachprüfbar ist, nicht zur Zierde.</li>
+    <li><strong>Die Lücken werden erklärt.</strong> Wenn ein Motor nicht sagt, wie viele Token er erzeugt hat, steht im Feld NO_DATA. Es wird nicht mit einer Schätzung gefüllt.</li>
+  </ul>
+  <p><a href="/hitos.html">Meilensteine</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "bmColumnas": [
+  "Modell",
+  "sha256",
+  "Hardware",
+  "tok/s",
+  "TTFT",
+  "Urteil",
+  "Prüfer",
+  "Signatur"
+ ],
+ "bmEjemplo": "Diese Zeilen sind BEISPIELE, um den Entwurf der Tabelle zu prüfen.",
+ "bmFirmadas": "Bisher eingegangene signierte Zeilen:",
+ "bmSinHash": "ohne Hash",
+ "bmSinFirma": "nicht signiert",
+ "bmFuente": "Quelle:",
+ "bmSinDatos": "NO_DATA — die Tabelle konnte nicht gelesen werden.",
+ "bmLlevatelo": "nimm sie ganz mit.",
+ "bmLeyenda": [
+  "tok/s — wie viele Wortstücke es pro Sekunde schreibt. Zählt, wenn du es allein arbeiten lässt.",
+  "TTFT — wie lange der erste Buchstabe braucht. Zählt, wenn du davor sitzt und wartest.",
+  "sha256 — der Fingerabdruck der Modelldatei. Zwei Dateien mit demselben Namen müssen nicht dasselbe Modell sein; der Fingerabdruck lügt nicht."
+ ],
+ "bmTablaAria": "Tabelle des Prüfbuchs, waagerecht scrollbar",
+ "arrancando": "Motor wird gestartet…",
+ "avisoCifra": "Es sind ~2 GB. Wir sagen es, bevor du drückst, nicht danach.",
+ "avisoRed": "Es wird nur einmal über das Netz geladen. Danach liegt es im Zwischenspeicher deines Browsers.",
+ "bajando": "Wird geladen",
+ "bajarNavegador": "Die Browser-KI laden (~2,7-4 GB)",
+ "brainAsleep": "Noch kein Motor gestartet",
+ "brainBrowser": "Browser-KI (Edge)",
+ "brainLabel": "Gehirn:",
+ "brainLive": "Lebendig auf deinem Rechner",
+ "brainNone": "keiner",
+ "causaDesconocida": "Ursache unbekannt.",
+ "causaElegida": "Ursache: du hast das JSON gewählt.",
+ "causaEnBenchmark": "Ursache: der Motor wird im Benchmark gewählt und gemessen.",
+ "causaError": "Ursache: Fehler bei der Abfrage der GPU.",
+ "causaSinAdaptador": "Ursache: WebGPU ist da, aber keine nutzbare GPU.",
+ "causaSinApi": "Ursache: dieser Browser bietet weder WebGPU noch LanguageModel.",
+ "copiaManual": "Markieren und Strg+C",
+ "copiado": "Kopiert OK",
+ "copiarPara": "Kopieren für",
+ "descargar": "Modell laden (~2 GB, einmalig)",
+ "destinos": [
+  "Gemini",
+  "ChatGPT",
+  "Claude",
+  "meine lokale KI"
+ ],
+ "etiquetaJson": "Text zum Kopieren in deine KI",
+ "falloDescarga": "NO_DATA · Modell konnte nicht geladen werden",
+ "falloNavegador": "NO_DATA · Fehler mit der Browser-KI",
+ "falloRespuesta": "NO_DATA · Antwort konnte nicht erzeugt werden",
+ "falloVacio": "NO_DATA — der Motor endete, ohne ein einziges Zeichen auszugeben. Das ist keine leere Antwort: das ist ein Zug, den es nie gegeben hat.",
+ "laiBuscando": "Frage 127.0.0.1:11434…",
+ "laiBuscar": "Lokale KI suchen",
+ "laiEncontrados": "Gefundene Modelle von dir:",
+ "laiListo": "Du sprichst mit",
+ "laiMixto": "Von einer https-Seite lässt der Browser nur das Gespräch mit 127.0.0.1 zu. Eine Netzadresse blockt er wegen gemischter Inhalte.",
+ "laiNada": "NO_DATA — auf 127.0.0.1:11434 wurde keine lokale KI gefunden. Ursache:",
+ "laiOtra": "Eine andere Ollama-Adresse",
+ "laiProbar": "Dort versuchen",
+ "laiVacio": "NO_DATA — Ollama antwortet, hat aber kein einziges Modell.",
+ "listoLocal": "Motor bereit. Schreib deine Frage.",
+ "llevate": "Nimm diesen Text mit zu der KI, die du ohnehin nutzt.",
+ "medidaCalentado": "Gemessen nach einem verborgenen Stoß von 5 Token: ohne ihn stoppt man den Shader-Compiler, nicht deinen Rechner.",
+ "medidaEsperando": "Schreib einen Zug und es misst sich von allein. Nichts davon verlässt dein Gerät.",
+ "medidaMotor": "Motor:",
+ "medidaSinTokens": "tok/s NO_DATA — dieser Motor gibt nicht an, wie viele Token er erzeugt hat. Stücke zu zählen und sie Token zu nennen hieße, die Zahl zu erfinden.",
+ "medidaSinTtft": "TTFT NO_DATA — der Motor gab kein Stück aus, das man hätte stoppen können.",
+ "medidaTitulo": "DEIN RECHNER · hier gemessen, mit niemandem verglichen",
+ "medidaTurnos": "Züge:",
+ "mirandoGpu": "GPU wird abgefragt…",
+ "mirandoNavegador": "Browser-KI wird abgefragt…",
+ "mismoTexto": "Derselbe Text taugt für jede KI. Genau das ist die Idee: von keiner einzelnen abhängen.",
+ "navBajado": "Browser-KI geladen. Schreib deine Frage.",
+ "navListo": "Browser-KI bereit. Schreib deine Frage.",
+ "navPesa": "Es sind 2,7-4 GB. Wir sagen es, bevor du drückst.",
+ "navYaEsta": "Die KI ist schon auf deinem Gerät. Null Download.",
+ "papel": "Du bist Preceptor, der Installateur von PreceptorOS. Deine einzige Aufgabe ist, dass die Person das Produkt auf IHREM Rechner installiert bekommt. HARTE REGELN: 1) Frag zuerst, welches System sie benutzt: Linux, macOS, Windows oder Android uber Termux. 2) Gib ihr die Schritte aus der Installationsanleitung dieser Seite und schick sie fur die Einzelheiten dorthin; diktiere keine Pfade aus dem Gedachtnis, die veralten. 3) Wenn etwas fehlschlagt, verlange die genaue Fehlermeldung und gib NUR den Befehl, der sie behebt. 4) Wenn du etwas nicht weisst, sag NO_DATA und sag warum. Erfinde niemals Befehle oder Versionen. 5) Frag nicht nach personlichen Daten und schlage keine Dienste in der Wolke vor: das Produkt lauft auf ihrem Gerat. 6) Antworte in der Sprache der Person. Sei nuchtern und kurz.",
+ "prefieroJson": "Ich nehme lieber das JSON",
+ "reglas": [
+  "Schlage keine Dienste in der Wolke vor",
+  "Frag nicht nach personlichen Daten",
+  "Wenn du es nicht weisst, sag NO_DATA"
+ ],
+ "sensorAviso": "Das kleine Modell fängt an, den Kontext zu vergessen. Gespräch zurücksetzen?",
+ "sensorBoton": "Zurücksetzen",
+ "sensorRegistrado": "Zurücksetzen in dieser Sitzung als Grenzmessung vermerkt. Es wird nirgends gespeichert: diese Seite bewahrt nichts von dir auf.",
+ "sinMotor": "NO_DATA · in diesem Browser ist kein KI-Motor verfügbar.",
+ "usarNavegador": "Die KI deines Browsers benutzen"
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/benchmark.js"></script>
+<script src="/assets/fallback.js"></script>
+<script src="/assets/state.js"></script>
+<script src="/assets/engine.js"></script>
+<script src="/assets/chat.js"></script>
+<script src="/assets/localai.js"></script>
+<script src="/assets/meter.js"></script>
+<script src="/assets/copiar.js"></script>
+
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

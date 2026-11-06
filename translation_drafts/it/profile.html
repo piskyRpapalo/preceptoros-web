@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="it" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profilo · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="Il tuo profilo sovrano: pseudonimo derivato dalla tua chiave Ed25519, busto scelto, misure firmate e contributi. Senza account e senza server.">
+<link rel="canonical" href="https://preceptoros.org/it/profile.html">
+<link rel="alternate" 
+<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/profile.html">
+<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/profile.html">
+<meta property="og:title" content="Il mio profilo su PreceptorOS">
+<meta property="og:description" content="Il tuo profilo sovrano: pseudonimo derivato dalla tua chiave Ed25519, busto scelto, misure firmate e contributi. Senza account e senza server.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/it/profile.html">
+<meta property="og:type" content="profile">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfilePage","name":"PreceptorOS Profile","description":"Perfil soberano con identidad Ed25519 y contribuciones firmadas","url":"https://preceptoros.org/it/profile.html","inLanguage":"es"}</script>
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/agora.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
+  <div class="marca">
+    <h1>Profilo<b> · la tua scheda</b></h1>
+    <p><a href="/it/">Home</a> · <a href="/it/community.html">Comunità</a> · <a href="/it/benchmark.html">Benchmark</a> · <a href="/it/instalar.html">Installa</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="guia"><strong>Questa scheda è tua e vive sul tuo apparecchio.</strong> Non c'è account, non c'è server e nulla di quello che scrivi qui esce da solo. Lo pseudonimo non lo scegli: nasce dall'hash della tua chiave, così nessuno può chiedere quello di un altro.</p>
+
+<section class="panel" aria-labelledby="h-yo">
+  <h2 id="h-yo">La tua identità</h2>
+  <div id="perfil-identidad"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-avatar">
+  <h2 id="h-avatar">Il tuo busto</h2>
+  <div id="perfil-avatar"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-bio">
+  <h2 id="h-bio">Su di te</h2>
+  <div id="perfil-bio"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-med">
+  <h2 id="h-med">Misure firmate</h2>
+  <div id="perfil-medidas"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-con">
+  <h2 id="h-con">Contributi</h2>
+  <div id="perfil-contribuciones"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-sh">
+  <h2 id="h-sh">Mostrare questa scheda</h2>
+  <div id="perfil-compartir"></div>
+</section>
+
+<footer class="honest-footer">
+  <h2>Cosa c'è qui e cosa no</h2>
+  <ul>
+    <li><strong>Lo pseudonimo è derivato, non scelto.</strong> Nasce dallo SHA-256 della tua chiave pubblica. Cambiare nome esige cambiare chiave, e cambiare chiave è ricominciare da zero: è il prezzo perché nessuno possa spacciarsi per te senza un server che lo impedisca.</li>
+    <li><strong>Quello che scrivi resta nel tuo browser.</strong> La biografia si salva in IndexedDB e si firma con la tua chiave. Non viaggia ancora da nessuna parte perché non c'è dove: l'Agorà non pubblica un endpoint di profili.</li>
+    <li><strong>Le misure non si autodichiarano.</strong> Nascono dal libro pubblico delle prove, filtrate per il tuo pseudonimo. Se lì non c'è nulla firmato da te, qui esce zero — e si dice perché.</li>
+  </ul>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "pfSinIdentidad": "NO_DATA — non c'è ancora un'identità su questo apparecchio. Creane una con il pulsante in alto a destra e questa scheda si riempie da sola.",
+ "pfDerivado": "Derivato dallo SHA-256 della tua chiave pubblica. Non si sceglie.",
+ "pfVerClave": "Vedi la mia chiave pubblica intera",
+ "pfCargando": "Lettura della chiave…",
+ "pfSinClave": "NO_DATA — non è stato possibile leggere la chiave pubblica:",
+ "pfAvatar": "Scegli il tuo busto",
+ "pfSinBustos": "NO_DATA — non è stato possibile leggere il catalogo dei busti:",
+ "pfCompartir": "Condividi questa scheda",
+ "pfCompartirSin": "Crea un'identità per poter condividere la tua scheda.",
+ "pfCompartirTexto": "La mia scheda su PreceptorOS: {quien}",
+ "pfCompartido": "Condiviso.",
+ "pfCopiado": "Copiato negli appunti. Incollalo dove vuoi.",
+ "pfSinCopiar": "Non è stato possibile copiare. Copialo a mano:",
+ "pfBioEtiqueta": "La tua biografia",
+ "pfBioBarra": "Strumenti di struttura",
+ "pfBioTitulo": "Titolo",
+ "pfBioPunto": "Punto elenco",
+ "pfBioGuardar": "Salva e firma",
+ "pfBioVista": "Come apparirà",
+ "pfBioGuardada": "Salvata sul tuo apparecchio e firmata con la tua chiave. Non viaggia da nessuna parte. Firma:",
+ "pfBioGuardadaSinFirma": "Salvata sul tuo apparecchio, SENZA firma: non c'è ancora un'identità.",
+ "pfBioSinFirma": "Salvata, ma non è stato possibile firmarla:",
+ "pfMedSinIdentidad": "Crea un'identità e qui appariranno le misure che avrai firmato.",
+ "pfMedEjemplo": "NO_DATA — il libro delle prove è in ESEMPIO: non è ancora arrivata nessuna riga firmata da nessuno. Righe firmate reali finora:",
+ "pfMedTuyas": "Misure firmate da te:",
+ "pfMedSinDatos": "NO_DATA — non è stato possibile leggere il libro delle prove:",
+ "pfConNoData": "NO_DATA — l'Agorà non pubblica ancora contributi. Causa: /api/v1/threads risponde 404 (misurato il 2026-08-30), e non c'è endpoint di profili.",
+ "pfConRemedio": "Rimedio: quando quell'endpoint esisterà, questa sezione si riempirà da sola. Un contatore a zero nel frattempo sarebbe un sensore che mente.",
+ "idPerfil": "Il mio profilo",
+ "idEntrar": "Crea identità",
+ "idHola": "Ciao,",
+ "idClave": "Vedi la mia impronta",
+ "idPublica": "Chiave pubblica:",
+ "idFallo": "NO_DATA — non è stato possibile creare l'identità:",
+ "idAviso": "Viene generata una chiave nel tuo browser. Non si può esportare né copiare su un altro apparecchio: se cancelli i dati del sito, questa identità si perde e non c'è modo di recuperarla. Nessuna password da dimenticare, nessun server che la conservi."
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/profile.js"></script>
+<script src="/assets/profile-obra.js"></script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

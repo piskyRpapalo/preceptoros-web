@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="it" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inizia qui · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="L'Installatore ti accompagna: installa l'app e scegli il compagno che si adatta a quello che vuoi fare.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/onboarding.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+</head>
+<body>
+<main>
+
+<header>
+  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
+  <div class="marca">
+    <h1>Inizia qui</h1>
+    <p><a href="./">Home</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="ob-voz" id="ob-voz" role="status" aria-live="polite">…</p>
+
+<div class="ob-caminos">
+  <button type="button" id="ob-atajo">Scarica l'app →</button>
+  <button type="button" id="ob-largo" class="ob-secundario">Inizia</button>
+</div>
+
+<section class="ob-paso" id="ob-que" data-dice="obQue">
+  <h2><span class="ob-num">1</span>Che cos'è PreceptorOS?</h2>
+  <p>La tua IA sulla tua macchina, senza nuvola obbligatoria. Memoria persistente che è tua, e un Privacy Gateway che ripulisce il contesto prima che esca verso una qualsiasi IA esterna. Senza account, senza telemetria.</p>
+  <button type="button" data-ir="privacidad">Inizia</button>
+</section>
+
+<section class="ob-paso" id="ob-privacidad" data-dice="obPriv">
+  <h2><span class="ob-num">2</span>La tua privacy, il tuo controllo</h2>
+  <p>È il filtro che cancella ciò che è privato. Incolla il tuo contesto e guarda cosa esce prima di darlo a chiunque: succede nel tuo browser, senza installare nulla, e ti dice anche dove NON arriva.</p>
+  <p><a class="boton" href="./playground.html">Prova il filtro adesso</a></p>
+</section>
+
+<section class="ob-paso" id="ob-descarga" data-dice="obDesc">
+  <h2><span class="ob-num">3</span>Scarica l'app</h2>
+  <p>Il sito è la vetrina. L'app è la bottega: è dove il compagno che scegli lavora davvero sui tuoi file, senza che escano dalla tua macchina.</p>
+  <div class="ob-descargas">
+    <a class="boton" href="./instalar.html#android">Android · via Termux</a>
+    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.sh">Linux o macOS · install.sh</a>
+    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.ps1">Windows · install.ps1</a>
+  </div>
+  <p class="ob-aviso nodata">NO_DATA — Android oggi passa da Termux, con la guida di questo sito; l'APK è dichiarato come futuro e non esiste ancora. Gli installatori da scrivania puntano al loro indirizzo definitivo su GitHub Releases e daranno 404 finché non sarà pubblicata la prima versione. Windows e macOS NON sono provati su questo rack: qui non c'è nessuna macchina di quei sistemi.</p>
+</section>
+
+<section class="ob-paso" id="ob-conecta" data-dice="obConec">
+  <h2><span class="ob-num">4</span>Il tuo codice di collegamento</h2>
+  <p>La tua identità si genera nel browser e la chiave privata non ne esce. Questo codice di collegamento deriva dalla tua chiave pubblica: è sempre lo stesso per te, e non contiene nessun segreto.</p>
+  <button type="button" id="ob-vincular">Genera il mio codice di collegamento</button>
+  <p class="ob-codigo" id="ob-codigo">—</p>
+  <p class="ob-aviso nodata">Questo codice ti IDENTIFICA, non ti autentica: chiunque conosca la tua chiave pubblica può calcolarlo. Collegare davvero richiederà anche una firma, e quello arriva con il backend.</p>
+</section>
+
+<footer class="honest-footer">
+  
+</footer>
+
+<script type="application/json" id="i18n">{
+ "desc": "L'Installatore ti accompagna: installa l'app e scegli il compagno che si adatta a quello che vuoi fare.",
+ "idAviso": "Viene generata una chiave nel tuo browser. Non si può esportare né copiare su un altro apparecchio: se cancelli i dati del sito, questa identità si perde.",
+ "idClave": "Vedi la mia impronta",
+ "idPerfil": "Il mio profilo",
+ "idEntrar": "Crea identità",
+ "idFallo": "NO_DATA — non è stato possibile creare l'identità:",
+ "idHola": "Ciao,",
+ "idPublica": "Chiave pubblica:",
+ "lang": "it",
+ "marca": "Inizia qui",
+ "obAtajo": "Dritti al punto, allora. Scendi: lì ci sono i tre scaricamenti.",
+ "obConec": "Questo codice di collegamento unisce la tua identità del sito con l'app. È tuo e solo tuo.",
+ "obDesc": "Scegli il tuo sistema. L'app è la bottega; io resto con te lì dentro.",
+ "obFalloCodigo": "NO_DATA — non è stato possibile derivare il codice:",
+ "obLargo": "Bene. Prima ti mostro cosa resta sulla tua macchina e cosa no.",
+ "obPriv": "Questa non è una promessa: è un filtro che puoi provare adesso.",
+ "obQue": "PreceptorOS è la tua guida: si installa e ti accompagna, senza configurare nulla.",
+ "obSaluda": "Sono l'Installatore. Ti accompagno finché non avrai l'app funzionante e non avrai scelto il tuo compagno. Dimmi da dove vuoi partire.",
+ "obSinIdentidad": "Prima ti serve un'identità. Premi qui sopra: si genera nel tuo browser e non ne esce.",
+ "obVinculado": "Eccolo. Aprilo nell'app e andiamo avanti: ti presento i tuoi compagni.",
+ "pieInst": "Guida di installazione",
+ "piePlay": "Verificatore",
+ "pieVolver": "← Torna alla home",
+ "s1b": "Inizia",
+ "s1p": "La tua IA sulla tua macchina, senza nuvola obbligatoria. Memoria persistente che è tua, e un Privacy Gateway che ripulisce il contesto prima che esca verso una qualsiasi IA esterna. Senza account, senza telemetria.",
+ "s1t": "Che cos'è PreceptorOS?",
+ "s2b": "Prova il filtro adesso",
+ "s2p": "È il filtro che cancella ciò che è privato. Incolla il tuo contesto e guarda cosa esce prima di darlo a chiunque: succede nel tuo browser, senza installare nulla, e ti dice anche dove NON arriva.",
+ "s2t": "La tua privacy, il tuo controllo",
+ "s3and": "Android · via Termux",
+ "s3aviso": "NO_DATA — Android oggi passa da Termux, con la guida di questo sito; l'APK è dichiarato come futuro e non esiste ancora. Gli installatori da scrivania puntano al loro indirizzo definitivo su GitHub Releases e daranno 404 finché non sarà pubblicata la prima versione. Windows e macOS NON sono provati su questo rack: qui non c'è nessuna macchina di quei sistemi.",
+ "s3p": "Il sito è la vetrina. L'app è la bottega: è dove il compagno che scegli lavora davvero sui tuoi file, senza che escano dalla tua macchina.",
+ "s3pc": "Linux o macOS · install.sh",
+ "s3t": "Scarica l'app",
+ "s3win": "Windows · install.ps1",
+ "s4aviso": "Questo codice ti IDENTIFICA, non ti autentica: chiunque conosca la tua chiave pubblica può calcolarlo. Collegare davvero richiederà anche una firma, e quello arriva con il backend.",
+ "s4b": "Genera il mio codice di collegamento",
+ "s4p": "La tua identità si genera nel browser e la chiave privata non ne esce. Questo codice di collegamento deriva dalla tua chiave pubblica: è sempre lo stesso per te, e non contiene nessun segreto.",
+ "s4t": "Il tuo codice di collegamento",
+ "titulo": "Inizia qui · PreceptorOS",
+ "volver": "Home"
+}</script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/onboarding.js"></script>
+
+</main>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

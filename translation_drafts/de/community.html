@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="de" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gemeinschaft · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="Der souveräne Marktplatz: Herausforderungen, signierte Aufgaben und abgegebene Rechenzeit. Ohne Wolke, ohne Konten.">
+<link rel="canonical" href="https://preceptoros.org/de/community.html">
+<link rel="alternate" hreflang="de" href="https://preceptoros.org/de/community.html">
+<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/community.html">
+<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/community.html">
+<meta property="og:title" content="Comunidad · PreceptorOS">
+<meta property="og:description" content="Der souveräne Marktplatz: Herausforderungen, signierte Aufgaben und abgegebene Rechenzeit. Ohne Wolke, ohne Konten.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/de/community.html">
+<meta property="og:type" content="website">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DiscussionForumPosting","name":"PreceptorOS Community","description":"Marketplace soberano de retos y tareas firmadas","url":"https://preceptoros.org/de/community.html","inLanguage":"es"}</script>
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/agora.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
+  <div class="marca">
+    <h1>Gemeinschaft<b> · die Agora</b></h1>
+    <p><a href="/de/">Start</a> · <a href="/de/profile.html">Profil</a> · <a href="/de/benchmark.html">Benchmark</a> · <a href="/de/instalar.html">Installieren</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="guia"><strong>Das ist ein Markt, kein Forum.</strong> Oben steht, was der Souverän heute verlangt: es sind zwei, sie sind echt, und jeder sagt auch, was noch nicht funktioniert. Darunter die offene Pinnwand —Herausforderungen, Aufgaben, abgegebene Rechenzeit— wo du fragst oder lieferst.</p>
+
+<div id="anuncios" class="panel"></div>
+
+<div id="hilos" class="panel"></div>
+
+<footer class="honest-footer">
+  <h2>Wie das funktioniert</h2>
+  <ul>
+    <li><strong>Die Herausforderung ist der Motor.</strong> Jemand sagt, welche Messung fehlt. Wer sie hat, misst sie auf seinem Gerät und signiert die Zeile. So wächst der Benchmark: durch benannte Lücken, nicht durch Aufträge.</li>
+    <li><strong>Veröffentlichen ist freiwillig, und man kappt es mit einer Datei.</strong> Dein PreceptorOS sendet nur, worum du es bittest. Und willst du es an der Wurzel kappen: der Zufluchtsmodus ist eine leere Datei namens MODO_SANTUARIO. Sie steht über dem, was deine Konfiguration sagt, und schreibt sie nicht um. Löschst du sie, ist alles wie zuvor.</li>
+    <li><strong>Diese Beiträge sind Beispiele.</strong> Es gibt noch keine Gemeinschaft. Betrieb in einem leeren Forum vorzutäuschen ist die älteste Lüge des Internets, also steht es oben statt kaschiert zu werden.</li>
+  </ul>
+  <p><a href="/hitos.html">Meilensteine</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "tbEjemplo": "Diese Beiträge sind BEISPIELE, um die Dichte der Pinnwand zu prüfen.",
+ "tbReales": "Echte Beiträge bisher:",
+ "tbFiltros": "Kategorien der Pinnwand",
+ "tbTodos": "Alle",
+ "tbRespuestas": "Antworten",
+ "tbSinDatos": "NO_DATA — die Pinnwand konnte nicht gelesen werden.",
+ "tbTipos": {
+  "CHALLENGE": "HERAUSFORDERUNG",
+  "TASK": "AUFGABE",
+  "COMPUTE": "RECHENZEIT",
+  "GENERAL": "ALLGEMEIN"
+ },
+ "idPerfil": "Mein Profil",
+ "idEntrar": "Identität anlegen",
+ "idHola": "Hallo,",
+ "idClave": "Meinen Fingerabdruck ansehen",
+ "idPublica": "Öffentlicher Schlüssel:",
+ "idFallo": "NO_DATA — die Identität konnte nicht angelegt werden:",
+ "idAviso": "In deinem Browser wird ein Schlüssel erzeugt. Er lässt sich weder exportieren noch auf ein anderes Gerät kopieren: löschst du die Daten der Seite, ist diese Identität verloren und nicht wiederherstellbar. Kein Passwort zum Vergessen, kein Server, der ihn verwahrt.",
+ "tbPublicar": "Beitrag veröffentlichen",
+ "tbTitulo": "Titel",
+ "tbCuerpo": "Text",
+ "tbTipo": "Art",
+ "tbFirmar": "Signieren und veröffentlichen",
+ "tbSinIdentidad": "Lege eine Identität an, um zu veröffentlichen.",
+ "tbFirmado": "Auf deinem Gerät signiert. Es reist noch nirgendwohin: das Senden kommt, wenn der Souverän es freigibt.",
+ "tbFuenteAgora": "Aus der Agora, gerade gelesen.",
+ "tbFuenteCache": "Aus deinem lokalen Zwischenspeicher, von vor",
+ "tbFuenteLocal": "BEISPIEL-Beiträge, die mit der Seite mitreisen. Die Agora hat nicht geantwortet:",
+ "tbFuenteFallo": "Es bleibt, was schon da war: die Agora hat nicht geantwortet:",
+ "tbFirmaVer": "Die vollständige Signatur ansehen",
+ "anTitulo": "Was der Souverän heute verlangt",
+ "anSinIdioma": "NO_DATA — diese Ankündigung ist nicht in deine Sprache übersetzt:",
+ "anSinDatos": "NO_DATA — die Ankündigungen konnten nicht gelesen werden:"
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/board-anuncios.js"></script>
+<script src="/assets/board-fuentes.js"></script>
+<script src="/assets/board.js"></script>
+
+<script src="/assets/auth.js"></script>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

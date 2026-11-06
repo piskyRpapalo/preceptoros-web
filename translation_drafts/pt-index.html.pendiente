@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PreceptorOS · O teu companheiro soberano</title>
+<meta name="description" content="PreceptorOS · Tu compañero de IA soberano. Instálalo en tu máquina, sin nube, sin telemetría. Servido desde un rack 99% solar. Tu memoria, tu identidad, tu privacidad.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta property="og:title" content="PreceptorOS · Tu IA, tu memoria, tu soberanía">
+<meta property="og:description" content="Tu guía de IA en casa: se instala y ya te acompaña. Memoria persistente en tu máquina, contexto saneado antes de salir. Sin cuentas, sin telemetría, sin nube obligatoria.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/es/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/chat.css">
+<link rel="stylesheet" href="/assets/widget.css">
+<link rel="stylesheet" href="/assets/panel.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="alternate" hreflang="es" href="https://preceptoros.org/es/">
+<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/">
+<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/">
+<link rel="alternate" hreflang="x-default" href="https://preceptoros.org/">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"PreceptorOS","applicationCategory":"AI Companion","operatingSystem":"Linux, Windows, macOS, Android"}</script>
+</head>
+<body>
+<svg style="display:none"><symbol id="icon-key" viewBox="0 0 24 24"><path d="M7 14c-1.66 0-3 1.34-3 3 0 1.31 1.16 2.5 2.5 2.8.41.09.83.2 1.25.2.75 0 1.46-.21 2.08-.58l3.46 3.46 1.41-1.41-3.46-3.46c.37-.62.58-1.33.58-2.08 0-1.66-1.34-3-3-3zm0 4c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm13.71-9.37l-1.34-1.34-2.12 2.12 1.34 1.34 2.12-2.12zm-3.54 3.54l-1.34-1.34-4.95 4.95 1.34 1.34 4.95-4.95z"/></symbol></svg>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+  <header id="cabezal">
+    <div id="cabeza" role="img" aria-label="Preceptor"></div>
+    <div class="marca"><h1>Preceptor<b>OS</b></h1></div>
+    <div id="cab-ident" class="cab-ident"></div>
+    <div id="identity" class="fila identity"></div>
+    <nav id="cab-nav"></nav>
+  </header>
+  <section id="hub"></section>
+<div id="hub-layout"><div id="chat" class="panel">
+    <div id="dialogo"></div>
+    <textarea id="pregunta" class="chat-input" placeholder="Escribe tu primera pregunta..." rows="3"></textarea>
+    <div class="fila chat-acciones"><button id="enviar" type="button" class="boton enviar" aria-label="Enviar"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Enviar</span></button>
+      <div id="voice" class="fila"></div></div>
+    <div id="motor"></div>
+    <p id="brain" class="brain"></p>
+  </div>
+  <section id="panel-modelos" class="cerrado"></section></div>
+  <footer class="honest-footer">
+      <p class="proof"><b>590</b> testes em verde na app · <b>74</b> neste site · <b>cero</b> pedidos externos ao carregar · <b>10 KB</b> máximo por ficheiro</p>
+      <ul id="pie-honesto"></ul>
+      <p id="pie-enlaces"></p>
+    </footer>
+</main>
+<script type="application/json" id="i18n">{"brainAsleep":"Ainda não há motor ligado","brainBrowser":"IA do navegador (Edge)","brainLabel":"Modelo:","brainLive":"Vivo na tua máquina","brainNone":"nenhum","causaDesconocida":"Causa desconhecida.","causaElegida":"Causa: escolheste o JSON.","causaEnBenchmark":"Causa: o motor escolhe-se e mede-se no LoRAtelier.","copiaManual":"Seleciona e Ctrl+C","copiado":"Copiado OK","copiarPara":"Copiar para","destinos":["Gemini","ChatGPT","Claude","a minha IA local"],"etiquetaJson":"Texto para copiar para a tua IA","falloRespuesta":"NO_DATA · falha ao gerar resposta","falloVacio":"NO_DATA — o motor terminou sem emitir um único carácter. Não é uma resposta vazia: é um turno que não chegou a existir.","idAviso":"Gera-se uma chave no teu navegador. Não se pode exportar nem copiar para outro aparelho: se apagares os dados do site, esta identidade perde-se e não há forma de a recuperar. Não há palavra-passe para esquecer nem servidor que a guarde.","idClave":"Ver a minha impressão","idPerfil":"O meu perfil","idEntrar":"Criar identidade","idFallo":"NO_DATA — não foi possível criar a identidade:","idHola":"Olá,","idPublica":"Chave pública:","laiListo":"Vais falar com","llevate":"Leva este texto para a IA que já usas.","micEnAparato":"Ditado no teu aparelho. O áudio não sai daqui.","micEscuchando":"A ouvir… toca para parar","micFallo":"NO_DATA — o ditado local falhou:","micHablar":"Falar","micSinLocal":"NO_DATA — o teu navegador não oferece ditado no aparelho. O botão fica desligado: o reconhecedor da nuvem não volta.","mismoTexto":"O mesmo texto serve para qualquer IA. É essa a ideia: não depender de uma só.","pie1f":"Até carregares num botão, esta página não falou com ninguém.","pie1r":"Zero pedidos externos ao carregar.","pie2f":"O motor escolhe-se no LoRAtelier.","pie2r":"As descargas e as medidas vivem lá, não aqui.","pie3f":"Se não houver motor escolhido,","pie3r":"a página gera um JSON para levares à IA que já tenhas.","pieBenchmark":"LoRAtelier","pieHitos":"Marcos","pieInstalar":"Instalar","pieTablon":"Mural","prefieroJson":"Prefiro o JSON","sinMotor":"NO_DATA · não há motor de IA disponível neste navegador.","tu":"Tu","cabComunidad":"COMUNIDADE","cabBenchmark":"LORATELIER","cabCola":"ASSINATURA","cabIdioma":"IDIOMA","cabHome":"INÍCIO","cabEmpezar":"COMEÇA AQUI","rackSinAdaptador":"NO_DATA — este companheiro ainda não tem modelo servido no rack.","rackFallo":"NO_DATA — o rack não respondeu.","rackCausa":"Causa: o rack não respondeu; o túnel público ainda não está levantado.","cabInstala":"INSTALAR AQUI","cabInstalaIos":"Para instalar: toca em Partilhar (a seta para cima) e depois «Adicionar ao ecrã principal».","cabSolar":"Este site é 99% solar, exceto o fornecedor web (Cloudflare)"}</script>
+ "tu": "Tú",
+ "cabComunidad": "COMUNIDAD",
+ "cabBenchmark": "BENCHMARK",
+ "cabCola": "FIRMA",
+ "cabIdioma": "IDIOMA",
+ "cabHome": "INICIO",
+ "cabEmpezar": "EMPIEZA AQUÍ",
+ "rackSinAdaptador": "NO_DATA — este companero todavia no tiene modelo servido en el rack.",
+ "rackFallo": "NO_DATA — el rack no contesto.",
+ "rackCausa": "Causa: el rack no contesto; el tunel publico aun no esta levantado.",
+ "pieSolar": "Servido por IA 99% solar (excepto Cloudflare)"
+}</script>
+<script src="/assets/prompts-es.js"></script>
+<script src="/assets/fallback.js"></script>
+<script src="/assets/state.js"></script>
+<script src="/assets/rack.js"></script>
+<script src="/assets/chat.js"></script>
+<script src="/assets/voice.js"></script>
+<script src="/assets/copiar.js"></script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/pie.js"></script>
+<script src="/assets/hub.js"></script>
+<script src="/assets/hub-cola.js"></script>
+<script src="/assets/comandos.js"></script>
+<script src="/assets/corregir.js"></script>
+<script src="/assets/chat-panel.js"></script>
+<script src="/assets/chat-router.js"></script>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

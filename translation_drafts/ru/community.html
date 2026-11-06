@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ru" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Сообщество · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="Суверенная площадка: вызовы, подписанные задачи и отданные вычисления. Без облака, без учётных записей.">
+<link rel="canonical" href="https://preceptoros.org/ru/community.html">
+<link rel="alternate" hreflang="ru" href="https://preceptoros.org/ru/community.html">
+<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/community.html">
+<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/community.html">
+<meta property="og:title" content="Comunidad · PreceptorOS">
+<meta property="og:description" content="Суверенная площадка: вызовы, подписанные задачи и отданные вычисления. Без облака, без учётных записей.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/ru/community.html">
+<meta property="og:type" content="website">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DiscussionForumPosting","name":"PreceptorOS Community","description":"Marketplace soberano de retos y tareas firmadas","url":"https://preceptoros.org/ru/community.html","inLanguage":"es"}</script>
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/agora.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
+  <div class="marca">
+    <h1>Сообщество<b> · Агора</b></h1>
+    <p><a href="/ru/">Главная</a> · <a href="/ru/profile.html">Профиль</a> · <a href="/ru/benchmark.html">Benchmark</a> · <a href="/ru/instalar.html">Установить</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="guia"><strong>Это рынок, а не форум.</strong> Наверху то, что Суверен просит сегодня: их два, они настоящие, и каждый честно говорит, что пока не работает. Ниже — открытая доска: вызовы, задачи, отданные вычисления, где просишь или отдаёшь ты.</p>
+
+<div id="anuncios" class="panel"></div>
+
+<div id="hilos" class="panel"></div>
+
+<footer class="honest-footer">
+  <h2>Как это устроено</h2>
+  <ul>
+    <li><strong>Вызов — вот двигатель.</strong> Кто-то говорит, какого измерения не хватает. У кого оно есть, тот измеряет на своём устройстве и подписывает строку. Так растёт Benchmark: по названным пробелам, а не по заказам.</li>
+    <li><strong>Публикация добровольна, и обрывается одним файлом.</strong> Твой PreceptorOS отправляет только то, о чём ты его попросишь. А если хочешь обрубить в корне — режим убежища это пустой файл с именем MODO_SANTUARIO: он главнее того, что говорит твоя настройка, и её не переписывает. Удалишь его — всё вернётся как было.</li>
+    <li><strong>Эти ветки — пример.</strong> Сообщества пока нет. Изображать оживление в пустом форуме — самая старая ложь интернета, поэтому это сказано наверху, а не спрятано.</li>
+  </ul>
+  <p><a href="/hitos.html">Вехи</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "tbEjemplo": "Эти ветки — ПРИМЕР, чтобы проверить плотность доски.",
+ "tbReales": "Настоящих веток на сегодня:",
+ "tbFiltros": "Разделы доски",
+ "tbTodos": "Все",
+ "tbRespuestas": "ответов",
+ "tbSinDatos": "NO_DATA — не удалось прочитать доску.",
+ "tbTipos": {
+  "CHALLENGE": "ВЫЗОВ",
+  "TASK": "ЗАДАЧА",
+  "COMPUTE": "ВЫЧИСЛЕНИЯ",
+  "GENERAL": "ОБЩЕЕ"
+ },
+ "idPerfil": "Мой профиль",
+ "idEntrar": "Создать личность",
+ "idHola": "Привет,",
+ "idClave": "Показать мой отпечаток",
+ "idPublica": "Открытый ключ:",
+ "idFallo": "NO_DATA — не удалось создать личность:",
+ "idAviso": "Ключ создаётся в твоём браузере. Его нельзя ни выгрузить, ни скопировать на другое устройство: если стереть данные сайта, эта личность потеряна безвозвратно. Нет пароля, который можно забыть, и нет сервера, который его хранит.",
+ "tbPublicar": "Опубликовать ветку",
+ "tbTitulo": "Заголовок",
+ "tbCuerpo": "Текст",
+ "tbTipo": "Тип",
+ "tbFirmar": "Подписать и опубликовать",
+ "tbSinIdentidad": "Создай личность, чтобы публиковать.",
+ "tbFirmado": "Подписано на твоём устройстве. Пока никуда не уходит: отправка появится, когда её утвердит Суверен.",
+ "tbFuenteAgora": "Из Агоры, только что прочитано.",
+ "tbFuenteCache": "Из твоего локального кэша, давностью",
+ "tbFuenteLocal": "Ветки-ПРИМЕРЫ, которые едут вместе с сайтом. Агора не ответила:",
+ "tbFuenteFallo": "Остаётся то, что уже было: Агора не ответила:",
+ "tbFirmaVer": "Показать подпись целиком",
+ "anTitulo": "Что Суверен просит сегодня",
+ "anSinIdioma": "NO_DATA — это объявление не переведено на твой язык:",
+ "anSinDatos": "NO_DATA — не удалось прочитать объявления:"
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/board-anuncios.js"></script>
+<script src="/assets/board-fuentes.js"></script>
+<script src="/assets/board.js"></script>
+
+<script src="/assets/auth.js"></script>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

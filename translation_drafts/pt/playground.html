@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Testador de privacidade · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta property="og:title" content="Probador de privacidad · PreceptorOS">
+<meta property="og:description" content="Pega tu contexto y mira qué sale antes de dárselo a una IA de la nube. En tu navegador, sin instalar nada, con los huecos declarados.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/pt/playground.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Pega tu contexto privado y mira qué sale antes de dárselo a una IA de la nube. Todo pasa en tu navegador.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/agora.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="seal" role="img" aria-label="Sello de PreceptorOS"></div>
+  <div class="marca">
+    <h1>Testador<b> · de privacidad</b></h1>
+    <p><a href="/es/">Início</a> · <a href="/es/benchmark.html">Benchmark</a> · <a href="/es/instalar.html">Instalar</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="guia">Quando pedes ajuda a uma IA da nuvem tens de lhe dar o teu contexto, e é aí que te escapam caminhos, IPs e chaves. Cola aqui o que lhe ias colar e vê o que sai. No teu navegador, sem instalar nada.</p>
+
+<div class="panel">
+  <div class="dos">
+    <div>
+      <label class="cuenta" for="sucio">O teu contexto, tal como está</label>
+      <textarea id="sucio" rows="12" spellcheck="false"></textarea>
+    </div>
+    <div>
+      <label class="cuenta" for="limpio">O que podes colar lá fora</label>
+      <textarea id="limpio" rows="12" readonly spellcheck="false"></textarea>
+    </div>
+  </div>
+  <div class="fila"><button id="sanear" type="button">Sanear</button></div>
+  <div id="auditoria"></div>
+</div>
+
+<footer class="honest-footer">
+  <h2>Como funciona, e o que não promete</h2>
+  <ul>
+    <li><strong>As regras são as do produto.</strong> Este filtro se GENERA desde el de PreceptorOS, no se copia a mano. Comprobado pasando los 36 casos del corpus por las dos implementaciones: mismo veredicto en los 36 y ningún fragmento superviviente.</li>
+    <li><strong>Não sai do teu navegador.</strong> El texto se filtra aquí mismo. Esta página no tiene ninguna llamada de red que se lo lleve, y puedes comprobarlo con las herramientas del navegador.</li>
+    <li><strong>Não é infalível, e por isso diz onde não chega.</strong> Es determinista y auditable, con huecos declarados: correos, rutas de Windows y de macOS, URLs con credencial en la ruta, y «token» con nombre propio delante. Revisa siempre antes de pegar.</li>
+  </ul>
+  <p><a href="/es/community.html">Comunidade</a> ·
+     <a href="/hitos.html">Marcos</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "pgQuitado": "Quitado:",
+ "pgNada": "El filtro corrió y no encontró nada que quitar.",
+ "pgHuecos": "Ojo: esto no lo mira todo. No detecta correos, rutas de Windows o macOS, URLs con credencial en la ruta, ni «token» con un nombre propio delante. Revísalo antes de pegarlo fuera.",
+ "pgSinFiltro": "NO_DATA — no se pudo cargar el filtro.",
+ "pgEjemplo": "El script vive en /srv/proyecto/regar.py\nOPENAI_API_KEY=sk-proj-Xk29Lm44Qw81Zr03Tb77Nc55Vd\nssh -i /opt/despliegue/.ssh/id_rsa operador@",
+ "idPerfil": "Mi perfil",
+ "idEntrar": "Crear identidad",
+ "idHola": "Hola,",
+ "idClave": "Ver mi huella",
+ "idPublica": "Clave pública:",
+ "idFallo": "NO_DATA — no se pudo crear la identidad:",
+ "idAviso": "Se genera una clave en tu navegador. No se puede exportar ni copiar a otro aparato: si borras los datos del sitio, esta identidad se pierde.",
+ "pgEjemploCola": "\navisa a marta.lopez@example.com si falla"
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/sanitize.js"></script>
+<script src="/assets/playground.js"></script>
+<script src="/assets/auth.js"></script>
+
+<script src="/assets/pwa.js"></script>
+</body>
+</html>
