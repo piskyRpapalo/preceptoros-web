@@ -23,7 +23,8 @@ treated every loose lowercase word as an identifier and left `level`, `step` or
 letters.
 
 Standard library only.
-"""import json
+"""
+import json
 import re
 
 # Latino, griego, cirilico y ARABE. El arabe falto en la primera version y
