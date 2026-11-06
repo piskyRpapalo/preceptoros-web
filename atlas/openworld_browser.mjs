@@ -89,6 +89,7 @@ async function main() {
   ok(initial.count === 3 && initial.labels.join('|') === 'Welcome|Profile|Communication', 'the three terminal leaves are missing or unnamed: ' + JSON.stringify(initial.labels));
   ok(initial.profileHidden && initial.entryTools, 'Profile is visible before a visit or the entry Tools button is missing');
   ok(initial.bar[1] >= initial.stage[3] - 1, 'voice controls are not immediately below the map: ' + JSON.stringify(initial.bar));
+// Main's three-leaf entry starts closed; this is intentional after the communication moved behind its own leaf.
   ok(initial.chat[5] === 0 && initial.form[5] === 0, 'communication is open before it is requested');
   ok(initial.padGone, 'the retired six-direction pad is still on the map layer');
   ok(initial.joy && initial.joy[4] >= 88, 'the view joystick is not visible on the map layer: ' + JSON.stringify(initial.joy));
@@ -166,12 +167,15 @@ async function main() {
   await key('Escape','Escape',27); await wait(100);
 
   const movement = await evaluate(`(async () => {
+// The merged three-leaf layout now puts node places under Welcome (the former Map leaf).
     const cat=document.querySelector('.cats [data-cat=Welcome]'); if (cat && cat.getAttribute('aria-pressed') !== 'true') cat.click();
     await new Promise(r=>setTimeout(r,400));
     const place=document.querySelector('#map-node-list [data-node="cabin"]');
     const joy=document.querySelector('#stage #view-joystick'); const before=document.querySelector('h1').textContent;
     place?.click();
     await new Promise(r=>setTimeout(r,600));
+    // The route can finish before building_chat mounts its exit control; wait for that measured state, not a fixed short delay.
+    for (let i=0;i<100;i++) { const exit=document.getElementById('leave-building'); if (exit && !exit.hidden) break; await new Promise(r=>setTimeout(r,50)); }
     return {joyOnStage:!!joy && joy.parentElement===document.getElementById('stage'),
       buttons:joy?joy.querySelectorAll('button').length:0, before, after:document.querySelector('h1').textContent,
       live:(document.querySelector('#joy [aria-live]')||{}).textContent || ''};
@@ -179,7 +183,7 @@ async function main() {
   ok(movement.joyOnStage && movement.buttons === 2, 'the view joystick is not the two-control view panner on the map: ' + JSON.stringify(movement));
   ok(/terminal: basic \(the node\)/.test(movement.live), 'a node place click does not walk and enter the node: ' + JSON.stringify(movement));
 
-  // The place enters the cabin's scripted chat; require a real Leave action before testing general chat.
+// Require a real Leave action before testing general chat; this catches a broken cabin exit.
   const leaveStatus = await evaluate(`(() => { const b=document.getElementById('leave-building'); if(!b || b.hidden) return 'NO_LEAVE_CONTROL'; b.click(); return document.getElementById('state').textContent; })()`);
   ok(/^Left building /.test(leaveStatus), 'the building conversation did not leave before general chat: ' + leaveStatus);
 
