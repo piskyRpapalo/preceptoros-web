@@ -85,7 +85,7 @@ async function main() {
   ok(initial.canvases === 1, 'OpenWorld renders more than one canvas: ' + initial.canvases);
   ok(initial.inkPixels > 2000, 'the map is blank: ' + initial.inkPixels);
   ok(initial.panelParent === 'stage' && initial.panelHidden, 'voice panels are not mounted as a closed overlay on the shared map');
-  ok(initial.count === 7 && initial.labels.join('|') === 'Start|Map|Tutorial|House|Army|Radio|Models', 'the seven compact voice controls are missing or unnamed: ' + JSON.stringify(initial.labels));
+  ok(initial.count === 6 && initial.labels.join('|') === 'Start|Map|Tutorial|Profile|Radio|Models', 'the six compact voice controls are missing or unnamed: ' + JSON.stringify(initial.labels));
   ok(initial.bar[1] >= initial.stage[3] - 1, 'voice controls are not immediately below the map: ' + JSON.stringify(initial.bar));
   ok(initial.chat[5] > 0 && initial.form[5] > 0 && initial.form[3] <= 844, 'chat or anchored composer is not visible on phone');
   ok(initial.pad && initial.pad[4] >= 130 && initial.padRight >= initial.stage[2] - 6, 'the joystick is not visible at the right edge of the map layer: ' + JSON.stringify(initial.pad));
@@ -95,18 +95,21 @@ async function main() {
     const script=document.createElement('script'); script.src='/game/classroom_chat.js'; await new Promise((resolve,reject)=>{script.onload=resolve;script.onerror=reject;document.head.append(script)});
     let calls = [], original = AtlasAulaChat.turn;
     AtlasAulaChat.turn = async (fetcher, visit, text, chain, page) => { calls.push({visit, text, page}); return {ok:true,text:'Fixture response',chain:{tic:1,hash:'fixture',sello:{}},receiptState:{ok:false}}; };
+    const profile=document.querySelector('.cats [data-cat=Profile]'), disabledBefore=profile.disabled;
     mode.value='hexelion'; mode.dispatchEvent(new Event('change'));
     input.value='before visit'; form.requestSubmit(); await new Promise(r=>setTimeout(r,30));
     const withoutVisit=calls.length, informed=document.getElementById('log').textContent.includes('Start an ephemeral visit');
     document.getElementById('visitor-start').click(); await new Promise(r=>setTimeout(r,700));
+    const enabledAfterStart=!profile.disabled; profile.click();
+    const profileVisible=[...document.querySelectorAll('#voices [data-cat=Profile]')].every(e=>getComputedStyle(e).display!=='none'); profile.click();
     input.value='hello'; form.requestSubmit(); await new Promise(r=>setTimeout(r,100));
     const response=document.getElementById('log').textContent.includes('Fixture response');
     const sent=calls.slice(); document.getElementById('visitor-end').click(); await new Promise(r=>setTimeout(r,100));
     input.value='after visit'; form.requestSubmit(); await new Promise(r=>setTimeout(r,30));
-    const afterEnd=calls.length; AtlasAulaChat.turn=original; mode.value='local'; mode.dispatchEvent(new Event('change')); input.value='';
-    return {withoutVisit,informed,sent,response,afterEnd};
+    const afterEnd=calls.length, disabledAfterEnd=profile.disabled; AtlasAulaChat.turn=original; mode.value='local'; mode.dispatchEvent(new Event('change')); input.value='';
+    return {withoutVisit,informed,sent,response,afterEnd,disabledBefore,enabledAfterStart,profileVisible,disabledAfterEnd};
   })()`);
-  ok(remoteChat && remoteChat.withoutVisit === 0 && remoteChat.informed && remoteChat.sent.length === 1 && /^[a-f0-9]{64}$/.test(remoteChat.sent[0].visit) && remoteChat.sent[0].page === '/openworld/' && remoteChat.response && remoteChat.afterEnd === 1, 'remote chat must use the active ephemeral visit only: ' + JSON.stringify(remoteChat));
+  ok(remoteChat && remoteChat.withoutVisit === 0 && remoteChat.informed && remoteChat.sent.length === 1 && /^[a-f0-9]{64}$/.test(remoteChat.sent[0].visit) && remoteChat.sent[0].page === '/openworld/' && remoteChat.response && remoteChat.afterEnd === 1 && remoteChat.disabledBefore && remoteChat.enabledAfterStart && remoteChat.profileVisible && remoteChat.disabledAfterEnd, 'remote chat must use the active ephemeral visit only: ' + JSON.stringify(remoteChat));
 
   const panel = JSON.parse(await evaluate(`JSON.stringify((() => {
     const bar = document.querySelector('.cats'), buttons = [...bar.querySelectorAll('button')], voices = document.getElementById('voices');
@@ -129,12 +132,12 @@ async function main() {
 
   const categories = JSON.parse(await evaluate(`JSON.stringify((() => {
     const bs=[...document.querySelectorAll('.cats button')], voices=document.getElementById('voices'), chat=document.getElementById('chat');
-    const results=bs.map(b=>{b.click(); const cat=b.dataset.cat, own=[...voices.querySelectorAll('[data-speaker]')].filter(v=>v.dataset.cat===cat);
+    const results=bs.filter(b=>!b.disabled).map(b=>{b.click(); const cat=b.dataset.cat, own=[...voices.querySelectorAll('[data-speaker]')].filter(v=>v.dataset.cat===cat);
       const visible=own.some(v=>v.getBoundingClientRect().width>0 && getComputedStyle(v).display!=='none');
       const over=[...voices.querySelectorAll('[data-speaker]')].filter(v=>v.dataset.cat!==cat).every(v=>getComputedStyle(v).display==='none');
       const stillChat=chat.getBoundingClientRect().height>0; b.click(); return {cat,visible,over,stillChat};});
     return results; })())`));
-  ok(categories.length === 7 && categories.every((row) => row.visible && row.over && row.stillChat), 'a category panel or persistent chat is broken: ' + JSON.stringify(categories));
+  ok(categories.length === 5 && categories.every((row) => row.visible && row.over && row.stillChat), 'a category panel or persistent chat is broken: ' + JSON.stringify(categories));
   const start = JSON.parse(await evaluate(`JSON.stringify((() => { const b=document.querySelector('.cats [data-cat=Start]'); b.click(); const p=document.getElementById('play-now');
     const answer={play:!!p && p.getBoundingClientRect().height>=44,form:document.getElementById('entry').getBoundingClientRect().height>0}; b.click(); return answer; })())`));
   ok(start.play && start.form, 'Start panel does not expose the next step above the persistent composer');

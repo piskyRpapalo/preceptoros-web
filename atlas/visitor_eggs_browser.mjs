@@ -74,7 +74,7 @@ async function main() {
   const result={record:saved[0].adopcion,signature:saved[0].firma,publicKey:saved[0].adopcion.clave_publica};
   ok(await ev('typeof Identity === "undefined"'),'no persistent identity used');
   // TF-2: House lives in the Play category; the visitor opens it before tapping, so the size is measured there.
-  await ev('document.querySelector(".cats [data-cat=House]").click()');
+  await ev('document.querySelector(".cats [data-cat=Profile]").click()');
   const sizes=await ev('Array.from(document.querySelectorAll("#visitor-play button")).map(x=>x.getBoundingClientRect().height)');
   ok(sizes.every(x=>x>=44),'accessible controls');
   const { createPublicKey, verify } = await import('node:crypto');

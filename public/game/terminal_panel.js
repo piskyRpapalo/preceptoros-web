@@ -63,7 +63,7 @@
   }
   // TF-2 (buzon#30, 2026-11-02): the voices go in four category buttons; one category is visible, the rest are buttons.
   // The brain (#map-brain), the log and the form stay fixed under the panel: they are the single chatbot's surface.
-  var CATS = [['Start', ['Welcome', 'Guide']], ['Map', ['Map', 'Floor', 'Walkers', 'Zoom']], ['Tutorial', ['Tutorial']], ['House', ['House']], ['Army', ['Army']], ['Radio', ['Radio']], ['Models', ['Models']]];
+  var CATS = [['Start', ['Welcome', 'Guide']], ['Map', ['Map', 'Floor', 'Walkers', 'Zoom']], ['Tutorial', ['Tutorial']], ['Profile', ['House', 'Army']], ['Radio', ['Radio']], ['Models', ['Models']]];
   // categoryOf(speaker) → its category; a speaker no category names goes to About, never lost.
   function categoryOf(speaker) {
     for (var i = 0; i < CATS.length; i++) { if (CATS[i][1].indexOf(speaker) >= 0) { return CATS[i][0]; } }
@@ -72,23 +72,39 @@
   function categories(doc, voices) {
     var map = doc.getElementById('map'), stage = doc.getElementById('stage');
     if (!map || !stage || map.querySelector(':scope > .cats')) { return null; }
-    var bar = doc.createElement('div'), buttons = {}, current = null, icons = { Start: '◇', Map: '⌖', Tutorial: '?', House: '⌂', Army: '✧', Radio: '◉', Models: '⬡' };
+    var bar = doc.createElement('div'), buttons = {}, current = null, icons = { Start: '◇', Map: '⌖', Tutorial: '?', Profile: '👤', Radio: '◉', Models: '⬡' };
     bar.className = 'cats'; bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'Voices by category');
     voices.classList.add('map-voices');
     stage.appendChild(voices);
     function show(cat) {
+      if (cat === 'Profile' && buttons.Profile && buttons.Profile.disabled) return;
       current = cat; voices.hidden = !cat;
       Array.prototype.forEach.call(voices.querySelectorAll('[data-speaker]'), function (li) { li.style.display = li.dataset.cat === cat ? '' : 'none'; });
       CATS.forEach(function (c) { var b = buttons[c[0]]; b.setAttribute('aria-pressed', String(c[0] === cat)); if (c[0] === cat) { b.textContent = icons[c[0]]; } });
     }
     CATS.forEach(function (c) {
       var b = doc.createElement('button'); b.type = 'button'; b.textContent = icons[c[0]]; b.dataset.cat = c[0]; b.setAttribute('aria-label', c[0]); b.title = c[0];
+      if (c[0] === 'Profile') { b.disabled = true; b.title = 'Start an ephemeral visit to open Profile'; }
       b.setAttribute('aria-controls', 'voices');
       b.addEventListener('click', function () { show(current === c[0] ? null : c[0]); });
       buttons[c[0]] = b; bar.appendChild(b);
     });
     // Under the voices, like a phone's bottom tabs: the door's «Play now» stays above the fold (measured 390×844).
     map.appendChild(bar);
+    var visit = doc.getElementById('visitor-play');
+    if (visit) {
+      visit.addEventListener('visitor:render', function (event) {
+        var active = !!(event.detail && event.detail.account);
+        buttons.Profile.disabled = !active;
+        buttons.Profile.title = active ? 'Profile' : 'Start an ephemeral visit to open Profile';
+        if (!active && current === 'Profile') show(null);
+      });
+      visit.addEventListener('visitor:end', function () {
+        buttons.Profile.disabled = true;
+        buttons.Profile.title = 'Start an ephemeral visit to open Profile';
+        if (current === 'Profile') { show(null); buttons.Start.focus(); }
+      });
+    }
     // A voice that speaks while its category is hidden marks its button («•»), so nothing said is lost from sight.
     new root.MutationObserver(function (ch) {
       ch.forEach(function (c) {
