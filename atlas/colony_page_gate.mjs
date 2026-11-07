@@ -74,8 +74,9 @@ try {
   ok(!reloj.error && reloj.n2 === false, 'sabotage reloj goes red: a sky reading the wall clock is caught');
 
   const sinColonia = await puerta('');
-  // Newest state (MVP moderno, 2026-10-30): only the tutorial is LIVE; Beelink and Doggee are NO_DATA and hidden.
-  ok(/Colony: 1 nodes · 1 buildings · 1 bots with faces/.test(sinColonia) && !/SYNTHETIC/.test(sinColonia), 'door, live state: the tutorial is the only LIVE node (' + sinColonia.slice(-90) + ')');
+  // The web without nodes (#695, 2026-11-07): the tutorial cabin is retired, so the live door declares
+  // an empty colony with its cause instead of drawing anything. NO_DATA is the honest value, never a zero.
+  ok(/Colony: NO_DATA · no node declared alive/.test(sinColonia) && !/SYNTHETIC/.test(sinColonia) && !/Colony: \d+ nodes/.test(sinColonia), 'door, live state: the empty colony says NO_DATA with its cause (' + sinColonia.slice(-90) + ')');
 
   const conFixture = await puerta('?fixture=sintetica');
   ok(/Colony: 9 nodes · 6 buildings · 9 bots with faces/.test(conFixture) && /SYNTHETIC fixture, not a live colony/.test(conFixture),
