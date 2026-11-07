@@ -14,7 +14,7 @@ body{position:fixed;inset:0;display:flex;flex-direction:column;min-height:0;over
 main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) minmax(0,1fr);grid-template-columns:minmax(0,1fr);width:100%;max-width:none;height:100vh;height:100dvh;padding:0;min-height:0;overflow:hidden}
 #map,#chat{padding:12px 16px;min-width:0;box-sizing:border-box;overflow:hidden}
 #map{position:relative;border-bottom:2px solid var(--line);display:flex;flex-direction:column;gap:8px;min-height:0}
-#map h1{font-size:1.25rem;margin:0}
+#map h1{font-size:.75rem;font-weight:400;line-height:1.4;margin:0;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 #map .surface{display:block;width:100%;height:0;min-height:0;min-width:0;flex:1 1 0;transition:opacity 300ms ease}
 @media (prefers-reduced-motion: reduce){#map .surface{transition:none}}
 #map .press{display:flex;flex-wrap:wrap;gap:8px}
@@ -137,3 +137,16 @@ body{font-size:1rem}
 /* the joysticks step aside (and out of focus) while a sheet is open */
 #map:has(#voices.map-voices:not([hidden])) .view-joy{visibility:hidden}
 }
+/* Gamepad (Sovereign, 2026-11-07): one status line on top, the map, and one Acho gamepad at the bottom (gamepad.js).
+   Left stick pans the map; right stick is off until the character exists; the account buttons sit between them. */
+#gamepad{display:flex;align-items:center;justify-content:space-between;gap:6px;flex:0 0 auto;min-width:0}
+#gamepad .view-joy{position:static}
+#gamepad .gp-mid{display:flex;align-items:center;justify-content:center;gap:4px;flex:1 1 auto;min-width:0}
+#gamepad .cats{overflow:visible;gap:4px}
+#gamepad :is(.gp-b,.cats button){flex:0 0 44px;width:44px;height:44px;min-width:44px;min-height:44px;padding:0 0 6px;font-size:18px;color:var(--fg);border:1px solid color-mix(in srgb,var(--gp,var(--fg)) 60%,transparent);border-radius:calc(var(--radius) + 6px);background:color-mix(in srgb,var(--gp,var(--fg)) 16%,transparent) var(--gp-svg,none) center bottom 3px/32px 10px no-repeat;cursor:pointer}
+#gamepad .gp-b[hidden],#gamepad .cats button[hidden]{display:none}
+#gamepad .view-stick.gp-acho{border-color:var(--gp);background:color-mix(in srgb,var(--gp) 12%,transparent) var(--gp-svg) center bottom 10px/32px 10px no-repeat}
+#gamepad .gp-off{position:relative;flex:0 0 64px;width:64px;height:64px;display:grid;place-items:center;font-size:20px;color:var(--soft);border:1px dashed color-mix(in srgb,var(--gp) 50%,transparent);border-radius:50%;background:var(--gp-svg) center bottom 10px/32px 10px no-repeat;opacity:.5}
+#gamepad .cats button[aria-pressed="true"]{outline:2px solid var(--fg);outline-offset:1px}
+@media (forced-colors: active){#gamepad :is(.gp-b,.cats button,.gp-off){background-image:none;border-color:ButtonText}}
+#gamepad .view-stick.gp-acho[data-on],#gamepad .view-stick.gp-acho:focus-visible{border-color:var(--fg)}

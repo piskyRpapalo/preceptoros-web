@@ -519,6 +519,27 @@
      "text": "the pan left its bound"
     }
    ]
+  },
+  {
+   "id": "gamepad",
+   "scripts": [
+    "/game/map_drag.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/gamepad_browser.mjs",
+     "text": "the map is not three pieces (status line, map, gamepad)"
+    },
+    {
+     "file": "atlas/gamepad_browser.mjs",
+     "text": "the character stick is not an honest off control"
+    },
+    {
+     "file": "atlas/gamepad_browser.mjs",
+     "text": "gamepad Play does not start the visit through Play now"
+    }
+   ]
   }
  ],
  "retiradas": [

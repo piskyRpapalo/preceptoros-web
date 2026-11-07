@@ -55,4 +55,6 @@
   slot.setAttribute('role', 'note'); slot.dataset.side = 'right'; slot.dataset.state = 'NO_DATA'; slot.dataset.cause = 'character_not_born';
   slot.textContent = 'Character joystick: NO_DATA, the ephemeral character does not exist yet.';
   stage.appendChild(slot);
+  // The gamepad (gamepad.js) gathers both sticks and the account buttons under the map.
+  var pad = doc.createElement('script'); pad.src = '/game/gamepad.js'; doc.head.appendChild(pad);
 })(typeof window !== 'undefined' ? window : globalThis);

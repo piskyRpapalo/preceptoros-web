@@ -72,7 +72,7 @@ async function main() {
   const caja = async () => JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('surface'), r = c.getBoundingClientRect(), b = document.getElementById('map-wide'), br = b ? b.getBoundingClientRect() : null;
     return { h: Math.round(r.height), w: Math.round(r.width), px: c.height, alto: innerHeight, chat: getComputedStyle(document.getElementById('chat')).display,
       boton: b ? { w: Math.round(br.width), h: Math.round(br.height), pressed: b.getAttribute('aria-pressed'), label: b.getAttribute('aria-label'), enBarra: b.parentElement && b.parentElement.id } : null,
-      barra: !!document.getElementById('zoom-controls'), flotantes: [...document.querySelectorAll('#stage button')].filter((x) => x.closest('.view-joy')).length,
+      barra: !!document.getElementById('zoom-controls'), flotantes: [...document.querySelectorAll('#map button')].filter((x) => x.closest('.view-joy')).length,
       say: (document.getElementById('zoom-state') || {}).textContent || '' }; })())`));
 
   // 1 · the starting point, measured: the map has about half the window.
@@ -87,15 +87,16 @@ async function main() {
   // The terminal controls belong below the map; panels cover the map, not the conversation.
   const terminal = await ev(`(() => { const stage = document.getElementById('stage'), voices = document.getElementById('voices'),
 // Main's narrow terminal has two visible leaves; Welcome owns map places, Communication owns chat.
-    bar = document.querySelector('.cats'), joy = stage.querySelector('#view-joystick'),
+    bar = document.querySelector('.cats'), joy = document.querySelector('#gamepad > #view-joystick'), // gamepad (2026-11-07): stick and leaves sit in the gamepad under the map
+   
     composer = document.getElementById('entry'), buttons = bar && [...bar.querySelectorAll('button')].filter(b=>!b.hidden);
     if (!bar || !joy || !buttons || buttons.length !== 2) return null;
     const welcome=bar.querySelector('[data-cat=Welcome]'); welcome.click();
     const placesInWelcome=!!voices.querySelector('#map-node-list'); welcome.click();
     const communication=bar.querySelector('[data-cat=Communication]'); communication.click();
     const out = { panelOnMap: voices.parentElement === stage && !voices.hidden,
-      barBelowMap: bar.parentElement.id === 'map' && bar.getBoundingClientRect().top >= stage.getBoundingClientRect().bottom,
-      joyOnMap: joy.parentElement === stage, chatClosed: document.getElementById('chat').hidden,
+      barBelowMap: !!bar.closest('#map > #gamepad') && bar.getBoundingClientRect().top >= stage.getBoundingClientRect().bottom,
+      joyOnMap: joy.parentElement.parentElement === stage.parentElement, chatClosed: document.getElementById('chat').hidden,
       composerVisible: composer.getBoundingClientRect().height >= 44 && composer.getBoundingClientRect().bottom <= innerHeight, pressed: communication.getAttribute('aria-pressed'),
       noInvisibleTargets: !stage.querySelector(':scope > #map-proxies, :scope > .hitl-mark'),
       placesInPanel: placesInWelcome };

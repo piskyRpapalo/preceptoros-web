@@ -85,11 +85,11 @@ async function main() {
   // carries only the labelled pan joystick (the character's joystick is born with the character), and the place names on the map are legible (>= 12 CSS px) and never collide.
   const ojo = JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('surface'), m = c.getBoundingClientRect();
     const sum = [1, 2, 3, 4].map((n) => (document.getElementById('visitor-summon-tc' + n) || {}).textContent || '');
-    const zb = [...document.querySelectorAll('#stage .view-joy button')].map((b) => { const r = b.getBoundingClientRect(); return { l: b.getAttribute('aria-label'), w: r.width, h: r.height }; });
+    const zb = [...document.querySelectorAll('#map .view-joy button')] /* gamepad (2026-11-07): the stick sits under the map */.map((b) => { const r = b.getBoundingClientRect(); return { l: b.getAttribute('aria-label'), w: r.width, h: r.height }; });
     const pl = JSON.parse(c.dataset.places || '[]'), px = c.width / m.width, yx = +c.dataset.youx / px, yy = +c.dataset.youy / px;
     const hit = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
     return { bar: !!document.getElementById('zoom-controls'), mapTop: m.top, scrollY: scrollY, sum, step: (document.getElementById('visitor-step') || {}).textContent, zb, pl, overlap: pl.some((a, i) => pl.some((b, j) => i < j && hit(a, b))),
-      zoom: [...document.querySelectorAll('#stage .view-joy')].some((j) => { const z = j.getBoundingClientRect(), q = { x: z.left - m.left, y: z.top - m.top, w: z.width, h: z.height }; return pl.some((a) => hit(a, q)); }),
+      zoom: [...document.querySelectorAll('#map .view-joy')].some((j) => { const z = j.getBoundingClientRect(), q = { x: z.left - m.left, y: z.top - m.top, w: z.width, h: z.height }; return pl.some((a) => hit(a, q)); }),
       crab: pl.some((a) => a.x < yx && yx < a.x + a.w && a.y < yy && yy < a.y + a.h) }; })())`));
   ok(ojo.mapTop >= 0 && ojo.mapTop < 844, 'after Play now the map scrolled away: ' + JSON.stringify({ top: ojo.mapTop, y: ojo.scrollY }));
   ok(/^Summon at the Reef · 50 copper$/.test(ojo.sum[0]), 'the reef summon is not human: ' + ojo.sum[0]);

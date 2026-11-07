@@ -74,7 +74,7 @@ async function main() {
   const initial = JSON.parse(await evaluate(`JSON.stringify((() => {
     const map = document.getElementById('map'), stage = document.getElementById('stage'), canvas = document.getElementById('surface');
     const voices = document.getElementById('voices'), chat = document.getElementById('chat'), bar = map.querySelector('.cats');
-    const joy = stage.querySelector('#view-joystick'), form = document.getElementById('entry'), sr = (e) => { const r=e.getBoundingClientRect(); return [r.left,r.top,r.right,r.bottom,r.width,r.height]; };
+    const joy = document.querySelector('#gamepad #view-joystick'), form = document.getElementById('entry'), sr = (e) => { const r=e.getBoundingClientRect(); return [r.left,r.top,r.right,r.bottom,r.width,r.height]; };
     let inkPixels = 0; try { const data=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data; for(let i=3;i<data.length;i+=4) if(data[i]) inkPixels++; } catch { inkPixels=-1; }
     return { title: document.querySelector('h1')?.textContent, canvases: document.querySelectorAll('canvas').length,
       inkPixels,
@@ -172,13 +172,14 @@ async function main() {
     const cat=document.querySelector('.cats [data-cat=Welcome]'); if (cat && cat.getAttribute('aria-pressed') !== 'true') cat.click();
     await new Promise(r=>setTimeout(r,400));
     const place=document.querySelector('#map-node-list [data-node="home"]');
-    const joy=document.querySelector('#stage #view-joystick'); const before=document.querySelector('h1').textContent;
+    const joy=document.querySelector('#gamepad #view-joystick'); const before=document.querySelector('h1').textContent;
     place?.click();
     await new Promise(r=>setTimeout(r,600));
     // The route can finish before building_chat mounts its exit control; wait for that measured state, not a fixed short delay.
     for (let i=0;i<100;i++) { const exit=document.getElementById('leave-building'); if (exit && !exit.hidden) break; await new Promise(r=>setTimeout(r,50)); }
-    return {joyOnStage:!!joy && joy.parentElement===document.getElementById('stage'),
-      buttons:document.querySelectorAll('#stage .view-joy button').length, before, after:document.querySelector('h1').textContent,
+    // gamepad (2026-11-07): the pan stick lives in the gamepad under the map; still exactly one view control.
+    return {joyOnStage:!!joy && joy.parentElement===document.getElementById('gamepad'),
+      buttons:document.querySelectorAll('#map .view-joy button').length, before, after:document.querySelector('h1').textContent,
       live:(document.querySelector('#joy [aria-live]')||{}).textContent || ''};
   })()`);
   // Joystick decree (2026-11-07): one pan stick on the map; the right slot waits, NO_DATA, for the ephemeral character.

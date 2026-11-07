@@ -102,6 +102,7 @@ jobs:
             node --test atlas/live_invocation_cases.mjs
             node atlas/colony_buildings_gate.mjs
             node --test atlas/puros/palette_cycle_cases.mjs
+            node --test atlas/puros/gamepad_cases.mjs
             node atlas/palette_cycle_gate.mjs
             node atlas/colony_page_gate.mjs
             node --test atlas/lexicon_gate_cases.mjs
@@ -130,6 +131,7 @@ jobs:
             node atlas/heartbeat_load_browser.mjs
             node atlas/map_drag_browser.mjs
             node atlas/map_wide_browser.mjs
+            node atlas/gamepad_browser.mjs
             node atlas/classroom_chat_browser.mjs
             node atlas/sw_first_load_browser.mjs
             node atlas/live_heartbeat_cases.mjs

@@ -13,6 +13,7 @@
     "comic_accents.js",
     "comic_atoms.js",
     "comic_tokens.js",
+    "gamepad.js",
     "semantic_table.js"
   ],
   "piezas": {

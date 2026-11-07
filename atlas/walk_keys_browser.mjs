@@ -89,9 +89,10 @@ async function main() {
   ok(retiro.pad === false, 'the six-direction pad is still on the page');
   ok(retiro.dataDirections === 0, 'direction buttons are still on the page: ' + retiro.dataDirections);
   ok(retiro.skipHeight >= 44, 'the skip tutorial button is under 44 px: ' + retiro.skipHeight);
-  const joystick = JSON.parse(await ev(`JSON.stringify((() => { const g = document.querySelector('#stage #view-joystick'); const bs = [...document.querySelectorAll('#stage .view-joy button')]; return { present: !!g, onStage: !!g && g.parentElement === document.getElementById('stage'), mode: !!document.getElementById('view-stick-mode'), buttons: bs.length, minHeight: bs.length ? Math.min(...bs.map(b=>b.getBoundingClientRect().height)) : 0 }; })())`));
+  const joystick = JSON.parse(await ev(`JSON.stringify((() => { const g = document.querySelector('#gamepad #view-joystick'); const bs = [...document.querySelectorAll('#map .view-joy button')]; return { present: !!g, onStage: !!g && g.parentElement === document.getElementById('gamepad'), mode: !!document.getElementById('view-stick-mode'), buttons: bs.length, minHeight: bs.length ? Math.min(...bs.map(b=>b.getBoundingClientRect().height)) : 0 }; })())`));
   medidas.joystick = joystick;
-  ok(joystick.present && joystick.onStage, 'the view joystick is not on the map stage: ' + JSON.stringify(joystick));
+  // gamepad (2026-11-07): the pan joystick now sits in the gamepad under the map, not over the stage.
+  ok(joystick.present && joystick.onStage, 'the view joystick is not in the map gamepad: ' + JSON.stringify(joystick));
   ok(joystick.buttons === 1 && joystick.minHeight >= 44 && !joystick.mode, 'the map does not carry exactly one 44 px pan joystick (decree 2026-11-07): ' + JSON.stringify(joystick));
 
   // 2 · Enter with no choice says how to choose.
