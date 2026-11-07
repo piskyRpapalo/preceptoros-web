@@ -183,4 +183,32 @@ Decreto del Soberano (2026-11-07 noche): el mapa de misiones también alimenta a
 - G6 · Watch the single focus: una cabeza, un foco de trabajo (canon del norte 13); la patrulla reporta focos duplicados o huérfanos con fichero y línea, sin ejecutar la cura. Estado: doctrina medida (la patrulla ya corre).
 - G7 · Prune the merged branches: higiene de ramas ya fusionadas: la poda lleva guardia, recibo y confirmación del merge; nada se borra por aproximación. Estado: propuesta con guardia (bypass solo por orden explícita del Soberano).
 
+### H · El cerebro más profundo (misiones de diseño, auditoría y revisión adversarial)
+
+Misiones que piden razonar a través de los repos, del canon y de la ley a la vez. Las toma Claude Opus; el enjambre de haikus ejecuta las rebanadas que salgan de ellas. Nada se ejecuta sin contrato; FIRMO sigue siendo del Soberano.
+
+- H1 · Write the node law contract: `preceptoros.politica-nodo/2` con postura (pacífico, hostil, cooperativo, cerrado, abierto), vigencia en ciclos, firma del dueño, enlace a `preceptoros:caravana/1` y a la aduana de agentes; reconcilia las 18 leyes de la biblia del juego con el art. 14 de la AI Act y la lista de prohibidos de la política de juego. Estado: propuesta. NO_DATA: campo de postura y firma, causa: el esquema /1 no los tiene. Tomada: Claude Opus.
+- H2 · Design the bias arena: por cada una de las 7 familias, un escenario en el terreno con hipótesis registrada antes de correr, condiciones, juez de otra familia, recibo (máquina, fecha, huella) y publicación del resultado nulo. Un gate verde no es un score. Estado: propuesta. NO_DATA: corridas, causa: el transporte A2A del arnés de agentes devuelve SIMULATED. Tomada: Claude Opus.
+- H3 · Audit the mission map against the code: cada «Estado» de este mapa comprobado con fichero:línea en los main de app, web, lab y p0x; los estados que no se sostienen se corrigen por propuesta, nunca en silencio. Estado: primera pasada hecha (ver tabla H3 abajo). Tomada: Claude Opus.
+- H4 · Threat-model the first write door: revisión adversarial del puente aduana→estado del mapa (repetición de firma, tamaño, SCRUB, nombres de casa, kill-switch, orden de escritura); los tests rojos se listan ANTES de cualquier código. Estado: propuesta. NO_DATA: puerta abierta, causa: espera FIRMO.
+- H5 · Review the swarm: cada rebanada de haiku pasa por plata (VERDE repetido por el revisor, citas comprobadas, deriva del canon corregida) antes de su PR. Estado: medido (primera prueba: #700, la máquina de caravanas corregida en revisión: huir exige intercepción). Tomada: Claude Opus.
+- H6 · Write the Acho reading exam: el examen que el juez mini A9 debe aprobar (operaciones Acho → lectura esperada), regla ciega de familia, definido y medible ANTES de entrenar. Estado: propuesta. NO_DATA: A9, causa: sin entrenar.
+
+### H3 · Auditoría del mapa contra el código (2026-11-07 noche, Claude Opus)
+
+He comprobado las 55 misiones A–G contra los `origin/main` de PreceptorOS, preceptoros-web, lab y p0x. Dos exploradores reunieron las pruebas y yo repasé por plata cada desacuerdo. No reescribo ningún estado; propongo cada corrección para que la Mesa decida:
+
+| Misión | Dice el mapa | Mide el código | Propuesta |
+|---|---|---|---|
+| G4 | forced-colors y prefers-contrast: 0 en el tronco | ya existen: web `public/assets/openworld.css:85` y `:98`, `public/game/colony_page.js:199`; app: 1 de cada en `interface/` | «medido: forced-colors y prefers-contrast presentes; text-wrap, scrollbar-gutter, view transitions y ETag: 0 en ambos troncos» |
+| E5 | medido hasta IC5; IC6 en obra | `atlas/colony_page_gate.mjs:93` imprime «IC6 gate green» en main; el contrato de sello de IC7 tiene casos (`atlas/frame_seal_cases.mjs:1`) | «medido hasta IC6; IC7 con contrato de sello en casos» |
+| F4 | propuesta | entregada como plan: app #214 (`odd/tasks/interiores-paneles-20261107.md`) | «plan entregado, espera FIRMO» |
+| A6 | sin construir | ya existe un orquestador mini por tubería para el Lab (app `bin/preceptoros-pwa`, `_lab_decir`); no alimenta a Hexelion en continuo | matiz: «cimiento medido (canal del Lab); bucle continuo sin construir» |
+| E2 | sin motor | sigue sin motor; hay borrador de contrato y validador puro en web #700 | «contrato propuesto (#700); motor: NO_DATA» |
+| D2 | decreto | un solo joystick en el mapa, hueco derecho declarado NO_DATA `character_not_born` (web #697) | «cara de hoy cumplida en #697; el joystick del personaje nace con él» |
+| A7, A9 | medido PASS / decreto | ni el lector de GitHub ni el decreto del LoRA de Acho aparecen en ningún main | NO_DATA con causa «no está en main»; se citan por su acta |
+| E3 | 7 familias | la ley vive en el repo study (`14-bench-families.md`), no en los cuatro troncos auditados | se cita por su repo |
+
+Las demás misiones se sostienen. Hay un caso cercano: la radio C6 existe en `public/game/bb_radio.js:7`, pero ninguna página la carga, así que sigue siendo «propuesta».
+
 Agent: preceptor-orquestador-github · Model: GLM (Vibe) · Run: NO_DATA
