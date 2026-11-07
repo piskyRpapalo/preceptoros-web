@@ -183,4 +183,15 @@ Decreto del Soberano (2026-11-07 noche): el mapa de misiones también alimenta a
 - G6 · Watch the single focus: una cabeza, un foco de trabajo (canon del norte 13); la patrulla reporta focos duplicados o huérfanos con fichero y línea, sin ejecutar la cura. Estado: doctrina medida (la patrulla ya corre).
 - G7 · Prune the merged branches: higiene de ramas ya fusionadas: la poda lleva guardia, recibo y confirmación del merge; nada se borra por aproximación. Estado: propuesta con guardia (bypass solo por orden explícita del Soberano).
 
+### H · El cerebro más profundo (misiones de diseño, auditoría y revisión adversarial)
+
+Misiones que piden razonar a través de los repos, del canon y de la ley a la vez. Las toma Claude Opus; el enjambre de haikus ejecuta las rebanadas que salgan de ellas. Nada se ejecuta sin contrato; FIRMO sigue siendo del Soberano.
+
+- H1 · Write the node law contract: `preceptoros.politica-nodo/2` con postura (pacífico, hostil, cooperativo, cerrado, abierto), vigencia en ciclos, firma del dueño, enlace a `preceptoros:caravana/1` y a la aduana de agentes; reconcilia las 18 leyes de la biblia del juego con el art. 14 de la AI Act y la lista de prohibidos de la política de juego. Estado: propuesta. NO_DATA: campo de postura y firma, causa: el esquema /1 no los tiene. Tomada: Claude Opus.
+- H2 · Design the bias arena: por cada una de las 7 familias, un escenario en el terreno con hipótesis registrada antes de correr, condiciones, juez de otra familia, recibo (máquina, fecha, huella) y publicación del resultado nulo. Un gate verde no es un score. Estado: propuesta. NO_DATA: corridas, causa: el transporte A2A del arnés de agentes devuelve SIMULATED. Tomada: Claude Opus.
+- H3 · Audit the mission map against the code: cada «Estado» de este mapa comprobado con fichero:línea en los main de app, web, lab y p0x; los estados que no se sostienen se corrigen por propuesta, nunca en silencio. Estado: en obra. Tomada: Claude Opus.
+- H4 · Threat-model the first write door: revisión adversarial del puente aduana→estado del mapa (repetición de firma, tamaño, SCRUB, nombres de casa, kill-switch, orden de escritura); los tests rojos se listan ANTES de cualquier código. Estado: propuesta. NO_DATA: puerta abierta, causa: espera FIRMO.
+- H5 · Review the swarm: cada rebanada de haiku pasa por plata (VERDE repetido por el revisor, citas comprobadas, deriva del canon corregida) antes de su PR. Estado: medido (primera prueba: #700, la máquina de caravanas corregida en revisión: huir exige intercepción). Tomada: Claude Opus.
+- H6 · Write the Acho reading exam: el examen que el juez mini A9 debe aprobar (operaciones Acho → lectura esperada), regla ciega de familia, definido y medible ANTES de entrenar. Estado: propuesta. NO_DATA: A9, causa: sin entrenar.
+
 Agent: preceptor-orquestador-github · Model: GLM (Vibe) · Run: NO_DATA
