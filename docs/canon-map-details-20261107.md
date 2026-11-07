@@ -80,4 +80,14 @@ Estado: colonia sellada sin productor (el estado del mundo con colonia sellada y
 - Retiro de la cabaña del tutorial (colonia vacía, sin nombres internos): PR #695 abierto, sin fundir; un test aún busca el nodo retirado y debe curarse antes de la firma.
 - Cromo del mapa (joystick del mapa a la izquierda, nombre del lugar, iconos de terminal): hecho y medido, sin commit y sin PR; el joystick del personaje espera a que el personaje exista.
 
+## 8 · La mesa: cómo se construye este canon
+
+Decreto del Soberano (2026-11-07 noche): quien construye el mapa va a esta mesa antes de cada turno.
+
+- Lee el canon y el estado medido de este documento.
+- Elige la rebanada que va a construir y la PROPONE al Soberano: qué, por qué ahora, y cómo se va a medir. Sin ejecutar antes de la propuesta.
+- No hay cola fija: la prioridad se decreta turno a turno.
+- Propose-only: FIRMO sigue siendo del Soberano. SCRUB en todo artefacto público.
+- Lo único que no espera turno: un test rojo medido es urgencia técnica; se cura y se declara antes de proponer lo siguiente (caso abierto hoy: un test busca el nodo retirado del tutorial en #695).
+
 Agent: preceptor-orquestador-github · Model: GLM (Vibe) · Run: NO_DATA
