@@ -10,23 +10,24 @@ import { fileURLToPath } from 'node:url';
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
 const CAPTURA = process.argv[2] || null;
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
-// P5a: with HITL_ON the state file is the test fixture (the tutorial cabin waits for a signature).
+// P5a: with HITL_ON the state file is the test fixture (the first node waits for a signature).
 const HITL = readFileSync(new URL('./fixtures/hitl_state.json', import.meta.url));
 let HITL_ON = false;
+const ONE = readFileSync(new URL('./fixtures/one_live_node.json', import.meta.url));   // one live node: the tutorial cabin is retired
 function sirve(raiz) {
   const tipos = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
   const s = createServer((req, res) => {
     try {
       let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
-      const cuerpo = HITL_ON && ruta === '/openworld/state.json' ? HITL : readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
+      const cuerpo = ruta === '/openworld/state.json' ? (HITL_ON ? HITL : ONE) : readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
   });
   return new Promise((r) => s.listen(0, '127.0.0.1', () => r(s)));
 }
 const fallos = [], externas = [];
 // W-5: use the visible, accessible Map control. The old canvas pixel target was retired.
-const CLIC_CABINA = "(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)); const cat = document.querySelector('.cats [data-cat=Welcome]'); if (cat?.getAttribute('aria-pressed') !== 'true') cat?.click(); for (let i = 0; i < 50; i++) { const b = document.querySelector('#map-node-list [data-node=cabin]'); if (b && b.getBoundingClientRect().height >= 44) { b.click(); await w(300); return document.querySelector('#joy [aria-live]').textContent; } await w(100); } throw new Error('visible cabin control did not appear'); })()";
+const CLIC_NODO = "(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)); const cat = document.querySelector('.cats [data-cat=Welcome]'); if (cat?.getAttribute('aria-pressed') !== 'true') cat?.click(); for (let i = 0; i < 50; i++) { const b = document.querySelector('#map-node-list [data-node=home]'); if (b && b.getBoundingClientRect().height >= 44) { b.click(); await w(300); return document.querySelector('#joy [aria-live]').textContent; } await w(100); } throw new Error('visible first-node control did not appear'); })()";
 const ok = (cond, que) => { if (!cond) { fallos.push(que); } };
 let ws = null, ch = null, srv = null, id = 0;
 const pend = new Map();
@@ -40,8 +41,8 @@ const VISITA = `(async () => { const w = (ms) => new Promise((r) => setTimeout(r
 const ENTRA = `(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), $ = (i) => document.getElementById(i);
   const antes = document.querySelectorAll('#log li').length, L = () => $('invocation-layer');
   const cat = document.querySelector('.cats [data-cat=Welcome]'); if (cat?.getAttribute('aria-pressed') !== 'true') cat?.click();
-  let cabina = null; for (let i = 0; i < 50; i++) { cabina = document.querySelector('#map-node-list [data-node=cabin]'); if (cabina && cabina.getBoundingClientRect().height >= 44) break; await w(100); }
-  if (!cabina) throw new Error('visible cabin control did not appear'); cabina.click();
+  let nodo0 = null; for (let i = 0; i < 50; i++) { nodo0 = document.querySelector('#map-node-list [data-node=home]'); if (nodo0 && nodo0.getBoundingClientRect().height >= 44) break; await w(100); }
+  if (!nodo0) throw new Error('visible first-node control did not appear'); nodo0.click();
   await w(30); const corriendo = L() ? L().dataset.tunnel : null, renderer = L() && L().dataset.renderer,
     tick = L() && Number(L().dataset.frame), lectura = $('openworld-entry-read') && $('openworld-entry-read').getAttribute('aria-live'),
     vozMap = !!($('openworld-entry-read') && $('openworld-entry-read').closest('[data-speaker="Map"]')),
@@ -78,7 +79,7 @@ async function main() {
   ok(v.burst === 'animated' && v.frame > 0 && v.hidden === 'true', 'the burst does not animate on the hidden layer: ' + JSON.stringify(v));
   await espera(1600);
   const e = JSON.parse(await ev(ENTRA) || '{}');
-  ok(e.corriendo === 'running' && e.chatDurante === e.antes, 'entering the cabin does not play the worm tunnel first: ' + JSON.stringify(e));
+  ok(e.corriendo === 'running' && e.chatDurante === e.antes, 'entering the first node does not play the worm tunnel first: ' + JSON.stringify(e));
   ok(e.renderer === 'acho' && e.tick >= 0 && e.lectura === 'polite' && e.vozMap && e.fueraDelLienzo,
     'the tunnel is not painted from legible Acho frames in the Map voice: ' + JSON.stringify(e));
   ok(e.despues > e.antes && e.fin === 'done', 'the building chat does not open after the tunnel: ' + JSON.stringify(e));

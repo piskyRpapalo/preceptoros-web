@@ -17,9 +17,9 @@ test('schema v1 (the file on main today) carries no colony', () => {
   assert.equal(r.colonia, null);
 });
 
-test('the served state exposes only the tutorial cabin while live nodes are unverified', () => {
+test('the served state exposes no node while live nodes are unverified (the cabin is retired)', () => {
   const raw = JSON.parse(readFileSync(new URL('../../public/openworld/state.json', import.meta.url), 'utf8'));
-  assert.deepEqual(S.leer(raw).colonia.nodes.map(n => n.id), ['cabin']);
+  assert.deepEqual(S.leer(raw).colonia.nodes.map(n => n.id), []);
 });
 
 test('a missing schema is read as v1, so an old file keeps working', () => {

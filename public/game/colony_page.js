@@ -244,7 +244,7 @@
 
   // Terminal familia (TF-1): [the family sentence for the Map voice, the counts folded in Technical details].
   function voz(sc, ocultos, muestra) {
-    return [(sc.nodes === 1 ? 'Your cabin is awake' : sc.nodes + ' places are awake') + (ocultos > 0 ? ' · ' + ocultos + ' more still asleep' : '') +
+    return [(sc.nodes === 1 ? 'Your place is awake' : sc.nodes + ' places are awake') + (ocultos > 0 ? ' · ' + ocultos + ' more still asleep' : '') +
       (muestra ? ' · a sample colony, not a live one' : '') + '.', texto(sc) + (muestra ? ' · SYNTHETIC fixture, not a live colony' : '')];
   }
 

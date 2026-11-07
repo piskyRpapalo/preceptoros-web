@@ -55,7 +55,7 @@ test('every line stays short and names where the idea lives', () => {
     assert.ok(bytes(l) < 1024, 'line over 1 KiB: ' + bytes(l));
     assert.match(l, new RegExp('^Idea ' + (i + 1) + '/3 · .* · study/' + x.path.replace('.', '\\.') + ' · sha256 [0-9a-f]{12}$'));
   });
-  assert.ok(bytes(R.header('Tutorial cabin', r)) < 1024);
+  assert.ok(bytes(R.header('Hexagonal building', r)) < 1024);
 });
 
 test('fetchIdeas: offline, HTTP error, network error and timeout are causes; the request carries no credentials', async () => {
@@ -84,7 +84,7 @@ test('stream says one line per step and stops when the visitor leaves', () => {
 });
 
 test('the chat title names the building; ideas are asked by whole word', () => {
-  assert.equal(C.titleOf({ id: 'b-cabin', node: 'cabin' }), 'Tutorial cabin · b-cabin');
+  assert.equal(C.titleOf({ id: 'b-cabin', node: 'cabin' }), 'Hexagonal building · b-cabin');
   assert.equal(C.titleOf(null), 'Guide');
   const oldBrain = globalThis.AtlasWebNodeBrain;
   globalThis.AtlasWebNodeBrain = { model: () => 'SmolLM2-135M-Instruct' };

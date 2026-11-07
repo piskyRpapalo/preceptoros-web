@@ -21,18 +21,11 @@
       return data;
     } finally { clearTimeout(timeout); }
   }
-  // merge(tutorial, live) → the state both terminals draw: the tutorial cabin of the baked state.json, then the live
-  // nodes of the heartbeat. A live node on the cabin's id or hex is refused, never drawn over it.
+  // merge(tutorial, live) → the state both terminals draw: the live nodes of the heartbeat and nothing else. No node is
+  // always here (Sovereign, 2026-11-07): an empty colony is drawn as the floor and NO_DATA, never as a filler node.
   function merge(tutorial, live) {
-    var cabin = tutorial && tutorial.colonia && Array.isArray(tutorial.colonia.nodes) ? tutorial.colonia.nodes.filter(function (n) { return n.id === 'cabin'; }) : [];
-    if (cabin.length !== 1) throw new Error('tutorial cabin unavailable');
-    var c = cabin[0], l = live.colonia;
-    if (l.nodes.some(function (n) { return n.id === c.id || (n.q === c.q && n.r === c.r); })) throw new Error('node overlaps tutorial cabin');
-    return {esquema: live.esquema, nodes: [], colonia: {
-      nodes: [c].concat(l.nodes),
-      buildings: tutorial.colonia.buildings.filter(function (b) { return b.node === c.id; }).concat(l.buildings),
-      units: l.units
-    }};
+    var l = live.colonia;
+    return {esquema: live.esquema, nodes: [], colonia: {nodes: l.nodes, buildings: l.buildings, units: l.units}};
   }
   // follow({win, button, tutorial(), live(merged, d), fail(cause)}) → {read}. The heartbeat is read when asked, by the
   // button, and again every minute while the page is visible. Hidden or gone, the claim falls back with its cause and

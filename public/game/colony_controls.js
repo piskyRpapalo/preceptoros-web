@@ -179,7 +179,7 @@
     function start() {
       var c = env.colony();
       if (!c || walker) { return; }
-      var home = c.nodes.filter(function (n) { return n.id === 'cabin'; })[0] || c.nodes[0];
+      var home = c.nodes[0];
       if (home) { walker = { node: home.id, q: home.q, r: home.r }; }
     }
     // selectNeighbour(direction): choose the visible node in that direction (move() decides). Nothing moves yet.
