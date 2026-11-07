@@ -15,7 +15,7 @@
   var TOP = 0.966, SIDE_DARK = 0.38, SIDE_LIT = 0.78;
   var FONT_FAMILY = 'system-ui, sans-serif';   // measured canon of the OpenWorld body; no webfont
   var TOUCH_MIN = 44, FONT_MIN = 12;
-  // decision mia (sin firma): type is half the hexagon radius (r = 32 -> 16 px), stroke one
+  // decision without signature: type is half the hexagon radius (r = 32 -> 16 px), stroke one
   // sixteenth (r = 32 -> 2 px), line height 1.4 of the type.
   var FONT_RATIO = 0.5, STROKE_RATIO = 1 / 16, LINE_RATIO = 1.4;
   // The map projection (hex_projection.js: x = 48q, y = 12q + 24r) is a flat-top grid of
