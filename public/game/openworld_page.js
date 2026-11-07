@@ -29,26 +29,18 @@
     if (v !== viewSeen) { viewSeen = v; draw(); }
   }
   if (ZOOM) { surface.style.touchAction = 'none'; }
-  // A11Y: zoom and turn without fingers. Buttons (44 px), the keys + - 0 Q E outside form fields; the view is spoken by aria-live.
+  // A11Y: zoom and turn without floating buttons. The two map joysticks (map_view_joystick.js) and the keys + - 0 Q E drive them; the view is spoken by aria-live.
   if (ZOOM) {
-    var zoomBar = doc.createElement('div'), zoomSay = doc.createElement('p');
-    zoomBar.id = 'zoom-controls'; zoomBar.setAttribute('role', 'group'); zoomBar.setAttribute('aria-label', 'Map view');
+    var zoomSay = doc.createElement('p');
     zoomSay.id = 'zoom-state'; zoomSay.setAttribute('aria-live', 'polite');
     var speak = function () { zoomSay.textContent = ZOOM.say(); };
     var zoomTo = function (d) { ZOOM.step(d); speak(); };
-    var turnTo = function (d) { var to = ZOOM.turn(d); zoomSay.textContent = 'Map view ' + to + '° · zoom ' + surface.dataset.zoom + '×'; };
-    var resetView = function () { ZOOM.reset(); speak(); };
-    [['Zoom in', function () { zoomTo(1); }, 'zoom-in'], ['Zoom out', function () { zoomTo(-1); }, 'zoom-out'], ['Reset zoom', function () { zoomTo(0); }, 'zoom-reset'],
-      ['Rotate left', function () { turnTo(-1); }, 'rotate-left'], ['Rotate right', function () { turnTo(1); }, 'rotate-right'], ['Reset view', resetView, 'view-reset']].forEach(function (z) {
-      var b = doc.createElement('button'); b.type = 'button'; b.id = z[2]; var ICON = { 'zoom-in': '+', 'zoom-out': '\u2212', 'zoom-reset': '\u27F2', 'rotate-left': '\u21BA', 'rotate-right': '\u21BB', 'view-reset': '\u2302' };
-      // Compact plate (Doogee review, 2026-11-02): 44 px icon buttons, the words in aria-label and title, no text over the drawing.
-      b.textContent = ICON[z[2]] || z[0]; b.setAttribute('aria-label', z[0]); b.title = z[0];
-      b.style.minHeight = '44px'; b.style.minWidth = '44px'; b.addEventListener('click', z[1]); zoomBar.appendChild(b);
-    });
-    doc.getElementById('map-actions').appendChild(zoomBar);
+    var turnTo = function (d) { var to = ZOOM.turn(d); zoomSay.textContent = 'Map view ' + to + '\u00B0 \u00B7 zoom ' + surface.dataset.zoom + '\u00D7'; };
+    var resetView = function () { ZOOM.reset(); if (raiz.AtlasMapPan) { raiz.AtlasMapPan.home(); } speak(); };
+    raiz.AtlasMapView = { zoom: zoomTo, turn: turnTo, reset: resetView };
     // Speak zoom in the panel, not over the map.
     speak();
-    (doc.getElementById('voice-zoom') || zoomBar).appendChild(zoomSay);
+    (doc.getElementById('voice-zoom') || doc.body).appendChild(zoomSay);
     // A free turn or a pinch is spoken once the fingers lift, never on every frame.
     surface.addEventListener('pointerup', function () { if (zoomSay.textContent !== ZOOM.say()) { speak(); } });
     doc.addEventListener('keydown', function (e) {
@@ -68,7 +60,7 @@
     var B = raiz.AtlasAcho, P = raiz.AtlasComicAtoms;
     if (!surface || !B || !P || !raiz.AtlasAchoLetters) { return; }
     var position = CCT && CCT.walker(), location = doc.getElementById('map-h');
-    if (location) { location.textContent = position && Number.isFinite(position.q) && Number.isFinite(position.r) ? 'Location · ' + position.q + ', ' + position.r : 'Location · NO_DATA: visitor position unavailable'; }
+    if (location) { raiz.AtlasPlaceName.mark(location, position); }
     var width = surface.clientWidth || 320, height = surface.clientHeight || 200;
     var dpr = Math.min(2, raiz.devicePixelRatio || 1);
     surface.width = Math.round(width * dpr); surface.height = Math.round(height * dpr);

@@ -7,8 +7,7 @@
   function updateMapHeading() {
     var view = root.AtlasOpenworldView && root.AtlasOpenworldView(), controls = view && view.controls;
     var p = controls && controls.walker ? controls.walker() : null;
-    var place = p && Number.isFinite(p.q) && Number.isFinite(p.r) ? 'Location · ' + p.q + ', ' + p.r : 'Location · NO_DATA: visitor position unavailable';
-    if (mapHeading) { mapHeading.textContent = (visitName ? visitName + ' · ' : '') + place; }
+    if (mapHeading) { root.AtlasPlaceName.mark(mapHeading, p, visitName ? visitName + ' \u00B7 ' : ''); }
   }
   if (mapHeading && mapSurface) {
     box.addEventListener('visitor:render', function (event) {

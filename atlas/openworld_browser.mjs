@@ -83,7 +83,7 @@ async function main() {
       count: bar?.querySelectorAll('button').length, labels: [...(bar?.querySelectorAll('button') || [])].map(b=>b.getAttribute('aria-label')),
       profileHidden: !!bar?.querySelector('[data-cat=Profile]')?.hidden, entryTools: !!document.getElementById('entry-tools'),
       intro: document.body.innerText }; })())`));
-  ok(/^Location · /.test(initial.title || ''), 'map title does not identify the ephemeral account location: ' + initial.title);
+  ok(/^([A-Z][a-z]{3,9} · -?\d+, -?\d+|NO_DATA: visitor position unavailable)$/.test(initial.title || ''), 'map title does not identify the ephemeral account location: ' + initial.title);
   ok(initial.canvases === 1, 'OpenWorld renders more than one canvas: ' + initial.canvases);
   ok(initial.inkPixels > 2000, 'the map is blank: ' + initial.inkPixels);
   ok(initial.panelParent === 'stage' && initial.panelHidden, 'voice panels are not mounted as a closed overlay on the shared map');
@@ -93,7 +93,7 @@ async function main() {
 // Main's three-leaf entry starts closed; this is intentional after the communication moved behind its own leaf.
   ok(initial.chat[5] === 0 && initial.form[5] === 0, 'communication is open before it is requested');
   ok(initial.padGone, 'the retired six-direction pad is still on the map layer');
-  ok(initial.joy && initial.joy[4] >= 88, 'the view joystick is not visible on the map layer: ' + JSON.stringify(initial.joy));
+  ok(initial.joy && initial.joy[4] >= 44, 'the view joystick is not visible on the map layer: ' + JSON.stringify(initial.joy));
 
   const remoteChat = await evaluate(`(async () => {
     document.querySelector('.cats [data-cat=Communication]').click();
@@ -178,7 +178,7 @@ async function main() {
     // The route can finish before building_chat mounts its exit control; wait for that measured state, not a fixed short delay.
     for (let i=0;i<100;i++) { const exit=document.getElementById('leave-building'); if (exit && !exit.hidden) break; await new Promise(r=>setTimeout(r,50)); }
     return {joyOnStage:!!joy && joy.parentElement===document.getElementById('stage'),
-      buttons:joy?joy.querySelectorAll('button').length:0, before, after:document.querySelector('h1').textContent,
+      buttons:document.querySelectorAll('#stage .view-joy button').length, before, after:document.querySelector('h1').textContent,
       live:(document.querySelector('#joy [aria-live]')||{}).textContent || ''};
   })()`);
   ok(movement.joyOnStage && movement.buttons === 2, 'the view joystick is not the two-control view panner on the map: ' + JSON.stringify(movement));

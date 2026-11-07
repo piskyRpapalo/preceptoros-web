@@ -301,11 +301,13 @@
    "scripts": [
     "/game/map_chart.js",
     "/game/map_chunks.js",
+    "/game/place_name.js",
     "/game/map_painter.js"
    ],
    "globals": [
     "AtlasMapCarta",
     "AtlasMapChunks",
+    "AtlasPlaceName",
     "AtlasMapPainter"
    ],
    "guards": [
