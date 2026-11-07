@@ -58,7 +58,7 @@
    "guards": [
     {
      "file": "atlas/a11y_filler_browser.mjs",
-     "text": "Tab never reached the cabin proxy"
+     "text": "Tab never reached the first-node proxy"
     }
    ]
   },
@@ -301,11 +301,13 @@
    "scripts": [
     "/game/map_chart.js",
     "/game/map_chunks.js",
+    "/game/place_name.js",
     "/game/map_painter.js"
    ],
    "globals": [
     "AtlasMapCarta",
     "AtlasMapChunks",
+    "AtlasPlaceName",
     "AtlasMapPainter"
    ],
    "guards": [
@@ -345,7 +347,7 @@
     },
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "the view joystick is not the two-control view panner on the map"
+     "text": "the view joystick is not the one-control view panner on the map"
     }
    ]
   },
@@ -451,7 +453,7 @@
     },
     {
      "file": "atlas/live_invocation_browser.mjs",
-     "text": "entering the cabin does not play the worm tunnel first"
+     "text": "entering the first node does not play the worm tunnel first"
     }
    ]
   },
@@ -471,7 +473,7 @@
     },
     {
      "file": "atlas/a11y_filler_browser.mjs",
-     "text": "Tab never reached the cabin proxy"
+     "text": "Tab never reached the first-node proxy"
     },
     {
      "file": "atlas/a11y_filler_browser.mjs",

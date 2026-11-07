@@ -11,18 +11,19 @@ const E = require('../public/game/colony_buildings.js');
 const F = require('../public/game/state_frames.js');
 const R = require('../public/game/chunk_router.js');
 
-// Un edificio de cada forma (el id decide la forma) y el de la cabaña.
+// Un edificio de cada forma (el id decide la forma). La cabaña de tutorial ya no existe.
 function muestras() {
-  const out = [{ id: 'b-cabin', node: 'cabin' }];
+  const out = [];
   for (const forma of E.FORMAS) {
     for (let i = 0; i < 200; i++) { const id = 'b-' + i; if (E.formaDe(id) === forma) { out.push({ id, node: 'n-' + i }); break; } }
   }
   return out;
 }
 
-test('cada forma del catálogo y la cabaña tienen guion', () => {
-  for (const k of [...E.FORMAS, 'cabin']) { assert.ok(C.KINDS.includes(k), 'sin guion: ' + k); }
-  assert.equal(muestras().length, E.FORMAS.length + 1);
+test('cada forma del catálogo tiene guion y la cabaña de tutorial no existe', () => {
+  for (const k of E.FORMAS) { assert.ok(C.KINDS.includes(k), 'sin guion: ' + k); }
+  assert.ok(!C.KINDS.includes('cabin') && C.kindOf({ id: 'b-cabin', node: 'cabin' }) !== 'cabin');
+  assert.equal(muestras().length, E.FORMAS.length);
   for (const b of muestras()) { assert.equal(C.opening(b).length, 3); }
 });
 
@@ -38,7 +39,7 @@ test('todas las líneas son marcos válidos bajo 1.024 B con texto', () => {
 });
 
 test('intención desconocida = NO_DATA con la causa del router', () => {
-  const b = { id: 'b-cabin', node: 'cabin' };
+  const b = muestras()[0];
   const m = C.reply(b, 'tell me a poem', R);
   assert.equal(m.atoms[0].r, R.responde('tell me a poem', null).causa);
   assert.equal(m.atoms[0].r, 'NO_DATA · model_not_installed');

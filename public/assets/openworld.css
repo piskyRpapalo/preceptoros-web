@@ -33,18 +33,20 @@ main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) m
 .topbar{display:flex;justify-content:flex-start;align-items:center;gap:4px 12px}
 .topbar > a{display:inline-flex;align-items:center;min-width:44px;min-height:44px}
 .stage{position:relative;display:flex;flex-direction:column;min-height:0;flex:1}
-#zoom-controls{display:flex;flex-wrap:wrap;gap:2px;
-  padding:2px;border:2px solid var(--line);border-radius:var(--radius);background:color-mix(in srgb,var(--bg) 78%,transparent)}
-#zoom-controls button{width:44px;height:44px;padding:0;font-size:1.3rem;font-weight:700;line-height:1}
-@supports not (background:color-mix(in srgb,red 50%,transparent)){#zoom-controls{background:var(--bg)}}
+/* Terminal icon language (the app's tab row): 44px target, transparent, 1px transparent border, soft ink, 20px glyph; selected = ink border + soft fill. No web violet variable exists, so the accent is --fg. */
+.view-joy{position:absolute;bottom:4px;z-index:3}
+.view-joy.left{left:4px}.view-joy.right{right:4px}
+.view-stick,.cats button{display:grid;place-items:center;padding:0;font:inherit;font-size:20px;line-height:1;color:var(--soft);background:transparent;border:1px solid transparent;border-radius:var(--radius);cursor:pointer}
+.view-stick{width:64px;height:64px;min-width:44px;min-height:44px;border-color:var(--line);border-radius:50%;touch-action:none;cursor:grab}
+.view-stick span{pointer-events:none}
+.view-stick[data-on],.view-stick:focus-visible,.cats button[aria-pressed="true"]{color:var(--fg);border-color:var(--fg);background:color-mix(in srgb,var(--fg) 10%,transparent)}
 .voices{list-style:none;margin:0;padding:0;display:grid;gap:6px}
 #voices.map-voices{display:grid;position:absolute;z-index:4;inset:8px 160px 8px 8px;overflow:auto;align-content:start;padding:8px;background:var(--bg);border:2px solid var(--line);border-radius:var(--radius)}
 #voices.map-voices[hidden]{display:none}
 #voices>[data-speaker=Welcome]{order:0}
 #voices>[data-speaker]:not([data-speaker=Welcome]){order:1}
 .cats{display:flex;justify-content:center;gap:4px;overflow-x:auto;flex:0 0 auto}
-.cats button{flex:0 0 44px;min-width:44px;min-height:44px;padding:4px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
-.cats button[aria-pressed="true"]{outline:3px solid currentColor;outline-offset:-4px}
+.cats button{flex:0 0 44px;min-width:44px;min-height:44px}
 #map-actions{position:absolute;z-index:5;top:36px;left:8px;right:8px;justify-content:flex-end;pointer-events:none}
 #map-actions>*{pointer-events:auto}
 #map-brain,#radio-chat{order:6}
@@ -89,16 +91,15 @@ body,main,#map,#chat,.voice,.radio-chat{background:Canvas;color:CanvasText}
 .voice > .who{color:CanvasText}
 a{color:LinkText}
 button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-tab{background:ButtonFace;color:ButtonText;border-color:ButtonText;forced-color-adjust:none}
-#zoom-controls{background:Canvas;border-color:CanvasText;forced-color-adjust:none}
+button.view-stick{border-color:ButtonText}
 .hitl-mark{border-color:ButtonText!important}
 :focus-visible,#map-proxies .map-proxy:focus-visible{outline:3px solid Highlight!important;outline-offset:2px}
 #surface{border:2px solid CanvasText;forced-color-adjust:none}
 .welcome,.radio-chat-no-data{border:2px solid CanvasText}
 }
 @media (prefers-contrast: more){
-.voice,#map .press button,.voice button,#chat button,#chat input,.stage #zoom-controls{border-width:3px}
+.voice,#map .press button,.voice button,#chat button,#chat input,.view-stick{border-width:3px}
 #map .state,#chat .log,.voice .state{color:var(--fg)}
-#zoom-controls{background:var(--bg)}
 :focus-visible{outline-width:4px}
 }
 @media (width<900px){main.map-panel-mask{grid-template-rows:minmax(180px,46dvh) minmax(0,1fr)}#map .surface{width:100%;margin:0}#map{padding:6px 8px}#chat{padding:6px 8px 0;gap:4px}}
@@ -124,3 +125,15 @@ main.map-panel-mask.with-showcase-player{grid-template-columns:minmax(0,1fr);gri
 #voices.map-voices:not([data-active-category="Communication"]){inset:0;padding-bottom:148px}
 }
 @media (forced-colors:active){#voices[data-active-category="Communication"] #entry,#voices[data-active-category="Communication"] #question{background:Canvas;color:CanvasText}}
+/* Native sheets, mini-first (Sovereign, 2026-11-07): on a narrow viewport (the app's World gap is 420x437,
+   an Android phone is about the same) an open panel is one full-width sheet over the map, the map controls
+   step aside while it is open, and type follows the app's 80% scale. One rule for app, phone and PC: it
+   reads the viewport, never whether the page sits in a frame. */
+@media (max-width:600px){
+html{font-size:80%}
+body{font-size:1rem}
+#voices.map-voices,#voices.map-voices[data-active-category="Communication"]{inset:0;max-height:none;padding:8px;border-radius:0}
+#map:has(#voices.map-voices:not([hidden])) #map-actions{display:none}
+/* the joysticks step aside (and out of focus) while a sheet is open */
+#map:has(#voices.map-voices:not([hidden])) .view-joy{visibility:hidden}
+}

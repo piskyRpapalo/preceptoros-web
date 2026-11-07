@@ -134,49 +134,36 @@ async function main() {
   ok(Math.abs(e.panx) <= lim.x && Math.abs(e.pany) <= lim.y, 'the pan left its bound: ' + JSON.stringify(medidas.limite));
 
   // 7 · ⌂ brings the view home and hands the camera back.
-  await ev("document.getElementById('view-reset').click(), true"); await espera(300);
+  await ev("AtlasMapView.reset(), true"); await espera(300);
   // With free walk on, home is the crab: follow() places the view, so the law is «the camera is handed back».
   const h = await vista();
   medidas.casa = [h.panx, h.pany];
   ok(h.look === '' && (h.panx !== e.panx || h.pany !== e.pany), 'home did not hand the view back to the crab: ' + JSON.stringify(h));
 
   // The view joystick is separate from the visitor and works with real touch, mouse and keyboard input.
-  const stickBox = await ev(`(() => { const s=document.getElementById('view-stick'); if(!s)return null; const r=s.getBoundingClientRect(); return {x:r.left+r.width/2,y:r.top+r.height/2,w:r.width,h:r.height}; })()`);
+  const stickBox = await ev(`(() => { const s=document.querySelector('#view-joystick .view-stick'); if(!s)return null; const r=s.getBoundingClientRect(); return {x:r.left+r.width/2,y:r.top+r.height/2,w:r.width,h:r.height}; })()`);
   ok(stickBox && stickBox.w >= 44 && stickBox.h >= 44, 'map view joystick missing or smaller than 44 px');
   if (stickBox) {
     const beforeTouch = await vista();
     await dedo(stickBox.x, stickBox.y, 5, 0, 6); await espera(150);
     const afterTouch = await vista();
     ok(afterTouch.panx !== beforeTouch.panx && afterTouch.walker === beforeTouch.walker, 'touch joystick must pan view without walking visitor');
-    await ev("document.getElementById('view-stick').focus(), true");
+    await ev("document.querySelector('#view-joystick .view-stick').focus(), true");
     const beforeKey = await vista();
     for (const type of ['keyDown', 'keyUp']) await cmd('Input.dispatchKeyEvent', {type, key:'ArrowRight', code:'ArrowRight', windowsVirtualKeyCode:39});
     await espera(150);
     const afterKey = await vista();
     ok(afterKey.panx !== beforeKey.panx && afterKey.walker === beforeKey.walker, 'focused joystick arrows must pan without walking visitor');
-    const contextBeforeMode = await ev("document.getElementById('brain-context').textContent");
-    await ev("document.getElementById('view-stick-mode').click(), true");
-    const contextAfterMode = await ev("document.getElementById('brain-context').textContent");
-    ok(contextAfterMode === contextBeforeMode, 'changing camera mode must not change the chat context');
-    await ev("document.getElementById('view-stick-mode').focus(), true");
-    const beforeModeKey = await vista();
-    for (const type of ['keyDown', 'keyUp']) await cmd('Input.dispatchKeyEvent', {type, key:'ArrowLeft', code:'ArrowLeft', windowsVirtualKeyCode:37});
-    await espera(300);
-    const afterModeKey = await vista();
-    const angleAfterKey = await ev("Number(document.getElementById('surface').dataset.angle)");
-    ok(angleAfterKey !== 0 && afterModeKey.walker === beforeModeKey.walker, 'focused mode arrows must turn the view without walking visitor');
-    await ev("document.getElementById('view-reset').click(), true"); await espera(250);
-    const beforeMouse = await vista();
-    await cmd('Emulation.setTouchEmulationEnabled', {enabled:false});
-    await cmd('Input.dispatchMouseEvent', {type:'mouseMoved', x:stickBox.x, y:stickBox.y});
-    await cmd('Input.dispatchMouseEvent', {type:'mousePressed', x:stickBox.x, y:stickBox.y, button:'left', clickCount:1});
-    await cmd('Input.dispatchMouseEvent', {type:'mouseMoved', x:stickBox.x+30, y:stickBox.y-30, button:'left', buttons:1});
-    await cmd('Input.dispatchMouseEvent', {type:'mouseReleased', x:stickBox.x+30, y:stickBox.y-30, button:'left', clickCount:1});
-    await espera(600);
-    const afterMouse = await vista();
-    const modeState = await ev("({angle:document.getElementById('surface').dataset.angle,mode:document.getElementById('view-stick-mode').getAttribute('aria-pressed')})");
-    medidas.viewJoystick = {touchPan:afterTouch.panx-beforeTouch.panx,keyPan:afterKey.panx-beforeKey.panx,zoomBefore:beforeMouse.zoom,zoomAfter:afterMouse.zoom,angle:modeState.angle};
-    ok(modeState.mode === 'true' && Number(modeState.angle) !== 0 && Number(afterMouse.zoom) > Number(beforeMouse.zoom) && afterMouse.walker === beforeMouse.walker, 'mouse joystick must turn and zoom without walking visitor: ' + JSON.stringify(medidas.viewJoystick));
+    // Decree 2026-11-07: the right side belongs to the ephemeral character; no character, no second stick.
+    const right = await ev("(() => { const n = document.getElementById('character-joystick-slot'); return {turn:!!document.getElementById('view-joystick-turn'), sticks:document.querySelectorAll('#stage .view-joy').length, slot:n ? n.dataset.state + ':' + n.dataset.cause : null}; })()");
+    ok(!right.turn && right.sticks === 1 && right.slot === 'NO_DATA:character_not_born', 'only the left pan joystick may live until the character exists: ' + JSON.stringify(right));
+    await ev("AtlasMapView.reset(), true"); await espera(250);
+    const beforeView = await vista();
+    await ev("AtlasMapView.turn(1), AtlasMapView.zoom(1), true"); await espera(300);
+    const afterView = await vista();
+    const angle = await ev("Number(document.getElementById('surface').dataset.angle)");
+    medidas.viewJoystick = {touchPan:afterTouch.panx-beforeTouch.panx,keyPan:afterKey.panx-beforeKey.panx,zoomBefore:beforeView.zoom,zoomAfter:afterView.zoom,angle,rightStick:right.turn};
+    ok(angle !== 0 && Number(afterView.zoom) > Number(beforeView.zoom) && afterView.walker === beforeView.walker, 'turn and zoom must still work without a joystick: ' + JSON.stringify(medidas.viewJoystick));
   }
 
   console.log(JSON.stringify({ piece: 'la-mano', sabotaje: SAB || null, receipt: fallos.length ? 'ROJO' : 'VERDE', medidas, fallos }));

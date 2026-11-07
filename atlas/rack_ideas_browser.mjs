@@ -25,6 +25,7 @@ const SAB = process.env.SABOTAJE || '';
 const W = 360, H = 716, STUDY = 'https://raw.githubusercontent.com/';
 const MUESTRA = readFileSync(join(RAIZ, 'atlas/fixtures/ai-index-sample.json'));
 const JOYAS = readFileSync(join(RAIZ, 'odd/JOYAS.md'));
+const ONE = readFileSync(new URL('./fixtures/one_live_node.json', import.meta.url));   // one live node: the first node alive is the tutorial's place (the tutorial cabin is retired)
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 const tipos = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
 function sirve(raiz) {
@@ -32,7 +33,7 @@ function sirve(raiz) {
     try {
       let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
-      let cuerpo = readFileSync(f);
+      let cuerpo = ruta === '/openworld/state.json' ? ONE : readFileSync(f);
       if (ruta === '/openworld/index.html' && SAB === 'en-carga') { cuerpo = Buffer.from(String(cuerpo).replace('</body>', "<script>fetch('" + STUDY + "piskyRpapalo/study/main/ai-index.json').catch(function(){})</script></body>")); }
       if (ruta === '/game/building_chat.js' && SAB === 'sin-titulo') { cuerpo = Buffer.from(String(cuerpo).replace('h.textContent = titleOf(b);', '')); }
       res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
@@ -84,13 +85,13 @@ async function main() {
   ok(orden.vis[0] === 'map' && orden.vis.length === 1 && orden.mapa === 0, 'the showcase is not the only visible surface before interaction: ' + JSON.stringify(orden));
   ok(orden.titulo === 'Guide', 'the initial panel does not identify its guide speaker: ' + orden.titulo);
 
-  // 2 · enter the tutorial cabin: the title names it; the Rack ideas button is a 44 px target.
+  // 2 · enter the first node: the title names it; the Rack ideas button is a 44 px target.
   const dentro = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), st = () => document.getElementById('state').textContent;
     document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); for (let i = 0; i < 30 && !/Inside building/.test(st()); i++) await w(100);
     const b = document.getElementById('rack-ideas'), r = b && b.getBoundingClientRect();
     return JSON.stringify({ titulo: document.getElementById('chat-h').textContent, boton: b ? { w: Math.round(r.width), h: Math.round(r.height), hidden: b.hidden } : null }); })()`));
   medidas.dentro = dentro;
-  ok(dentro.titulo === 'Tutorial cabin · b-cabin', 'the panel title does not name its current speaker: ' + dentro.titulo);
+  ok(dentro.titulo === 'Hexagonal building · b-home', 'the panel title does not name its current speaker: ' + dentro.titulo);
   ok(dentro.boton && !dentro.boton.hidden && dentro.boton.h >= 44 && dentro.boton.w >= 44, 'no 44 px Rack ideas button inside: ' + JSON.stringify(dentro.boton));
   ok(pedidas.length === 0, 'entering a building asked the network: ' + pedidas.slice(0, 3));
 
@@ -103,7 +104,7 @@ async function main() {
   medidas.ideas = { pronto, luego, peticiones: pedidas.length, primera: lineas[1] || null };
   ok(pedidas.length === 1 && /\/study\/main\/ai-index\.json$/.test(pedidas[0] || ''), 'one click did not make exactly one request to the study index: ' + pedidas);
   ok(pronto >= 1 && pronto < 3 && luego === 3, 'the ideas did not arrive one by one: ' + JSON.stringify(medidas.ideas));
-  ok(/^Rack · study · 3 ideas, live from study .*asked from Tutorial cabin\.$/.test(lineas[0] || ''), 'no header naming the count and the building: ' + lineas[0]);
+  ok(/^Rack · study · 3 ideas, live from study .*asked from Hexagonal building\.$/.test(lineas[0] || ''), 'no header naming the count and the building: ' + lineas[0]);
   ok(lineas.every((t) => Buffer.byteLength(t) < 1024), 'a rack line is over 1 KiB');
   await foto('rack-ideas.png');
 
@@ -135,7 +136,7 @@ async function main() {
     recibo_sha256 = await sha256(canon({ recibido: recibido, payload_sha256: payload_sha256 })),
     RECIBO = JSON.stringify({ veredicto: veredicto, trailer: { recibido: recibido, payload_sha256: payload_sha256, recibo_sha256: recibo_sha256 } });
   const hex = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), real = window.fetch, vistos = [];
-    let respuesta = { status: 200, body: { v: 'preceptoros.chat/1', estado: 'OK', burbuja: { texto: 'The cabin is where every visit starts.', recortada: false }, sello: { tic: 1, mac: 'x' }, recibo: ${RECIBO} } };
+    let respuesta = { status: 200, body: { v: 'preceptoros.chat/1', estado: 'OK', burbuja: { texto: 'The first node is where every visit starts.', recortada: false }, sello: { tic: 1, mac: 'x' }, recibo: ${RECIBO} } };
     window.fetch = (u, o) => { if (String(u).startsWith('https://api.preceptoros.org/')) { vistos.push(JSON.parse(o.body)); return Promise.resolve(new Response(JSON.stringify(respuesta.body), { status: respuesta.status })); } return real(u, o); };
     const last = () => [...document.querySelectorAll('#log li')].filter((li) => !/receipt/.test(li.className || '')).pop(),
       ask = async (t) => { document.getElementById('question').value = t; document.getElementById('entry').dispatchEvent(new Event('submit', { cancelable: true })); await w(900); return (last() || {}).textContent; };
@@ -146,9 +147,9 @@ async function main() {
     window.fetch = real;
     return JSON.stringify({ bien, reciboLi, cerrada, pagina: vistos[0] && vistos[0].contexto.pagina, tics: vistos.map((v) => v.tic) }); })()`));
   medidas.hexelion = hex;
-  ok(hex.bien === 'Hexelion · The cabin is where every visit starts.', 'Hexelion\'s live answer is not shown: ' + hex.bien);
+  ok(hex.bien === 'Hexelion · The first node is where every visit starts.', 'Hexelion\'s live answer is not shown: ' + hex.bien);
   ok(/Hexelion · Decision proposed\. Hexelion advises; it never signs\./.test(hex.reciboLi || '') && /Payload SHA-256: [0-9a-f]{64}/.test(hex.reciboLi || ''), 'the decision receipt is not shown beside the answer: ' + hex.reciboLi);
-  ok(hex.pagina === '/openworld/#b-cabin', 'the door does not know the building: ' + hex.pagina);
+  ok(hex.pagina === '/openworld/#b-home', 'the door does not know the building: ' + hex.pagina);
   ok(/^Hexelion · NO_DATA · Hexelion is not taking visitors right now\. \(aula_rechaza\)$/.test(hex.cerrada || ''), 'a closed door is not said with its cause: ' + hex.cerrada);
   ok(JSON.stringify(hex.tics) === '[1,2]', 'the turns do not chain: ' + JSON.stringify(hex.tics));
 
@@ -156,7 +157,7 @@ async function main() {
   // and every line of the conversation names who speaks.
   const voces = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)); document.getElementById('question').value = 'voices';
     document.getElementById('entry').dispatchEvent(new Event('submit', { cancelable: true })); await w(4500);
-    const all = [...document.querySelectorAll('#log li')], v = all.map((li) => li.textContent).filter((t) => /^Tutorial cabin · Voice \\d+\\/9 · /.test(t));
+    const all = [...document.querySelectorAll('#log li')], v = all.map((li) => li.textContent).filter((t) => /^Hexagonal building · Voice \\d+\\/9 · /.test(t));
     return JSON.stringify({ n: v.length, claude: v.some((t) => /Contributor · Claude — contributor model, GitHub/.test(t)), chunk: v.some((t) => /Guide · SmolLM2 135M — chunk model/.test(t)),
       sinTitulo: all.filter((li) => !li.dataset.speaker).map((li) => li.textContent.slice(0, 40)) }); })()`));
   medidas.voces = voces;

@@ -10,6 +10,7 @@ import { launchChrome } from './chrome_launch.mjs';
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
 const CAPTURE = process.argv[2] || null;
 const HITL = readFileSync(new URL('./fixtures/hitl_state.json', import.meta.url));
+const ONE = readFileSync(new URL('./fixtures/one_live_node.json', import.meta.url));   // one live node: the tutorial cabin is retired
 let hitlOn = false;
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const failures = [], external = [];
@@ -25,7 +26,7 @@ function serve() {
       if (path.endsWith('/')) path += 'index.html';
       const file = resolve(PUBLIC, '.' + path);
       if (!file.startsWith(resolve(PUBLIC))) { res.writeHead(403).end(); return; }
-      const body = hitlOn && path === '/openworld/state.json' ? HITL : readFileSync(file);
+      const body = path === '/openworld/state.json' ? (hitlOn ? HITL : ONE) : readFileSync(file);
       res.writeHead(200, { 'Content-Type': types[extname(file)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(body);
     } catch { res.writeHead(404).end(); }
   });
@@ -82,7 +83,7 @@ async function main() {
       count: bar?.querySelectorAll('button').length, labels: [...(bar?.querySelectorAll('button') || [])].map(b=>b.getAttribute('aria-label')),
       profileHidden: !!bar?.querySelector('[data-cat=Profile]')?.hidden, entryTools: !!document.getElementById('entry-tools'),
       intro: document.body.innerText }; })())`));
-  ok(/^Location · /.test(initial.title || ''), 'map title does not identify the ephemeral account location: ' + initial.title);
+  ok(/^([A-Z][a-z]{3,9} · -?\d+, -?\d+|NO_DATA: visitor position unavailable)$/.test(initial.title || ''), 'map title does not identify the ephemeral account location: ' + initial.title);
   ok(initial.canvases === 1, 'OpenWorld renders more than one canvas: ' + initial.canvases);
   ok(initial.inkPixels > 2000, 'the map is blank: ' + initial.inkPixels);
   ok(initial.panelParent === 'stage' && initial.panelHidden, 'voice panels are not mounted as a closed overlay on the shared map');
@@ -92,7 +93,7 @@ async function main() {
 // Main's three-leaf entry starts closed; this is intentional after the communication moved behind its own leaf.
   ok(initial.chat[5] === 0 && initial.form[5] === 0, 'communication is open before it is requested');
   ok(initial.padGone, 'the retired six-direction pad is still on the map layer');
-  ok(initial.joy && initial.joy[4] >= 88, 'the view joystick is not visible on the map layer: ' + JSON.stringify(initial.joy));
+  ok(initial.joy && initial.joy[4] >= 44, 'the view joystick is not visible on the map layer: ' + JSON.stringify(initial.joy));
 
   const remoteChat = await evaluate(`(async () => {
     document.querySelector('.cats [data-cat=Communication]').click();
@@ -170,20 +171,21 @@ async function main() {
 // The merged three-leaf layout now puts node places under Welcome (the former Map leaf).
     const cat=document.querySelector('.cats [data-cat=Welcome]'); if (cat && cat.getAttribute('aria-pressed') !== 'true') cat.click();
     await new Promise(r=>setTimeout(r,400));
-    const place=document.querySelector('#map-node-list [data-node="cabin"]');
+    const place=document.querySelector('#map-node-list [data-node="home"]');
     const joy=document.querySelector('#stage #view-joystick'); const before=document.querySelector('h1').textContent;
     place?.click();
     await new Promise(r=>setTimeout(r,600));
     // The route can finish before building_chat mounts its exit control; wait for that measured state, not a fixed short delay.
     for (let i=0;i<100;i++) { const exit=document.getElementById('leave-building'); if (exit && !exit.hidden) break; await new Promise(r=>setTimeout(r,50)); }
     return {joyOnStage:!!joy && joy.parentElement===document.getElementById('stage'),
-      buttons:joy?joy.querySelectorAll('button').length:0, before, after:document.querySelector('h1').textContent,
+      buttons:document.querySelectorAll('#stage .view-joy button').length, before, after:document.querySelector('h1').textContent,
       live:(document.querySelector('#joy [aria-live]')||{}).textContent || ''};
   })()`);
-  ok(movement.joyOnStage && movement.buttons === 2, 'the view joystick is not the two-control view panner on the map: ' + JSON.stringify(movement));
+  // Joystick decree (2026-11-07): one pan stick on the map; the right slot waits, NO_DATA, for the ephemeral character.
+  ok(movement.joyOnStage && movement.buttons === 1, 'the view joystick is not the one-control view panner on the map: ' + JSON.stringify(movement));
   ok(/terminal: basic \(the node\)/.test(movement.live), 'a node place click does not walk and enter the node: ' + JSON.stringify(movement));
 
-// Require a real Leave action before testing general chat; this catches a broken cabin exit.
+// Require a real Leave action before testing general chat; this catches a broken building exit.
   const leaveStatus = await evaluate(`(() => { const b=document.getElementById('leave-building'); if(!b || b.hidden) return 'NO_LEAVE_CONTROL'; b.click(); return document.getElementById('state').textContent; })()`);
   ok(/^Left building /.test(leaveStatus), 'the building conversation did not leave before general chat: ' + leaveStatus);
 

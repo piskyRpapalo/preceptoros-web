@@ -5,8 +5,8 @@ import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 const require = createRequire(import.meta.url);
 const W = require('./tutorial_walk.js');
-const ALL = { cabin: 'LIVE', beelink: 'LIVE' };
-const NO_BEELINK = { cabin: 'LIVE', beelink: 'NO_DATA' };
+const ALL = { home: 'LIVE', beelink: 'LIVE' };
+const NO_BEELINK = { home: 'LIVE', beelink: 'NO_DATA' };
 
 test('each step is a place, and the six steps are in order', () => {
   assert.deepEqual(W.STEPS.map((s) => s.id), ['key', 'beacon', 'node']);
@@ -14,7 +14,7 @@ test('each step is a place, and the six steps are in order', () => {
 });
 
 test('a place that is not alive is not walked; the refusal says NO_DATA', () => {
-  const r = W.canWalk('beacon', { cabin: 'LIVE', beelink: 'NO_DATA' });
+  const r = W.canWalk('beacon', { home: 'LIVE', beelink: 'NO_DATA' });
   assert.equal(r.ok, false);
   assert.match(r.cause, /^NO_DATA: place beelink is not alive/);
   assert.equal(W.canWalk('beacon', ALL).ok, true);
@@ -51,10 +51,10 @@ test('sabotage: a skip counted as progress would be caught by the progress test'
   assert.deepEqual(W.progress(log), []);
 });
 
-test('advance: entering the cabin plays the key; a second entry skips the dead beacon and plays the node', () => {
-  let r = W.advance([], 'cabin', NO_BEELINK);
+test('advance: entering the first node plays the key; a second entry skips the dead beacon and plays the node', () => {
+  let r = W.advance([], 'home', NO_BEELINK);
   assert.deepEqual(W.progress(r.log), ['key']);
-  r = W.advance(r.log, 'cabin', NO_BEELINK);
+  r = W.advance(r.log, 'home', NO_BEELINK);
   assert.deepEqual(W.progress(r.log), ['key', 'node']);
   assert.deepEqual(r.log.filter((e) => e.outcome === 'skipped').map((e) => e.step), ['beacon']);
   assert.match(r.said, /beacon skipped · NO_DATA/);
@@ -62,13 +62,13 @@ test('advance: entering the cabin plays the key; a second entry skips the dead b
 });
 
 test('advance: a dead place never blocks the walk and is never played', () => {
-  const r = W.advance(W.record([], 'key', 'played'), 'cabin', NO_BEELINK);
+  const r = W.advance(W.record([], 'key', 'played'), 'home', NO_BEELINK);
   assert.equal(W.progress(r.log).includes('beacon'), false);
   assert.equal(r.log.find((e) => e.step === 'beacon').outcome, 'skipped');
 });
 
 test('advance: a walkable step waits for its place and is not recorded before', () => {
-  const r = W.advance(W.record([], 'key', 'played'), 'cabin', ALL);
+  const r = W.advance(W.record([], 'key', 'played'), 'home', ALL);
   assert.equal(r.log.length, 1);
   assert.match(r.said, /next step is at beelink/);
 });
@@ -104,4 +104,26 @@ test('sabotage: a skipped step counted as progress is caught by advance and clos
 test('the module still reads no random number, no clock and no network', () => {
   const src = readFileSync(new URL('./tutorial_walk.js', import.meta.url), 'utf8');
   assert.doesNotMatch(src, /Math\.random|Date\.now|new Date|performance\.now|fetch\(|XMLHttpRequest/);
+});
+
+test('first-node rule: an empty colony leaves the place steps NO_DATA with their cause, the walk goes on; one node makes it the place', () => {
+  for (const seals of [{}, undefined, { beelink: 'NO_DATA' }, { ghost: 'ERROR' }]) {
+    assert.equal(W.whereIs('key', seals), null);
+    const c = W.canWalk('key', seals);
+    assert.equal(c.ok, false);
+    assert.equal(c.cause, 'NO_DATA: no node is alive to visit yet');
+    const log = W.close([], seals);
+    assert.deepEqual(log.map((e) => e.step + ':' + e.outcome), ['key:skipped', 'beacon:skipped', 'node:skipped']);
+  }
+  const one = { zed: 'STALE' };
+  assert.equal(W.whereIs('key', one), 'zed');
+  assert.equal(W.whereIs('node', { gone: 'NO_DATA', ...one }), 'zed');
+  assert.equal(W.whereIs('beacon', one), 'beelink');
+  let r = W.advance([], 'zed', one);
+  assert.deepEqual(W.progress(r.log), ['key']);
+  assert.equal(W.advance([], 'elsewhere', one).log.length, 0);
+});
+
+test('no cabin is invented: the table names no cabin place', () => {
+  assert.equal(W.STEPS.some((s) => /cabin/.test(s.place)), false);
 });

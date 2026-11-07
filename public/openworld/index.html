@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>OpenWorld · PreceptorOS</title>
-<meta name="description" content="OpenWorld map and chat; tutorial cabin always here.">
+<meta name="description" content="OpenWorld map and chat; the floor, and the live nodes when any.">
 <link rel="icon" type="image/svg+xml" href="/assets/mark.svg">
 <link rel="canonical" href="https://preceptoros.org/openworld/">
 <meta property="og:title" content="PreceptorOS · OpenWorld">
-<meta property="og:description" content="The map and chat; tutorial cabin always here.">
+<meta property="og:description" content="The map and chat; the floor, and the live nodes when any.">
 <meta property="og:url" content="https://preceptoros.org/openworld/">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://preceptoros.org/assets/og-card.png">
@@ -21,11 +21,11 @@
 <a class="skip" href="#chat">Skip to the chat</a>
 <main class="map-panel-mask" data-radio-capa>
 <section id="map" aria-labelledby="map-h">
-<div class="topbar"><h1 id="map-h">Location · NO_DATA: visitor position unavailable</h1></div>
+<div class="topbar"><h1 id="map-h">NO_DATA: visitor position unavailable</h1></div>
 <div id="stage" class="stage">
 <canvas class="surface" id="surface" role="img" aria-label="Hexagonal map. Tap a hex to walk; the joystick moves the view."></canvas>
 </div>
-<div id="map-actions" class="press" role="group" aria-label="Map controls"><div id="terrain-actions" class="press"><button type="button" id="t-cabin" aria-pressed="true" data-terrain="cabin">Tutorial cabin</button></div></div>
+<div id="map-actions" class="press" role="group" aria-label="Map controls"><div id="terrain-actions" class="press"></div></div>
 </section>
 <section id="chat" aria-labelledby="chat-h">
 <h2 id="chat-h">Guide</h2>
@@ -43,7 +43,7 @@
 <li class="voice" data-speaker="Map"><p class="state" id="state" aria-live="polite">Nodes online: checking…</p>
 <details class="tech"><summary>Technical details</summary><p id="state-tech"></p></details></li>
 <li class="voice" data-speaker="Floor"><p class="state" id="floor-state" aria-live="polite">Loading the map…</p>
-<details class="tech"><summary>Technical details</summary><p id="floor-tech">Map floor: loading the 7 chunks around the cabin.</p></details></li>
+<details class="tech"><summary>Technical details</summary><p id="floor-tech">Map floor: loading the 7 chunks around the centre.</p></details></li>
 <li class="voice" id="voice-walkers" data-speaker="Walkers"></li>
 <li class="voice" id="voice-zoom" data-speaker="Zoom"></li>
 <li class="voice" data-speaker="House" data-title="summons"><div id="visitor-play" aria-label="House"></div></li>
@@ -51,7 +51,7 @@
 <p><a href="/game/army.html" style="display:inline-flex;align-items:center;min-height:44px">Open the full Army page</a></p></li>
 <li class="voice" data-speaker="Models"></li>
 <li class="voice" data-speaker="Radio" data-title="news of the map">
-<div class="acts listen"><button type="button" id="listen" aria-describedby="listen-state">Listen to the cabin</button>
+<div class="acts listen"><button type="button" id="listen" aria-describedby="listen-state">Listen to the map</button>
 <button type="button" id="world-refresh">Check live nodes</button></div>
 <p class="state" id="listen-state" aria-live="polite"></p>
 <details id="more"><summary>More: map details and terminal look</summary>
@@ -95,6 +95,7 @@
 <script src="/game/map_drag.js"></script>
 <script src="/game/map_chart.js"></script>
 <script src="/game/map_chunks.js"></script>
+<script src="/game/place_name.js"></script>
 <script src="/game/map_painter.js"></script>
 <script src="/game/terminal_panel.js"></script>
 <script src="/game/tutorial_walk.js"></script>

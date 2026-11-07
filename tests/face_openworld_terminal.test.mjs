@@ -21,12 +21,12 @@ test('Neutral terminal renders and moves only on the shared colony state', () =>
   assert.match(glue, /OS\.leer\(data\)/);
   assert.match(glue, /CC\.move\(walker, name, colony\.nodes\)/);
   const parsed = readState.leer(stateFile);
-  assert.deepEqual(parsed.colonia.nodes.map((node) => node.id), ['cabin']);
-  const cabin = parsed.colonia.nodes[0];
-  const result = controls.move({ node: cabin.id, q: cabin.q, r: cabin.r }, 'east', parsed.colonia.nodes);
+  assert.deepEqual(parsed.colonia.nodes.map((node) => node.id), []);
+  assert.ok(!stateFile.colonia.nodes.some((node) => node.id === 'cabin'), 'the tutorial cabin is retired from the served state');
+  const result = controls.move({ node: 'none', q: 0, r: 0 }, 'east', parsed.colonia.nodes);
   assert.equal(result.ok, false);
   assert.match(result.cause, /NO_DATA/);
-  assert.equal(stateFile.colonia.nodes.find((node) => node.id === 'beelink').seal, 'NO_DATA');
+  assert.ok(!stateFile.colonia.nodes.some((node) => /beelink|doggee|cabin/i.test(node.id)), 'empty public state exposes no private or retired node');
 });
 
 test('Army deep link does not render a second map or synthetic account army', () => {

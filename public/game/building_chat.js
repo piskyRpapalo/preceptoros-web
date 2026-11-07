@@ -1,6 +1,5 @@
 // P6 (2.5D village plan, "Buildings with a chatbot"): every building of the colony catalogue talks, in the browser,
-// with no server. Pure: no random numbers, no clock reads, no I/O. A building's kind is the tutorial cabin (its node is
-// "cabin") or its Acho hexagonal prism. The generic script describes only declared state and T2 height. Each kind has
+// with no server. Pure: no random numbers, no clock reads, no I/O. A building's kind is its Acho hexagonal prism. The generic script describes only declared state and T2 height. Each kind has
 // a greeting, what it measures, what it offers, and short replies keyed by simple intents. A question with no scripted
 // intent would need a
 // model: it goes to chunk_router.js, and with no model installed the answer is its honest NO_DATA cause. Nothing is
@@ -20,18 +19,6 @@
   };
 
   var SCRIPTS = {
-    cabin: {
-      name: 'Tutorial cabin',
-      greeting: 'Welcome to the tutorial cabin. I am its guide, and I run in your browser only.',
-      measures: 'I measure your tutorial walk in this visit: the steps you played and the steps you skipped.',
-      offers: 'I offer the first steps: tap a hex to walk, Enter to go in, Escape to leave.',
-      replies: {
-        help: 'Ask me: what, status or offer. Escape or the Leave building button takes you out.',
-        what: 'This cabin is the one place that is always here, even with zero live nodes.',
-        status: 'The cabin is LIVE in this visit. Any other node says its own seal.',
-        offer: 'Walk to a live node, listen to the cabin, or skip the tutorial from the status panel.'
-      }
-    },
     'hex-prism': {
       name: 'Hexagonal building',
       greeting: 'This is a hexagonal building drawn in Acho from the OpenWorld state.',
@@ -47,10 +34,9 @@
   };
   var KINDS = Object.keys(SCRIPTS);
 
-  // kindOf(building) → 'cabin' for the building on the cabin node, else its shape from the catalogue.
+  // kindOf(building) → its shape from the catalogue.
   function kindOf(building) {
     if (!building || typeof building.id !== 'string') { return null; }
-    if (building.node === 'cabin') { return 'cabin'; }
     return E.formaDe(building.id);
   }
 

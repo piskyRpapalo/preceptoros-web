@@ -1,11 +1,11 @@
 // OpenWorld: one same-origin map and state; the state file is its only server input.
-// Unlisted nodes do not exist; the cabin is always here. Fixed ticks drive the palette, never wall-clock time.
+// Unlisted nodes do not exist; with none alive the floor is drawn and NO_DATA is said. Fixed ticks drive the palette, never wall-clock time.
 // Reduced motion keeps the sky still.
 (function (raiz) {
   'use strict';
   var doc = raiz.document, M = raiz.AtlasMapaGlobal;
-  var entrada = { t: 0, cabin: {}, nodes: [] };
-  var selected = 'cabin';
+  var entrada = { t: 0, nodes: [] };
+  var selected = '';
   var surface = doc.getElementById('surface');
   var press = doc.querySelector('#terrain-actions');
   var state = doc.getElementById('state');
@@ -29,26 +29,18 @@
     if (v !== viewSeen) { viewSeen = v; draw(); }
   }
   if (ZOOM) { surface.style.touchAction = 'none'; }
-  // A11Y: zoom and turn without fingers. Buttons (44 px), the keys + - 0 Q E outside form fields; the view is spoken by aria-live.
+  // A11Y: zoom and turn without floating buttons. The two map joysticks (map_view_joystick.js) and the keys + - 0 Q E drive them; the view is spoken by aria-live.
   if (ZOOM) {
-    var zoomBar = doc.createElement('div'), zoomSay = doc.createElement('p');
-    zoomBar.id = 'zoom-controls'; zoomBar.setAttribute('role', 'group'); zoomBar.setAttribute('aria-label', 'Map view');
+    var zoomSay = doc.createElement('p');
     zoomSay.id = 'zoom-state'; zoomSay.setAttribute('aria-live', 'polite');
     var speak = function () { zoomSay.textContent = ZOOM.say(); };
     var zoomTo = function (d) { ZOOM.step(d); speak(); };
-    var turnTo = function (d) { var to = ZOOM.turn(d); zoomSay.textContent = 'Map view ' + to + '° · zoom ' + surface.dataset.zoom + '×'; };
-    var resetView = function () { ZOOM.reset(); speak(); };
-    [['Zoom in', function () { zoomTo(1); }, 'zoom-in'], ['Zoom out', function () { zoomTo(-1); }, 'zoom-out'], ['Reset zoom', function () { zoomTo(0); }, 'zoom-reset'],
-      ['Rotate left', function () { turnTo(-1); }, 'rotate-left'], ['Rotate right', function () { turnTo(1); }, 'rotate-right'], ['Reset view', resetView, 'view-reset']].forEach(function (z) {
-      var b = doc.createElement('button'); b.type = 'button'; b.id = z[2]; var ICON = { 'zoom-in': '+', 'zoom-out': '\u2212', 'zoom-reset': '\u27F2', 'rotate-left': '\u21BA', 'rotate-right': '\u21BB', 'view-reset': '\u2302' };
-      // Compact plate (Doogee review, 2026-11-02): 44 px icon buttons, the words in aria-label and title, no text over the drawing.
-      b.textContent = ICON[z[2]] || z[0]; b.setAttribute('aria-label', z[0]); b.title = z[0];
-      b.style.minHeight = '44px'; b.style.minWidth = '44px'; b.addEventListener('click', z[1]); zoomBar.appendChild(b);
-    });
-    doc.getElementById('map-actions').appendChild(zoomBar);
+    var turnTo = function (d) { var to = ZOOM.turn(d); zoomSay.textContent = 'Map view ' + to + '\u00B0 \u00B7 zoom ' + surface.dataset.zoom + '\u00D7'; };
+    var resetView = function () { ZOOM.reset(); if (raiz.AtlasMapPan) { raiz.AtlasMapPan.home(); } speak(); };
+    raiz.AtlasMapView = { zoom: zoomTo, turn: turnTo, reset: resetView };
     // Speak zoom in the panel, not over the map.
     speak();
-    (doc.getElementById('voice-zoom') || zoomBar).appendChild(zoomSay);
+    (doc.getElementById('voice-zoom') || doc.body).appendChild(zoomSay);
     // A free turn or a pinch is spoken once the fingers lift, never on every frame.
     surface.addEventListener('pointerup', function () { if (zoomSay.textContent !== ZOOM.say()) { speak(); } });
     doc.addEventListener('keydown', function (e) {
@@ -59,16 +51,16 @@
     });
   }
 
-  // The visible rows of the state: the cabin, and each node the state lists as alive. A node without its key is refused.
+  // The visible rows of the state: each node the state lists as alive. A node without its key is refused.
   function filas() {
-    try { return M.estado(entrada); } catch (e) { return M.estado({ t: entrada.t, cabin: entrada.cabin, nodes: [] }); }
+    try { return M.estado(entrada); } catch (e) { return M.estado({ t: entrada.t, nodes: [] }); }
   }
 
   function draw() {
     var B = raiz.AtlasAcho, P = raiz.AtlasComicAtoms;
     if (!surface || !B || !P || !raiz.AtlasAchoLetters) { return; }
     var position = CCT && CCT.walker(), location = doc.getElementById('map-h');
-    if (location) { location.textContent = position && Number.isFinite(position.q) && Number.isFinite(position.r) ? 'Location · ' + position.q + ', ' + position.r : 'Location · NO_DATA: visitor position unavailable'; }
+    if (location) { raiz.AtlasPlaceName.mark(location, position); }
     var width = surface.clientWidth || 320, height = surface.clientHeight || 200;
     var dpr = Math.min(2, raiz.devicePixelRatio || 1);
     surface.width = Math.round(width * dpr); surface.height = Math.round(height * dpr);
@@ -104,8 +96,8 @@
   function render() {
     buttons();
     draw();
-    // «Nodes online» counts the LIVE seals of the heartbeat, never the cabin; without it NO_DATA, never a 0.
-    var nombres = Object.keys(colony_seals).filter(function (id) { return id !== 'cabin' && colony_seals[id] === 'LIVE'; });
+    // «Nodes online» counts the LIVE seals of the heartbeat, without it NO_DATA, never a 0.
+    var nombres = Object.keys(colony_seals).filter(function (id) { return colony_seals[id] === 'LIVE'; });
     var cabeza = live === 'ok' ? 'Nodes online: ' + nombres.length + nombres.map(function (id) { return ' · ' + id + ' LIVE'; }).join('') + '.'
       : live === 'pending' ? 'Nodes online: checking…' : 'Nodes online: NO_DATA.';
     var linea = cabeza, tecnico = '';
@@ -115,8 +107,8 @@
       catch (e) { colonia_error = e.message || 'the colony is refused'; }
     }
     if (colonia_error || !colonia) {
-      linea += colonia_error ? ' The colony is still asleep.' : tutorial ? ' No colony yet.' : ' Loading the map…';
-      tecnico = 'Colony: NO_DATA · ' + (colonia_error || (tutorial ? 'state.json has no colonia' : 'state not loaded yet')) + '.';
+      linea += colonia_error && colonia_error.indexOf('no node declared') !== 0 ? ' The colony is still asleep.' : tutorial ? ' ' + M.VACIO : ' Loading the map…';
+      tecnico = 'Colony: NO_DATA · ' + (colonia_error || (tutorial ? 'state.json lists no node' : 'state not loaded yet')) + '.';
     }
     if (CCT) { CCT.start(); }
     state.textContent = linea;
@@ -143,10 +135,9 @@
     var nodes = data && Array.isArray(data.nodes) ? data.nodes : [];
     entrada = {
       t: data && Number.isInteger(data.t) ? data.t : 0,
-      cabin: data && data.cabin && typeof data.cabin === 'object' ? data.cabin : {},
       nodes: nodes.filter(function (n) { return n && (n.id === 'hexelion' || n.id === 'second'); })
     };
-    if (selected !== 'cabin' && !entrada.nodes.some(function (n) { return n.id === selected; })) { selected = 'cabin'; }
+    if (!entrada.nodes.some(function (n) { return n.id === selected; })) { selected = ''; }
     // IC7-S3 (D7): the colony comes only from openworld_state.js; a node is drawn only when it is alive and sealed LIVE or STALE.
     if (colonia_fuente !== 'fixture') try {
       colonia_error = '';
@@ -207,7 +198,7 @@
       setHot('');
     });
     surface.addEventListener('pointerleave', function () { setHot(''); });
-    surface.addEventListener('focus', function () { var w = CCT && CCT.walker ? CCT.walker() : null; setHot(w && w.node ? w.node : 'cabin'); });
+    surface.addEventListener('focus', function () { var w = CCT && CCT.walker ? CCT.walker() : null; setHot(w && w.node ? w.node : ''); });
     surface.addEventListener('blur', function () { setHot(''); });
   }
   // The cycle: a fixed step of t per second, unless reduced motion is on. The palette is a function of t alone.
@@ -229,6 +220,7 @@
       loadSound(function (S) {
         var scene = M.mapa(entrada);
         var node = scene.nodes.find(function (nd) { return nd.id === selected; }) || scene.nodes[0];
+        if (!node) { listenState.textContent = scene.nodata; return; }
         var result = S.sonify(node.frame);
         if (!result.ok) { listenState.textContent = /^NO_DATA/.test(result.cause) ? result.cause : 'NO_DATA: ' + result.cause; return; }
         var Ctx = raiz.AudioContext || raiz.webkitAudioContext;

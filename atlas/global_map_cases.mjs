@@ -12,24 +12,29 @@ const enDos = (x) => JSON.stringify(x);
 let n = 0;
 const ok = (cond, msg) => { assert.ok(cond, msg); n++; };
 
-// 1 · liveness: the cabin is always here; the others only while listed alive; unknown ids are not drawn.
+// 1 · liveness: a node exists only while listed alive; unknown ids are not drawn; none alive means nothing drawn and NO_DATA.
 const solo = M.estado({ nodes: [] });
-ok(solo.length === 1 && solo[0].id === 'cabin', 'only the cabin when no node is alive');
+ok(solo.length === 0, 'nothing drawn when no node is alive');
+ok(M.estado({ nodes: [{ id: 'cabin' }] }).length === 0, 'the retired tutorial cabin is not a node, even when listed');
+ok(M.NODES.every((x) => x.id !== 'cabin') && !JSON.stringify(M.mapa({ nodes: [] })).toLowerCase().includes('cabin'), 'no cabin anywhere in the empty scene');
+const vacia = M.mapa({ nodes: [] });
+ok(vacia.nodes.length === 0 && vacia.terrain.length === 19, 'empty colony: the floor is drawn, no filler node');
+ok(vacia.nodata === 'NO_DATA: no node is alive yet (the colony is empty)' && M.mapa({ nodes: [{ id: 'second' }] }).nodata === null, 'empty colony says NO_DATA with its cause; a live node clears it');
 const tres = M.estado({ nodes: [{ id: 'hexelion' }, { id: 'second' }, { id: 'fantasma' }] });
-ok(tres.map((r) => r.id).join() === 'cabin,hexelion,second', 'the three nodes in fixed order, unknown id not drawn');
-ok(M.estado({ nodes: [{ id: 'hexelion' }] }).length === 2, 'a node that is not listed does not exist on the map');
+ok(tres.map((r) => r.id).join() === 'hexelion,second', 'the two nodes in fixed order, unknown id not drawn');
+ok(M.estado({ nodes: [{ id: 'hexelion' }] }).length === 1, 'a node that is not listed does not exist on the map');
 
 // 2 · orphan_visual_node: a visible node without a lexicon key is refused (sabotage: clear the key, then restore).
-const clave = M.NODES[1].clave;
-M.NODES[1].clave = '';
+const clave = M.NODES[0].clave;
+M.NODES[0].clave = '';
 assert.throws(() => M.estado({ nodes: [{ id: 'hexelion' }] }), /orphan_visual_node: hexelion/);
-M.NODES[1].clave = clave;
-ok(M.estado({ nodes: [{ id: 'hexelion' }] }).length === 2, 'key restored, the node is drawn again');
+M.NODES[0].clave = clave;
+ok(M.estado({ nodes: [{ id: 'hexelion' }] }).length === 1, 'key restored, the node is drawn again');
 
 // 3 · every frame under 1,024 bytes and its sound declared, measured/NO_DATA mana, many ticks.
 for (const t of [0, 1, 37, 120, 239, 240, 1000, -5]) {
   for (const mana of [undefined, { valor: 0 }, { valor: 100 }, { valor: 42.5 }]) {
-    const sc = M.mapa({ t, cabin: { mana }, nodes: [{ id: 'hexelion' }, { id: 'second' }] });
+    const sc = M.mapa({ t, nodes: [{ id: 'hexelion', mana }, { id: 'second' }] });
     ok(M.bytes(sc.cielo) < 1024 && M.valida(sc.cielo).length === 0, 'sky frame under 1,024 bytes at t=' + t);
     for (const node of sc.nodes) {
       ok(M.bytes(node.frame) < 1024, node.id + ' frame under 1,024 bytes at t=' + t);
@@ -41,9 +46,9 @@ for (const t of [0, 1, 37, 120, 239, 240, 1000, -5]) {
 // 4 · sound comes from the frame's own data: every bubble carries its sea wave; a measured mana adds a second wave;
 // NO_DATA adds no wave and says so, with its cause, in the sentence the reader sees.
 const waves = (f) => f.atoms[0].i.filter((x) => x.o === 'wave').length;
-const medido = M.marco(M.estado({ nodes: [], cabin: { mana: { valor: 60 } } })[0], 0);
+const medido = M.marco(M.estado({ nodes: [{ id: 'hexelion', mana: { valor: 60 } }] })[0], 0);
 ok(medido.sound === 'ok' && waves(medido) === 2, 'measured mana adds its own wave on top of the sea wave');
-const sinDato = M.marco(M.estado({ nodes: [] })[0], 0);
+const sinDato = M.marco(M.estado({ nodes: [{ id: 'hexelion' }] })[0], 0);
 ok(sinDato.sound === 'ok' && waves(sinDato) === 1, 'no measure: the sea wave still sounds, and no mana wave is invented');
 ok(/mana NO_DATA \(no mana measurement/.test(sinDato.atoms[0].r), 'no measure: the sentence says NO_DATA with its cause');
 
@@ -72,7 +77,7 @@ finally { globalThis.Date = DateOriginal; Date.now = nowOriginal; }
 ok(antes === despues, 'the scene reads no clock (Date poisoned, same bytes)');
 
 // 7 · n=2 byte-identical: the same vector, two runs, the same bytes and the same hash.
-const vector = { t: 120, cabin: { mana: { valor: 60 } }, nodes: [{ id: 'hexelion', mana: { valor: 12 } }, { id: 'second' }] };
+const vector = { t: 120, nodes: [{ id: 'hexelion', mana: { valor: 12 } }, { id: 'second' }] };
 const corrida1 = enDos(M.mapa(vector)), corrida2 = enDos(M.mapa(vector));
 ok(corrida1 === corrida2, 'n=2 byte-identical scenes');
 ok(M.hash32(corrida1) === M.hash32(corrida2), 'n=2 identical hash');

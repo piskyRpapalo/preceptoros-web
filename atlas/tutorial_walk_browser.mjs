@@ -1,4 +1,4 @@
-// G4-2 in a real browser: walking into the cabin through the visible Map control completes the first tutorial step; the next
+// G4-2 in a real browser: walking into the first node through the visible Map control completes the first tutorial step; the next
 // step names its place. The arrow keys choose a neighbour; with none, the page says NO_DATA.
 // Uso: node atlas/tutorial_walk_browser.mjs
 import { createServer } from 'node:http';
@@ -7,11 +7,12 @@ import { resolve, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { launchChrome } from './chrome_launch.mjs';
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
+const ONE = readFileSync(new URL('./fixtures/one_live_node.json', import.meta.url));   // one live node: the first node alive is the tutorial's place (the tutorial cabin is retired)
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 const tipos = { '.js': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.css': 'text/css' };
 const srv = createServer((req, res) => {
   try { let p = decodeURIComponent(new URL(req.url, 'http://l').pathname); if (p.endsWith('/')) { p += 'index.html'; }
-    const f = resolve(PUBLIC, '.' + p); const cuerpo = readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain' }); res.end(cuerpo);
+    const f = resolve(PUBLIC, '.' + p); const cuerpo = p === '/openworld/state.json' ? ONE : readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain' }); res.end(cuerpo);
   } catch { res.writeHead(404); res.end(); } });
 await new Promise((r) => srv.listen(0, '127.0.0.1', r));
 const port = srv.address().port, cdp = 9700 + (process.pid % 90);
@@ -29,16 +30,16 @@ await cmd('Runtime.enable'); await cmd('Page.enable');
 await cmd('Emulation.setDeviceMetricsOverride', { width: 1000, height: 800, deviceScaleFactor: 1, mobile: false });
 await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/` }); await espera(2000);
 const say = () => ev(`(document.querySelector('#joy .state')||{}).textContent`);
-// W-5: use the accessible Map category and the real button for the cabin node.
-const clicCabina = () => ev(`(async () => { const c=document.querySelector('.cats [data-cat=Welcome]'); if(c?.getAttribute('aria-pressed')!=='true')c?.click(); for(let i=0;i<50;i++){const b=document.querySelector('#map-node-list [data-node=cabin]');if(b&&b.getBoundingClientRect().height>=44){b.click();return 'ok';} await new Promise(r=>setTimeout(r,100));}return 'NO_BUTTON';})()`);
+// W-5: use the accessible Map category and the real button for the first node node.
+const clicNodo = () => ev(`(async () => { const c=document.querySelector('.cats [data-cat=Welcome]'); if(c?.getAttribute('aria-pressed')!=='true')c?.click(); for(let i=0;i<50;i++){const b=document.querySelector('#map-node-list [data-node=home]');if(b&&b.getBoundingClientRect().height>=44){b.click();return 'ok';} await new Promise(r=>setTimeout(r,100));}return 'NO_BUTTON';})()`);
 const teclaFlecha = (key) => ev(`(() => { document.body.dispatchEvent(new KeyboardEvent('keydown', { key: ${JSON.stringify(key)}, bubbles: true, cancelable: true })); return 'ok'; })()`);
 const press = (txt) => ev(`(() => { if(${JSON.stringify(txt)}==='Skip tutorial'){const c=document.querySelector('.cats [data-cat=Welcome]');if(c?.getAttribute('aria-pressed')!=='true')c?.click();} const b=[...document.querySelectorAll('#joy button')].find(x=>x.textContent===${JSON.stringify(txt)}); if(!b) return 'NO_BUTTON'; b.click(); return 'ok'; })()`);
 const out = {};
 out.start = await say();
-await clicCabina(); await espera(900); out.enterCabin1 = await say();
+await clicNodo(); await espera(900); out.enterCabin1 = await say();
 out.skipButtonHeight = await ev(`(() => { const c=document.querySelector('.cats [data-cat=Welcome]');if(c?.getAttribute('aria-pressed')!=='true')c?.click();const b=[...document.querySelectorAll('button')].find(x=>x.textContent==='Skip tutorial'); return b ? b.getBoundingClientRect().height : 0; })()`);
 await press('Skip tutorial'); await espera(200); out.afterSkip = await say();
-await clicCabina(); await espera(900); out.enterCabin2 = await say();
+await clicNodo(); await espera(900); out.enterCabin2 = await say();
 await teclaFlecha('ArrowRight'); await espera(200); out.eastFromCabin = await say();
 if (!out.enterCabin1.includes('key played') || out.skipButtonHeight < 44 || out.afterSkip !== 'tutorial: skipped' || !out.enterCabin2.includes('tutorial: complete')) {
   console.error(JSON.stringify(out)); process.exitCode = 1;
