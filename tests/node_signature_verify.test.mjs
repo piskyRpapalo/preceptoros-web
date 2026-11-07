@@ -59,7 +59,11 @@ test('synthetic Ed25519 SSHSIG verifies without granting authority or changing i
   assert.equal(canonical(f),before);
   assert.equal(R.packet({esquema:'preceptoros/cedula-nodo/1',pares:[f.c],firma:null}).valid,true);
 });
-test('OpenSSH independently verifies the synthetic credential and manifest fixtures',()=>{
+test('OpenSSH independently verifies the synthetic credential and manifest fixtures',(t)=>{
+  // Fail-closed with cause: without the OpenSSH binary the independent check is NO_DATA,
+  // never a fake green (same law as the jsonschema skips in atlas/test_atlas.py).
+  const probe=spawnSync('ssh-keygen',{encoding:'utf8'});
+  if (probe.error) return t.skip('NO_DATA · ssh-keygen (OpenSSH) not installed; independent verification cannot run here');
   const f=fixture(), dir=mkdtempSync(join(tmpdir(),'ssh-fixture-'));
   try { for(const [name,message,armor,ns] of [['credential',R.signedBody(f.c),f.c.firma_ssh,'preceptoros-cedula'],['manifest',canonical(Object.fromEntries(Object.entries(f.m).filter(([k])=>k!=='firma_ssh'))),f.m.firma_ssh,'preceptoros-trust-manifest']]) {
     const file=join(dir,name+'.sig');writeFileSync(file,armor);
