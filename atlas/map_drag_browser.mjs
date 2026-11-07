@@ -155,7 +155,7 @@ async function main() {
     const afterKey = await vista();
     ok(afterKey.panx !== beforeKey.panx && afterKey.walker === beforeKey.walker, 'focused joystick arrows must pan without walking visitor');
     // Decree 2026-11-07: the right side belongs to the ephemeral character; no character, no second stick.
-    const right = await ev("(() => { const n = document.getElementById('character-joystick-slot'); return {turn:!!document.getElementById('view-joystick-turn'), sticks:document.querySelectorAll('#stage .view-joy').length, slot:n ? n.dataset.state + ':' + n.dataset.cause : null}; })()");
+    const right = await ev("(() => { const n = document.getElementById('character-joystick-slot'); return {turn:!!document.getElementById('view-joystick-turn'), sticks:document.querySelectorAll('#map .view-joy').length /* gamepad (2026-11-07) */, slot:n ? n.dataset.state + ':' + n.dataset.cause : null}; })()");
     ok(!right.turn && right.sticks === 1 && right.slot === 'NO_DATA:character_not_born', 'only the left pan joystick may live until the character exists: ' + JSON.stringify(right));
     await ev("AtlasMapView.reset(), true"); await espera(250);
     const beforeView = await vista();
