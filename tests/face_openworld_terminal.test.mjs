@@ -26,7 +26,7 @@ test('Neutral terminal renders and moves only on the shared colony state', () =>
   const result = controls.move({ node: 'none', q: 0, r: 0 }, 'east', parsed.colonia.nodes);
   assert.equal(result.ok, false);
   assert.match(result.cause, /NO_DATA/);
-  assert.equal(stateFile.colonia.nodes.find((node) => node.id === 'beelink').seal, 'NO_DATA');
+  assert.ok(!stateFile.colonia.nodes.some((node) => /beelink|doggee|cabin/i.test(node.id)), 'empty public state exposes no private or retired node');
 });
 
 test('Army deep link does not render a second map or synthetic account army', () => {
