@@ -1,3 +1,5 @@
+> **DEPRECIADO por decreto 2026-11-07.** Pieles y sesión gráfica quedan fuera del norte simplificado; este documento permanece solo como archivo histórico. No borrar.
+
 # REQUIERE_FIRMA · Plan de los dos mundos jugables (ronda 1 · issue #312)
 
 Estado: **PROPUESTA**. Nada de código en este PR. Nada se construye hasta el FIRMO de la Mesa.
