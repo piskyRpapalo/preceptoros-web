@@ -1,6 +1,6 @@
 // The web judge: quote or stay silent (F0 plan, slice i). The web has no answer model, so the
 // judge never writes an answer: it returns EXACT quotes from the canon corpus
-// (/openworld/juez-corpus.json) or NO_DATA with its cause, before anything else. Same ceilings
+// (/openworld/judge-corpus.json) or NO_DATA with its cause, before anything else. Same ceilings
 // as the app judge: at most 3 sources, quotes <= 320 UTF-8 bytes in total. A quote is not an
 // explanation. Deterministic: no randomness, no clock, no network.
 (function (raiz) {
@@ -20,7 +20,7 @@
   function tokens(s) {
     var seen = {}, out = [];
     String(s).toLowerCase().split(/[^\p{L}\p{N}]+/u).forEach(function (t) {
-      // decision mia (sin firma): words compare by their first four letters (wave/waves,
+      // decision without signature: words compare by their first four letters (wave/waves,
       // damage/damaged); the quote itself is never changed.
       var k = t.slice(0, STEM);
       if (t.length >= MIN_TOKEN && !STOP[t] && !seen[k]) { seen[k] = true; out.push(k); }
@@ -46,7 +46,7 @@
       return { estado: 'NO_DATA', causa: 'corpus_unavailable' };
     }
     var qt = tokens(question);
-    // decision mia (sin firma): two shared words make a source; one when the question has one.
+    // decision without signature: two shared words make a source; one when the question has one.
     var need = qt.length === 1 ? 1 : 2;
     var ranked = corpus.passages.map(function (p) { return { p: p, s: overlap(qt, p.text) }; })
       .filter(function (x) { return x.s >= need; })

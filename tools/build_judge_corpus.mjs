@@ -1,13 +1,13 @@
 // Build the judge corpus (F0 plan, slice i): passages of docs/canon-*.md, each with its sha256,
 // for the web judge that quotes or stays silent. Deterministic: same canon, same bytes.
-//   node tools/build_juez_corpus.mjs           writes public/openworld/juez-corpus.json
-//   node tools/build_juez_corpus.mjs --check   exits 1 when the file differs from a fresh build
+//   node tools/build_judge_corpus.mjs           writes public/openworld/judge-corpus.json
+//   node tools/build_judge_corpus.mjs --check   exits 1 when the file differs from a fresh build
 import { readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { gzipSync } from 'node:zlib';
 
 const ROOT = new URL('../', import.meta.url);
-const OUT = new URL('public/openworld/juez-corpus.json', ROOT);
+const OUT = new URL('public/openworld/judge-corpus.json', ROOT);
 const CEILING = 16384;      // house ceiling for one served piece
 // test_web.py: no served file may spend half a network trip (7 KiB gzip -9); 64 B margin
 // covers the header difference between node and python gzip.

@@ -6,17 +6,17 @@ import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { execFileSync } from 'node:child_process';
 const req = createRequire(import.meta.url);
-const J = req('../public/game/juez_corpus.js');
+const J = req('../public/game/judge_corpus.js');
 const F = req('../public/game/state_frames.js');
 const ROOT = new URL('../', import.meta.url);
-const RAW = readFileSync(new URL('public/openworld/juez-corpus.json', ROOT));
+const RAW = readFileSync(new URL('public/openworld/judge-corpus.json', ROOT));
 const C = JSON.parse(RAW);
 const sha = (b) => createHash('sha256').update(b).digest('hex');
 const bytes = (s) => Buffer.byteLength(s, 'utf8');
 
 test('corpus is under the house ceiling and rebuilds byte-identical', () => {
   assert.ok(RAW.length < 16384, RAW.length + ' B');
-  execFileSync(process.execPath, ['tools/build_juez_corpus.mjs', '--check'], { cwd: ROOT });
+  execFileSync(process.execPath, ['tools/build_judge_corpus.mjs', '--check'], { cwd: ROOT });
 });
 
 test('every passage is bounded, hashed and private-free; every source doc exists and matches', () => {
@@ -61,6 +61,6 @@ test('the verdict is an acho frame that obeys the frame law', () => {
 });
 
 test('the module is deterministic and offline', () => {
-  const src = readFileSync(new URL('public/game/juez_corpus.js', ROOT), 'utf8');
+  const src = readFileSync(new URL('public/game/judge_corpus.js', ROOT), 'utf8');
   for (const bad of ['Math.random', 'Date', 'fetch(', 'XMLHttpRequest']) assert.ok(!src.includes(bad), bad);
 });
