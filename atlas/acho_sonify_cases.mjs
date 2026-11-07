@@ -116,6 +116,37 @@ test('play: schedules two oscillators per voice, and stays silent without a cont
   assert.equal(S.play(r, null), 0, 'no context, no sound');
 });
 
+test('play: high-degree voice connects and schedules its second FM modulator', () => {
+  const oscillators = [], gains = [];
+  const context = {
+    currentTime: 3, destination: {},
+    createOscillator() {
+      const node = { frequency: { value: 0 }, connections: [], starts: [], stops: [],
+        connect(target) { this.connections.push(target); }, start(t) { this.starts.push(t); }, stop(t) { this.stops.push(t); } };
+      oscillators.push(node); return node;
+    },
+    createGain() {
+      const node = { gain: { value: 0, setValueAtTime() {}, linearRampToValueAtTime() {} }, connections: [],
+        connect(target) { this.connections.push(target); } };
+      gains.push(node); return node;
+    }
+  };
+  const recipe = S.recipe(TABLES[3]);
+  assert.ok(recipe.modulator2 > 0);
+  assert.equal(S.play({ ok: true, voices: [{ at_ms: 180, recipe }] }, context), 1);
+  assert.equal(oscillators.length, 3);
+  const [carrier, , second] = oscillators;
+  const depth = second.connections[0];
+  assert.ok(gains.includes(depth));
+  assert.equal(second.frequency.value, recipe.modulator2);
+  assert.equal(depth.gain.value, recipe.index2);
+  assert.deepEqual(depth.connections, [carrier.frequency]);
+  assert.deepEqual(second.starts, [3.18]);
+  assert.deepEqual(second.stops, [3.18 + recipe.dur]);
+  assert.deepEqual(carrier.starts, second.starts);
+  assert.deepEqual(carrier.stops, second.stops);
+});
+
 test('the module fits in 16 KiB, has no randomness, clock or network', () => {
   const path = AQUI + 'acho_sonify.js';
   const text = readFileSync(path, 'utf8');
