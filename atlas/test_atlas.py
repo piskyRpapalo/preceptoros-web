@@ -828,25 +828,25 @@ class NodosComoCuenta(unittest.TestCase):
 
 
     def test_node_reception_contract(self):
-        r = subprocess.run(["node", "--test", "tests/node_reception_contract.test.mjs"],
+        r = subprocess.run(["node", "--test", "--test-reporter=tap", "tests/node_reception_contract.test.mjs"],
                            cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         self.assertRegex(r.stdout, r"# tests [1-9][0-9]*")
 
     def test_node_signature_verify(self):
-        r = subprocess.run(["node", "--test", "tests/node_signature_verify.test.mjs"],
+        r = subprocess.run(["node", "--test", "--test-reporter=tap", "tests/node_signature_verify.test.mjs"],
                            cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         self.assertRegex(r.stdout, r"# tests [1-9][0-9]*")
 
     def test_node_bindings(self):
-        r = subprocess.run(["node", "--test", "tests/node_bindings.test.mjs"],
+        r = subprocess.run(["node", "--test", "--test-reporter=tap", "tests/node_bindings.test.mjs"],
                            cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         self.assertRegex(r.stdout, r"# tests [1-9][0-9]*")
 
     def test_node_file_receiver(self):
-        r = subprocess.run(["node", "--test", "tests/node_file_receiver.test.mjs"],
+        r = subprocess.run(["node", "--test", "--test-reporter=tap", "tests/node_file_receiver.test.mjs"],
                            cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         self.assertRegex(r.stdout, r"# tests [1-9][0-9]*")
