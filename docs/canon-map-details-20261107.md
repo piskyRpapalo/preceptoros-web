@@ -29,16 +29,16 @@ Rebanadas:
 - S3 · Contrato preceptoros.suelo/1 (tipo: suelo o edificio; transitable) fail-closed. Propuesta.
 - S4 · JN-3 (cuenta y mapa conectados) + colisión personaje-personaje determinista (misma celda prohibida). Propuesta; JN-2 (par Ed25519 de la cuenta efímera) sí medido.
 
-## 3 · El cromo del mapa (decreto ANEXO 2026-11-07)
+## 3 · El cromo del mapa (decreto ANEXO 2026-11-07 · decreto del segundo joystick)
 
 Medido a 420×437 en la versión de trabajo:
 
-- Sobre el mapa solo quedan 2 joysticks: pan a la izquierda, el segundo a la derecha.
+- Sobre el mapa solo queda 1 joystick: el de la izquierda (pan). El segundo, a la derecha, está reservado al personaje efímero y nace cuando este exista.
 - La barra de botones desaparece.
 - La cabecera muestra el nombre del lugar generado desde las coordenadas (Nombre · q, r), declarado como generado. Muestra de 289 trozos: 6 nombres repetidos.
 - Abajo, iconos interactivos ◇ ♙ ◉ con el estilo plano y delineado de la terminal.
 
-DISCREPANCIA abierta para el Soberano: el decreto ANEXO asigna al segundo joystick mover al personaje efímero por el suelo global; la versión medida le asigna giro y zoom. Bifurcación a resolver antes de FIRMO.
+DECRETO del Soberano (2026-11-07 noche, cierra la discrepancia): en la web viven 2 joysticks en lados opuestos. El de la izquierda mueve el mapa (pan). El de la derecha pertenece AL PERSONAJE efímero: hoy el personaje no existe, así que hoy vive solo 1 joystick, el de la izquierda; cuando el personaje exista, su joystick nace a la derecha. Giro y zoom no son el rol del segundo joystick: la versión medida que le asignaba giro y zoom queda corregida por este decreto.
 
 ## 4 · El canon del nodo como detalle del mapa
 
@@ -78,6 +78,6 @@ Estado: colonia sellada sin productor (el estado del mundo con colonia sellada y
 - Carga diferida por chunk: dentro del mapa; se activa con el primer envío del chat. Medido.
 - Radio: FUERA del mapa; los módulos de radio viven fuera de /openworld/. Acción propuesta: re-montar el radio en /openworld/ reutilizando lo existente, con sello de estado.
 - Retiro de la cabaña del tutorial (colonia vacía, sin nombres internos): PR #695 abierto, sin fundir; un test aún busca el nodo retirado y debe curarse antes de la firma.
-- Cromo del mapa (2 joysticks, nombre del lugar, iconos de terminal): hecho y medido, sin commit y sin PR.
+- Cromo del mapa (joystick del mapa a la izquierda, nombre del lugar, iconos de terminal): hecho y medido, sin commit y sin PR; el joystick del personaje espera a que el personaje exista.
 
 Agent: preceptor-orquestador-github · Model: GLM (Vibe) · Run: NO_DATA
