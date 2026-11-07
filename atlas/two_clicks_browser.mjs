@@ -82,7 +82,7 @@ async function main() {
   await clic('#welcome-play', true); await espera(1500);
   await ev("document.querySelector('.cats [data-cat=Welcome]').click()");
   // Ojo del Doogee (2026-11-02): after «Play now» the map stays in view, the summon buttons say place and cost in words, the map
-  // carries only two labelled joysticks, and the place names on the map are legible (>= 12 CSS px) and never collide.
+  // carries only the labelled pan joystick (the character's joystick is born with the character), and the place names on the map are legible (>= 12 CSS px) and never collide.
   const ojo = JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('surface'), m = c.getBoundingClientRect();
     const sum = [1, 2, 3, 4].map((n) => (document.getElementById('visitor-summon-tc' + n) || {}).textContent || '');
     const zb = [...document.querySelectorAll('#stage .view-joy button')].map((b) => { const r = b.getBoundingClientRect(); return { l: b.getAttribute('aria-label'), w: r.width, h: r.height }; });
@@ -95,7 +95,7 @@ async function main() {
   ok(/^Summon at the Reef · 50 copper$/.test(ojo.sum[0]), 'the reef summon is not human: ' + ojo.sum[0]);
   ok(ojo.sum.slice(1).every((t) => /^Summon at the [A-Z][a-z]+ · \d+ copper \+ \d+ light · needs \d+ more/.test(t)) && !ojo.sum.some((t) => /tc\d/.test(t)), 'summon labels are not human or do not say what is missing: ' + JSON.stringify(ojo.sum));
   ok(ojo.step === 'Wait one turn', 'the step button is not human: ' + ojo.step);
-  ok(ojo.zb.length === 2 && ojo.zb.every((b) => b.w >= 44 && b.h >= 44 && /^(Pan|Turn and zoom) the map/.test(b.l || '')) && !ojo.bar, 'the map does not carry exactly two labelled 44 px joysticks: ' + JSON.stringify(ojo.zb));
+  ok(ojo.zb.length === 1 && ojo.zb.every((b) => b.w >= 44 && b.h >= 44 && /^Pan the map/.test(b.l || '')) && !ojo.bar, 'the map does not carry exactly one labelled 44 px pan joystick: ' + JSON.stringify(ojo.zb));
   ok(ojo.pl.length >= 4 && ojo.pl.every((p) => p.cap >= 12) && !ojo.overlap && !ojo.crab && !ojo.zoom, 'map place names are small, few or colliding: ' + JSON.stringify(ojo.pl));
   const jugando = JSON.parse(await ev(`JSON.stringify((() => { const s = document.getElementById('visitor-summon-tc1'), t = (document.getElementById('visitor-play') || {}).textContent || '';
     const m = /Copper (\\d+)/.exec(t); return { card: document.getElementById('sheet-welcome').hidden, copper: m ? +m[1] : -1, summon: !!s && !s.disabled, end: !!document.getElementById('visitor-end'),

@@ -154,29 +154,16 @@ async function main() {
     await espera(150);
     const afterKey = await vista();
     ok(afterKey.panx !== beforeKey.panx && afterKey.walker === beforeKey.walker, 'focused joystick arrows must pan without walking visitor');
-    const contextBeforeMode = await ev("document.getElementById('brain-context').textContent");
-    await ev("document.querySelector('#view-joystick-turn .view-stick').focus(), true");
-    const contextAfterMode = await ev("document.getElementById('brain-context').textContent");
-    ok(contextAfterMode === contextBeforeMode, 'focusing the turn joystick must not change the chat context');
-    const beforeModeKey = await vista();
-    for (const type of ['keyDown', 'keyUp']) await cmd('Input.dispatchKeyEvent', {type, key:'ArrowLeft', code:'ArrowLeft', windowsVirtualKeyCode:37});
-    await espera(300);
-    const afterModeKey = await vista();
-    const angleAfterKey = await ev("Number(document.getElementById('surface').dataset.angle)");
-    ok(angleAfterKey !== 0 && afterModeKey.walker === beforeModeKey.walker, 'focused turn joystick arrows must turn the view without walking visitor');
+    // Decree 2026-11-07: the right side belongs to the ephemeral character; no character, no second stick.
+    const right = await ev("(() => { const n = document.getElementById('character-joystick-slot'); return {turn:!!document.getElementById('view-joystick-turn'), sticks:document.querySelectorAll('#stage .view-joy').length, slot:n ? n.dataset.state + ':' + n.dataset.cause : null}; })()");
+    ok(!right.turn && right.sticks === 1 && right.slot === 'NO_DATA:character_not_born', 'only the left pan joystick may live until the character exists: ' + JSON.stringify(right));
     await ev("AtlasMapView.reset(), true"); await espera(250);
-    const beforeMouse = await vista();
-    await cmd('Emulation.setTouchEmulationEnabled', {enabled:false});
-    const turnBox = await ev(`(() => { const r=document.querySelector('#view-joystick-turn .view-stick').getBoundingClientRect(); return {x:r.left+r.width/2,y:r.top+r.height/2}; })()`);
-    await cmd('Input.dispatchMouseEvent', {type:'mouseMoved', x:turnBox.x, y:turnBox.y});
-    await cmd('Input.dispatchMouseEvent', {type:'mousePressed', x:turnBox.x, y:turnBox.y, button:'left', clickCount:1});
-    await cmd('Input.dispatchMouseEvent', {type:'mouseMoved', x:turnBox.x+30, y:turnBox.y-30, button:'left', buttons:1});
-    await cmd('Input.dispatchMouseEvent', {type:'mouseReleased', x:turnBox.x+30, y:turnBox.y-30, button:'left', clickCount:1});
-    await espera(600);
-    const afterMouse = await vista();
-    const modeState = await ev("({angle:document.getElementById('surface').dataset.angle})");
-    medidas.viewJoystick = {touchPan:afterTouch.panx-beforeTouch.panx,keyPan:afterKey.panx-beforeKey.panx,zoomBefore:beforeMouse.zoom,zoomAfter:afterMouse.zoom,angle:modeState.angle};
-    ok(Number(modeState.angle) !== 0 && Number(afterMouse.zoom) > Number(beforeMouse.zoom) && afterMouse.walker === beforeMouse.walker, 'mouse joystick must turn and zoom without walking visitor: ' + JSON.stringify(medidas.viewJoystick));
+    const beforeView = await vista();
+    await ev("AtlasMapView.turn(1), AtlasMapView.zoom(1), true"); await espera(300);
+    const afterView = await vista();
+    const angle = await ev("Number(document.getElementById('surface').dataset.angle)");
+    medidas.viewJoystick = {touchPan:afterTouch.panx-beforeTouch.panx,keyPan:afterKey.panx-beforeKey.panx,zoomBefore:beforeView.zoom,zoomAfter:afterView.zoom,angle,rightStick:right.turn};
+    ok(angle !== 0 && Number(afterView.zoom) > Number(beforeView.zoom) && afterView.walker === beforeView.walker, 'turn and zoom must still work without a joystick: ' + JSON.stringify(medidas.viewJoystick));
   }
 
   console.log(JSON.stringify({ piece: 'la-mano', sabotaje: SAB || null, receipt: fallos.length ? 'ROJO' : 'VERDE', medidas, fallos }));

@@ -92,7 +92,7 @@ async function main() {
   const joystick = JSON.parse(await ev(`JSON.stringify((() => { const g = document.querySelector('#stage #view-joystick'); const bs = [...document.querySelectorAll('#stage .view-joy button')]; return { present: !!g, onStage: !!g && g.parentElement === document.getElementById('stage'), mode: !!document.getElementById('view-stick-mode'), buttons: bs.length, minHeight: bs.length ? Math.min(...bs.map(b=>b.getBoundingClientRect().height)) : 0 }; })())`));
   medidas.joystick = joystick;
   ok(joystick.present && joystick.onStage, 'the view joystick is not on the map stage: ' + JSON.stringify(joystick));
-  ok(joystick.buttons === 2 && joystick.minHeight >= 44 && !joystick.mode, 'the map does not carry exactly two 44 px joysticks: ' + JSON.stringify(joystick));
+  ok(joystick.buttons === 1 && joystick.minHeight >= 44 && !joystick.mode, 'the map does not carry exactly one 44 px pan joystick (decree 2026-11-07): ' + JSON.stringify(joystick));
 
   // 2 · Enter with no choice says how to choose.
   await tecla('Enter');

@@ -1,5 +1,6 @@
-// Map view joysticks. Two fixed sticks control the existing view engines, never the visitor:
-// left = pan, right = turn and zoom. No mode button.
+// Map view joystick. One fixed stick on the left pans the map, never the visitor.
+// The right side is reserved for the ephemeral character's joystick (decree 2026-11-07):
+// it is born with the character. Turn and zoom stay on wheel, pinch and keys.
 (function (root) {
   'use strict';
   var doc = root.document, stage = doc && doc.getElementById('stage');
@@ -49,12 +50,9 @@
   make('view-joystick', 'left', '✥', { group: 'Map pan control', stick: 'Pan the map. Drag, or use arrow keys.' }, function (dx, dy) {
     var scale = size(); pan.move(dx * scale, dy * scale);
   });
-  var carryX = 0, carryY = 0;
-  make('view-joystick-turn', 'right', '↻', { group: 'Map turn and zoom control', stick: 'Turn and zoom the map. Drag, or use arrow keys.' }, function (dx, dy, reset) {
-    if (reset) { carryX = carryY = 0; return; }
-    var view = root.AtlasMapView; if (!view) return;
-    carryX += dx; carryY += dy;
-    while (Math.abs(carryX) >= 24) { var sx = Math.sign(carryX); view.turn(sx); carryX -= sx * 24; }
-    while (Math.abs(carryY) >= 24) { var sy = Math.sign(carryY); view.zoom(-sy); carryY -= sy * 24; }
-  });
+  // The right slot is declared, not drawn: NO_DATA until the character exists.
+  var slot = doc.createElement('span'); slot.id = 'character-joystick-slot'; slot.className = 'sr';
+  slot.setAttribute('role', 'note'); slot.dataset.side = 'right'; slot.dataset.state = 'NO_DATA'; slot.dataset.cause = 'character_not_born';
+  slot.textContent = 'Character joystick: NO_DATA, the ephemeral character does not exist yet.';
+  stage.appendChild(slot);
 })(typeof window !== 'undefined' ? window : globalThis);
