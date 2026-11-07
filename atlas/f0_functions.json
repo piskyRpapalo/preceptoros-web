@@ -347,7 +347,7 @@
     },
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "the view joystick is not the two-control view panner on the map"
+     "text": "the view joystick is not the one-control view panner on the map"
     }
    ]
   },
