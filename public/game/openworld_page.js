@@ -1,11 +1,11 @@
 // OpenWorld: one same-origin map and state; the state file is its only server input.
-// Unlisted nodes do not exist; the cabin is always here. Fixed ticks drive the palette, never wall-clock time.
+// Unlisted nodes do not exist; with none alive the floor is drawn and NO_DATA is said. Fixed ticks drive the palette, never wall-clock time.
 // Reduced motion keeps the sky still.
 (function (raiz) {
   'use strict';
   var doc = raiz.document, M = raiz.AtlasMapaGlobal;
-  var entrada = { t: 0, cabin: {}, nodes: [] };
-  var selected = 'cabin';
+  var entrada = { t: 0, nodes: [] };
+  var selected = '';
   var surface = doc.getElementById('surface');
   var press = doc.querySelector('#terrain-actions');
   var state = doc.getElementById('state');
@@ -59,9 +59,9 @@
     });
   }
 
-  // The visible rows of the state: the cabin, and each node the state lists as alive. A node without its key is refused.
+  // The visible rows of the state: each node the state lists as alive. A node without its key is refused.
   function filas() {
-    try { return M.estado(entrada); } catch (e) { return M.estado({ t: entrada.t, cabin: entrada.cabin, nodes: [] }); }
+    try { return M.estado(entrada); } catch (e) { return M.estado({ t: entrada.t, nodes: [] }); }
   }
 
   function draw() {
@@ -104,8 +104,8 @@
   function render() {
     buttons();
     draw();
-    // «Nodes online» counts the LIVE seals of the heartbeat, never the cabin; without it NO_DATA, never a 0.
-    var nombres = Object.keys(colony_seals).filter(function (id) { return id !== 'cabin' && colony_seals[id] === 'LIVE'; });
+    // «Nodes online» counts the LIVE seals of the heartbeat, without it NO_DATA, never a 0.
+    var nombres = Object.keys(colony_seals).filter(function (id) { return colony_seals[id] === 'LIVE'; });
     var cabeza = live === 'ok' ? 'Nodes online: ' + nombres.length + nombres.map(function (id) { return ' · ' + id + ' LIVE'; }).join('') + '.'
       : live === 'pending' ? 'Nodes online: checking…' : 'Nodes online: NO_DATA.';
     var linea = cabeza, tecnico = '';
@@ -115,8 +115,8 @@
       catch (e) { colonia_error = e.message || 'the colony is refused'; }
     }
     if (colonia_error || !colonia) {
-      linea += colonia_error ? ' The colony is still asleep.' : tutorial ? ' No colony yet.' : ' Loading the map…';
-      tecnico = 'Colony: NO_DATA · ' + (colonia_error || (tutorial ? 'state.json has no colonia' : 'state not loaded yet')) + '.';
+      linea += colonia_error && colonia_error.indexOf('no node declared') !== 0 ? ' The colony is still asleep.' : tutorial ? ' ' + M.VACIO : ' Loading the map…';
+      tecnico = 'Colony: NO_DATA · ' + (colonia_error || (tutorial ? 'state.json lists no node' : 'state not loaded yet')) + '.';
     }
     if (CCT) { CCT.start(); }
     state.textContent = linea;
@@ -143,10 +143,9 @@
     var nodes = data && Array.isArray(data.nodes) ? data.nodes : [];
     entrada = {
       t: data && Number.isInteger(data.t) ? data.t : 0,
-      cabin: data && data.cabin && typeof data.cabin === 'object' ? data.cabin : {},
       nodes: nodes.filter(function (n) { return n && (n.id === 'hexelion' || n.id === 'second'); })
     };
-    if (selected !== 'cabin' && !entrada.nodes.some(function (n) { return n.id === selected; })) { selected = 'cabin'; }
+    if (!entrada.nodes.some(function (n) { return n.id === selected; })) { selected = ''; }
     // IC7-S3 (D7): the colony comes only from openworld_state.js; a node is drawn only when it is alive and sealed LIVE or STALE.
     if (colonia_fuente !== 'fixture') try {
       colonia_error = '';
@@ -207,7 +206,7 @@
       setHot('');
     });
     surface.addEventListener('pointerleave', function () { setHot(''); });
-    surface.addEventListener('focus', function () { var w = CCT && CCT.walker ? CCT.walker() : null; setHot(w && w.node ? w.node : 'cabin'); });
+    surface.addEventListener('focus', function () { var w = CCT && CCT.walker ? CCT.walker() : null; setHot(w && w.node ? w.node : ''); });
     surface.addEventListener('blur', function () { setHot(''); });
   }
   // The cycle: a fixed step of t per second, unless reduced motion is on. The palette is a function of t alone.
@@ -229,6 +228,7 @@
       loadSound(function (S) {
         var scene = M.mapa(entrada);
         var node = scene.nodes.find(function (nd) { return nd.id === selected; }) || scene.nodes[0];
+        if (!node) { listenState.textContent = scene.nodata; return; }
         var result = S.sonify(node.frame);
         if (!result.ok) { listenState.textContent = /^NO_DATA/.test(result.cause) ? result.cause : 'NO_DATA: ' + result.cause; return; }
         var Ctx = raiz.AudioContext || raiz.webkitAudioContext;

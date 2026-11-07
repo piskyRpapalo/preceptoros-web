@@ -8,6 +8,7 @@ import { launchChrome } from './chrome_launch.mjs';
 import { fileURLToPath } from 'node:url';
 
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
+const ONE = readFileSync(new URL('./fixtures/one_live_node.json', import.meta.url));   // one live node: the first node alive is the tutorial's place (the tutorial cabin is retired)
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 function sirve(raiz) {
   const tipos = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json', '.wasm': 'application/wasm' };
@@ -15,7 +16,7 @@ function sirve(raiz) {
     try {
       let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
-      const cuerpo = readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
+      const cuerpo = ruta === '/openworld/state.json' ? ONE : readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
   });
   return new Promise((r) => s.listen(0, '127.0.0.1', () => r(s)));
@@ -74,11 +75,11 @@ async function main() {
   ok(modelos.length === 6, 'expected manifest + 5 chunks + nothing else from /models/: ' + modelos.length);
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
   const speaker = JSON.parse(await ev(`(async () => { const w=(ms)=>new Promise(r=>setTimeout(r,ms)), map=document.querySelector('.cats [data-cat=Welcome]'); map.click();
-    for(let i=0;i<50;i++){const b=document.querySelector('#map-node-list [data-node=cabin]');if(b){b.click();break;}await w(100);}
-    for(let i=0;i<50&&!/Tutorial cabin/.test(document.getElementById('chat-h').textContent);i++)await w(100);
+    for(let i=0;i<50;i++){const b=document.querySelector('#map-node-list [data-node=home]');if(b){b.click();break;}await w(100);}
+    for(let i=0;i<50&&!/Hexagonal building/.test(document.getElementById('chat-h').textContent);i++)await w(100);
     const inside=document.getElementById('chat-h').textContent, leave=document.getElementById('leave-building'); if(leave)leave.click();
     return JSON.stringify({inside, after:document.getElementById('chat-h').textContent}); })()`));
-  ok(speaker.inside === 'Tutorial cabin · b-cabin' && speaker.after === 'SmolLM2-135M-Instruct-Q4_K_M', 'leaving a building did not restore the loaded model as speaker: ' + JSON.stringify(speaker));
+  ok(speaker.inside === 'Hexagonal building · b-home' && speaker.after === 'SmolLM2-135M-Instruct-Q4_K_M', 'leaving a building did not restore the loaded model as speaker: ' + JSON.stringify(speaker));
   console.log(JSON.stringify({ piece: 'web-node-brain', medidas: r, speaker, peticiones_modelo: modelos.length, externas: externas.length, fallos }));
 }
 main().catch((e) => { fallos.push(String(e.message || e)); console.log(JSON.stringify({ fallos })); }).finally(() => { try { ws && ws.close(); } catch {} try { ch && ch.close && ch.close(); } catch {} try { srv && srv.close(); } catch {} process.exit(fallos.length ? 1 : 0); });

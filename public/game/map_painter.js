@@ -252,7 +252,7 @@
     g.restore();
   }
 
-  // start(onReady, opts) loads the 7 chunks around the cabin; describe() is the text.
+  // start(onReady, opts) loads the 7 chunks around the centre; describe() is the text.
   var world = null, said = '', detail = '';
   function start(onReady, opts) {
     var L = root.AtlasMapChunks; if (!L) { said = 'The map has not loaded.'; detail = 'Map floor: NO_DATA · map_chunks.js not loaded'; onReady && onReady(said, detail); return; }

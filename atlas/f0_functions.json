@@ -58,7 +58,7 @@
    "guards": [
     {
      "file": "atlas/a11y_filler_browser.mjs",
-     "text": "Tab never reached the cabin proxy"
+     "text": "Tab never reached the first-node proxy"
     }
    ]
   },
@@ -451,7 +451,7 @@
     },
     {
      "file": "atlas/live_invocation_browser.mjs",
-     "text": "entering the cabin does not play the worm tunnel first"
+     "text": "entering the first node does not play the worm tunnel first"
     }
    ]
   },
@@ -471,7 +471,7 @@
     },
     {
      "file": "atlas/a11y_filler_browser.mjs",
-     "text": "Tab never reached the cabin proxy"
+     "text": "Tab never reached the first-node proxy"
     },
     {
      "file": "atlas/a11y_filler_browser.mjs",

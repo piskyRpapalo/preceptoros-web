@@ -1,7 +1,7 @@
 // W-4 in a real browser, after the controls retirement (odd/tasks/openworld-controls-retirement.md, 2026-11-05):
 // the six-direction pad and the arrow-walk are gone by the Sovereign's decree; walking is a tap on a hex, a node
 // place in the panel, and Enter. The view joystick (map_view_joystick.js) owns the arrows when focused. The page
-// lists two LIVE nodes (the cabin and its east neighbour). Enter on a focused node place walks there over the
+// lists two LIVE nodes (the first node and its east neighbour). Enter on a focused node place walks there over the
 // visible route and arrival enters it; a tap on an empty hex with free walk off says NO_DATA and walks nowhere.
 // Uso: node atlas/walk_keys_browser.mjs (Chrome headless por CDP). Prints one JSON line; exit 1 on failure.
 import { createServer } from 'node:http';
@@ -13,15 +13,15 @@ import { fileURLToPath } from 'node:url';
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// Two LIVE nodes side by side: the cabin (0,0) and ring-e (1,0). Shaped as the server writes state.json (schema 2).
+// Two LIVE nodes side by side: the first node (0,0) and ring-e (1,0). Shaped as the server writes state.json (schema 2).
 const ESTADO = {
   esquema: 'preceptoros.openworld-estado/2', nodes: [],
   colonia: {
     nodes: [
-      { id: 'cabin', q: 0, r: 0, alive: true, seal: 'LIVE', since: '2026-10-31', look: 'basic' },
+      { id: 'home', q: 0, r: 0, alive: true, seal: 'LIVE', since: '2026-10-31', look: 'basic' },
       { id: 'ring-e', q: 1, r: 0, alive: true, seal: 'LIVE', since: '2026-10-31', look: 'basic' }
     ],
-    buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' }],
+    buildings: [{ id: 'b-home', node: 'home' }, { id: 'b-ring-e', node: 'ring-e' }],
     units: []
   }
 };

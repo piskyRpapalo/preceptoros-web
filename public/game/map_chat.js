@@ -5,7 +5,7 @@
   // The joystick stays as the page serves it: the companion does not move or fold page controls.
   // The web node brain (web_node_brain.js): a same-origin model in 5 verified chunks, run on this device's CPU.
   var ready = false, busy = false, loading = false, offline = false;
-  var model = 'SmolLM2-135M-Instruct', context = 'Tutorial cabin · local visitor practice';
+  var model = 'SmolLM2-135M-Instruct', context = 'The map · local visitor practice';
   var zone = doc.createElement('div'); zone.id = 'map-brain';
   var guide = doc.querySelector('#voices [data-speaker="Models"]');
   if (guide) { guide.appendChild(zone); if (note) { guide.appendChild(note); } } else { form.before(zone); }

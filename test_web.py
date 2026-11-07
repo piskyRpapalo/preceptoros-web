@@ -2366,7 +2366,7 @@ class HubSinMundosVivos(unittest.TestCase):
 class OpenWorld(unittest.TestCase):
     """NORTE 7 · PR 2 (2026-10-28): /openworld/ es la ficha del mapa global y el chat.
 
-    El estado por defecto son CERO nodos: la pagina enseña el mapa y la cabana del tutorial. Node Hexelion y el
+    El estado por defecto son CERO nodos: la pagina enseña el suelo y NO_DATA (la cabana de tutorial se retiro, 2026-11-07). Node Hexelion y el
     segundo nodo solo aparecen si `state.json` los lista como vivos. Y el navegador no pide nada fuera de este origen.
     """
 
@@ -2385,15 +2385,18 @@ class OpenWorld(unittest.TestCase):
         estado = json.loads((PUBLICO / "openworld" / "state.json").read_text(encoding="utf-8"))
         self.assertEqual(estado["nodes"], [], "el estado por defecto debe ser cero nodos")
 
-    def test_la_cabana_siempre_y_los_nodos_solo_si_viven(self):
-        # El mapa (NODO-MAPA, ODD isometric-colony) nombra tres filas en el nucleo puro: la cabana siempre, y
-        # Node Hexelion y Second node solo si el estado los lista como vivos (decreto p0, 2026-11-01). La ficha pinta lo que el nucleo decide.
+    def test_ningun_nodo_siempre_y_los_nodos_solo_si_viven(self):
+        # 2026-11-07 (orden del Soberano): la cabana de tutorial no existe. El nucleo puro nombra dos filas, Node Hexelion y
+        # Second node, y solo si el estado las lista como vivas; sin ninguna, suelo y NO_DATA con su causa.
         nucleo = (PUBLICO / "game" / "global_map.js").read_text(encoding="utf-8")
-        self.assertIn("nombre: 'Tutorial cabin'", nucleo)
-        self.assertIn("siempre: true", nucleo)
+        self.assertNotIn("cabin", nucleo)
+        self.assertNotIn("siempre: true", nucleo)
         self.assertIn("nombre: 'Node Hexelion'", nucleo)
         self.assertIn("nombre: 'Second node'", nucleo)
-        self.assertIn("node.siempre || vivos.some(", nucleo)
+        self.assertIn("var vivo = vivos.some(", nucleo)
+        self.assertIn("NO_DATA: no node is alive yet (the colony is empty)", nucleo)
+        self.assertNotIn("t-cabin", self.t)
+        self.assertNotIn("Tutorial cabin", self.t)
         self.assertIn("M.estado(entrada)", self.t)
         self.assertIn("return n && (n.id === 'hexelion' || n.id === 'second');", self.t)
 

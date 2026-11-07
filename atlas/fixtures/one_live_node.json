@@ -1,0 +1,1 @@
+{"esquema":"preceptoros.openworld-estado/2","nodes":[],"colonia":{"nodes":[{"id":"home","q":0,"r":0,"alive":true,"seal":"LIVE","since":"2026-11-07","look":"basic"}],"buildings":[{"id":"b-home","node":"home"}],"units":[]}}

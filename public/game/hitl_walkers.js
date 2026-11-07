@@ -1,5 +1,5 @@
 // P5a · the HITL «?» and the deterministic walkers of the colony (plan 2.5D, F4). Pure part: no DOM, no clock, no
-// random numbers, no network. A walker is the bot of one node walking from the tutorial cabin to its parcel over the
+// random numbers, no network. A walker is the bot of one node walking from the first node to its parcel over the
 // visible route (walk_route.js). Its pose is a function of (seed, tick) alone. States are a taxonomy, each with its
 // own shape and its own text, never colour alone: walking · building · needs-you · NO_DATA.
 // The browser part draws on the one placement of colony_page.js (anchorOf) and puts one real button over each «?».
@@ -32,7 +32,7 @@
   // walkerAt(nodes, seals, pending, id, seed, tick, reduced) → { id, node, to, fraction, state, path, cause }.
   // The walk starts at a delay of hash(seed:id) % FRAMES ticks. With reduced motion the walker jumps to its last stop.
   function walkerAt(nodes, seals, pending, id, seed, tick, reduced) {
-    var origin = (nodes || []).some(function (n) { return n.id === 'cabin'; }) ? 'cabin' : ((nodes || [])[0] || {}).id;
+    var origin = ((nodes || [])[0] || {}).id;
     var r = W.route(nodes, seals, origin, id);
     if (!r.ok) { return { id: id, node: null, to: null, fraction: 0, state: 'NO_DATA', path: [], cause: r.cause }; }
     var steps = r.path.length - 1, e = Math.max(0, tick - hash(String(seed) + ':' + id) % FRAMES);
