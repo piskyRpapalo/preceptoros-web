@@ -124,3 +124,15 @@ main.map-panel-mask.with-showcase-player{grid-template-columns:minmax(0,1fr);gri
 #voices.map-voices:not([data-active-category="Communication"]){inset:0;padding-bottom:148px}
 }
 @media (forced-colors:active){#voices[data-active-category="Communication"] #entry,#voices[data-active-category="Communication"] #question{background:Canvas;color:CanvasText}}
+/* Native sheets, mini-first (Sovereign, 2026-11-07): on a narrow viewport (the app's World gap is 420x437,
+   an Android phone is about the same) an open panel is one full-width sheet over the map, the map controls
+   step aside while it is open, and type follows the app's 80% scale. One rule for app, phone and PC: it
+   reads the viewport, never whether the page sits in a frame. */
+@media (max-width:600px){
+html{font-size:80%}
+body{font-size:1rem}
+#voices.map-voices,#voices.map-voices[data-active-category="Communication"]{inset:0;max-height:none;padding:8px;border-radius:0}
+#map:has(#voices.map-voices:not([hidden])) #map-actions{display:none}
+/* the joystick carries an inline display from its script: visibility steps it aside (and out of focus) */
+#map:has(#voices.map-voices:not([hidden])) #view-joystick{visibility:hidden}
+}
