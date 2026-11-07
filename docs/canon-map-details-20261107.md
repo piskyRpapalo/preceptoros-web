@@ -166,9 +166,21 @@ Catálogo gigante y vivo, cosechado de la biblioteca de la casa (2026-11-07 noch
 - F4 · Make the panel interiors: plan documento con PR y recibo. Estado: propuesta.
 - F5 · Shield the telemetry: cero peticiones no declaradas; auditoría de runtime (buscar palabras no es prueba de presencia ni de ausencia: se mide la red al ejecutar). Estado: propuesta.
 - F6 · Make live device benchmarks: con sello de procedencia nativo. Estado: propuesta.
-- F7 · Make full accessibility: EN 301 549, 44 px táctiles, reduced-motion, 8 lenguas, color y texto jamás solo color, texto a la izquierda, «undefined» jamás llega al usuario (NO_DATA con causa), lector de pantalla lee el espectro, no los píxeles. Estado: doctrina medido. NO_DATA: plan completo, causa: pendiente de dar la app por buena.
+- F7 · Make full accessibility: EN 301 549, 44 px táctiles, reduced-motion, 8 lenguas, color y texto jamás solo color, texto a la izquierda, «undefined» jamás llega al usuario (NO_DATA con causa), lector de pantalla lee el espectro, no los píxeles. Estado: doctrina medito. NO_DATA: plan completo, causa: pendiente de dar la app por buena.
 - F8 · Put the Acho law in the fonts: escala determinista compartida; tipografía como senos. Estado: canon. NO_DATA, causa: sin portar.
 - F9 · Make the Rosetta twin: la misma interfaz en navegador y escritorio; one state, many renders (el mapa isométrico es SOLO otro render del vector); mismo vector, mismo bitmap byte-idéntico (n=2). Estado: canon; 4 vectores validados por el juez real (4/4).
 - F10 · Keep approval by exact hash: el review se agrupa, la aprobación NO; cada pieza lleva su línea HITL con hash y fecha; los batches caducan; todo cambio de valor lleva su propio HITL. Estado: ley de la casa, ya en obra en los gates.
+
+### G · Los agentes de Mistral en GitHub
+
+Decreto del Soberano (2026-11-07 noche): el mapa de misiones también alimenta a los agentes de Mistral que trabajan en GitHub. Canon del equipo: TRES literas. La Mesa mide, escribe actas y sella; la litera viva lleva el latido y despliega solo cabezas firmadas; la litera de obra abre PRs verdes (ramas mistral/* y claude/*) y jamás fusiona. Estos agentes también van a la mesa (sección 8): eligen UNA misión, la proponen y esperan FIRMO.
+
+- G1 · Keep the judge bench: la Mesa mide, escribe actas y recibos <1.024 B con SCRUB, sella versiones y jamás ejecuta sin propuesta. Estado: medito, viva (este documento sale de su turno).
+- G2 · Keep the live litera: el latido toca solo cabezas firmadas; la llave del worker está por rotar (401 medito; rotación bilateral pendiente de ambas partes). Estado: litera rota hasta la cura. NO_DATA: latido verde, causa: llave sin rotar.
+- G3 · Make green PRs: cada PR abre verde: gate local completo antes de abrir, rama sobre la cabeza fresca de main, SCRUB y trailer; jamás merge propio: el FIRMO es del Soberano. Estado: ley en obra (PRs verdes meditos en main).
+- G4 · Add the measured optimizations: ETag y 304, text-wrap, scrollbar-gutter, forced-colors, prefers-contrast y view transitions: hoy 0 en el tronco (medito en v140). Cada optimización entra como PR propio con medida antes y después. Estado: 0 medito. NO_DATA: mejora, causa: sin proponer.
+- G5 · Keep the seals and receipts: cada cabeza firmada lleva su recibo; sello de versión y huella se re-miden tras cada cambio de lo servido. Estado: ley en obra (los gates lo exigen).
+- G6 · Watch the single focus: una cabeza, un foco de trabajo (canon del norte 13); la patrulla reporta focos duplicados o huérfanos con fichero y línea, sin ejecutar la cura. Estado: doctrina medita (la patrulla ya corre).
+- G7 · Prune the merged branches: higiene de ramas ya fusionadas: la poda lleva guardia, recibo y confirmación del merge; nada se borra por aproximación. Estado: propuesta con guardia (bypass solo por orden explícita del Soberano).
 
 Agent: preceptor-orquestador-github · Model: GLM (Vibe) · Run: NO_DATA
