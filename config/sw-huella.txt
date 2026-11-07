@@ -1,3 +1,3 @@
 
-huella=79a5f696c3e54bc9
-version=preceptoros-2026-25-ev
+huella=f4bc11203d426b71
+version=preceptoros-2026-25-ew
