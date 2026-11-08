@@ -22,6 +22,7 @@
     var l = LINES[at];
     if (l && l[2] && WAITS[l[2]] && event === l[2]) { return l[2]; }
     if (event === 'entered' && (at === 'hello' || at === 'walked' || at === 'walk')) { return 'entered'; }
+    if (event === 'walked' && at === 'hello') { return 'walked'; } // a visitor who just walks is answered too
     return at;
   }
   function choose(at, i) { var l = LINES[at]; return l && l[1][i] ? l[1][i][1] : at; }

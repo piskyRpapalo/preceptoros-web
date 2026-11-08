@@ -13,7 +13,7 @@ test('every answer leads to a line that exists, and every line has at least one 
 test('events move the talk only where they mean something, the same way every time', () => {
   assert.equal(T.next('walk', 'walked'), 'walked');
   assert.equal(T.next('walk', 'walked'), T.next('walk', 'walked'));
-  assert.equal(T.next('hello', 'walked'), 'hello', 'walking before asking does not skip the greeting');
+  assert.equal(T.next('hello', 'walked'), 'walked', 'a visitor who walks before answering is answered');
   assert.equal(T.next('hello', 'entered'), 'entered');
   assert.equal(T.next('play', 'playing'), 'playing');
   assert.equal(T.next('rest', 'entered'), 'rest', 'a visitor who said «Later» is left in peace');

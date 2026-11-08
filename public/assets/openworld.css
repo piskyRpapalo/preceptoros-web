@@ -152,24 +152,24 @@ body{font-size:1rem}
 #gamepad .cats button[aria-pressed="true"]{outline:2px solid var(--fg);outline-offset:1px}
 @media (forced-colors: active){#gamepad :is(.gp-b,.cats button,.gp-off){background-image:none;border-color:ButtonText}}
 #gamepad .view-stick.gp-acho[data-on],#gamepad .view-stick.gp-acho:focus-visible{border-color:var(--fg)}
-#building-sheet{flex:0 0 auto;margin:0;padding:8px;max-height:46vh;overflow:auto;border:1px solid color-mix(in srgb,var(--fg) 30%,transparent);border-radius:calc(var(--radius) + 6px);background:var(--bg)}
-#building-sheet[hidden]{display:none}
-#building-sheet .bs-bar{display:flex;align-items:center;gap:6px}
-#building-sheet h2{flex:1 1 auto;margin:0;font-size:15px;min-width:0}
-#building-sheet .bs-list{list-style:none;margin:6px 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
-#building-sheet :is(.bs-card,.bs-tool){min-height:44px;min-width:44px;width:100%;padding:6px 8px 16px;text-align:left;font:inherit;font-size:14px;color:var(--fg);border:1px solid color-mix(in srgb,var(--gp,var(--fg)) 60%,transparent);border-radius:calc(var(--radius) + 4px);background:color-mix(in srgb,var(--gp,var(--fg)) 14%,transparent) var(--gp-svg,none) left 8px bottom 4px/32px 10px no-repeat;cursor:pointer}
-#building-sheet .bs-tool{width:auto;padding:6px 10px}
-#building-sheet .bs-tool[hidden]{display:none}
-#building-sheet .bs-seal{display:block;font-size:11px;opacity:.8}
-#building-sheet .bs-card[data-seal=NO_DATA]{border-style:dashed}
-#building-sheet .bs-line{margin:0;font-size:13px;min-height:1.3em}
-@media (forced-colors: active){#building-sheet :is(.bs-card,.bs-tool){background-image:none;border-color:ButtonText}}
+:is(#building-sheet,#settings-sheet){flex:0 0 auto;margin:0;padding:8px;max-height:46vh;overflow:auto;border:1px solid color-mix(in srgb,var(--fg) 30%,transparent);border-radius:calc(var(--radius) + 6px);background:var(--bg)}
+:is(#building-sheet,#settings-sheet)[hidden]{display:none}
+:is(#building-sheet,#settings-sheet) .bs-bar{display:flex;align-items:center;gap:6px}
+:is(#building-sheet,#settings-sheet) h2{flex:1 1 auto;margin:0;font-size:15px;min-width:0}
+:is(#building-sheet,#settings-sheet) .bs-list{list-style:none;margin:6px 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+:is(#building-sheet,#settings-sheet) :is(.bs-card,.bs-tool){min-height:44px;min-width:44px;width:100%;padding:6px 8px 16px;text-align:left;font:inherit;font-size:14px;color:var(--fg);border:1px solid color-mix(in srgb,var(--gp,var(--fg)) 60%,transparent);border-radius:calc(var(--radius) + 4px);background:color-mix(in srgb,var(--gp,var(--fg)) 14%,transparent) var(--gp-svg,none) left 8px bottom 4px/32px 10px no-repeat;cursor:pointer}
+:is(#building-sheet,#settings-sheet) .bs-tool{width:auto;padding:6px 10px}
+:is(#building-sheet,#settings-sheet) .bs-tool[hidden]{display:none}
+:is(#building-sheet,#settings-sheet) .bs-seal{display:block;font-size:11px;opacity:.8}
+:is(#building-sheet,#settings-sheet) .bs-card[data-seal=NO_DATA]{border-style:dashed}
+:is(#building-sheet,#settings-sheet) .bs-line{margin:0;font-size:13px;min-height:1.3em}
+@media (forced-colors: active){:is(#building-sheet,#settings-sheet) :is(.bs-card,.bs-tool){background-image:none;border-color:ButtonText}}
 /* I7 The right letters (type_scale.js): the reading panels scale by the visitor's step; the map and gamepad do not. */
-#chat,#voices,#building-sheet{zoom:var(--letters,1)}
+#chat,#voices,:is(#building-sheet,#settings-sheet){zoom:var(--letters,1)}
 /* Terminals are always dark (Sovereign, 2026-11-08): every panel where the visitor reads or types is a terminal.
    The house colours are system colours (Canvas, CanvasText), so one color-scheme makes the whole subtree dark in
    either theme; the map keeps the visitor's theme. Forced colours still win: the system palette replaces both. */
-#chat,#voices,#building-sheet,.radio-chat{color-scheme:dark;background-color:Canvas;color:CanvasText}
+#chat,#voices,:is(#building-sheet,#settings-sheet),.radio-chat{color-scheme:dark;background-color:Canvas;color:CanvasText}
 /* Acho skin for the panel (2026-11-08, kid test): the panel is the sea, each voice is a bright tile of its own colour —
    sunshine, leaf, sky, coral, lilac — with an ink outline and the extruded edge of a hex. The voice re-scopes --fg/--bg/
    --soft/--line so every child follows the tile; the heading is a hex chip. The visitor does not see the live-count line
@@ -253,8 +253,8 @@ body{font-size:1rem}
 #visitor-play.board .season li{background:var(--adcc8ff)}
 @media (forced-colors:active){#visitor-play.board .quest{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}}
 /* Acho skin, old terminals (2026-11-08, decision mia, unsigned): sea frame, ink tiles. */
-#chat,#building-sheet,.radio-chat{background:var(--a04334a) linear-gradient(160deg,var(--a0b6e8f),var(--a04334a));border:3px solid var(--a1d1b26);color:var(--afffdf6)}
-#chat,#building-sheet{border-radius:calc(var(--radius) + 10px)}
+#chat,:is(#building-sheet,#settings-sheet),.radio-chat{background:var(--a04334a) linear-gradient(160deg,var(--a0b6e8f),var(--a04334a));border:3px solid var(--a1d1b26);color:var(--afffdf6)}
+#chat,:is(#building-sheet,#settings-sheet){border-radius:calc(var(--radius) + 10px)}
 #chat > h2{align-self:flex-start;background:var(--affe58a);color:var(--a1d1b26);border-radius:999px;padding:4px 16px}
 #chat .log > li,#chat > form :is(input,button),#chat #map-brain :is(button,select),#chat > .tech summary,.radio-msg{background:var(--afffdf6);color:var(--a1d1b26);border:3px solid var(--a1d1b26);border-radius:calc(var(--radius) + 6px);box-shadow:0 4px 0 var(--a1d1b26)}
 #chat .log > li{padding:8px 12px;margin:0 0 10px}
@@ -267,17 +267,17 @@ body{font-size:1rem}
 #chat .log > li.nodata{border-style:dashed;background:var(--ae6dbc3)}
 #chat > form :is(input,button),#chat #map-brain :is(button,select),#chat > .tech summary{min-height:44px;min-width:44px}
 #chat > form button,#chat #map-brain button,#chat > .tech summary{font-weight:700}
-#building-sheet :is(.bs-card,.bs-tool){background:var(--gp-svg,none) left 8px bottom 4px/32px 10px no-repeat var(--afffdf6);color:var(--a1d1b26);border:3px solid var(--a1d1b26);box-shadow:0 5px 0 var(--a1d1b26)}
-#building-sheet .bs-card[data-seal=LIVE]{background:var(--gp-svg,none) left 8px bottom 4px/32px 10px no-repeat var(--affe58a)}
-#building-sheet .bs-seal{display:inline-block;width:max-content;opacity:1;background:var(--a1d1b26);color:var(--afffdf6);border-radius:999px;padding:0 8px}
+:is(#building-sheet,#settings-sheet) :is(.bs-card,.bs-tool){background:var(--gp-svg,none) left 8px bottom 4px/32px 10px no-repeat var(--afffdf6);color:var(--a1d1b26);border:3px solid var(--a1d1b26);box-shadow:0 5px 0 var(--a1d1b26)}
+:is(#building-sheet,#settings-sheet) .bs-card[data-seal=LIVE]{background:var(--gp-svg,none) left 8px bottom 4px/32px 10px no-repeat var(--affe58a)}
+:is(#building-sheet,#settings-sheet) .bs-seal{display:inline-block;width:max-content;opacity:1;background:var(--a1d1b26);color:var(--afffdf6);border-radius:999px;padding:0 8px}
 .radio-chat{border-radius:calc(var(--radius) + 10px);padding:6px}
 .radio-chat-alterna,.radio-chat-tab{background:var(--afffdf6);color:var(--a1d1b26);border:3px solid var(--a1d1b26);border-radius:calc(var(--radius) + 6px);box-shadow:0 4px 0 var(--a1d1b26)}
 .radio-chat-tab[aria-selected="true"]{background:var(--affe58a)}
 .radio-msg-cab > span[title]{display:inline-block;padding:0 8px;border-radius:999px;background:var(--a1d1b26);color:var(--afffdf6)}
 .radio-chat-no-data{border:3px dashed var(--afffdf6);border-radius:calc(var(--radius) + 6px)}
-#chat > form :is(input,button):active,#chat #map-brain :is(button,select):active,#chat > .tech summary:active,#building-sheet :is(.bs-card,.bs-tool):active,.radio-chat-alterna:active,.radio-chat-tab:active{transform:translateY(3px);box-shadow:0 1px 0 var(--a1d1b26)}
-@media (prefers-reduced-motion:reduce){#chat > form :is(input,button):active,#chat #map-brain :is(button,select):active,#chat > .tech summary:active,#building-sheet :is(.bs-card,.bs-tool):active,.radio-chat-alterna:active,.radio-chat-tab:active{transform:none}}
-@media (forced-colors:active){#chat,#building-sheet,.radio-chat,#chat > h2,#chat .log > li,#chat > form :is(input,button),#chat #map-brain :is(button,select),#chat > .tech summary,#building-sheet :is(.bs-card,.bs-tool,.bs-seal),.radio-chat-alterna,.radio-chat-tab,.radio-msg,.radio-msg-cab > span[title],.radio-chat-no-data{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}}
+#chat > form :is(input,button):active,#chat #map-brain :is(button,select):active,#chat > .tech summary:active,:is(#building-sheet,#settings-sheet) :is(.bs-card,.bs-tool):active,.radio-chat-alterna:active,.radio-chat-tab:active{transform:translateY(3px);box-shadow:0 1px 0 var(--a1d1b26)}
+@media (prefers-reduced-motion:reduce){#chat > form :is(input,button):active,#chat #map-brain :is(button,select):active,#chat > .tech summary:active,:is(#building-sheet,#settings-sheet) :is(.bs-card,.bs-tool):active,.radio-chat-alterna:active,.radio-chat-tab:active{transform:none}}
+@media (forced-colors:active){#chat,:is(#building-sheet,#settings-sheet),.radio-chat,#chat > h2,#chat .log > li,#chat > form :is(input,button),#chat #map-brain :is(button,select),#chat > .tech summary,:is(#building-sheet,#settings-sheet) :is(.bs-card,.bs-tool,.bs-seal),.radio-chat-alterna,.radio-chat-tab,.radio-msg,.radio-msg-cab > span[title],.radio-chat-no-data{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}}
 /* The controller as a plastic shell with two raised wings (Sovereign, 2026-11-08): the V is the two outer peaks, the
    bigger sticks, that climb over the map; the middle panel sits lower between them (three buttons above, two below). */
 #gamepad{position:relative;z-index:2;padding-left:8px;padding-right:8px;column-gap:4px}
@@ -306,3 +306,4 @@ body{font-size:1rem}
 #preceptor-talk.pt-rest .pt-line{margin:0 0 4px;font-size:.92rem}
 @media (prefers-reduced-motion:reduce){#preceptor-talk .pt-row button:active{transform:none}}
 @media (forced-colors:active){#preceptor-talk,#preceptor-talk .pt-row button{border-color:CanvasText;background:Canvas;color:CanvasText;box-shadow:none}#preceptor-talk .pt-who{background:CanvasText;color:Canvas}}
+#settings-sheet h3{margin:8px 0 0;font-size:13px;letter-spacing:.04em;text-transform:uppercase}

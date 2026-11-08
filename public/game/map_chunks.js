@@ -67,6 +67,8 @@
       var k = KINDS[mixHash(c[1], c[0]) % KINDS.length];
       picked.push(c); marks[c[0] + ',' + c[1]] = { q: c[0], r: c[1], id: k[0], roof: k[1], tone: k[2] };
     });
+    try { JSON.parse(root.localStorage.getItem('preceptoros.built') || '[]').forEach(function (m) { // built in Settings
+      var key = m.q + ',' + m.r; if (!marks[key] && world.cells.at[key]) { marks[key] = m; picked.push([m.q, m.r]); } }); } catch (e) {}
     world.marks = marks; world.markList = picked.map(function (c) { return marks[c[0] + ',' + c[1]]; });
     return marks;
   }
