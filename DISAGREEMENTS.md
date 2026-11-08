@@ -9,6 +9,14 @@ RV3-\* remains a historical alias, never rewritten.
 *(ES: el registro append-only de colisiones, serie RC-\*. La serie vieja RV3-\*
 queda alias hist\u00f3rico por colisi\u00f3n con el rack; FIRMO 2026-10-18.)*
 
+**Scope (declared 2026-11-08, row O-06 of the compact doctrine):** name
+collisions and their verdicts of the web canon, series RC-\*. The voice of the
+house (silicon-silicon disputes with SCRUB; carbon by sign-off) lives in the
+study's DISAGREEMENTS (row R-23 of the compact doctrine); a disagreement about
+which register owns a concept is itself an RC entry here. *(ES: alcance
+declarado — colisiones del canon web; la voz de la casa vive en el registro del
+estudio; el choque de registros entra aquí como RC.)*
+
 ## Law (append-only, rename-winner)
 
 - Every entry carries an immutable ID `RC-NN` — never reused, never edited;
@@ -72,7 +80,7 @@ queda alias hist\u00f3rico por colisi\u00f3n con el rack; FIRMO 2026-10-18.)*
   `node sw_harness.mjs` (22/22); 2026-10-19, Linux x86_64, Python 3.14.4.
 - RC-08 (proposed, pending Sovereign decision): `AtlasTelemetry` labels
   `JSON.stringify(a).length` as `bytes` (`public/assets/descent_view.js:77-80`),
-  although JavaScript string length counts UTF-16 code units. `monta(..., otra)`
+  although JavaScript string length counts UTF-16 code units. `monta(..., otra)`)
   accepts a caller-supplied scene (`:108`), so the metric's contract matters
   beyond the current bundled ASCII scene. Exact yardstick on Linux x86_64,
   Node v22.22.1, 2026-10-19:
