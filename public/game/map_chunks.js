@@ -191,15 +191,15 @@
     });
     g.restore();
   }
-  // names(): buildings within NEAR hexes of the crab carry a small Acho name pill; the map reads as it is walked.
-  var NEAR = 6, NAMES = { hostel: 'Hostel', coliseum: 'Coliseum', choir: 'Choir', workshop: 'Workshop', tower: 'Model tower',
+  // names(): buildings within REACH hexes of the crab carry a small Acho name pill; the map reads as it is walked.
+  var REACH = 6, NAMES = { hostel: 'Hostel', coliseum: 'Coliseum', choir: 'Choir', workshop: 'Workshop', tower: 'Model tower',
     agora: 'Agora', customs: 'Customs', lottery: 'Lottery', 'visitor-house': 'Visitor house', doctor: 'Doctor' };
   function names(g, V, w, dpr, cx, cy) {
     if (!V.world.markList) { landmarks(V.world); }
     var k = V.G.k, ink = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.ink)), paper = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.paper)), fs = Math.round(11 * dpr);
     g.save(); g.font = '700 ' + fs + 'px ui-rounded, "SF Pro Rounded", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
     V.world.markList.forEach(function (m) {
-      if (hexDist([m.q, m.r], [w.q, w.r]) > NEAR) { return; }
+      if (hexDist([m.q, m.r], [w.q, w.r]) > REACH) { return; }
       var cell = V.world.cells.at[m.q + ',' + m.r], h0 = V.P(m.q, m.r), p = V.turn(h0.x, h0.y);
       var x = V.G.cx + p.x * k, y = V.G.cy + p.y * k - ((cell ? V.height(cell) * V.HSTEP : 0) + (m.roof === 'spire' ? 58 : 44)) * k;
       var t = NAMES[m.id] || m.id, tw = g.measureText(t).width + 12 * dpr, th = fs + 6 * dpr;
