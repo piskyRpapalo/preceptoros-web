@@ -9,6 +9,7 @@ test('actions the crab carries out close the panel; summon and build also look a
   assert.equal(X.verdict('set-build-hostel'), 'close+look');
   assert.equal(X.verdict('visitor-fight-arrecife'), 'close');
   assert.equal(X.verdict('visitor-hatch-1'), 'close');
+  assert.equal(X.verdict('bs-challenge'), 'close'); // the NPC building's challenge (fog-and-conquest C2)
 });
 test('settings of the device and plain panel buttons leave the panel open', () => {
   for (const id of ['set-letters', 'set-audio', 'visitor-start', 'gp-town', '', undefined]) { assert.equal(X.verdict(id), null, String(id)); }

@@ -10,7 +10,7 @@
   // Pure: what accepting a button does → 'close+look', 'close' or null. Tested in atlas/puros/panel_x_cases.mjs.
   function verdict(id) {
     if (/^visitor-(summon-|beacon$)|^set-build-/.test(id || '')) { return 'close+look'; }
-    if (/^visitor-(fight-|hatch-)/.test(id || '')) { return 'close'; }
+    if (/^visitor-(fight-|hatch-)|^bs-challenge$/.test(id || '')) { return 'close'; }
     return null;
   }
   // Pure: does this tap close the open panel? A still tap (moved ≤ 10 px) on the map canvas while a panel is open.
