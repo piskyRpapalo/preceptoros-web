@@ -42,15 +42,21 @@
     if (!o || o.v !== V.carta) { return 'not ' + V.carta; }
     if (!isInt(o.radius) || o.radius < 1) { return 'radius must be a positive integer'; }
     var f = frameCause(o.frame); if (f) { return 'carta ' + f; }
+    var b = o.budget;
+    if (!b || !isInt(b.chunk_b) || b.chunk_b < 1 || !isInt(b.neighbourhood_b) || b.neighbourhood_b < 1) { return 'budget missing or not positive integers: chunk_b and neighbourhood_b'; }
     if (!Array.isArray(o.chunks) || !o.chunks.length) { return 'carta without chunks'; }
+    var sum = 0;
     for (var i = 0; i < o.chunks.length; i++) {
       var c = o.chunks[i];
       if (!isC(c.c) || c.id !== key(c.c)) { return 'chunk ' + i + ': id is not its quantized key'; }
       var k = chunkOf(c.c[0], c.c[1], o.radius); if (!k || key(k) !== c.id) { return 'chunk ' + c.id + ' is not a lattice centre'; }
       if (!/^[0-9a-f]{64}$/.test(c.sha256 || '')) { return 'chunk ' + c.id + ': sha256 missing'; }
       if (!isInt(c.bytes) || c.bytes < 1 || c.bytes > 25 * 1024 * 1024) { return 'chunk ' + c.id + ': bytes outside 1..25 MiB'; }
+      if (c.bytes > b.chunk_b) { return 'chunk over budget: ' + c.id + ' ' + c.bytes + ' > ' + b.chunk_b; }
+      sum += c.bytes;
       f = frameCause(c.frame); if (f) { return 'chunk ' + c.id + ' ' + f; }
     }
+    if (sum > b.neighbourhood_b) { return 'neighbourhood over budget: ' + sum + ' > ' + b.neighbourhood_b; }
     return null;
   }
   function checkChunk(o, R) {

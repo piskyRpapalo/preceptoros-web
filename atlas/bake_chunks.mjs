@@ -10,6 +10,7 @@ import { createRequire } from 'node:module';
 const C = createRequire(import.meta.url)('../public/game/map_chart.js');
 const M = createRequire(import.meta.url)('../public/game/map_painter.js');
 const R = 8, SEED = 20261101, RING = 1;            // ring 1 = the 7-chunk neighbourhood of the tutorial cabin
+const CHUNK_B = 8192, NEIGHBOURHOOD_B = 65536;     // N7 · byte budget declared in the carta; checkCarta enforces it
 const OUT = new URL('../public/', import.meta.url);
 
 // Integer hash (xorshift-multiply on 32 bits): the floor detail comes from (seed, q, r) only.
@@ -42,7 +43,7 @@ export function bake() {
     files.set(name, body);
     chunks.push({ id: C.key(c), c, sha256: s, bytes: Buffer.byteLength(body), frame, file: '/' + name });
   }
-  const carta = { v: 'atlas.carta/1', radius: R, seed: SEED, frame: { t: 'Sunken forest map', d: '7 hex chunks around the tutorial cabin, radius ' + R + '. Each chunk is asked for by its area key only.' }, chunks: chunks.map(({ file, ...k }) => k) };
+  const carta = { v: 'atlas.carta/1', radius: R, seed: SEED, frame: { t: 'Sunken forest map', d: '7 hex chunks around the tutorial cabin, radius ' + R + '. Each chunk is asked for by its area key only.' }, budget: { chunk_b: CHUNK_B, neighbourhood_b: NEIGHBOURHOOD_B, why: 'one chunk is one read on a weak phone; the 7-chunk neighbourhood is what the first screen loads' }, chunks: chunks.map(({ file, ...k }) => k) };
   files.set('map/chart.json', json(carta));
   return { files, carta, chunks };
 }
