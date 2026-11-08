@@ -63,7 +63,8 @@
     line('Copper ' + s.copper + ' · Light ' + s.light + ' · Step ' + s.step + ' · Troops ' + s.troops.length + ' · Pity NO_DATA: not approved.');
     var star = doc.createElement('p'); star.id = 'visitor-voice-star'; star.textContent = 'Voice Star ' + s.echoes + '/' + s.echoCap; controls.append(star);
     button('Visit the beacon · claim 100 copper once', 'visitor-beacon', function () { game.beacon(); }, s.claimed);
-    button('Wait one turn', 'visitor-step', function () { game.advance(); });
+    // Steps are walked, not pressed (Sovereign, 2026-11-08): every hex the crab walks dispatches visitor:advance.
+    var hint = doc.createElement('p'); hint.id = 'visitor-step'; hint.className = 'walk-hint'; hint.textContent = 'Walk your crab: every hex is one step.'; controls.append(hint);
     Object.keys(root.AtlasGacha.TCS).forEach(function (tc) {
       var cost = root.AtlasGacha.TCS[tc].coste, odds = root.AtlasGacha.odds(tc);
       line(tc + ' · ' + cost.cobre + ' copper / ' + cost.luz + ' light · odds per thousand: ' + root.AtlasGacha.RAREZAS.map(function (r, i) { return r + ' ' + odds[i]; }).join(', '));

@@ -91,7 +91,7 @@ async function main() {
   await espera(300);
   const panel = await ev(`document.getElementById('visitor-play').textContent`);
   ok(/Copper 100/.test(panel), 'copper 100 after the beacon');
-  ok(await pulsaId('visitor-step'), 'one game step taken');
+  ok(await ev(`(document.getElementById('visitor-play').dispatchEvent(new CustomEvent('visitor:advance')), true)`), 'one game step taken (the crab walks one hex)');
   await espera(200);
   medidas.copper_tras_baliza = /Copper 100/.test(panel);
 

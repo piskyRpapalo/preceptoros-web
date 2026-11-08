@@ -529,7 +529,7 @@
    "guards": [
     {
      "file": "atlas/gamepad_browser.mjs",
-     "text": "the map is not three pieces (status line, map, gamepad)"
+     "text": "the map is not four pieces (status line, map, preceptor, gamepad)"
     },
     {
      "file": "atlas/gamepad_browser.mjs",

@@ -62,7 +62,7 @@ async function main() {
   ok(await hasta('document.getElementById("visitor-beacon").disabled && !document.getElementById("visitor-summon-tc1").disabled', 10000), 'beacon granted once');
   await ev('document.getElementById("visitor-summon-tc1").click()');
   ok(await hasta('!!document.getElementById("visitor-hatch-1")', 10000), 'paid egg exists');
-  await ev(`(async()=>{for(let i=0;i<20;i++){document.getElementById('visitor-step').click();await new Promise(r=>setTimeout(r,0));}})()`);
+  await ev(`(async()=>{for(let i=0;i<20;i++){document.getElementById('visitor-play').dispatchEvent(new CustomEvent('visitor:advance')) /* the crab walks one hex */;await new Promise(r=>setTimeout(r,0));}})()`);
   ok(await hasta('!document.getElementById("visitor-hatch-1").disabled', 10000), 'egg ready after steps');
   await ev('document.getElementById("visitor-hatch-1").click()');
   ok(await hasta('document.getElementById("visitor-play").textContent.includes("Troops 1")', 10000), 'adopted troop available');
