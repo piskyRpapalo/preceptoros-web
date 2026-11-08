@@ -315,8 +315,8 @@
      "missions": [
       "K4c"
      ],
-     "piece": null,
-     "cause": "tower_not_built"
+     "piece": "public/game/tower.js",
+     "action": "tower"
     },
     {
      "id": "voice-star",
@@ -369,6 +369,7 @@
   "notebook": "notebook_export.js saves this device's notebook as one file",
   "gaps": "gap_board.js says which options are still NO_DATA, their missions and causes",
   "audio": "audio_only.js turns audio only on or off and says the map out loud",
-  "typo": "typo_report.js keeps the selected misspelt words in the notebook for the Mesa"
+  "typo": "typo_report.js keeps the selected misspelt words in the notebook for the Mesa",
+  "tower": "tower.js says how many measured seals the tower has, from tower_floors.json"
  }
 }

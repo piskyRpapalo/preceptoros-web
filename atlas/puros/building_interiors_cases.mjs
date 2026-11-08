@@ -40,9 +40,9 @@ test('pure: no clock, no randomness, no network', () => {
 
 test('an action is declared in the contract and needs its real piece', () => {
   const acts = doc.buildings.flatMap((b) => b.options.filter((o) => o.action).map((o) => [b.id, o.id, o.action, o.piece]));
-  assert.deepEqual(acts.map((a) => a[2]).sort(), ['audio', 'gaps', 'letters', 'notebook', 'pulse', 'typo']);
+  assert.deepEqual(acts.map((a) => a[2]).sort(), ['audio', 'gaps', 'letters', 'notebook', 'pulse', 'tower', 'typo']);
   assert.ok(acts.every((a) => a[3] && doc.actions[a[2]]));
   const bad = JSON.parse(JSON.stringify(doc)); bad.buildings[0].options[0].action = 'teleport';
   assert.ok(B.valida(bad, existe).some((f) => f.startsWith('action_unknown:')));
-  assert.deepEqual(B.cuenta(doc), { live: 29, no_data: 6 });
+  assert.deepEqual(B.cuenta(doc), { live: 30, no_data: 5 });
 });

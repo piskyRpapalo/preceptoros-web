@@ -26,6 +26,12 @@
       if (!e.ok) { done(T.line(e) + (e.cause === 'nothing_selected' ? ' · select the wrong words first' : '')); return; }
       var r = T.save(store, e.report); done(T.line(r, r.count));
     }],
+    tower: ['/game/tower.js', 'AtlasTower', function (T, doc, done, c) {
+      var get = function (u, j) { return c.win.fetch(u, { cache: 'no-cache' }).then(function (r) { return r.ok ? (j ? r.json() : r.text()) : null; }); };
+      if (!c.win.fetch) { done('NO_DATA · fetch_unavailable'); return; }
+      Promise.all([get('/game/tower_floors.json', 1), get('/sw.js', 0)]).then(function (x) { done(T.model(x[0], T.served(x[1])).line); },
+        function () { done('NO_DATA · tower_ledger_unreachable'); });
+    }],
     notebook: ['/game/notebook_export.js', 'AtlasNotebook', function (N, doc, done, c) {
       var store = null; try { store = c.win.localStorage; } catch (e) { store = null; }
       var nb = N.build(store, new Date().toISOString());
