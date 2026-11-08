@@ -53,8 +53,6 @@ jobs:
             python -m unittest tests.test_preflight
             python -m unittest tests.test_deploy_guard
             python -m unittest tests.test_trailers_hook
-            python -m unittest tests.test_suite_census
-            python bin/suite_census.py --check
             python -m unittest tests.test_seal_registry tests.test_paquete_firmo
             python bin/seal_registry.py --check
             python -m unittest test_seal tests.test_state_v2 atlas.test_brain_tools
@@ -210,4 +208,6 @@ jobs:
             node atlas/lexical_projector_cases.mjs
             node atlas/map_acho_cases.mjs
             node atlas/discovery_runner.mjs
+            python -m unittest tests.test_suite_census
+            python bin/suite_census.py --check
           done
