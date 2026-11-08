@@ -3,7 +3,7 @@
 // server answers /api/world-state through the real worker (worker/world_state.js) with no publisher binding, i.e. the
 // honest 503 NO_DATA the deployed site gives when its publisher is missing. 3 every visible a/button/select/input/tab
 // on / and /openworld/ is >= 44x44 at 390 px (exempt: .skip links, off-screen until focused; .sr, visually hidden).
-// 4 the Army voice of the panel shows troops or NO_DATA and the /game/army.html link; the radio tabs switch panels.
+// 4 the Army voice of the panel shows troops or NO_DATA, with no inherited link to the old Army page (Sovereign, 2026-11-08); the radio tabs switch panels.
 // Uso: node atlas/eye_carbon_browser.mjs
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
@@ -84,7 +84,7 @@ async function main() {
     for(let i=0;i<30 && !document.querySelector('#visitor-end');i++) await new Promise(r=>setTimeout(r,100)); p.click();
     const s = document.getElementById('army-visit').closest('li'), r = s.getBoundingClientRect(); return JSON.stringify({ visible: r.height > 0, texto: s.innerText, enlace: !!s.querySelector('a[href="/game/army.html"]'), quien: s.dataset.speaker }); })()`));
   ok(army.visible && army.quien === 'Army', 'the Army voice is not in the panel: ' + JSON.stringify(army));
-  ok(/^Army\s+NO_DATA: no troops adopted in this visit yet|^Army\s+Troops of this visit/.test(army.texto) && army.enlace, 'the Army voice does not say its troops or NO_DATA with the army link: ' + army.texto);
+  ok(/^Army\s+NO_DATA: no troops adopted in this visit yet|^Army\s+Troops of this visit/.test(army.texto) && !army.enlace, 'the Army voice does not say its troops or NO_DATA, or still carries the retired army link: ' + army.texto);
   // the radio tabs: Echoes hides the Radio list, Radio shows it again.
   const radio = JSON.parse(await ev(`(async () => { const p = () => new Promise((r) => setTimeout(r, 120)); document.querySelector('.cats [data-cat=Communication]').click(); const c = document.getElementById('radio-chat'); if (!c) { return JSON.stringify({ falta: true }); }
     if (c.querySelector('.radio-chat-alterna').getAttribute('aria-expanded') !== 'true') c.querySelector('.radio-chat-alterna').click(); await p(); const tabs = [...c.querySelectorAll('[role=tab]')], l = document.getElementById('radio-chat-lista');
