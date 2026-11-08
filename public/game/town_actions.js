@@ -1,7 +1,6 @@
-// The Town actions: what a LIVE option with an `action` does when pressed (/game/building_interiors.json → actions).
-// Loaded by building_sheet.js on the first press. Each entry: [piece path, its global, glue(M, doc, done, c)],
-// where c = { win, doc, data (the interiors contract), load }. An unknown action or a piece that does not load says
-// NO_DATA with its cause; nothing is invented.
+// The Town actions (building_interiors.json → actions), loaded by building_sheet.js on the first press.
+// Entry: [piece path, its global, glue(M, doc, done, c)]; c = { win, doc, data, load, get, store }.
+// An unknown action or a piece that does not load says NO_DATA with its cause; nothing is invented.
 (function (root) {
   'use strict';
   var ACTIONS = {
@@ -21,30 +20,36 @@
       A.speak(c.win, lines, function (t) { done(r.line + ' · ' + t); });
     }],
     typo: ['/game/typo_report.js', 'AtlasTypoReport', function (T, doc, done, c) {
-      var store = null; try { store = c.win.localStorage; } catch (e) { store = null; }
-      var e = T.envelope(T.selection(c.win), c.win.location ? c.win.location.pathname : '/', '', new Date().toISOString());
+      var store = c.store(), e = T.envelope(T.selection(c.win), c.win.location ? c.win.location.pathname : '/', '', new Date().toISOString());
       if (!e.ok) { done(T.line(e) + (e.cause === 'nothing_selected' ? ' · select the wrong words first' : '')); return; }
       var r = T.save(store, e.report); done(T.line(r, r.count));
     }],
+    tower: ['/game/tower.js', 'AtlasTower', function (T, doc, done, c) {
+      Promise.all([c.get('/game/tower_floors.json', 1), c.get('/sw.js')]).then(function (x) { done(T.model(x[0], T.served(x[1])).line); },
+        function () { done('NO_DATA · tower_ledger_unreachable'); });
+    }],
     inhabitants: ['/game/inhabitants.js', 'AtlasInhabitants', function (I, doc, done, c) {
-      if (!c.win.fetch) { done('NO_DATA · fetch_unavailable'); return; }
-      var get = function (u) { return c.win.fetch(u, { cache: 'no-store', credentials: 'omit' }).then(function (r) { return r.json(); }); };
       c.load('/game/agent_state.js', 'AtlasAgentState', function (S) {
         if (!S) { done('NO_DATA · piece_not_loaded'); return; }
-        Promise.all([get('/api/world-state'), get('/game/agent_states.json')]).then(function (x) { done(I.from(x[0], S, x[1]).line); },
+        Promise.all([c.get('/api/world-state', 1), c.get('/game/agent_states.json', 1)]).then(function (x) { done(I.from(x[0], S, x[1]).line); },
           function () { done('NO_DATA · world_state_unreachable'); });
       });
     }],
     notebook: ['/game/notebook_export.js', 'AtlasNotebook', function (N, doc, done, c) {
-      var store = null; try { store = c.win.localStorage; } catch (e) { store = null; }
-      var nb = N.build(store, new Date().toISOString());
+      var nb = N.build(c.store(), new Date().toISOString());
       done(N.line(nb) + (N.download(c.win, nb) ? ' · saved' : ' · NO_DATA · notebook_download_failed'));
     }]
   };
 
   function run(name, c, done) {
-    var a = ACTIONS[name];
+    var a = ACTIONS[name], w = c.win || {};
     if (!a) { done('NO_DATA · action_unknown'); return; }
+    // Shared helpers: one way to read the network (no cookies) and one way to reach this device's storage.
+    c.get = function (u, j) {
+      if (!w.fetch) { return Promise.reject(new Error('fetch_unavailable')); }
+      return w.fetch(u, { cache: 'no-store', credentials: 'omit' }).then(function (r) { return r.ok ? (j ? r.json() : r.text()) : null; });
+    };
+    c.store = function () { try { return w.localStorage || null; } catch (e) { return null; } };
     c.load(a[0], a[1], function (M) {
       if (!M) { done('NO_DATA · piece_not_loaded'); return; }
       a[2](M, c.doc, done, c);
