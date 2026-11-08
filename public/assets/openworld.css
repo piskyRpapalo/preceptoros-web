@@ -279,17 +279,13 @@ body{font-size:1rem}
 @media (prefers-reduced-motion:reduce){#chat > form :is(input,button):active,#chat #map-brain :is(button,select):active,#chat > .tech summary:active,.bs-sheet :is(.bs-card,.bs-tool):active,.radio-chat-alterna:active,.radio-chat-tab:active{transform:none}}
 @media (forced-colors:active){#chat,.bs-sheet,.radio-chat,#chat > h2,#chat .log > li,#chat > form :is(input,button),#chat #map-brain :is(button,select),#chat > .tech summary,.bs-sheet :is(.bs-card,.bs-tool,.bs-seal),.radio-chat-alterna,.radio-chat-tab,.radio-msg,.radio-msg-cab > span[title],.radio-chat-no-data{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}}
 /* The controller as a plastic shell with two raised wings (Sovereign, 2026-11-08): the V is the two outer peaks, the
-   bigger sticks, that climb over the map; the middle panel sits lower between them (three buttons above, two below). */
+   bigger sticks, that climb over the map; the middle panel sits lower between them (two buttons above, three below). */
 #gamepad{position:relative;z-index:2;padding-left:8px;padding-right:8px;column-gap:4px}
 #gamepad :is(.view-stick.gp-acho,.gp-off){flex:0 0 clamp(74px,calc((100vw - 212px) / 2),124px);width:clamp(74px,calc((100vw - 212px) / 2),124px);height:clamp(74px,calc((100vw - 212px) / 2),124px)}
 #gamepad .gp-mid{max-width:none;gap:4px 6px;align-items:flex-start;padding-top:10px}
 #gamepad .cats{display:flex;flex-wrap:nowrap;gap:6px;max-width:none;order:2}
 #gamepad :is(.gp-b,.cats button){width:44px;height:44px;flex:0 0 44px}
-#gamepad #gp-play{order:1;transform:translateY(-8px)}
-
-#gamepad .cats [data-cat=Communication]{transform:translateY(-8px)}
-#gamepad .gp-mid::after{content:"";order:4;flex-basis:100%;height:0}
-#gamepad #gp-town{order:5}#gamepad #gp-letters{order:6}
+/* The rows of the middle buttons and their glyphs live in /game/talk.css (two above, three below). */
 /* The wings: each stick sits in a raised disc of the shell that climbs over the bottom of the map (a ring of shell
    colour and an ink rim, drawn as box-shadow so it takes no layout room); the middle panel stays lower between them. */
 #gamepad > .view-joy{position:relative;z-index:3;transform:translateY(-26px)}
