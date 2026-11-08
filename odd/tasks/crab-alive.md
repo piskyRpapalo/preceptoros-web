@@ -29,3 +29,16 @@ Law: Sovereign commission «the crab alive, the map in depth and the fight on th
 ## NO_DATA
 - Signal freshness for the visitor crab: there is no node, so there is no signal. `ow.signal` is the hook for a future signed source.
 - «The same trace on two devices» is proven for the pose, which is pure. A real two-device recording is still pending.
+
+## PR 2 as built (pieces 4 + 5)
+- `public/game/panel_x.js` (`AtlasPanelX`, loaded by `gamepad.js`):
+  - the voices panel gets a 44 px round ✕ («Close panel») in its top-right corner; it closes the open category, as Escape does;
+  - the Town and Settings sheets keep their «Close» button, which now shows a ✕ too (`talk.css`).
+- Accepting an action the crab carries out closes its panel. The pure `verdict(id)` decides which:
+  - summon, beacon, build → close the panel and `crab_stage.look()`: a zoom onto the crab that stays until the visitor pans or zooms;
+  - fight, hatch → close the panel only, because their scene zooms by itself (#765).
+- The zoom is render only: no state changes, and reduced motion makes it a still cut.
+- Gates: `atlas/puros/panel_x_cases.mjs`; 13 browser guards green; 146 precached routes.
+- Doogee, real taps:
+  - the ✕ (44 × 44) closed Welcome;
+  - «Visit the beacon» closed the House and the camera zoomed to 2.2 on the crab.
