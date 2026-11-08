@@ -15,7 +15,9 @@ import { fileURLToPath } from 'node:url';
 const AQUI = path.dirname(fileURLToPath(import.meta.url));
 const OJO = path.join(AQUI, 'eye_descent.mjs');
 const FIXTURES = path.join(AQUI, 'fixtures');
-const PUERTO = 8700 + (process.pid % 90);
+// A port the system says is free (not 8700 + pid % 90, which met a live preview on 8743 on 2026-11-08).
+import net from 'node:net';
+const PUERTO = await new Promise((ok) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => ok(p)); }); });
 const BASE = `http://127.0.0.1:${PUERTO}`;
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 const enUnaLinea = (s, n = 240) => String(s ?? '').replace(/\s+/g, ' ').trim().slice(0, n);

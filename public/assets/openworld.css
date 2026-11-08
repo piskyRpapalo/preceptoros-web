@@ -45,6 +45,8 @@ main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) m
 #voices.map-voices[hidden]{display:none}
 #voices>[data-speaker=Welcome]{order:0}
 #voices>[data-speaker]:not([data-speaker=Welcome]){order:1}
+#voices.visitor>[data-depth=tech]:not(:has(button)){display:none}
+#voices>.depth{order:2;border-style:dashed}
 .cats{display:flex;justify-content:center;gap:4px;overflow-x:auto;flex:0 0 auto}
 .cats button{flex:0 0 44px;min-width:44px;min-height:44px}
 #map-actions{position:absolute;z-index:5;top:36px;left:8px;right:8px;justify-content:flex-end;pointer-events:none}
@@ -135,7 +137,7 @@ body{font-size:1rem}
 #voices.map-voices,#voices.map-voices[data-active-category="Communication"]{inset:0;max-height:none;padding:8px;border-radius:0}
 #map:has(#voices.map-voices:not([hidden])) #map-actions{display:none}
 /* the joysticks step aside (and out of focus) while a sheet is open */
-#map:has(#voices.map-voices:not([hidden])) .view-joy{visibility:hidden}
+#map:has(#voices.map-voices:not([hidden])) .view-joy{opacity:.35;pointer-events:none}
 }
 /* Gamepad (Sovereign, 2026-11-07): one status line on top, the map, and one Acho gamepad at the bottom (gamepad.js).
    Left stick pans the map; right stick is off until the character exists; the account buttons sit between them. */
@@ -168,3 +170,48 @@ body{font-size:1rem}
    The house colours are system colours (Canvas, CanvasText), so one color-scheme makes the whole subtree dark in
    either theme; the map keeps the visitor's theme. Forced colours still win: the system palette replaces both. */
 #chat,#voices,#building-sheet,.radio-chat{color-scheme:dark;background-color:Canvas;color:CanvasText}
+/* Acho skin for the panel (2026-11-08, kid test): the panel is the sea, each voice is a bright tile of its own colour —
+   sunshine, leaf, sky, coral, lilac — with an ink outline and the extruded edge of a hex. The voice re-scopes --fg/--bg/
+   --soft/--line so every child follows the tile; the heading is a hex chip. The visitor does not see the live-count line
+   (builders do). Forced colors fall back to the system. */
+#voices.map-voices{background:var(--a04334a) linear-gradient(160deg,var(--a0b6e8f),var(--a04334a));border:3px solid var(--a1d1b26);border-radius:calc(var(--radius) + 10px);gap:14px;padding:14px}
+.voice{--fg:var(--a1d1b26);--bg:var(--afffdf6);--soft:var(--a3d3950);--line:var(--a1d1b26);--tile:var(--affe58a);--edge:var(--ad49a1c);--chip:var(--ab8401a);
+  background:var(--tile);color:var(--fg);border:3px solid var(--line);border-radius:calc(var(--radius) + 8px);padding:12px 14px 14px;box-shadow:0 6px 0 var(--edge)}
+.voice[data-speaker=Tutorial]{--tile:var(--ab8f0a8);--edge:var(--a3f9a3a);--chip:var(--a1f7a32)}
+.voice[data-speaker=Guide]{--tile:var(--aa8e3ff);--edge:var(--a2a8fc4);--chip:var(--a0b5d9a)}
+.voice[data-speaker=House]{--tile:var(--affc2b3);--edge:var(--ad0573d);--chip:var(--ab8331c)}
+.voice[data-speaker=Radio]{--tile:var(--adcc8ff);--edge:var(--a7a52c7);--chip:var(--a5b2fb0)}
+.voice[data-speaker=Army]{--tile:var(--affd0e6);--edge:var(--ac44d8a);--chip:var(--aa3266a)}
+.voice[data-depth=tech],.voice.depth,.voice[data-speaker=Models]{--tile:var(--ae6e8ef);--edge:var(--a7c8296);--chip:var(--a3d4252)}
+.voice > .who{justify-self:start;text-decoration:none;color:var(--afffdf6);background:var(--chip);padding:4px 18px;font-size:.95rem;letter-spacing:.02em;
+  clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 50%,calc(100% - 10px) 100%,10px 100%,0 50%)}
+.voice button,.voice select{background:var(--bg);color:var(--fg);border:3px solid var(--fg);box-shadow:0 4px 0 var(--fg);border-radius:calc(var(--radius) + 6px);font-weight:600}
+.voice button:active{transform:translateY(3px);box-shadow:0 1px 0 var(--fg)}
+.voice .welcome-play{background:var(--a157a45);color:var(--afffdf6);font-size:1.2rem}
+.voice h3{font-size:1.25rem}
+.voice details.tech summary{color:var(--soft)}
+#voices.visitor #welcome-live{display:none}
+.voice a{color:var(--fg);font-weight:600}
+.voice[data-speaker=App]{--tile:var(--ab8f0a8);--edge:var(--a3f9a3a);--chip:var(--a1f7a32)}
+.voice #app-install{background:var(--a157a45);color:var(--afffdf6);font-size:1.1rem}
+#voices>.depth{border-style:dashed;box-shadow:none}
+@media (prefers-reduced-motion:reduce){.voice button:active{transform:none}}
+@media (forced-colors:active){#voices.map-voices,.voice,.voice button,.voice > .who{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none;clip-path:none}}
+/* The console controller (Sovereign, 2026-11-08): sticks and buttons are ONE piece, a sand shell with an ink outline and
+   the extruded edge of a hex tile. Sticks grow with the window (68–88 px); the buttons sit between them as face buttons,
+   three per row. Sized from the mini app window (420 px) down to a 360 px phone with no overflow; every target ≥ 44 px. */
+#gamepad{--fg:var(--a1d1b26);--soft:var(--a4a4558);--line:var(--a1d1b26);color:var(--a1d1b26);background:linear-gradient(var(--af4ecda),var(--ae6dbc3));border:3px solid var(--a1d1b26);
+  border-radius:calc(var(--radius) + 22px) calc(var(--radius) + 22px) calc(var(--radius) + 36px) calc(var(--radius) + 36px);box-shadow:0 6px 0 var(--a8a7a63),inset 0 2px 0 var(--afffaf0);padding:8px 12px 10px;margin:2px 6px 8px;gap:8px}
+#gamepad :is(.view-stick.gp-acho,.gp-off){flex:0 0 clamp(68px,19vw,88px);width:clamp(68px,19vw,88px);height:clamp(68px,19vw,88px);border:3px solid var(--a1d1b26);
+  font-size:22px;color:var(--a1d1b26);box-shadow:inset 0 -6px 0 var(--ab9ab90),0 3px 0 var(--a1d1b26);
+  background:var(--gp-svg,none) center bottom 12px/32px 10px no-repeat,radial-gradient(circle at 50% 42%,var(--afffaf0) 0 34%,var(--addd2ba) 35% 64%,var(--ac8b99c) 65%)}
+#gamepad .gp-off{opacity:.65;border-style:dashed}
+#gamepad .gp-mid{flex:1 1 auto;justify-content:center}
+#gamepad .gp-mid,#gamepad .cats{flex-wrap:wrap;gap:6px;max-width:150px}
+#gamepad :is(.gp-b,.cats button){border:2px solid var(--a1d1b26);border-radius:50%;color:var(--a1d1b26);box-shadow:0 3px 0 var(--a1d1b26);
+  background:color-mix(in srgb,var(--gp,var(--ad8be78)) 30%,var(--afffaf0)) var(--gp-svg,none) center bottom 3px/30px 9px no-repeat}
+#gamepad :is(.gp-b,.cats button):active{transform:translateY(2px);box-shadow:0 1px 0 var(--a1d1b26)}
+#gamepad .cats button[aria-pressed="true"]{outline:3px solid var(--a1d1b26);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){#gamepad :is(.gp-b,.cats button):active{transform:none}}
+@media (forced-colors:active){#gamepad,#gamepad :is(.view-stick.gp-acho,.gp-off,.gp-b,.cats button){background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}}
+.voice .army{display:inline-flex;align-items:center;min-height:44px}

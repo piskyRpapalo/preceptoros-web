@@ -162,6 +162,14 @@ async function main() {
     d.querySelector('summary').click(); t.click(); return JSON.stringify(result); })()`));
   ok(models.frames > 0 && /declared model frames/.test(models.status) && models.labels, 'the model panel does not show declared Acho frames with honest NO_DATA');
 
+  const depth = JSON.parse(await evaluate(`JSON.stringify((() => { const v=document.getElementById('voices'), t=document.getElementById('depth-toggle');
+    const quiet=[...v.querySelectorAll('[data-depth=tech]')].filter(e=>!e.querySelector('button')), acting=[...v.querySelectorAll('[data-depth=tech]')].filter(e=>e.querySelector('button'));
+    const veiledByMe=() => quiet.filter(e=>getComputedStyle(e).display==='none' && v.classList.contains('visitor')).length;
+    const r={quiet:quiet.length, acting:acting.length, before:veiledByMe(), actingShownRule:acting.every(e=>!e.matches('#voices.visitor>[data-depth=tech]:not(:has(button))')), pressed0:t.getAttribute('aria-pressed'), label:t.textContent};
+    t.click(); r.classAfter=v.classList.contains('visitor'); r.pressed1=t.getAttribute('aria-pressed'); t.click(); r.again=veiledByMe(); return r; })())`));
+  ok(depth.quiet + depth.acting === 4 && depth.before === depth.quiet && depth.again === depth.quiet && depth.classAfter === false && depth.actingShownRule && depth.pressed0 === 'false' && depth.pressed1 === 'true' && depth.label === 'Show the ' + depth.quiet + ' technical panels',
+    'the visitor view does not veil the four technical panels behind one honest button: ' + JSON.stringify(depth));
+
   await key('e','KeyE',69,'e'); await wait(250);
   const orbit = await evaluate("document.getElementById('surface').dataset.angle || '0'");
   ok(orbit === '60', 'the E key does not rotate the map to 60 degrees: ' + orbit);

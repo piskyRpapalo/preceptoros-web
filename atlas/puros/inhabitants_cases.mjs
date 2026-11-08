@@ -10,14 +10,14 @@ const T = JSON.parse(readFileSync(new URL('../../public/game/agent_states.json',
 const world = (nodes) => ({ colonia: { nodes } });
 
 test('a live node is ready; a node without a heartbeat is unavailable with the measured cause', () => {
-  const r = I.from(world([{ id: 'a', alive: true }, { id: 'b', alive: false }]), S, T);
+  const r = I.from(world([{ id: 'a', alive: true, seal: 'LIVE' }, { id: 'b', alive: false }]), S, T);
   assert.equal(r.ok, true);
   assert.deepEqual(r.people.map((p) => p.text), ['ready', 'unavailable']);
   assert.equal(r.people[1].say, 'inhabitant 2 unavailable · no_heartbeat');
 });
 
 test('working is never claimed: the source does not measure activity', () => {
-  const r = I.from(world([{ alive: true }, { alive: true }]), S, T);
+  const r = I.from(world([{ alive: true, seal: 'LIVE' }, { alive: true, seal: 'LIVE' }]), S, T);
   assert.ok(r.people.every((p) => p.text !== 'working'));
   assert.match(r.line, /working NO_DATA \(the heartbeat does not measure activity\)$/);
 });
@@ -28,7 +28,7 @@ test('an undeclared alive field is NO_DATA with its cause, not a guess', () => {
 });
 
 test('machine ids never reach the spoken line', () => {
-  const r = I.from(world([{ id: 'secret-box-name', alive: true }]), S, T);
+  const r = I.from(world([{ id: 'secret-box-name', alive: true, seal: 'LIVE' }]), S, T);
   assert.doesNotMatch(r.line, /secret-box-name/);
 });
 
@@ -49,4 +49,10 @@ test('the same world gives the same line', () => {
 test('pure: no clock, randomness, network or DOM in the piece', () => {
   const src = readFileSync(new URL('../../public/game/inhabitants.js', import.meta.url), 'utf8');
   assert.doesNotMatch(src, /Math\.random|Date\.now|fetch\(|document\./);
+});
+
+test('alive with a STALE heartbeat seal is not ready: the same rule as Nodes online', () => {
+  const r = I.from(world([{ alive: true, seal: 'STALE' }, { alive: true, seal: 'LIVE' }]), S, T);
+  assert.deepEqual(r.people.map((p) => p.text), ['unavailable', 'ready']);
+  assert.match(r.line, /^2 inhabitants · 1 ready/);
 });

@@ -540,6 +540,21 @@
      "text": "gamepad Play does not start the visit through Play now"
     }
    ]
+  },
+  {
+   "id": "visitor-view",
+   "scripts": [
+    "/game/visitor_view.js"
+   ],
+   "globals": [
+    "AtlasVisitorView"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the visitor view does not veil the four technical panels behind one honest button"
+    }
+   ]
   }
  ],
  "retiradas": [
