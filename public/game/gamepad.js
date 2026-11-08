@@ -108,6 +108,7 @@
     // The Town button and its sheet of the nine buildings (building_sheet.js) join the middle once the pad exists.
     var town = doc.createElement('script'); town.src = '/game/building_sheet.js'; doc.head.appendChild(town);
     var talk = doc.createElement('script'); talk.src = '/game/preceptor_talk.js'; doc.head.appendChild(talk); // the preceptor's box
+    var crab = doc.createElement('script'); crab.src = '/game/crab_body.js'; doc.head.appendChild(crab); // the living crab
     var stage = doc.createElement('script'); stage.src = '/game/crab_stage.js'; doc.head.appendChild(stage); // duels and eggs on the map
     // The Aa letters button (type_scale.js) joins the middle once the pad exists.
     var letters = doc.createElement('script'); letters.src = '/game/type_scale.js'; doc.head.appendChild(letters);
