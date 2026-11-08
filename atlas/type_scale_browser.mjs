@@ -48,17 +48,18 @@ async function main() {
   ws.addEventListener('message', (m) => {
     const d = JSON.parse(m.data);
     if (d.id && pend.has(d.id)) { pend.get(d.id)(d); pend.delete(d.id); }
-    if (d.method === 'Runtime.exceptionThrown') { const x = d.params.exceptionDetails; fallos.push('exception: ' + String(x.exception?.description || x.text).split('\\n')[0].slice(0, 90)); }
+    if (d.method === 'Runtime.exceptionThrown') { const x = d.params.exceptionDetails; fallos.push('exception: ' + String(x.exception?.description || x.text).split('\n')[0].slice(0, 90)); }
   });
   const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   const foto = async (n) => { if (CAPTURA) { const g = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, n), Buffer.from(g.result.data, 'base64')); } };
   await cmd('Runtime.enable'); await cmd('Page.enable');
 
+
   const LEER = `JSON.stringify((() => { const b = document.getElementById('gp-letters'); if (!b) return null; const r = b.getBoundingClientRect();
     const fs = (s) => { const e = document.querySelector(s); return e ? Math.round(e.getBoundingClientRect().height * 10) / 10 : null; };
     return { label: b.getAttribute('aria-label'), w: r.width, h: r.height, inMid: !!b.closest('#gamepad .gp-mid'), acho: b.classList.contains('gp-acho') && !!b.style.getPropertyValue('--gp'),
-      step: document.documentElement.dataset.letters, h1: (() => { const e = [...document.querySelectorAll('#voices *')].find((x) => x.children.length === 0 && /\\S/.test(x.textContent) && x.getBoundingClientRect().height > 0); return e ? Math.round(e.getBoundingClientRect().height * 10) / 10 : 0; })(), map: Math.round(document.getElementById('stage').getBoundingClientRect().width),
+      step: document.documentElement.dataset.letters, h1: (() => { const e = [...document.querySelectorAll('#voices *')].find((x) => x.children.length === 0 && /\S/.test(x.textContent) && x.getBoundingClientRect().height > 0); return e ? Math.round(e.getBoundingClientRect().height * 10) / 10 : 0; })(), map: Math.round(document.getElementById('stage').getBoundingClientRect().width),
       saved: (() => { try { return localStorage.getItem('preceptoros.letters'); } catch (e) { return 'NO_DATA'; } })(), state: (document.getElementById('state') || {}).textContent || '' }; })())`;
   for (const [W, H, n] of [[420, 642, '420'], [360, 740, '360']]) {
     await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });

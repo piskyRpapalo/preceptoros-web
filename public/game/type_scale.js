@@ -43,6 +43,7 @@
   // restore(doc, win) → on page load: apply the saved step.
   function restore(doc, win) { return apply(doc, read(win)); }
 
+
   // mount(doc, win, tries) → the «Aa» button in the gamepad middle (Opus wiring). It restores the saved step first.
   // The gamepad loads late, so it waits for it (40 × 250 ms); with no gamepad it returns null and changes nothing.
   function mount(doc, win, tries) {

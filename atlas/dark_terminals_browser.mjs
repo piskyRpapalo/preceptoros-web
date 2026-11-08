@@ -44,23 +44,24 @@ async function main() {
   ws.addEventListener('message', (m) => {
     const d = JSON.parse(m.data);
     if (d.id && pend.has(d.id)) { pend.get(d.id)(d); pend.delete(d.id); }
-    if (d.method === 'Runtime.exceptionThrown') { const x = d.params.exceptionDetails; fallos.push('exception: ' + String(x.exception?.description || x.text).split('\\n')[0].slice(0, 90)); }
+    if (d.method === 'Runtime.exceptionThrown') { const x = d.params.exceptionDetails; fallos.push('exception: ' + String(x.exception?.description || x.text).split('\n')[0].slice(0, 90)); }
   });
   const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   const foto = async (n) => { if (CAPTURA) { const g = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, n), Buffer.from(g.result.data, 'base64')); } };
   await cmd('Runtime.enable'); await cmd('Page.enable');
 
+
   // Luminance (WCAG) of an rgb() string; contrast of two.
   const MEDIR = `JSON.stringify((() => {
     const rgb = (s) => (s.match(/[\\d.]+/g) || []).slice(0, 3).map(Number);
     const L = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; const [r, g, b] = c.map(f); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
-    const bgOf = (e) => { for (let x = e; x; x = x.parentElement) { const c = getComputedStyle(x).backgroundColor; if (!/rgba\(0, 0, 0, 0\)|transparent/.test(c)) return c; } return 'rgb(255, 255, 255)'; };
+    const bgOf = (e) => { for (let x = e; x; x = x.parentElement) { const c = getComputedStyle(x).backgroundColor; if (!/rgba\\(0, 0, 0, 0\\)|transparent/.test(c)) return c; } return 'rgb(255, 255, 255)'; };
     const w = document.querySelector('.cats [data-cat=Welcome]'); if (w) w.click();
     const out = {};
     for (const s of ['#voices', '#chat']) {
       const e = document.querySelector(s); if (!e) { out[s] = null; continue; }
-      const bg = rgb(bgOf(e)), texts = [...e.querySelectorAll('*')].filter((x) => x.children.length === 0 && /\S/.test(x.textContent) && x.getBoundingClientRect().height > 0).slice(0, 12);
+      const bg = rgb(bgOf(e)), texts = [...e.querySelectorAll('*')].filter((x) => x.children.length === 0 && /\\S/.test(x.textContent) && x.getBoundingClientRect().height > 0).slice(0, 12);
       const worst = texts.map((x) => { const a = L(rgb(getComputedStyle(x).color)), b = L(rgb(bgOf(x))); return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05); });
       if (!texts.length) { out[s] = null; continue; }
       out[s] = { bgL: Math.round(L(bg) * 1000) / 1000, scheme: getComputedStyle(e).colorScheme, texts: texts.length, minContrast: worst.length ? Math.round(Math.min(...worst) * 10) / 10 : null };
