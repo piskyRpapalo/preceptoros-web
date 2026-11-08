@@ -90,3 +90,6 @@
 /* The app's ball on every click (click_trail.js): above everything, never in the way. */
 .click-trail{position:fixed;inset:0;z-index:60;width:100vw;height:100vh;pointer-events:none}
 @media (forced-colors:active){.click-trail{display:none}}
+
+/* The page stays put on phones (Sovereign, 2026-11-08: «el html no está fijo»): no pull-to-refresh or rubber band. */
+html,body{overscroll-behavior:none}
