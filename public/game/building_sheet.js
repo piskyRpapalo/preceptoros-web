@@ -59,26 +59,11 @@
     sc.onload = function () { then(root[name] || null); }; sc.onerror = function () { then(null); };
     sheet.ownerDocument.head.appendChild(sc);
   }
-  var ACTIONS = {
-    letters: ['/game/type_scale.js', 'AtlasTypeScale', function (T, doc, done) {
-      var r = T.cycle(doc, win), aa = doc.getElementById('gp-letters');
-      if (aa && r.label) { aa.setAttribute('aria-label', r.label); aa.title = r.label; }
-      done(r.label || ('NO_DATA · ' + r.causa));
-    }],
-    pulse: ['/game/pulse.js', 'AtlasPulse', function (P, doc, done) { done('measuring…'); P.start(win, 'weak', done); }],
-    gaps: ['/game/gap_board.js', 'AtlasGapBoard', function (G, doc, done) { done(G.board(data).line); }],
-    notebook: ['/game/notebook_export.js', 'AtlasNotebook', function (N, doc, done) {
-      var store = null; try { store = win.localStorage; } catch (e) { store = null; }
-      var nb = N.build(store, new Date().toISOString());
-      done(N.line(nb) + (N.download(win, nb) ? ' · saved' : ' · NO_DATA · notebook_download_failed'));
-    }]
-  };
+  // The actions live in /game/town_actions.js, loaded on the first press (the sheet keeps its byte ceiling).
   function act(name, head) {
-    var a = ACTIONS[name];
-    if (!a) { say(head + ' · NO_DATA · action_unknown'); return; }
-    load(a[0], a[1], function (M) {
-      if (!M) { say(head + ' · NO_DATA · piece_not_loaded'); return; }
-      a[2](M, sheet.ownerDocument, function (text) { say(head + ' · ' + text); });
+    load('/game/town_actions.js', 'AtlasTownActions', function (TA) {
+      if (!TA) { say(head + ' · NO_DATA · piece_not_loaded'); return; }
+      TA.run(name, { win: win, doc: sheet.ownerDocument, data: data, load: load }, function (text) { say(head + ' · ' + text); });
     });
   }
   function focusFirst() { var f = list.querySelector('button'); if (f) { f.focus(); } }
@@ -121,7 +106,7 @@
     return sheet;
   }
 
-  var api = { URL: URL_DOC, ACTIONS: Object.keys(ACTIONS), verdict: verdict, model: model, mount: mount };
+  var api = { URL: URL_DOC, verdict: verdict, model: model, mount: mount };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasBuildingSheet = api;
   if (root.document && root.document.getElementById) { mount(root.document, root); }
