@@ -555,6 +555,21 @@
      "text": "the visitor view does not veil the four technical panels behind one honest button"
     }
    ]
+  },
+  {
+   "id": "visitor-board",
+   "scripts": [
+    "/game/visitor_view.js"
+   ],
+   "globals": [
+    "AtlasVisitorBoard"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the House board does not dress the panel"
+    }
+   ]
   }
  ],
  "retiradas": [

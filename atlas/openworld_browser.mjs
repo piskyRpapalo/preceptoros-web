@@ -170,6 +170,16 @@ async function main() {
   ok(depth.quiet + depth.acting === 4 && depth.before === depth.quiet && depth.again === depth.quiet && depth.classAfter === false && depth.actingShownRule && depth.pressed0 === 'false' && depth.pressed1 === 'true' && depth.label === 'Show the ' + depth.quiet + ' technical panels',
     'the visitor view does not veil the four technical panels behind one honest button: ' + JSON.stringify(depth));
 
+  const board = JSON.parse(await evaluate(`(async () => { for (let i = 0; i < 20 && !window.AtlasVisitorBoard; i++) { await new Promise(r=>setTimeout(r,100)); }
+    const B = window.AtlasVisitorBoard; if (!B) return JSON.stringify({loaded:false});
+    const box=document.createElement('section'); box.innerHTML='<h2>Play</h2><p>notice</p><div id="c"><p>Practice battles · rules</p><button id="visitor-summon-tc1">egg</button><button id="visitor-fight-p1">Fight</button></div><div>data</div>';
+    const c=box.querySelector('#c'), troop={rareza:'raro',stats:{vida:12,armadura:3},armonicos:[[1,20,20,0],[-3,8,8,40]]};
+    B.dress(box,{state:{copper:50,light:0,step:3,troops:[troop]},squad:[troop],controls:c});
+    return JSON.stringify({loaded:true, purse:c.querySelectorAll('.purse li').length, egg:c.querySelector('#visitor-summon-tc1').className, path:!!c.querySelector('.squad svg path[d^=M]'),
+      chips:[...c.querySelectorAll('.squad .chips li')].map(l=>l.textContent), place:c.querySelector('.places #visitor-fight-p1').className, tech:box.querySelector('details.tech').textContent.includes('Practice battles')}); })()`));
+  ok(board.loaded && board.purse === 4 && /egg t1/.test(board.egg) && board.path && board.chips.join('|') === 'Rank Rare|Life 12|Armour 3' && board.place === 'place' && board.tech,
+    'the House board does not dress the panel: purse, tier egg, the troop figure with its stats, hex places, technical details: ' + JSON.stringify(board));
+
   await key('e','KeyE',69,'e'); await wait(250);
   const orbit = await evaluate("document.getElementById('surface').dataset.angle || '0'");
   ok(orbit === '60', 'the E key does not rotate the map to 60 degrees: ' + orbit);

@@ -215,3 +215,27 @@ body{font-size:1rem}
 @media (prefers-reduced-motion:reduce){#gamepad :is(.gp-b,.cats button):active{transform:none}}
 @media (forced-colors:active){#gamepad,#gamepad :is(.view-stick.gp-acho,.gp-off,.gp-b,.cats button){background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}}
 .voice .army{display:inline-flex;align-items:center;min-height:44px}
+/* The House as a game board (visitor_board.js, 2026-11-08): purse chips, tier eggs, the squad as Fourier figures with their
+   stats, six hex places (locked until a troop exists), and the duel dialog as a dark sea over the live map. */
+#visitor-play.board .chips{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:6px 0;padding:0}
+#visitor-play.board .chips li{background:var(--bg);border:2px solid var(--fg);border-radius:999px;padding:2px 10px;font-size:.9rem}
+#visitor-play.board .purse li{font-size:1.05rem;background:var(--affe58a)}
+#visitor-play.board .egg{border-radius:50%;min-width:120px;min-height:64px;font-weight:700}
+#visitor-play.board .egg.t1{background:var(--ab8f0a8)}#visitor-play.board .egg.t2{background:var(--aa8e3ff)}
+#visitor-play.board .egg.t3{background:var(--adcc8ff)}#visitor-play.board .egg.t4{background:var(--affc2b3)}
+#visitor-play.board .egg:disabled{opacity:.55;box-shadow:none}
+#visitor-play.board .nest{background:var(--affe58a)}
+#visitor-play.board .squad{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;list-style:none;padding:0;margin:8px 0}
+#visitor-play.board .troop{background:var(--a04334a);color:var(--afffdf6);border:3px solid var(--a1d1b26);border-radius:calc(var(--radius) + 6px);padding:6px}
+#visitor-play.board .troop svg{display:block;width:100%;height:auto;max-height:96px}
+#visitor-play.board .troop path{fill:none;stroke:currentColor;stroke-width:2.2}
+#visitor-play.board .troop.r-normal{color:var(--ab8f0a8)}#visitor-play.board .troop.r-magico{color:var(--aa8e3ff)}
+#visitor-play.board .troop.r-raro{color:var(--adcc8ff)}#visitor-play.board .troop.r-unico{color:var(--affe58a)}
+#visitor-play.board .troop .chips li{background:var(--afffdf6);color:var(--a1d1b26);font-size:.8rem}
+#visitor-play.board .places{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+#visitor-play.board .place{min-height:64px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);border:0;box-shadow:none;background:var(--a157a45);color:var(--afffdf6)}
+#visitor-play.board .place.locked{background:var(--a7c8296)}
+#visitor-play dialog{background:var(--a04334a);color:var(--afffdf6);border:3px solid var(--a1d1b26);border-radius:calc(var(--radius) + 10px);padding:12px}
+#visitor-play dialog::backdrop{background:transparent}
+#visitor-play dialog button{background:var(--afffdf6);color:var(--a1d1b26);border:3px solid var(--a1d1b26);border-radius:calc(var(--radius) + 6px);font-weight:600}
+@media (forced-colors:active){#visitor-play.board .place,#visitor-play.board .egg,#visitor-play.board .troop,#visitor-play dialog{background:Canvas;color:CanvasText;border:2px solid CanvasText;clip-path:none}}

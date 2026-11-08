@@ -4,6 +4,7 @@
   if (!box) { return; }
   box.addEventListener('visitor:render', function (event) {
     var detail = event.detail, state = detail.state;
+    detail.squad = state.troops.map(function (x) { return x.adopcion && x.adopcion.tropa; }); // the House board draws these (visitor_view.js)
     var legend = root.document.createElement('p'); legend.textContent = 'Practice battles · historical provisional rules · balance NO_DATA. No rating or loot. Squad limit 10.'; detail.controls.append(legend);
     root.AtlasVisitorBattle.places().forEach(function (place) {
       var button = root.document.createElement('button'); button.type = 'button'; button.textContent = 'Fight · ' + place.name;
