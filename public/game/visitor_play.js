@@ -77,6 +77,9 @@
     button('End this visit', 'visitor-end', function () { game.end(); box.dispatchEvent(new Event('visitor:end')); game = null; account = null; });
     box.dispatchEvent(new CustomEvent('visitor:render', { detail: { state: s, game: game, account: account, controls: controls } }));
   }
+  // Buildings feed the quests: entering one and using its action count in this visit (building_sheet.js events).
+  doc.addEventListener('building:enter', function (e) { if (game) { try { game.entered(e.detail.id); } catch (_) { /* visit ended */ } } });
+  doc.addEventListener('building:act', function () { if (game) { try { game.acted(); } catch (_) { /* visit ended */ } } });
   // Free walk: each accepted step on the floor is one game step of an active visit, so walking hatches eggs.
   box.addEventListener('visitor:advance', function () { if (!game || waiting) { return; } try { game.advance(); } catch (_) { return; } render(); });
   // Voice Star rewards model answers, never the page-grounded controls response.

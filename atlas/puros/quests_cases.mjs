@@ -10,9 +10,9 @@ new Function(readFileSync(new URL('../../public/game/visitor_eggs.js', import.me
 const account = () => ({ info: () => ({ publicKey: 'k', name: 'v' }), end: () => {} });
 const visit = () => globalThis.AtlasVisitorEggs.create(account());
 
-test('a new visit: eight quests, none ready, nothing taken', async () => {
+test('a new visit: ten quests, none ready, nothing taken', async () => {
   const q = (await visit()).quests();
-  assert.equal(q.length, 8);
+  assert.equal(q.length, 10);
   assert.ok(q.every((x) => !x.ready && !x.taken));
 });
 test('the beacon quest is ready only after the beacon, pays light once', async () => {
@@ -35,4 +35,13 @@ test('walking counts steps; fights and wins are reported by the battle', async (
 test('an unknown quest is refused', async () => {
   const g = await visit();
   assert.throws(() => g.claim('gold'), /not ready/);
+});
+test('buildings feed the quests: three different buildings, and one action', async () => {
+  const g = await visit();
+  g.entered('coliseum'); g.entered('coliseum'); g.entered('tower');
+  assert.equal(g.quests().find((x) => x.id === 'explore').have, 2);
+  g.entered('workshop'); g.acted();
+  const q = g.quests();
+  assert.ok(q.find((x) => x.id === 'explore').ready && q.find((x) => x.id === 'act').ready);
+  assert.equal(g.claim('act').light, 100);
 });
