@@ -69,3 +69,25 @@ Law: Sovereign commission «the crab alive, the map in depth and the fight on th
 ### NO_DATA
 - Done after the first cut: `wave_duel_scene.js` takes `origen: [fx, fy]`. On the map the visitor's troops are born at the crab (the centre: the camera centres it) and spring to their column. It is one line, with no clock and no chance, and the replay without `origen` is unchanged. On the Doogee the waves stood by the crab half a second in. The birth instant itself was too fast for a screen capture: NO_DATA for the first frames.
 - The scene is a layer exactly over the map canvas, not paint inside `#surface`. On screen it is the same place; for the code it is a separate canvas.
+
+## Piece 1 · decree 2026-11-08 (the Sovereign in chat, after his own test on the phone)
+- The decree, in his words, rendered in English:
+  - «The effect the left joystick must have on the map is the one a human makes on an Android screen with two fingers.»
+  - «With one finger on the map, the movement is exactly the joystick's, which makes it useless. With two fingers, one anchored, the map turns on itself, and it is beautiful.»
+  - «When one finger is anchored on the map and the other turns, the map takes its 2.5D perspective.»
+  - It replaces the 2026-11-08 morning inverted pan, and the 2026-11-07 decree's «left stick = camera pan». One finger still drags the map (map_drag.js).
+- As built:
+  - `colony_page.js geometry()` reads `canvas.dataset.tilt` (0.6–1.8) as a factor on the ground squash. The depth order is unchanged. A tilted view carries tilt/10 in its angle key, so the painter's caches (bake, order, open sea) never serve a stale picture; `map_painter.js` is untouched.
+  - `map_zoom.js`:
+    - `tilt(f, x, y)` sets the tilt, anchored at a point.
+    - `turnAt` honours the tilt.
+    - A two-finger gesture with one finger still (moved < 12 px) is the anchored gesture. The moving finger's vertical motion tilts the view (up lays the ground into perspective), and its angle around the anchor turns the map on itself.
+    - The usual pinch and twist remain for two moving fingers. Home (reset) clears the tilt.
+  - `map_view_joystick.js`: the left stick is that anchored gesture at the crab. Left and right turn the map on itself, up and down tilt it, and the arrow keys do the same. Its label is «Turn and tilt the map, like two fingers». Zoom stays on pinch, wheel and the zoom buttons.
+  - The preceptor's walk line says: «Right stick walks. Left stick turns and tilts the map.»
+- Also in this branch (Sovereign, same chat): a still tap on the map while a panel is open closes the panel and does nothing else (`panel_x.js outside()`; the listener is a document capture, so it runs before the map's own taps). The bubble tucks away when the shrunken map has no room for it, so it never covers a panel.
+- Doogee (real swipes on the stick): tilt went 1 → 0.68 and the angle went 0 → 22°, around the crab. With the Town sheet open, a real tap on the map closed it without walking the crab.
+- NO_DATA:
+  - Walls keep their height when the ground tilts. A true camera pitch would also scale wall height; that is `map_painter.js`, which is at its byte cap.
+  - Walking by tapping reads the untilted squash for its direction; at strong tilts a diagonal tap may pick the neighbouring hex.
+  - The crab drifts a few pixels (344 → 325) during a turn around itself.

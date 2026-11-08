@@ -7,7 +7,7 @@
   // LINES: id → [text, [[answer, next id], …]]. «wait:<event>» lines move on by themselves when the event happens.
   var LINES = {
     hello: ['This little crab is you. Shall we walk?', [['Walk', 'walk'], ['A building', 'building'], ['Later', 'rest']]],
-    walk: ['Right stick walks. Left stick looks around.', [['A building', 'building'], ['Later', 'rest']], 'walked'],
+    walk: ['Right stick walks. Left stick turns and tilts the map.', [['A building', 'building'], ['Later', 'rest']], 'walked'],
     walked: ['Well walked! Each hex is one step of your visit.', [['A building', 'building'], ['Later', 'rest']]],
     building: ['Every building is a door: tap one near you.', [['How to play', 'play'], ['Later', 'rest']], 'entered'],
     entered: ['Enter three buildings: a quest pays copper and light.', [['How to play', 'play'], ['Later', 'rest']]],
@@ -57,6 +57,7 @@
       var cx = r.left - st.left + Number(sf.dataset.youx) * k, cy = r.top - st.top + Number(sf.dataset.youy) * k;
       var gap = 16 + 30 * Math.max(0.5, Number(sf.dataset.zoom) || 1) * k * (sf.width / (r.width || sf.width)); // the crab grows with the zoom
       var w = box.offsetWidth, h = box.offsetHeight, left = Math.max(8, Math.min(st.width - w - 8, cx - w / 2)), up = cy - gap - h >= 8;
+      box.classList.toggle('pt-tuck', !up && cy + 14 + h > st.height - 8); // no room: it waits, never over a panel
       box.style.left = Math.round(left) + 'px'; box.style.top = Math.round(up ? cy - gap - h : cy + 14) + 'px';
       box.style.setProperty('--tail', Math.round(Math.max(18, Math.min(w - 18, cx - left))) + 'px'); box.classList.toggle('pt-under', !up);
     }
@@ -68,6 +69,7 @@
       row.appendChild(b); place();
     }
     var who0 = who;
+    if (stage && win.ResizeObserver) { new win.ResizeObserver(function () { place(); }).observe(stage); } // a panel shrinks the map
     new (win.MutationObserver || function () { this.observe = function () {}; })(function () {
       var res = doc.getElementById('visitor-battle-result'), t = res && res.textContent;
       if (t && t !== 'Round by round\u2026' && box.dataset.said !== t) { box.dataset.said = t; news(t, 'Duel'); }

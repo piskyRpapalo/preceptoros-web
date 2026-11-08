@@ -70,7 +70,7 @@ async function main() {
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
 
   const vista = async () => JSON.parse(await ev(`JSON.stringify((() => { const d = document.getElementById('surface').dataset, V = window.AtlasOpenworldView && AtlasOpenworldView(), w = V && V.controls && V.controls.walker ? V.controls.walker() : null;
-    return { panx: Number(d.panx) || 0, pany: Number(d.pany) || 0, zoom: d.zoom, look: d.look || '', clicks: window.__clicks || 0, walker: w ? JSON.stringify([w.node, w.to, w.q, w.r]) : null, say: (document.getElementById('zoom-state') || {}).textContent || '' }; })())`));
+    return { panx: Number(d.panx) || 0, pany: Number(d.pany) || 0, zoom: d.zoom, angle: d.angle || '0', tilt: d.tilt || '1', look: d.look || '', clicks: window.__clicks || 0, walker: w ? JSON.stringify([w.node, w.to, w.q, w.r]) : null, say: (document.getElementById('zoom-state') || {}).textContent || '' }; })())`));
   await ev("window.__clicks = 0; document.addEventListener('click', (e) => { if (e.target && e.target.id === 'surface') { window.__clicks++; } }), true");
   const centro = JSON.parse(await ev("(() => { const c = document.getElementById('surface'); c.scrollIntoView({ block: 'start' }); const r = c.getBoundingClientRect(); return JSON.stringify({ x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height * 0.6), k: c.width / r.width }); })()"));
   await espera(300);
@@ -164,13 +164,16 @@ async function main() {
     const beforeTouch = await vista();
     await dedo(stickBox.x, stickBox.y, 5, 0, 6); await espera(150);
     const afterTouch = await vista();
-    ok(afterTouch.panx !== beforeTouch.panx && afterTouch.walker === beforeTouch.walker, 'touch joystick must pan view without walking visitor');
+    ok(afterTouch.angle !== beforeTouch.angle && afterTouch.walker === beforeTouch.walker, 'touch joystick must turn the map on itself (two fingers, decree 2026-11-08) without walking visitor');
     await ev("document.querySelector('#view-joystick .view-stick').focus(), true");
     const beforeKey = await vista();
     for (const type of ['keyDown', 'keyUp']) await cmd('Input.dispatchKeyEvent', {type, key:'ArrowRight', code:'ArrowRight', windowsVirtualKeyCode:39});
     await espera(150);
     const afterKey = await vista();
-    ok(afterKey.panx !== beforeKey.panx && afterKey.walker === beforeKey.walker, 'focused joystick arrows must pan without walking visitor');
+    ok(afterKey.angle !== beforeKey.angle && afterKey.walker === beforeKey.walker, 'focused joystick arrows must turn the map without walking visitor');
+    for (const type of ['keyDown', 'keyUp']) await cmd('Input.dispatchKeyEvent', {type, key:'ArrowUp', code:'ArrowUp', windowsVirtualKeyCode:38});
+    await espera(150);
+    ok((await vista()).tilt !== afterKey.tilt, 'focused joystick up arrow must tilt the map into its 2.5D perspective');
     // Decree 2026-11-07, fulfilled 2026-11-08: the right side belongs to the character; it is born, so its stick lives.
     const right = await ev("(() => { const n = document.getElementById('character-joystick-slot'); return {turn:!!document.getElementById('view-joystick-turn'), sticks:document.querySelectorAll('#map .view-joy').length /* gamepad (2026-11-07) */, slot:n ? n.dataset.state + ':' + n.dataset.cause : null, walk:!!document.querySelector('#character-joystick .view-stick')}; })()");
     ok(!right.turn && right.sticks === 2 && right.slot === null && right.walk, 'two sticks: the camera on the left and the character on the right: ' + JSON.stringify(right));
