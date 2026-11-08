@@ -4,6 +4,10 @@
   'use strict';
   var common = typeof module === 'object' && module.exports;
   var F = common ? require('./state_frames.js') : root.AtlasStateFrames;
+  // N4: the frame carries its own sha256 (canon.js loads after this file in the page, so look it up when called).
+  function K() { return common ? require('./canon.js') : root.AtlasCanon; }
+  // The same cause the app console declares (consola.CAUSA_RESIDENTE), in ASCII so the canon stays small.
+  var CAUSA_RESIDENTE = 'knowing it needs the Ollama socket API and D68 forbids that in the product';
 
   function refuse(cause) { return { ok: false, cause: cause }; }
   function project(catalog) {
@@ -21,7 +25,7 @@
       var signature = typeof model.firmado === 'boolean' ? (model.firmado ? 'signed' : 'unsigned') : 'NO_DATA (field absent)';
       var sentence = 'model ' + model.id + ' · door ' + door + ' · signature ' + signature +
         ' · base NO_DATA (not separately declared) · adapter NO_DATA (not declared) · permissions NO_DATA (not declared)' +
-        ' · requires signature NO_DATA (not declared) · residency NO_DATA (catalogue has no live residency measure)';
+        ' · requires signature NO_DATA (not declared) · residency NO_DATA (CAUSA_RESIDENTE)';
       var frame = F.stateFrame({ id: 'brain-' + model.id, sentence: sentence });
       frame.seal = 'NO_DATA';
       frame.atoms[0].k = 'NO_DATA';
@@ -31,12 +35,15 @@
       frame.atoms[0].i[0].s = 'NO_DATA.contorno';
       frame.sound = 'NO_DATA: model frames declare no measured harmonic table';
       frame.soundCause = 'no harmonic table in this catalogue';
+      frame.residencia = 'NO_DATA';
+      frame.causa = { CAUSA_RESIDENTE: CAUSA_RESIDENTE };
+      frame.huella = K().huella(frame);   // sha256 of the canon of every field above; same hex in the app
       if (F.valida(frame).length) { return refuse('model frame breaks the Acho frame law'); }
       frames.push(frame);
     }
     frames.sort(function (a, b) { return a.id < b.id ? -1 : a.id > b.id ? 1 : 0; });
     return { ok: true, frames: frames };
   }
-  var api = Object.freeze({ project: project });
+  var api = Object.freeze({ project: project, CAUSA_RESIDENTE: CAUSA_RESIDENTE });
   if (common) { module.exports = api; } else { root.AtlasCerebroFrame = api; }
 })(typeof globalThis === 'object' ? globalThis : this);

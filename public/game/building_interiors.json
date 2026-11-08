@@ -41,8 +41,7 @@
      "missions": [
       "I4"
      ],
-     "piece": null,
-     "cause": "fog_piece_not_measured"
+     "piece": "public/game/fog_of_war.js"
     }
    ]
   },
@@ -276,8 +275,8 @@
       "E4",
       "L13"
      ],
-     "piece": null,
-     "cause": "gap_board_not_built"
+     "piece": "public/game/gap_board.js",
+     "action": "gaps"
     }
    ]
   },
@@ -367,6 +366,7 @@
  "actions": {
   "letters": "type_scale.js cycles the letter step",
   "pulse": "pulse.js measures this device and says its verdict",
-  "notebook": "notebook_export.js saves this device's notebook as one file"
+  "notebook": "notebook_export.js saves this device's notebook as one file",
+  "gaps": "gap_board.js says which options are still NO_DATA, their missions and causes"
  }
 }

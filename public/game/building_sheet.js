@@ -66,6 +66,7 @@
       done(r.label || ('NO_DATA · ' + r.causa));
     }],
     pulse: ['/game/pulse.js', 'AtlasPulse', function (P, doc, done) { done('measuring…'); P.start(win, 'weak', done); }],
+    gaps: ['/game/gap_board.js', 'AtlasGapBoard', function (G, doc, done) { done(G.board(data).line); }],
     notebook: ['/game/notebook_export.js', 'AtlasNotebook', function (N, doc, done) {
       var store = null; try { store = win.localStorage; } catch (e) { store = null; }
       var nb = N.build(store, new Date().toISOString());
