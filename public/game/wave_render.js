@@ -264,22 +264,38 @@
   }
 
 
+  // drawFace(g, x, y, r, o): the creature's eyes, drawn like the crab's (Sovereign, 2026-11-08): a white eye with a crisp
+  // ink ring and an ink pupil; no mouth. With o.eye (the rarity rank 0..3) the eye also gets an iris in the wave's own colour, and
+  // its pupil's shape grows rarer with the rank: 0 round, 1 ringed, 2 slit, 3 star (the four eye kinds of the lore,
+  // odd/tasks/fog-and-conquest.md E1). The eyes never turn with the body.
   function drawFace(g, x, y, r, o) {
     o = o || {};
-    var fr = Math.max(2, r * 0.16), ex = r * 0.34, ey = r * 0.1;
+    var kind = o.eye, n = Math.max(1, Math.min(5, o.eyes || 2)), big = kind == null ? 0.16 : 0.147 * (n > 3 ? 0.78 : n > 1 ? 0.9 : 1.1), fr = Math.max(2.2, r * big), ex = r * 0.34, ey = r * 0.1;
     var palette = raiz.AtlasComicTokens.NEUTRAL, alpha = g.globalAlpha;
-    g.save();
-    g.strokeStyle = palette.ink;
-    g.fillStyle = palette.paper;
-    [-1, 1].forEach(function (s) {
-      g.beginPath(); g.arc(x + s * ex, y - ey, fr, 0, 2 * Math.PI);
-      g.globalAlpha = alpha * 0.9; g.fill(); g.globalAlpha = alpha * 0.85; g.stroke();
-      g.beginPath(); g.arc(x + s * ex, y - ey + fr * 0.15, fr * 0.4, 0, 2 * Math.PI);
-      g.globalAlpha = alpha * 0.95; g.fillStyle = palette.ink; g.fill(); g.fillStyle = palette.paper;
+    g.save(); g.globalCompositeOperation = 'source-over'; g.strokeStyle = palette.ink; g.lineWidth = Math.max(1.2, fr * 0.22); g.globalAlpha = alpha; // opaque eyes even over an additive glow
+    // n eyes (1..5) scattered from the centre, inside the wave's round core, not in a human row (Sovereign, 2026-11-08):
+    // one in the middle, the others on a small ring tilted by the creature's own seed (o.eyeSeed, from its harmonics)
+    var spots = [], tilt = (o.eyeSeed || 0) * 2 * Math.PI, mid = n === 1 || n >= 4, ring = n === 2 ? fr * 1.15 : fr * 2.15, m = mid ? n - 1 : n;
+    if (mid) { spots.push([0, ey]); }
+    for (var i = 0; i < m && n > 1; i++) { var an = tilt + i * 2 * Math.PI / m; spots.push([Math.cos(an) * ring, ey + Math.sin(an) * ring]); }
+    spots.forEach(function (sp, j) {
+      var s = sp[0] < 0 ? -1 : 1, cx = x + sp[0], cy = y - ey + sp[1]; s = s * (j % 2 ? -1 : 1) || 1;
+      g.fillStyle = palette.paper; g.beginPath(); g.arc(cx, cy, fr, 0, 2 * Math.PI); g.fill(); g.stroke();
+      if (kind != null && o.color) { g.fillStyle = color(o.color, 1); g.beginPath(); g.arc(cx + s * fr * 0.08, cy + fr * 0.12, fr * 0.62, 0, 2 * Math.PI); g.fill(); }
+      g.fillStyle = palette.ink; pupil(g, cx + s * fr * 0.08, cy + fr * 0.12, fr * 0.36, kind || 0);
+      if (kind === 1) { g.strokeStyle = palette.ink; g.lineWidth = Math.max(0.8, fr * 0.1); g.beginPath(); g.arc(cx + s * fr * 0.08, cy + fr * 0.12, fr * 0.5, 0, 2 * Math.PI); g.stroke(); }
+      g.fillStyle = palette.paper; g.beginPath(); g.arc(cx + s * fr * 0.08 - fr * 0.18, cy - fr * 0.12, fr * 0.13, 0, 2 * Math.PI); g.fill(); // the glint
+      g.strokeStyle = palette.ink; g.lineWidth = Math.max(1.2, fr * 0.22);
     });
-    g.beginPath(); g.arc(x, y + r * 0.22, r * 0.3, 0.15 * Math.PI, 0.85 * Math.PI);
-    g.globalAlpha = alpha * 0.85; g.lineWidth = Math.max(1, fr * 0.5); g.stroke();
-    g.restore();
+    g.restore(); // eyes only, no mouth (Sovereign, 2026-11-08)
+  }
+  // pupil(g, x, y, p, kind): 0 round, 1 round (the ring is drawn by the caller), 2 a vertical slit, 3 a six-point star.
+  function pupil(g, x, y, p, kind) {
+    g.beginPath();
+    if (kind === 2) { g.ellipse(x, y, p * 0.38, p * 1.25, 0, 0, 2 * Math.PI); }
+    else if (kind === 3) { for (var i = 0; i < 12; i++) { var a = i * Math.PI / 6 - Math.PI / 2, d = i % 2 ? p * 0.5 : p * 1.2; g.lineTo(x + Math.cos(a) * d, y + Math.sin(a) * d); } g.closePath(); }
+    else { g.arc(x, y, p, 0, 2 * Math.PI); }
+    g.fill();
   }
 
   function sprite(arm, r, c, clave, dpr) {
@@ -296,6 +312,13 @@
 
   var TONOS = [[35, 80, 62], [140, 55, 58], [275, 65, 72], [205, 30, 74]];
   function tono(t) { return TONOS[G.caracter(t).color]; }
+  // eyeKind(t) → 0..3: the troop's rarity rank picks its eye kind (normal round, magic ringed, rare slit, unique star).
+  // eyeCount(t) → 1..5: how many eyes a creature has, read from its own wave (its harmonics), so it never changes. Pure.
+  function eyeHash(t) { var h = 0; ((t && t.armonicos) || []).forEach(function (a, j) { h = (h * 31 + Math.round((Math.abs(a[1]) + Math.abs(a[2])) * 997) + j) % 100003; }); return h; }
+  function eyeCount(t) { return 1 + eyeHash(t) % 5; }
+  // eyeSeed(t) → 0..1: the tilt of the creature's eye ring, also from its own wave. Pure.
+  function eyeSeed(t) { return Math.floor(eyeHash(t) / 5) % 97 / 97; }
+  function eyeKind(t) { var i = G && G.RAREZAS ? G.RAREZAS.indexOf(t && t.rareza) : -1; return i < 0 ? 0 : Math.min(3, i); }
 
   function riqueza(arm) { return arm.filter(function (h) { return Math.abs(h[1]) + Math.abs(h[2]) > 0; }).length; }
 
@@ -310,7 +333,7 @@
   }
 
   raiz.AtlasOnda = {
-    dibuja: dibuja, drawFace: drawFace, pulsoNota: pulsoNota, sprite: sprite, pegaSprite: pegaSprite, tono: tono, riqueza: riqueza, medidor: medidor, limite: limite,
+    dibuja: dibuja, drawFace: drawFace, pupil: pupil, eyeKind: eyeKind, eyeCount: eyeCount, eyeSeed: eyeSeed, pulsoNota: pulsoNota, sprite: sprite, pegaSprite: pegaSprite, tono: tono, riqueza: riqueza, medidor: medidor, limite: limite,
 
     applyMelt: applyMelt,
 

@@ -66,7 +66,8 @@
   // library. Without the wave duel loaded, escena() answers with an inert scene instead of the old one, which threw on
   // every frame (free variables `semilla`/`quieto` from the melt injection, measured 2026-10-27).
   function escena(lienzo, def, asa, combate, op) {
-    var W = raiz.AtlasWaveDuel;
+    var F = raiz.AtlasDuelFace, W = raiz.AtlasWaveDuel; // the creature-wave face is the only fight face (2026-11-08)
+    if (F && F.ready() && op && op.log) { return F.scene(lienzo, def, asa, combate, op); }
     if (W && W.escena) { return W.escena(lienzo, def, asa, combate, op); }
     var nada = function () {};
     return { velocidad: nada, salta: nada, otra: nada, para: nada };
