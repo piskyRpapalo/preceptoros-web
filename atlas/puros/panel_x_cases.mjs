@@ -13,3 +13,11 @@ test('actions the crab carries out close the panel; summon and build also look a
 test('settings of the device and plain panel buttons leave the panel open', () => {
   for (const id of ['set-letters', 'set-audio', 'visitor-start', 'gp-town', '', undefined]) { assert.equal(X.verdict(id), null, String(id)); }
 });
+test('a still tap on the map closes an open panel; a drag, a closed panel or another target does not', () => {
+  assert.equal(X.outside(true, 'surface', 0), true);
+  assert.equal(X.outside(true, 'surface', 10), true);
+  assert.equal(X.outside(true, 'surface', 24), false, 'a drag pans the map');
+  assert.equal(X.outside(false, 'surface', 0), false, 'no panel: the tap walks or opens a card as before');
+  assert.equal(X.outside(true, 'voices-x', 0), false);
+  assert.equal(X.outside(true, undefined, 0), false);
+});

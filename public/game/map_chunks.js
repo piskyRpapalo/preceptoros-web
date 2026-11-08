@@ -161,6 +161,7 @@
     if (!V.world.markList) { landmarks(V.world); }
     var k = V.G.k, ink = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.ink)), paper = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.paper)), fs = Math.round(11 * dpr);
     g.save(); g.font = '700 ' + fs + 'px ui-rounded, "SF Pro Rounded", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    var pills = []; // canvas px; the visit's place names (visitor_conquest.js) keep out of them
     V.world.markList.forEach(function (m) {
       if (hexDist([m.q, m.r], [w.q, w.r]) > REACH) { return; }
       var cell = V.world.cells.at[m.q + ',' + m.r], h0 = V.P(m.q, m.r), p = V.turn(h0.x, h0.y);
@@ -171,9 +172,9 @@
       g.fillStyle = paper; g.strokeStyle = ink; g.lineWidth = Math.max(1, 1.6 * dpr);
       g.beginPath(); g.moveTo(x - tw / 2 + th / 2, y - th / 2); g.lineTo(x + tw / 2 - th / 2, y - th / 2); g.arc(x + tw / 2 - th / 2, y, th / 2, -Math.PI / 2, Math.PI / 2);
       g.lineTo(x - tw / 2 + th / 2, y + th / 2); g.arc(x - tw / 2 + th / 2, y, th / 2, Math.PI / 2, Math.PI * 1.5); g.closePath(); g.fill(); g.stroke();
-      g.fillStyle = ink; g.fillText(t, x, y + 0.5 * dpr);
+      g.fillStyle = ink; g.fillText(t, x, y + 0.5 * dpr); pills.push([x - tw / 2, y - th / 2, tw, th].map(Math.round));
     });
-    g.restore();
+    g.restore(); g.canvas.dataset.pills = JSON.stringify(pills);
   }
   // The visitor layer: with no live colony the page draws only the floor, so the companion is drawn here on every
   // visitor:draw, its place is written for the map tap (dataset.youx/youy), and the camera follows it when it nears an

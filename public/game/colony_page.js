@@ -129,12 +129,15 @@
     // Orbit: the view angle (canvas.dataset.angle, whole degrees) turns the projected floor around the scene origin.
     // Only the picture turns (law P5): the state, the fog and every result stay where they are.
     var deg = Math.round(Number(canvas.dataset && canvas.dataset.angle) || 0), a = deg * Math.PI / 180;
+    // 2.5D tilt (canvas.dataset.tilt, 0.6-1.8; Sovereign 2026-11-08: one finger anchored, the other turns): it scales the
+    // ground squash. Depth order is unchanged; a tilted view carries tilt/10 in its angle key, so the painter's caches stay honest.
+    var tilt = Math.max(0.6, Math.min(1.8, Number(canvas.dataset && canvas.dataset.tilt) || 1)), sq = SQUASH * tilt;
     var G = { cx: canvas.width / 2 + px, cy: canvas.height / 2 + py, k: Math.min(K, (canvas.width / 2 - 80) / reach) * zoom,
-      angle: ((deg % 360) + 360) % 360, cos: Math.cos(a), sin: Math.sin(a) };
+      angle: ((deg % 360) + 360) % 360 + (tilt !== 1 ? tilt / 10 : 0), cos: Math.cos(a), sin: Math.sin(a), tilt: tilt };
     // turn(x, y) → the projected point after the view rotation (still in scene units; depth is its y). The turn is on the
     // ground: HexProjection squashes y by SQUASH (√3/4 makes its hex regular), so y is unsquashed, turned and squashed
     // again. A hex stays a hex at every angle and 60° lands each cell on a neighbour's place.
-    G.turn = function (x, y) { var u = y / SQUASH; return { x: x * G.cos - u * G.sin, y: (x * G.sin + u * G.cos) * SQUASH }; };
+    G.turn = function (x, y) { var u = y / SQUASH; return { x: x * G.cos - u * G.sin, y: (x * G.sin + u * G.cos) * sq }; };
     // at(x, y) → canvas pixels of a scene point: the one formula drawing and the click test share.
     G.at = function (x, y) { var r = G.turn(x, y); return { x: G.cx + r.x * G.k, y: G.cy + r.y * G.k }; };
     return G;

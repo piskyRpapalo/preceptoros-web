@@ -47,6 +47,8 @@
     var scale = Math.min(width, height) / 1300, cleared = circles(), taken = [], boxes = [];
     var yx = Number(surface.dataset.youx), yy = Number(surface.dataset.youy);
     if (isFinite(yx) && isFinite(yy) && surface.dataset.youx !== undefined) { taken.push({ x: yx / px - 28, y: yy / px - 40, w: 56, h: 56 }); }
+    // The building names (map_chunks.js names()) are taken too: a place name never sits on a building's pill.
+    try { JSON.parse(surface.dataset.pills || '[]').forEach(function (b) { taken.push({ x: b[0] / px, y: b[1] / px, w: b[2] / px, h: b[3] / px }); }); } catch (e) { /* no pills yet */ }
     // The zoom plate sits over the map's top-right corner: no name goes under it.
     var zp = doc.getElementById('zoom-controls'), sr = surface.getBoundingClientRect();
     if (zp) { var zr = zp.getBoundingClientRect(); if (zr.width) { taken.push({ x: zr.left - sr.left, y: zr.top - sr.top, w: zr.width, h: zr.height }); } }

@@ -69,7 +69,7 @@
   // hold(dialog): the duel opens on the map, not over the page (visitor_battle_ui.js); false → the caller shows it as before.
   function hold(d) {
     if (!onMap(d)) { return false; }
-    d.style.width = ''; d.show();
+    d.style.width = ''; if (d.querySelector('canvas')) { d.classList.add('duel'); } d.show(); // a duel: its waves on the map itself (piece 6)
     d.addEventListener('close', function () { focus(false); d.remove(); });
     d.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.preventDefault(); d.close(); } });
     var f = d.querySelector('button'); if (f) { f.focus({ preventScroll: true }); }

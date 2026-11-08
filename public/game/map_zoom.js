@@ -20,9 +20,9 @@
   // turnAt(view, d, mx, my) → the pan after turning the view by d degrees around (mx, my).
   function turnAt(view, d, mx, my) {
     var a = d * Math.PI / 180, cs = Math.cos(a), sn = Math.sin(a), ox = mx - view.w / 2, oy = my - view.h / 2;
-    var qx = view.panx - ox, qy = view.pany - oy;
-    var u = qy / SQUASH;   // the turn is on the ground, like colonia_pagina geometry().turn
-    return { panx: ox + qx * cs - u * sn, pany: oy + (qx * sn + u * cs) * SQUASH };
+    var qx = view.panx - ox, qy = view.pany - oy, sq = SQUASH * (view.tilt || 1);
+    var u = qy / sq;   // the turn is on the ground, like colonia_pagina geometry().turn (with the 2.5D tilt)
+    return { panx: ox + qx * cs - u * sn, pany: oy + (qx * sn + u * cs) * sq };
   }
   function snapped(angle, dir) { return norm(Math.round((angle + dir * SNAP) / SNAP) * SNAP); }
 
@@ -32,7 +32,7 @@
     var reduced = !!(raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches);
     c.dataset.zoom = '1.00'; c.dataset.angle = '0';
     function changed() { if (opts.changed) { opts.changed(); } }
-    function view() { return { w: c.width || 1, h: c.height || 1, zoom: zm, panx: num(c.dataset.panx), pany: num(c.dataset.pany) }; }
+    function view() { return { w: c.width || 1, h: c.height || 1, zoom: zm, panx: num(c.dataset.panx), pany: num(c.dataset.pany), tilt: num(c.dataset.tilt) || 1 }; }
     function setPan(p) { c.dataset.panx = String(Math.round(p.panx)); c.dataset.pany = String(Math.round(p.pany)); }
     function local(x, y) {
       var r = c.getBoundingClientRect ? c.getBoundingClientRect() : { left: 0, top: 0, width: c.width, height: c.height };
@@ -50,6 +50,12 @@
       if (mx === undefined) { mx = V.w / 2; my = V.h / 2; }
       setPan(turnAt(V, real, mx, my)); ang = to; c.dataset.angle = String(ang); changed();
     }
+    // tilts(f, mx, my): the 2.5D tilt times f (0.6-1.8), anchored at (mx, my); the map redraws itself (the tilt is not in the page's view key).
+    function tilts(f, mx, my) {
+      var V = view(), t2 = Math.max(0.6, Math.min(1.8, V.tilt * f)), r = t2 / V.tilt, oy = my - V.h / 2;
+      c.dataset.pany = String(Math.round(oy - r * (oy - V.pany))); c.dataset.tilt = t2.toFixed(2);
+      var ow = raiz.AtlasOpenworldView && raiz.AtlasOpenworldView(); if (ow && ow.redraw) { ow.redraw(); } changed();
+    }
     function last(ev) { var l = ev.getCoalescedEvents ? ev.getCoalescedEvents() : null; return l && l.length ? l[l.length - 1] : ev; }
     function pair() {
       var k = Object.keys(pts), a = pts[k[0]], b = pts[k[1]];
@@ -57,7 +63,7 @@
     }
     c.addEventListener('pointerdown', function (ev) {
       pts[ev.pointerId] = [ev.clientX, ev.clientY]; moved = 0;
-      if (Object.keys(pts).length === 2) { g0 = pair(); drag = null; }
+      if (Object.keys(pts).length === 2) { g0 = pair(); drag = null; Object.keys(pts).forEach(function (k) { g0[k] = pts[k].slice(); }); }
       else if (ev.button === 2 || ev.shiftKey) { drag = { x: ev.clientX }; }
     });
     c.addEventListener('pointermove', function (ev) {
@@ -65,7 +71,18 @@
       var e = last(ev), prev = pts[ev.pointerId];
       moved += Math.abs(e.clientX - prev[0]) + Math.abs(e.clientY - prev[1]);
       pts[ev.pointerId] = [e.clientX, e.clientY];
-      if (Object.keys(pts).length === 2 && g0) {
+      var other = Object.keys(pts).filter(function (k) { return String(k) !== String(ev.pointerId); })[0];
+      if (Object.keys(pts).length === 2 && g0 && g0[other] && Math.hypot(pts[other][0] - g0[other][0], pts[other][1] - g0[other][1]) < 12 &&
+          Math.hypot(e.clientX - g0[ev.pointerId][0], e.clientY - g0[ev.pointerId][1]) >= 12) {
+        // One finger anchored, the other turns (Sovereign 2026-11-08): the map takes its 2.5D perspective around the anchor.
+        // Up flattens the ground into perspective, down raises it toward the plan; the angle around the anchor orbits.
+        var an = local(pts[other][0], pts[other][1]), ga = Math.atan2(e.clientY - pts[other][1], e.clientX - pts[other][0]) * 180 / Math.PI;
+        var gb = Math.atan2(prev[1] - pts[other][1], prev[0] - pts[other][0]) * 180 / Math.PI, dt = ga - gb;
+        if (dt > 180) { dt -= 360; } else if (dt < -180) { dt += 360; }
+        tilts(Math.exp((e.clientY - prev[1]) * 0.006), an[0], an[1]);
+        g0.t = (g0.t || 0) + dt; if (Math.abs(g0.t) >= 1) { var rt = Math.trunc(g0.t); gira(rt, an[0], an[1]); g0.t -= rt; }
+        g0.d = pair().d; g0.a = pair().a;
+      } else if (Object.keys(pts).length === 2 && g0) {
         var g = pair(), dz = g.d / g0.d, da = g.a - g0.a;
         if (da > 180) { da -= 360; } else if (da < -180) { da += 360; }
         fija(zm * dz, g.m[0], g.m[1]);
@@ -98,12 +115,13 @@
       })();
       return to;
     }
-    function reset() { tween++; goal = null; zm = 1; ang = 0; c.dataset.zoom = '1.00'; c.dataset.angle = '0'; c.dataset.panx = '0'; c.dataset.pany = '0'; changed(); }
+    function reset() { tween++; goal = null; zm = 1; ang = 0; c.dataset.zoom = '1.00'; c.dataset.angle = '0'; c.dataset.panx = '0'; c.dataset.pany = '0'; delete c.dataset.tilt; changed(); }
     // A11Y: the same view without a pointer — set(v), step(+1|-1|0), turn(+1|-1), reset() and the spoken line.
-    return {
+    // The canvas keeps its view (c.mapZoom) so the left stick drives the very pinch and twist of two fingers.
+    return c.mapZoom = {
       factor: function () { return zm; }, angle: function () { return ang; }, set: fija,
       step: function (d) { fija(d === 0 ? 1 : zm * (d > 0 ? STEP : 1 / STEP)); return zm; },
-      turn: snap, rotate: gira, reset: reset,
+      turn: snap, rotate: gira, tilt: tilts, reset: reset,
       say: function () { return 'Map view ' + ang + '° · zoom ' + zm.toFixed(2) + '×'; }
     };
   }

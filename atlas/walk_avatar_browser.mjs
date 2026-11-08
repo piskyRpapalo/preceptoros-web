@@ -112,12 +112,22 @@ async function main() {
   const libre = (on) => ev(`(() => { const f = document.getElementById('free-walk'); if (f && f.checked !== ${on}) { f.click(); } return !!f; })()`);
   await libre(false);
   const vacio = await anclaDe('home');
+  // A tap on the map with a panel open only closes the panel (Sovereign, 2026-11-08; panel_x.js outside()): when a panel
+  // is open (arrival opens the node's; the free-walk switch lives in one), the first tap closes it and walks nowhere.
+  const panel = () => ev(`!!(document.querySelector('#map .cats button[aria-pressed="true"]') || document.querySelector('#entry-tools[aria-expanded="true"]') || [...document.querySelectorAll('#building-sheet,#settings-sheet')].some((x) => !x.hidden))`);
+  const cierra = async () => {
+    if (!(await panel())) { return; }
+    await clicEn(vacio.x + 200, vacio.y + 200); await espera(200);
+    ok(!(await panel()) && !/walking to|^You walk/.test(await estado()), 'a tap on the map with a panel open closes the panel and walks nowhere');
+  };
+  await cierra();
   await clicEn(vacio.x + 200, vacio.y + 200);
   await espera(200);
   const vacia = await estado();
   ok(!/walking to/.test(vacia), 'an empty hex does not start a walk');
   ok(/NO_DATA: no visible node on that hex/.test(vacia), 'an empty hex says NO_DATA: ' + vacia.slice(0, 120));
   ok(await libre(true), 'the free-walk checkbox is missing');
+  await cierra();
   await clicEn(vacio.x + 200, vacio.y + 200); await espera(200);
   const paso = await estado();
   ok(/^You walk (east|south-east|south-west|west|north-east|north-west) to /.test(paso), 'with free walk on, a tap off any node does not step the crab: ' + paso.slice(0, 120));
