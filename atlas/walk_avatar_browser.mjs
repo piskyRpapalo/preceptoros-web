@@ -112,6 +112,15 @@ async function main() {
   const libre = (on) => ev(`(() => { const f = document.getElementById('free-walk'); if (f && f.checked !== ${on}) { f.click(); } return !!f; })()`);
   await libre(false);
   const vacio = await anclaDe('home');
+  // A tap on the map with a panel open only closes the panel (Sovereign, 2026-11-08; panel_x.js outside()): arrival
+  // opened the node's panel, so the first tap closes it and walks nowhere; the next tap is the map's own.
+  const abierto = await ev(`!!(document.querySelector('#map .cats button[aria-pressed="true"]') || document.querySelector('#entry-tools[aria-expanded="true"]') || [...document.querySelectorAll('#building-sheet,#settings-sheet')].some((x) => !x.hidden))`);
+  if (abierto) {
+    const antes = await estado();
+    await clicEn(vacio.x + 200, vacio.y + 200); await espera(200);
+    const cerrado = await ev(`!(document.querySelector('#map .cats button[aria-pressed="true"]') || document.querySelector('#entry-tools[aria-expanded="true"]') || [...document.querySelectorAll('#building-sheet,#settings-sheet')].some((x) => !x.hidden))`);
+    ok(cerrado && !/walking to/.test(await estado()) && antes !== undefined, 'a tap on the map with a panel open closes the panel and walks nowhere');
+  }
   await clicEn(vacio.x + 200, vacio.y + 200);
   await espera(200);
   const vacia = await estado();
