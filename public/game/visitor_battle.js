@@ -10,6 +10,14 @@
       return { id: p.id, name: names[i] || 'Patrol', troops: troops, coordinate: [spot.x, spot.y] };
     });
   }
+  // npcPlace('b:<kind>:<q>,<r>') → the NPC that holds a grey building on the map (odd/tasks/fog-and-conquest.md C2):
+  // its patrol kind and its troops come from the building's key only, so the same building always fields the same squad.
+  function npcPlace(id) {
+    var m = /^b:([a-z-]+):(-?\d+),(-?\d+)$/.exec(id || ''); if (!m) { return null; }
+    var s = K.sha('atlas.patrulla/1:' + m[1] + ':' + m[2] + ',' + m[3]), p = V.patrullas[parseInt(s.slice(0, 8), 16) % V.patrullas.length], troops = [];
+    for (var j = 0; j < p.n; j++) { troops.push({ tc: p.tc, semilla: K.sha(s + ':patrulla:' + j) }); }
+    return { id: id, name: 'NPC ' + m[1].replace(/-/g, ' '), troops: troops, coordinate: [+m[2], +m[3]] };
+  }
   async function seal(round, events) {
     var a = JSON.stringify(events.filter(function (e) { return e[1] === 0; }));
     var b = JSON.stringify(events.filter(function (e) { return e[1] === 1; }));
@@ -17,7 +25,7 @@
   }
   async function run(placeId, troops, visitSeed) {
     if (!/^[a-f0-9]{64}$/.test(visitSeed || '')) { throw new Error('Visit seed is required'); }
-    var place = places().find(function (p) { return p.id === placeId; });
+    var place = npcPlace(placeId) || places().find(function (p) { return p.id === placeId; });
     if (!place || !Array.isArray(troops) || !troops.length || troops.length > V.combate.tropas_max) { throw new Error('A known place and one to ten adopted troops are required'); }
     var squad = troops.map(function (t) {
       if (!t || !/^tc[1-4]$/.test(t.tc) || !/^[a-f0-9]{64}$/.test(t.semilla || '')) { throw new Error('Invalid troop'); }
@@ -46,5 +54,5 @@
       return JSON.stringify(result) === JSON.stringify(canonical);
     } catch (_) { return false; }
   }
-  root.AtlasVisitorBattle = Object.freeze({ places: places, run: run, verify: verify });
+  root.AtlasVisitorBattle = Object.freeze({ places: places, npcPlace: npcPlace, run: run, verify: verify });
 })(globalThis);
