@@ -65,6 +65,7 @@ jobs:
             node --test atlas/puros/type_scale_cases.mjs
             node --test atlas/puros/pulse_cases.mjs
             node --test atlas/puros/gacha_odds_cases.mjs
+            node --test atlas/puros/duel_states_cases.mjs
             node --test atlas/puros/state_frames_cases.mjs
             node --test atlas/puros/brain_frame_cases.mjs
             node --test atlas/puros/acho_cases.mjs
