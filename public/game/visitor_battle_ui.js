@@ -24,7 +24,7 @@
     });
   });
   function show(result) {
-    var old = box.querySelector('dialog'); if (old) { old.close(); old.remove(); }
+    var old = root.document.querySelector('#stage > dialog.on-map') || box.querySelector('dialog'); if (old) { old.close(); old.remove(); }
     if (renderer) { renderer.para(); }
     var dialog = root.document.createElement('dialog'); dialog.setAttribute('aria-label', 'Wave battle over OpenWorld'); dialog.style.width = 'min(90vw, 800px)';
     var sentence = root.document.createElement('p'); sentence.id = 'visitor-battle-result';
@@ -47,7 +47,8 @@
       replay.SPEEDS.forEach(function (v) { bar.append(control('×' + v, function (st) { return replay.setSpeed(st, v); }, state.speed === v)); });
     }
     render();
-    dialog.append(sentence, canvas, bar, status, close); box.append(dialog); dialog.showModal();
+    dialog.append(sentence, canvas, bar, status, close);
+    var CS = root.AtlasCrabStage; if (!(CS && CS.hold(dialog))) { box.append(dialog); dialog.showModal(); } // on the map, over the crab (crab_stage.js)
     function finish() { sentence.textContent = winner; canvas.setAttribute('aria-label', winner); }
     renderer = root.AtlasWaveDuel.escena(canvas, result.defenders, result.attackers, result.combat, { semilla: result.seed, quieto: root.matchMedia('(prefers-reduced-motion: reduce)').matches, emulado: 0, alFin: finish });
     if (root.matchMedia('(prefers-reduced-motion: reduce)').matches) { renderer.salta(); finish(); }

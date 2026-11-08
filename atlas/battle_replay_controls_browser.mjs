@@ -50,7 +50,7 @@ async function main() {
   const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   const hasta = async (e, ms) => { for (let t = 0; t < ms; t += 250) { if (await ev(e)) { return true; } await espera(250); } return false; };
-  const pulsaDialogo = (texto) => ev(`(() => { const d = document.querySelector('#visitor-play dialog'); if (!d) { return false; } const b = [...d.querySelectorAll('button')].find(x => x.textContent.trim() === ${JSON.stringify(texto)}); if (!b) { return false; } b.click(); return true; })()`);
+  const pulsaDialogo = (texto) => ev(`(() => { const d = document.querySelector('dialog[open]'); if (!d) { return false; } const b = [...d.querySelectorAll('button')].find(x => x.textContent.trim() === ${JSON.stringify(texto)}); if (!b) { return false; } b.click(); return true; })()`);
   await cmd('Runtime.enable'); await cmd('Page.enable');
 
   // The visit up to one adopted troop, as the battle browser check does it.
@@ -73,7 +73,7 @@ async function main() {
   await ev('document.getElementById("visitor-fight-arrecife").click()');
   ok(await hasta('!!document.getElementById("visitor-battle-result")', 10000), 'battle opens over the map');
   await espera(300);
-  const status = () => ev(`document.querySelector('#visitor-play dialog [role=status]').textContent`);
+  const status = () => ev(`document.querySelector('dialog[open] [role=status]').textContent`);
   const inicio = await status();
   ok(inicio === 'PLAYING · ×1', 'replay starts playing at ×1: ' + inicio);
 
@@ -93,7 +93,7 @@ async function main() {
   const tasas = await ev('window.rates');
   medidas.tasas = tasas;
   ok(JSON.stringify(tasas) === JSON.stringify([0, 0, 0, 4, 2, 0, 2]), 'scene rates follow the controls: ' + JSON.stringify(tasas));
-  const presionado = await ev(`[...document.querySelector('#visitor-play dialog').querySelectorAll('button')].filter(b => b.getAttribute('aria-pressed') === 'true').map(b => b.textContent)`);
+  const presionado = await ev(`[...document.querySelector('dialog[open]').querySelectorAll('button')].filter(b => b.getAttribute('aria-pressed') === 'true').map(b => b.textContent)`);
   ok(JSON.stringify(presionado) === JSON.stringify(['×2']), 'the current speed is shown as pressed: ' + JSON.stringify(presionado));
 
   // The record does not change with the controls: it is the same object snapshotted when it was handed over.
@@ -102,7 +102,7 @@ async function main() {
 
   // The visit goes on after the battle.
   await pulsaDialogo('Return to the map');
-  ok(await hasta('!document.querySelector("#visitor-play dialog[open]")', 5000), 'dialog closes, the visit goes on');
+  ok(await hasta('!document.querySelector("#stage > dialog[open], #visitor-play dialog[open]")', 5000), 'dialog closes, the visit goes on');
   ok(await hasta('!!document.getElementById("visitor-end")', 5000), 'the visit panel is still there after the battle');
   ok(await ev('!!document.getElementById("surface") && document.querySelectorAll("#surface").length === 1'), 'one persistent map');
 
