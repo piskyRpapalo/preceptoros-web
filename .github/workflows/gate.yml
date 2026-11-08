@@ -61,9 +61,12 @@ jobs:
             node --test atlas/puros/decor_command_cases.mjs
             node --test atlas/puros/wave_duel_cases.mjs
             node --test atlas/puros/caravan_cases.mjs
+            node --test atlas/puros/building_interiors_cases.mjs
+            node --test atlas/puros/type_scale_cases.mjs
+            node --test atlas/puros/pulse_cases.mjs
             node --test atlas/puros/gacha_odds_cases.mjs
             node --test atlas/puros/duel_states_cases.mjs
-            node --test atlas/puros/pulse_cases.mjs
+            node --test atlas/puros/fog_cases.mjs
             node --test atlas/puros/state_frames_cases.mjs
             node --test atlas/puros/brain_frame_cases.mjs
             node --test atlas/puros/acho_cases.mjs
@@ -135,6 +138,9 @@ jobs:
             node atlas/map_drag_browser.mjs
             node atlas/map_wide_browser.mjs
             node atlas/gamepad_browser.mjs
+            node atlas/building_sheet_browser.mjs
+            node atlas/type_scale_browser.mjs
+            node atlas/dark_terminals_browser.mjs
             node atlas/classroom_chat_browser.mjs
             node atlas/sw_first_load_browser.mjs
             node atlas/live_heartbeat_cases.mjs

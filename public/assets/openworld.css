@@ -150,3 +150,21 @@ body{font-size:1rem}
 #gamepad .cats button[aria-pressed="true"]{outline:2px solid var(--fg);outline-offset:1px}
 @media (forced-colors: active){#gamepad :is(.gp-b,.cats button,.gp-off){background-image:none;border-color:ButtonText}}
 #gamepad .view-stick.gp-acho[data-on],#gamepad .view-stick.gp-acho:focus-visible{border-color:var(--fg)}
+#building-sheet{flex:0 0 auto;margin:0;padding:8px;max-height:46vh;overflow:auto;border:1px solid color-mix(in srgb,var(--fg) 30%,transparent);border-radius:calc(var(--radius) + 6px);background:var(--bg)}
+#building-sheet[hidden]{display:none}
+#building-sheet .bs-bar{display:flex;align-items:center;gap:6px}
+#building-sheet h2{flex:1 1 auto;margin:0;font-size:15px;min-width:0}
+#building-sheet .bs-list{list-style:none;margin:6px 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+#building-sheet :is(.bs-card,.bs-tool){min-height:44px;min-width:44px;width:100%;padding:6px 8px 16px;text-align:left;font:inherit;font-size:14px;color:var(--fg);border:1px solid color-mix(in srgb,var(--gp,var(--fg)) 60%,transparent);border-radius:calc(var(--radius) + 4px);background:color-mix(in srgb,var(--gp,var(--fg)) 14%,transparent) var(--gp-svg,none) left 8px bottom 4px/32px 10px no-repeat;cursor:pointer}
+#building-sheet .bs-tool{width:auto;padding:6px 10px}
+#building-sheet .bs-tool[hidden]{display:none}
+#building-sheet .bs-seal{display:block;font-size:11px;opacity:.8}
+#building-sheet .bs-card[data-seal=NO_DATA]{border-style:dashed}
+#building-sheet .bs-line{margin:0;font-size:13px;min-height:1.3em}
+@media (forced-colors: active){#building-sheet :is(.bs-card,.bs-tool){background-image:none;border-color:ButtonText}}
+/* I7 The right letters (type_scale.js): the reading panels scale by the visitor's step; the map and gamepad do not. */
+#chat,#voices,#building-sheet{zoom:var(--letters,1)}
+/* Terminals are always dark (Sovereign, 2026-11-08): every panel where the visitor reads or types is a terminal.
+   The house colours are system colours (Canvas, CanvasText), so one color-scheme makes the whole subtree dark in
+   either theme; the map keeps the visitor's theme. Forced colours still win: the system palette replaces both. */
+#chat,#voices,#building-sheet,.radio-chat{color-scheme:dark;background-color:Canvas;color:CanvasText}

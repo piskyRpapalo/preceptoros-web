@@ -1,6 +1,6 @@
 # El reparto de la casa · cuántas opciones van en cada panel (2026-11-08)
 
-> Encargo del Soberano (2026-11-08): encajar las 131 misiones del índice en la parte visual de la web y de la app, para que el preceptor gráfico sepa cuántas opciones van en cada panel y amueble los interfaces con confianza. Este documento ES la vista del reparto: no crea misiones (la fuente única las crea, docs/indice-territorios-ste-20261108.md), las reparte por panel y les pone número de opciones. Propose-only; se re-mide tras cada FIRMO. Medido: zonas.js y app.html (las 9 zonas de la app) y el conteo pieza por pieza del juego servido.
+> Encargo del Soberano (2026-11-08): encajar las 131 misiones del índice en la parte visual de la web y de la app, para que el preceptor gráfico sepa cuántas opciones van en cada panel y amueble los interfaces con confianza. Este documento ES la vista del reparto: no crea misiones (la fuente única las crea, docs/indice-territorios-ste-20261108.md), las reparte por panel y les pone número de opciones. Propose-only; se re-mide tras cada FIRMO. Re-medida 2026-11-08 (PR #735): el indice cuenta 133 (K6 vive en el Lab, seccion 4; L15 en el sotano, seccion 5). Medido: zonas.js y app.html (las 9 zonas de la app) y el conteo pieza por pieza del juego servido.
 
 ## 1 · La ley del número (las cuatro leyes del reparto)
 
@@ -77,11 +77,11 @@ La barra tiene 9 zonas (396 px caben; 10 no cabían: medida fundacional). El ins
 
 ## 4 · EL LAB · la ventana de la fábrica (una sala, seis familias)
 
-Los 24 del territorio LAB no son 24 botones: son seis familias de trabajo que se ven como UNA lista de experimentos (B2) con cinco opciones de panel.
+Los 25 del territorio LAB (24 al fundarse; K6, la arena de modelos, llego con la re-medida #735) no son 25 botones: son seis familias de trabajo que se ven como UNA lista de experimentos (B2) con cinco opciones de panel.
 
 | Familia | Trabajo en llano | Misiones |
 |---|---|---|
-| **EL CENSO** | contar y medir lo que hay, con la misma vara | L2, L3, N1, N10 |
+| **EL CENSO** | contar y medir lo que hay, con la misma vara | L2, L3, N1, N10, K6 |
 | **LA FÁBRICA Y SU LAZO** | el registro único, la cara, el enlace, y el agente que escribe recibos, jamás firmas | B1, B2, B3, B4 (=N12), B5, B6, B8 |
 | **EL ENTRENAMIENTO** | el cerebro chico de la casa y su examen, definidos ANTES de correr | A2, A9, H6, H2, L14 |
 | **LA VÁLVULA Y LA ENERGÍA** | qué gana el cerebro con y sin arnés; los julios con sello | K7, L5 (=N11) |
@@ -92,10 +92,10 @@ Opciones del panel Lab (5): la lista de experimentos; los interruptores de agent
 
 ## 5 · EL SÓTANO · lo que jamás se pinta (se cita)
 
-Quince misiones del territorio OTROS y catorce puertas de la web viven fuera de la pantalla. Sus superficies son tres: el sello del cabecero, la luz del semáforo y la línea de firma.
+Dieciseis misiones del territorio OTROS (quince al fundarse; L15, el dossier de conformidad, llego con la re-medida #735) y catorce puertas de la web viven fuera de la pantalla. Sus superficies son tres: el sello del cabecero, la luz del semáforo y la línea de firma.
 
 - **El canal y la casa:** A3 (Hexelion escribe su recibo), G1 (actas limpias), G2 (la litera viva), G3 (PRs verdes), G5 (sellos re-medidos), G6 (el foco único), G7 (la poda).
-- **Los contratos:** H1 (la ley del nodo), H3 (auditar el mapa contra el código), H4 (la primera puerta de escritura: todos los ataques pensados con su respuesta; trabaja PARA la Aduana), N3 (la ley muerta retirada), N14 (la firma externa, dormida), L16 (el Mac ausente).
+- **Los contratos:** H1 (la ley del nodo), H3 (auditar el mapa contra el código), H4 (la primera puerta de escritura: todos los ataques pensados con su respuesta; trabaja PARA la Aduana), N3 (la ley muerta retirada), N14 (la firma externa, dormida), L15 (el dossier de conformidad), L16 (el Mac ausente).
 - **El vigilante del enjambre:** H5 trabaja para el Lab aunque viva aquí.
 
 **Regla del sótano:** quien ponga un botón de presupuesto de bytes en la cara del visitante no entendió la casa. Esas misiones se citan en el recibo y sostienen el sello; no se muestran.
@@ -127,7 +127,7 @@ Las doce piezas-puente del toque nativo son el mapa de navegación entre paneles
 4. **Las caravanas se enseñan como contrato, no como viaje.** Sin motor medido, NO_DATA con causa. La Aduana muestra el contrato y confiesa lo que aún no corre.
 5. **La novena ya tiene nombre: Harness, y ya vive en el HTML.** Medidas las nueve contra zonas.js y app.html: Mando, Conversación, Gobierno, Cuaderno, Lab, Harness, Puerta pública, Modelos y Ajustes. La zona Modelos hospeda el OpenWorld; los cerebros viven en la flechita del cabecero y la lista del Lab. El Terminal del Usuario queda sin pestaña: su color te sigue en la cara web.
 6. **Ajustes es hoy el cuello de botella de la app: 8 tarjetas medidas en una sola zona.** Mudanzas propuestas: las tres tarjetas de la cédula del nodo → Gobierno; anidar y la bandeja → Cuaderno. Ajustes queda con 5 opciones.
-7. **Las 131 misiones caben en menos de 60 opciones.** La web: 38 en 10 puertas. La app: 36 en 9 zonas y un cabecero. El Lab: 5. La casa acumula trabajo detrás de las puertas, no botones en las paredes.
+7. **Las 133 misiones caben en menos de 60 opciones (131 al fundarse; K6 y L15 llegaron con la re-medida #735 y no mudan puertas).** La web: 38 en 10 puertas. La app: 36 en 9 zonas y un cabecero. El Lab: 5. La casa acumula trabajo detrás de las puertas, no botones en las paredes.
 8. **La web ya tiene material en las diez puertas: 115 piezas medidas en el juego servido.** El Albergue tiene welcome_card; la Lotería, gacha; el Coliseo, wave_duel_scene y visitor_conquest; el Ágora, building_chat y live_invocation; el Taller, ui-workshop y acho_editor; el Mapa, map_painter, fog_of_war y map_view_joystick; la Casa, face_terminal y crab_render_hd; la Aduana, node_signature_verify; el Médico, acho_letters y acho_language. Se compone lo medido: no se dibuja desde cero.
 9. **El reparto respeta el renombramiento:** los nombres de la casa (el Coro, el Albergue, la Aduana de Tres Llaves, el Médico de Guardia, la Lotería Honesta, el Duelo de Varianza Baja) se citan UNA vez aquí y el preceptor los rebautiza en pantalla como declare su plan: dentro de la jaula, decide y declara.
 
