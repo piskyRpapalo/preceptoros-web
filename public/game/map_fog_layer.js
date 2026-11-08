@@ -17,6 +17,15 @@
     (V.world.markList || []).forEach(function (m) { if (!m.fog) { add(m.q, m.r, OWN); } });
   }
   function hidden(m) { return !clear(centres, m.q, m.r); }
+  // won(m): a building conquered in this visit (visitor_battle_ui.js) opens a wide clearing (radius 4) and flies a flag.
+  function won(m) { add(m.q, m.r, 4); }
+  // flag(g, x, y, k, H): an ink pole and a pennant in the LIVE token, over a building the account controls.
+  function flag(g, x, y, k, H) {
+    var ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), h = 30 * k;
+    g.save(); g.lineWidth = Math.max(1.2, 2 * k); g.strokeStyle = ink; g.beginPath(); g.moveTo(x, y); g.lineTo(x, y - h); g.stroke();
+    g.fillStyle = H.css(H.rgbOf(H.T.FRONT_DOOR['LIVE.base'])); g.beginPath(); g.moveTo(x, y - h); g.lineTo(x + 13 * k, y - h + 5 * k); g.lineTo(x, y - h + 10 * k); g.closePath(); g.fill(); g.stroke();
+    g.restore();
+  }
   function tell(m) {
     var T = root.AtlasPreceptorTalk && root.AtlasPreceptorTalk.view, name = String(m.id).replace(/-/g, ' ');
     if (T && T.news) { T.news('An NPC holds this ' + name + ' in the fog. Walk closer to clear it.', 'NPC'); }
@@ -39,7 +48,9 @@
       return { x: V.G.cx + p.x * k, y: V.G.cy + p.y * k - (c ? V.height(c) * V.HSTEP : 0) * k }; };
     var o = P(0, 0), e = P(1, 0), step = Math.max(4, Math.hypot(e.x - o.x, e.y - o.y)), W = s.width, Hh = s.height, sq = 0.433 * (V.G.tilt || 1) * 2;
     (V.world.markList || []).forEach(function (m) {
-      if (!m.fog) { return; } var p = P(m.q, m.r);
+      var p = P(m.q, m.r);
+      if (m.won) { flag(g, p.x + 0.35 * step, p.y - 0.2 * step, Math.max(k, 0.5), V.H); return; }
+      if (!m.fog) { return; }
       if (p.x > -40 && p.x < W + 40 && p.y > -40 && p.y < Hh + 60) { npc(g, p.x + 0.55 * step, p.y + 0.15 * step, Math.max(k, 0.5), V.H); }
     });
     if (!fc) { fc = (root.document || {}).createElement ? root.document.createElement('canvas') : null; }
@@ -57,7 +68,7 @@
     });
     g.drawImage(fc, 0, 0);
   }
-  var api = { clear: clear, hidden: hidden, tell: tell, draw: draw, CABIN: CABIN, OWN: OWN, STEP: STEP };
+  var api = { clear: clear, hidden: hidden, won: won, tell: tell, draw: draw, CABIN: CABIN, OWN: OWN, STEP: STEP };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasMapFog = api;
 })(typeof window !== 'undefined' ? window : globalThis);

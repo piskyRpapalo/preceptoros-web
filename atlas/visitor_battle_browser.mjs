@@ -63,10 +63,15 @@ async function main() {
   await ev('document.getElementById("visitor-hatch-1").click()');
   ok(await hasta('document.getElementById("visitor-play").textContent.includes("Troops 1")',10000),'adopted troop available');
   await ev(`document.getElementById('visitor-play').addEventListener('visitor:battle',e=>window.measuredBattle=e.detail,{once:true})`);
-  await ev('document.getElementById("visitor-fight-arrecife").click()');
+  await ev(`(async()=>{const V=AtlasMapPainter.view(),mk=V.world.markList.find(m=>m.fog);window.retado=mk;AtlasBuildingSheet.open(mk.id);await new Promise(r=>setTimeout(r,400));document.getElementById('surface').dataset.sel=mk.q+','+mk.r;for(let i=0;i<40&&!document.getElementById('bs-challenge');i++)await new Promise(r=>setTimeout(r,100));document.getElementById('bs-challenge').click();return 1})()`) /* C2: challenge a grey NPC building from its card (fog-and-conquest.md) */;
   ok(await hasta('!!document.getElementById("visitor-battle-result")',10000),'existing wave scene opens over the map');
   ok(await ev('!!document.getElementById("surface") && document.querySelectorAll("#surface").length===1'),'one persistent map');
   const battle=await ev('window.measuredBattle');
+  ok(await ev('document.querySelectorAll("[id^=visitor-fight-]").length===0'),'House carries no patrol fight buttons (C2)');
+  ok(await ev('window.measuredBattle.place.startsWith("b:")'),'the fight is the NPC building\'s, not a patrol place');
+  ok(await ev('window.measuredBattle.combat.gana!=="asalto" || (window.retado.won===true && window.retado.fog===false)'),'a win conquers the building for this visit');
+  const conquista = JSON.parse(await ev(`(async()=>{const V=AtlasMapPainter.view(),mk=V.world.markList.find(m=>m.fog&&m!==window.retado),before=AtlasMapPainter.cacheStats().bakes;AtlasVisitorConquer(mk);await new Promise(r=>setTimeout(r,400));return JSON.stringify({won:mk.won,fog:mk.fog,clear:!AtlasMapFog.hidden(mk),rebaked:AtlasMapPainter.cacheStats().bakes<before||AtlasMapPainter.cacheStats().bakes<=2})})()`));
+  ok(conquista.won && !conquista.fog && conquista.clear && conquista.rebaked, 'a conquered building is the account\'s for the visit: flag, colour (re-baked), clearing: ' + JSON.stringify(conquista));
   ok(!!battle && battle.frames.length>0,'session replay has frames');
   ok(battle.frames.every(f=>Buffer.byteLength(JSON.stringify(f))<1024),'bounded round frames');
   ok(await ev(`(async()=>{const a=await AtlasVisitorAccount.create(true),i=a.info();const x=await AtlasVisitorBattle.run('arrecife',[{tc:'tc1',semilla:'a'.repeat(64)}],i.seed);const y=await AtlasVisitorBattle.run('arrecife',[{tc:'tc1',semilla:'a'.repeat(64)}],i.seed);if(JSON.stringify(x)!==JSON.stringify(y))return false;x.frames[0].commits[0]='0'.repeat(64);return !await AtlasVisitorBattle.verify(x,i.seed)})()`),'determinism twice and changed commitment rejected');

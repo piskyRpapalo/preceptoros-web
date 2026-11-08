@@ -65,7 +65,7 @@ async function main() {
   ok(await hasta('!!document.querySelector(".revela canvas.revela-lienzo") && !!window.AtlasRevela',10000),'the egg opens: the reveal shows the hatched troop');
   ok(await ev('["Normal","Magic","Rare","Leviathan"].some(x => document.querySelector(".revela").textContent.includes(x))'), 'the reveal rarity is not in English');
   await ev(`document.getElementById('visitor-play').addEventListener('visitor:battle',e=>window.measuredBattle=e.detail,{once:true})`);
-  await ev('document.getElementById("visitor-fight-arrecife").click()');
+  await ev(`(async()=>{const V=AtlasMapPainter.view(),mk=V.world.markList.find(m=>m.fog);window.retado=mk;AtlasBuildingSheet.open(mk.id);await new Promise(r=>setTimeout(r,400));document.getElementById('surface').dataset.sel=mk.q+','+mk.r;for(let i=0;i<40&&!document.getElementById('bs-challenge');i++)await new Promise(r=>setTimeout(r,100));document.getElementById('bs-challenge').click();return 1})()`) /* C2: challenge a grey NPC building from its card (fog-and-conquest.md) */;
   ok(await hasta('!!document.getElementById("visitor-battle-result")',10000),'existing wave scene opens over the map');
   ok(await ev('!!document.getElementById("surface") && document.querySelectorAll("#surface").length===1'),'one persistent map');
   const battle=await ev('window.measuredBattle');

@@ -34,7 +34,7 @@ This continues `mundo-grande.md` (G4 the fog on the floor, G5 the patrols on the
   - `map_fog_cases` (4) is pure. Its `draw` case caught a comment that cut the fog's `fillRect`; it was sabotaged red first.
   - `map_drag` now taps the node's building nearest the centre. It also taps an NPC building in the fog: no card, and the bubble names it. Removing the tap law turns it red.
 
-## C2 · NPC buildings are the fights (next)
+## C2 · NPC buildings are the fights (built: web PR after #774)
 
 - **House** loses the six patrol places of `visitor_battle.js` (Reef, Kelp, Ruins, Silt, Abyss, Core: «the names that appeared»). Their list in `visitor_battle_ui.js` goes.
 - **A cleared NPC building** offers «Challenge» in its card. The duel is `wave_duel_scene` through `visitor_battle.run`.
@@ -44,6 +44,15 @@ This continues `mundo-grande.md` (G4 the fog on the floor, G5 the patrols on the
 - **Winning conquers it for the session** (`e.luchados`): its building turns to colour with a flag, and its clearing opens wide.
   - It is never persisted off the device. Persistence, loot and loss stay on CLAUDE.md's signature list.
 - **Guard:** a challenge on an NPC building reaches the duel, and a win flips `m.fog` for that session only.
+- **Built and measured (2026-11-08):**
+  - `visitor_battle.js npcPlace('b:<kind>:<q>,<r>')` builds the NPC's squad from the key alone (`npc_place_cases`), and `verify` replays it.
+  - House shows one line («walk to a grey NPC building… and challenge it»): no patrol buttons, guarded.
+  - The card of a cleared grey building offers «Challenge the NPC of this <kind>». It says NO_DATA when no troop has been adopted, and the tap closes the card (`panel_x`).
+  - A win runs `conquer()`: colour (the painter's bake cache is dropped once), a flag (`map_fog_layer.js`) and a clearing of radius 4. Visit memory only.
+  - On the Doogee: real taps walked the crab to (3,−2), then tapped the grey doctor at (4,−4); its card offered the challenge, and the duel played on the map («NPC wins · 2 rounds»: one troop against the NPC's squad). `conquer()` on the same doctor turned it green, with its flag.
+- **Next, from the Sovereign's photos:**
+  - Combat waves must be the summon's creature waves, with no extra adornments; the triangle and star squads are discarded.
+  - Summoned waves must flow and move. Sound comes later, with the whole engine.
 
 ## C3 · The Conquest page (next)
 
@@ -76,3 +85,16 @@ Agent: claude-code · Model: claude-opus-5-5
 - The rules live in `/game/talk.css` (2395 B gzip), because `openworld.css` is at its cap (now 7086 B, the old row rules removed).
 - Measured on the Doogee: top row y = 594 (Town 133, Settings 183); bottom row y = 640/648/640 (Play 108, Welcome 158, Communication 208); all 44 px.
 - Guards green: gamepad, two_clicks, eye_carbon, openworld.
+
+## C6 · The game's chat over the World tab (app; proposal, visual first)
+
+The Sovereign in chat, 2026-11-08: «sin moverse de la pantalla de "world" en la app, poder hablar con el mini-orquestador, y ver ambos la pantalla del juego al mismo tiempo… una ventana de chat transparente con letras que se vean bien».
+
+- **Where:** the PreceptorOS app (`interface/app.html`), in the World tab, over `#openworld-frame`.
+- **What:** a transparent chat panel over the live map. The user asks the mini-orchestrator how to play on the map and about strategy. Both see the same game screen.
+- **Visual first.** This mission is only the window. The brain link comes later, as part of the base product: Hexelion running locally, still on the waiting list. Until then the panel says NO_DATA with its cause («the game brain is not linked yet»), and never invents answers.
+- **Legible over any map colour:** text in the web's ink (#1d1b26) on a cream veil (#fffdf6 at about 80 %) with a soft blur behind it. The final colour is left for the Sovereign to choose.
+  - Contrast is measured against the darkest and the lightest map tiles (≥ 4.5:1).
+  - Forced colours: Canvas / CanvasText. Reduced motion: no slide.
+- **The map stays playable:** the panel takes the bottom third at most and can be collapsed to one 44 px button. Map taps outside it still reach the map.
+- **Done when:** in the mini window (420×642) and on the Doogee, the World tab shows the map with the chat over it, and a question shows its NO_DATA answer without leaving World.

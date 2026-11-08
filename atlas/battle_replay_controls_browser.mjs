@@ -70,7 +70,7 @@ async function main() {
   // Record every rate the scene receives, then open the battle. The record is snapshotted when it is handed over.
   await ev(`(() => { window.rates = []; const orig = AtlasWaveDuel.escena; AtlasWaveDuel.escena = function () { const r = orig.apply(this, arguments); const v = r.velocidad; r.velocidad = function (x) { rates.push(x); v(x); }; return r; }; })()`);
   await ev(`document.getElementById('visitor-play').addEventListener('visitor:battle', e => { window.measuredBattle = e.detail; window.snapBattle = JSON.stringify(e.detail); }, { once: true })`);
-  await ev('document.getElementById("visitor-fight-arrecife").click()');
+  await ev(`(async()=>{const V=AtlasMapPainter.view(),mk=V.world.markList.find(m=>m.fog);window.retado=mk;AtlasBuildingSheet.open(mk.id);await new Promise(r=>setTimeout(r,400));document.getElementById('surface').dataset.sel=mk.q+','+mk.r;for(let i=0;i<40&&!document.getElementById('bs-challenge');i++)await new Promise(r=>setTimeout(r,100));document.getElementById('bs-challenge').click();return 1})()`) /* C2: challenge a grey NPC building from its card (fog-and-conquest.md) */;
   ok(await hasta('!!document.getElementById("visitor-battle-result")', 10000), 'battle opens over the map');
   await espera(300);
   const status = () => ev(`document.querySelector('dialog[open] [role=status]').textContent`);
