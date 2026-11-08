@@ -1,43 +1,18 @@
-// The visitor view: a non-technical visitor sees only what they can enjoy. Panels marked data-depth="tech" (map
-// counts, floor loading, walkers, zoom readout) stay in the page for builders and tests, but are veiled until the
-// visitor asks for them with one button. A technical panel that carries something to press (a HITL «Needs you») is never
-// veiled: the CSS rule skips it, and the button counts only the panels it really hides. The choice is kept on this device only (localStorage), never sent.
+// The visitor view: a visitor sees only what they can enjoy. Panels marked data-depth="tech" (map counts, floor loading,
+// walkers, zoom readout) stay in the page for builders and tests, and are always veiled: the «Show the technical panels»
+// button is retired (Sovereign, 2026-11-08: «they add nothing»). A technical panel that carries something to press
+// (a HITL «Needs you») is never veiled: the CSS rule skips it. Nothing is stored or sent.
 (function (root) {
   'use strict';
-  var KEY = 'preceptoros.view.depth';
-
-  // depth(stored) → 'visitor' | 'builder'. Anything unknown is the visitor view.
-  function depth(stored) { return stored === 'builder' ? 'builder' : 'visitor'; }
-  function label(d, n) { return d === 'builder' ? 'Hide the ' + n + ' technical panels' : 'Show the ' + n + ' technical panels'; }
-
-  // The four panels a visitor gains nothing from; the page keeps them, this piece marks them and adds its button.
+  // The four panels a visitor gains nothing from; the page keeps them, this piece marks them.
   var TECH = ['Map', 'Floor', 'Walkers', 'Zoom'];
-  function mount(doc, store) {
+  function mount(doc) {
     var list = doc.getElementById('voices');
     if (!list) { return null; }
     TECH.forEach(function (s) { var e = list.querySelector('[data-speaker="' + s + '"]'); if (e) { e.setAttribute('data-depth', 'tech'); } });
-    var li = doc.createElement('li'), btn = doc.createElement('button');
-    li.className = 'voice depth'; li.setAttribute('data-speaker', 'Builders'); li.setAttribute('data-cat', 'Welcome'); // the panel's category for Builders
-    btn.type = 'button'; btn.id = 'depth-toggle'; btn.setAttribute('aria-controls', 'voices');
-    li.appendChild(btn); list.appendChild(li);
-    var d = 'visitor';
+    list.classList.toggle('visitor', true);
     function veiled() { return [].filter.call(list.querySelectorAll('[data-depth="tech"]'), function (e) { return !e.querySelector('button'); }).length; }
-    try { d = depth(store && store.getItem(KEY)); } catch (e) { d = 'visitor'; }
-    function apply() {
-      list.classList.toggle('visitor', d === 'visitor');
-      btn.setAttribute('aria-pressed', d === 'builder' ? 'true' : 'false');
-      var text = label(d, veiled()); if (btn.textContent !== text) { btn.textContent = text; }
-    }
-    btn.addEventListener('click', function () {
-      d = d === 'builder' ? 'visitor' : 'builder';
-      try { if (store) { store.setItem(KEY, d); } } catch (e) { /* private window: the choice lasts this visit */ }
-      apply();
-    });
-    apply();
-    // panels draw their buttons later (HITL «Needs you»): recount when the list changes; writes only on a real change
-    var MO = doc.defaultView && doc.defaultView.MutationObserver;
-    if (MO) { new MO(apply).observe(list, { childList: true, subtree: true }); }
-    return { depth: function () { return d; }, count: veiled };
+    return { count: veiled };
   }
 
   // Tools · the app on this phone (2026-11-08). No APK is published (INSTALL_ANDROID.md §4), so the honest Android
@@ -63,11 +38,11 @@
     return li;
   }
 
-  var api = { KEY: KEY, TECH: TECH, depth: depth, label: label, mount: mount, install: install, installCard: installCard };
+  var api = { TECH: TECH, mount: mount, install: install, installCard: installCard };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasVisitorView = api;
   if (root.document) {
-    var go = function () { var s = null; try { s = root.localStorage; } catch (e) { s = null; } mount(root.document, s); var l = root.document.getElementById('voices'); if (l) { installCard(root.document, l, root); } };
+    var go = function () { mount(root.document); var l = root.document.getElementById('voices'); if (l) { installCard(root.document, l, root); } };
     if (root.document.readyState === 'loading') { root.document.addEventListener('DOMContentLoaded', go); } else { go(); }
   }
 })(typeof window !== 'undefined' ? window : globalThis);
