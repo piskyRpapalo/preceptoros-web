@@ -1,6 +1,6 @@
 {
  "$id": "preceptoros:seal-registry/1",
- "consumed_top": "preceptoros-2026-25-fr",
+ "consumed_top": "preceptoros-2026-25-go",
  "reserved": [
   {
    "version": "preceptoros-2026-25-fd",
