@@ -26,7 +26,7 @@
     var b = doc.buildings.filter(function (x) { return x.id === id; })[0];
     if (!b) { return { title: 'Town', cause: 'building_unknown', items: [] }; }
     return { title: b.name + ' · ' + b.role, building: b, items: b.options.map(function (o) {
-      return { id: o.id, name: b.name + ' ' + o.id, label: o.label, live: !!o.piece, say: verdict(b, o) };
+      return { id: o.id, name: b.name + ' ' + o.id, label: o.label, live: !!o.piece, say: verdict(b, o), action: o.action || null };
     }) };
   }
 
@@ -47,8 +47,37 @@
       b.dataset.seal = it.live ? 'LIVE' : 'NO_DATA';
       var seal = doc.createElement('span'); seal.className = 'bs-seal'; seal.textContent = it.live ? 'LIVE' : 'NO_DATA'; b.appendChild(seal);
       b.addEventListener('click', id == null ? function () { draw(it.id); say('Inside ' + it.name + ' · Escape goes back'); focusFirst(); }
-        : function () { say(it.say); });
+        : function () { say(it.say); if (it.action) { act(it.action, it.say); } });
       li.appendChild(b); list.appendChild(li);
+    });
+  }
+
+  // Actions: an option with an action runs its real piece, loaded on first use. The line says the verdict, then the result.
+  function load(src, name, then) {
+    if (root[name]) { then(root[name]); return; }
+    var sc = sheet.ownerDocument.createElement('script'); sc.src = src;
+    sc.onload = function () { then(root[name] || null); }; sc.onerror = function () { then(null); };
+    sheet.ownerDocument.head.appendChild(sc);
+  }
+  var ACTIONS = {
+    letters: ['/game/type_scale.js', 'AtlasTypeScale', function (T, doc, done) {
+      var r = T.cycle(doc, win), aa = doc.getElementById('gp-letters');
+      if (aa && r.label) { aa.setAttribute('aria-label', r.label); aa.title = r.label; }
+      done(r.label || ('NO_DATA · ' + r.causa));
+    }],
+    pulse: ['/game/pulse.js', 'AtlasPulse', function (P, doc, done) { done('measuring…'); P.start(win, 'weak', done); }],
+    notebook: ['/game/notebook_export.js', 'AtlasNotebook', function (N, doc, done) {
+      var store = null; try { store = win.localStorage; } catch (e) { store = null; }
+      var nb = N.build(store, new Date().toISOString());
+      done(N.line(nb) + (N.download(win, nb) ? ' · saved' : ' · NO_DATA · notebook_download_failed'));
+    }]
+  };
+  function act(name, head) {
+    var a = ACTIONS[name];
+    if (!a) { say(head + ' · NO_DATA · action_unknown'); return; }
+    load(a[0], a[1], function (M) {
+      if (!M) { say(head + ' · NO_DATA · piece_not_loaded'); return; }
+      a[2](M, sheet.ownerDocument, function (text) { say(head + ' · ' + text); });
     });
   }
   function focusFirst() { var f = list.querySelector('button'); if (f) { f.focus(); } }
@@ -91,7 +120,7 @@
     return sheet;
   }
 
-  var api = { URL: URL_DOC, verdict: verdict, model: model, mount: mount };
+  var api = { URL: URL_DOC, ACTIONS: Object.keys(ACTIONS), verdict: verdict, model: model, mount: mount };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasBuildingSheet = api;
   if (root.document && root.document.getElementById) { mount(root.document, root); }

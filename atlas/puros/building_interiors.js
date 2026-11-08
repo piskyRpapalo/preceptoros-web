@@ -19,6 +19,7 @@
         if (!ID.test(o.id || '') || ops[o.id]) f.push('option_id:' + k); ops[o.id] = 1;
         if (typeof o.label !== 'string' || !o.label || o.label.length > 48) f.push('label:' + k);
         if (!Array.isArray(o.missions) || !o.missions.length) f.push('missions:' + k);
+        if (o.action != null && !(doc.actions && Object.prototype.hasOwnProperty.call(doc.actions, o.action) && o.piece)) f.push('action_unknown:' + k);
         if (o.piece === null) { if (!/^[a-z0-9_]+$/.test(o.cause || '')) f.push('no_data_cause:' + k); }
         else if (typeof o.piece !== 'string' || (existe && !existe(o.piece))) f.push('piece_missing:' + k);
       });
