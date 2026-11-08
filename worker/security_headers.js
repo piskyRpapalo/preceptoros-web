@@ -15,7 +15,9 @@ export const POLICY = [
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
-  "frame-ancestors 'self'",                              // the landing frames /openworld/ (index.html:31)
+  // the landing frames /openworld/ (index.html:31); the PreceptorOS app frames it from its own loopback origins only
+  // (odd/tasks/app-frames-openworld.md, FIRMO of the Sovereign in chat 2026-11-08). Never a wildcard.
+  "frame-ancestors 'self' http://127.0.0.1:8742 http://localhost:8742",
 ].join('; ');
 
 // withSecurity(response) → the same response with the policy, only for HTML documents (other files keep theirs).
