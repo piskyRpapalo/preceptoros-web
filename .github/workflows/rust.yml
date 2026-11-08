@@ -1,0 +1,18 @@
+name: rust
+# The Rust workspace (crates/): FIRMO 2026-11-08, the new architecture. Tests natively and builds the WASM output.
+on:
+  pull_request:
+    paths: ['crates/**', 'Cargo.toml', 'Cargo.lock', '.github/workflows/rust.yml']
+  push:
+    branches: [main]
+    paths: ['crates/**', 'Cargo.toml', 'Cargo.lock']
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup target add wasm32-unknown-unknown
+      - run: cargo test --locked
+      - run: cargo build --locked --release --target wasm32-unknown-unknown
