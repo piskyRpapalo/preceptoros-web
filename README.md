@@ -72,8 +72,8 @@ below. Nothing here is a promise; it is what each house holds today.
   (the Atlas — counters and the living map)
 - **Compacted into this repository** —
   [preceptoros-coder · PRIVATE](https://github.com/piskyRpapalo/preceptoros-coder)
-  (codex's old house: a stale fork of this site — 8 languages and a 16 KB
-  ceiling, measured against today's 9 and 25 MiB — folded back here on
+  (codex's old house: a stale fork of this site — its own language matrix and a
+  16 KB ceiling, measured against today's 25 MiB — folded back here on
   2026-11-06; the archive keeps its full history readable; record in
   `odd/tasks/compactamiento-coder-20261106.md`)
 - **Apart, untouchable** — [CineK · PRIVATE](https://github.com/piskyRpapalo/CineK)
@@ -133,7 +133,9 @@ list below is promised.
   page says so.
 - **It works with no network.** The site installs as an app and keeps working
   offline.
-- **Nine languages**, each one complete. Not a machine pass over one.
+- **One language served today: English** — until Hexelion can translate on the rack without paid tokens.
+  The nine-language matrix was retired with theGame
+  (`LANGUAGES.md`); `bin/language_census.py` measures what the pages declare, so this line cannot drift.
 - **Every file under 25 MiB** (the chunk ceiling `test_web.py` enforces —
   the same limit the CDN serves per block). No framework, no bundler: what
   is in this repository is what your browser receives.
