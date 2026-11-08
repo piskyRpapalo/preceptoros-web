@@ -139,7 +139,7 @@
     g.beginPath(); corner.forEach(function (q, j) { if (j) { g.lineTo(x + q[0], top + q[1]); } else { g.moveTo(x + q[0], top + q[1]); } }); g.closePath();
     g.fillStyle = css(shade(b.base, (0.9 + 0.1 * LIGHT[2]) * o.lit * occl)); g.fill();
     g.strokeStyle = css(shade(b.base, 0.55 * o.lit)); g.lineWidth = Math.max(0.5, k * 0.6); g.stroke();
-    // Cast shadow: a taller neighbour on the sun's side darkens a band of this top along their shared edge, wider the taller
+    // Cast shadow: a higher neighbour on the sun's side darkens a band of this top along their shared edge, wider the higher
     // it stands. Corner i sits between neighbours i and i+1, so neighbour i owns the edge corner[i-1]→corner[i]; the turned
     // corners keep the shadow true under the orbit. Drawn in the floor's own ink (no new colour), alpha by the step height.
     for (var s = 0; s < 6; s++) {
