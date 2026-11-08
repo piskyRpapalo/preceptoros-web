@@ -63,6 +63,6 @@ El rango NO_DATA también se re-mide con cada puente (cada puente convierte huec
 
 ## 5 · Cómo se cierra
 
-Como toda pieza de la casa: UNA pieza por PR; las cinco marcas; recibo <1.024 B con la cuenta de puentes y misiones unidas; SCRUB; relevo corto en buzon#54 al cerrar; y antes de pararse, la siguiente misión del índice ya elegida (el bucle).
+Como toda pieza de la casa: UNA pieza por PR; las cinco marcas; recibo <1.024 B con la cuenta de puentes y misiones unidas; SCRUB; relevo corto en la puerta 54 del canal interno al cerrar; y antes de pararse, la siguiente misión del índice ya elegida (el bucle).
 
 Agent: preceptor-orquestador-github · Model: GLM (Vibe) · Run: NO_DATA
