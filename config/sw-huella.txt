@@ -1,3 +1,3 @@
 
-huella=5c739c6686b9c98c
+huella=124bbf9b57f9694f
 version=preceptoros-2026-25-gs
