@@ -1,6 +1,6 @@
 // E4 + B5 · the inhabitants and their state. Each node of /api/world-state (measured by node heartbeats) is one
 // inhabitant of the town. Its state comes from the single table (/game/agent_states.json) through agent_state.js:
-// a live node is ready; a node without a heartbeat is unavailable with the measured cause no_heartbeat. «working» is
+// a node with a LIVE heartbeat seal is ready; any other is unavailable with the measured cause no_heartbeat. «working» is
 // never said, because the source does not measure activity. Inhabitants are named by number, never by machine id.
 (function (root) {
   'use strict';
@@ -14,7 +14,8 @@
     }
     var people = nodes.map(function (node, i) {
       if (!node || typeof node.alive !== 'boolean') { return { n: i + 1, shape: 'dash', text: 'NO_DATA', say: 'inhabitant ' + (i + 1) + ' NO_DATA · alive_not_declared' }; }
-      var v = S.view(table, S.replay(table, node.alive ? [] : [{ event: 'drop', cause: 'no_heartbeat' }]));
+      // Ready only with a LIVE heartbeat seal (the same rule as «Nodes online»); alive with a STALE seal is not ready.
+      var v = S.view(table, S.replay(table, node.alive && node.seal === 'LIVE' ? [] : [{ event: 'drop', cause: 'no_heartbeat' }]));
       return { n: i + 1, shape: v.shape, text: v.text, say: 'inhabitant ' + (i + 1) + ' ' + v.say };
     });
     var ready = people.filter(function (p) { return p.text === 'ready'; }).length;

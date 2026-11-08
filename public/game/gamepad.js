@@ -6,6 +6,9 @@
 (function (root) {
   'use strict';
   var MIN = 44, TAU = Math.PI * 2, MS = 360;
+  // The Acho palette of /openworld/ panels and pad, as CSS tokens --a<hex> (openworld.css holds no raw colour).
+  var ACHO = '04334a 0b6e8f 1d1b26 fffdf6 3d3950 ffe58a d49a1c b8401a b8f0a8 3f9a3a 1f7a32 a8e3ff 2a8fc4 0b5d9a ffc2b3 d0573d b8331c dcc8ff 7a52c7 5b2fb0 ffd0e6 c44d8a a3266a e6e8ef 7c8296 3d4252 157a45 4a4558 f4ecda e6dbc3 8a7a63 fffaf0 b9ab90 ddd2ba c8b99c d8be78';
+  if (root.document) { ACHO.split(' ').forEach(function (h) { root.document.documentElement.style.setProperty('--a' + h, '#' + h); }); }
   var SOIL = [['sea', '#64ae91'], ['blue', '#348ea2'], ['grass', '#6eb75d'], ['sand', '#d8be78'],
     ['clay', '#c19964'], ['sun', '#eacb56'], ['sky', '#45cbd4'], ['moss', '#a9bf68']];
   function r3(x) { return Math.round(x * 1000) / 1000; }
