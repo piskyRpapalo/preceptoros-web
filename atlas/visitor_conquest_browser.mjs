@@ -72,7 +72,7 @@ async function main() {
   ok(!!battle && battle.frames.length>0,'session replay has frames');
   ok(battle.frames.every(f=>Buffer.byteLength(JSON.stringify(f))<1024),'bounded round frames');
   ok(await ev(`(async()=>{const a=await AtlasVisitorAccount.create(true),i=a.info();const x=await AtlasVisitorBattle.run('arrecife',[{tc:'tc1',semilla:'a'.repeat(64)}],i.seed);const y=await AtlasVisitorBattle.run('arrecife',[{tc:'tc1',semilla:'a'.repeat(64)}],i.seed);if(JSON.stringify(x)!==JSON.stringify(y))return false;x.frames[0].commits[0]='0'.repeat(64);return !await AtlasVisitorBattle.verify(x,i.seed)})()`),'determinism twice and changed commitment rejected');
-  await ev('document.querySelector("#visitor-play dialog button").click()');
+  await ev('document.querySelector("#stage > dialog[open] button, #visitor-play dialog[open] button").click()');
   const conquest=await ev(`(async()=>{
     const a=await AtlasVisitorAccount.create(true), info=a.info();
     const game={state:()=>({step:21})};const box=document.getElementById('visitor-play');
