@@ -85,7 +85,10 @@
     var pin = doc.createElement('p'); pin.className = 'ot-pin'; pin.textContent = '📌 Messages here are public and erased every 24 hours.';
     var day = doc.createElement('ol'); day.className = 'ot-day'; day.setAttribute('aria-label', 'Messages of the last 24 hours');
     li.append(pin, h, law, box, files, go, st, day); list.appendChild(li);
-    watch(doc, win, day);
+    // Nothing leaves the page until the visitor asks: the 24-hour list (and its toasts on the map) start behind this button.
+    var show = doc.createElement('button'); show.type = 'button'; show.className = 'ot-show'; show.textContent = 'Show the last 24 hours';
+    show.addEventListener('click', function () { show.remove(); watch(doc, win, day); });
+    day.before(show);
     function say(t) { st.textContent = t; }
     go.addEventListener('click', async function () {
       var subtle = win.crypto && win.crypto.subtle, net = win.fetch && win.fetch.bind(win);

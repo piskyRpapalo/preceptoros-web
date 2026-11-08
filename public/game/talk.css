@@ -96,6 +96,7 @@ html,body{overscroll-behavior:none}
 
 /* E0 chat (open_talk.js): the pinned 24-hour notice, the day's list, and the nearly transparent toast over the map. */
 #open-chat .ot-pin{margin:0 0 8px;padding:8px 12px;border:2px solid var(--a1d1b26);border-radius:14px;background:var(--afffdf6);color:var(--a1d1b26);font-weight:700}
+#open-chat .ot-show{min-height:44px;margin:8px 0 0;padding:0 14px;border:2px solid var(--a1d1b26);border-radius:14px;background:var(--afffdf6);color:var(--a1d1b26);font-weight:700}
 #open-chat .ot-day{list-style:none;margin:8px 0 0;padding:0;max-height:40vh;overflow:auto}
 #open-chat .ot-day li{margin:0 0 6px;padding:6px 10px;border-radius:12px;background:var(--afffdf6);color:var(--a1d1b26);white-space:pre-wrap;overflow-wrap:anywhere}
 .ot-toast{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:5;max-width:min(86%,340px);margin:0;padding:6px 12px;border-radius:14px;background:var(--afffdf6);color:var(--a1d1b26);opacity:.72;pointer-events:none;font-weight:600}
