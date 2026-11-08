@@ -109,6 +109,7 @@
     var town = doc.createElement('script'); town.src = '/game/building_sheet.js'; doc.head.appendChild(town);
     var talk = doc.createElement('script'); talk.src = '/game/preceptor_talk.js'; doc.head.appendChild(talk); // the preceptor's box
     var crab = doc.createElement('script'); crab.src = '/game/crab_body.js'; doc.head.appendChild(crab); // the living crab
+    var px = doc.createElement('script'); px.src = '/game/panel_x.js'; doc.head.appendChild(px); // every panel closes
     var stage = doc.createElement('script'); stage.src = '/game/crab_stage.js'; doc.head.appendChild(stage); // duels and eggs on the map
     // The Aa letters button (type_scale.js) joins the middle once the pad exists.
     var letters = doc.createElement('script'); letters.src = '/game/type_scale.js'; doc.head.appendChild(letters);

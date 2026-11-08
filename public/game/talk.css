@@ -23,3 +23,8 @@
 @keyframes on-map-pop{from{transform:scale(.06);opacity:0}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){#stage > .on-map{animation:none}}
 @media (forced-colors:active){#stage > dialog.on-map,#stage > .revela.on-map{border-color:CanvasText;background:Canvas;color:CanvasText;box-shadow:none}}
+/* Every panel closes (panel_x.js): a 44 px ✕ in the voices panel; the sheets' «Close» shows its ✕ too. */
+#voices > .panel-x{position:sticky;top:0;z-index:2;width:44px;min-width:44px;min-height:44px;margin:0 0 -44px auto;justify-self:end;align-self:flex-end;padding:0;font:inherit;font-size:1.1rem;font-weight:800;color:var(--a1d1b26);background:var(--afffdf6);border:3px solid var(--a1d1b26);border-radius:999px;box-shadow:0 3px 0 var(--a1d1b26)}
+#voices[hidden] > .panel-x{display:none}
+.bs-sheet .bs-bar > .bs-tool:last-child::before{content:'\2715\00a0'}
+@media (forced-colors:active){#voices > .panel-x{border-color:CanvasText;background:Canvas;color:CanvasText;box-shadow:none}}
