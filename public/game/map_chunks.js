@@ -67,6 +67,8 @@
       var k = KINDS[mixHash(c[1], c[0]) % KINDS.length];
       picked.push(c); marks[c[0] + ',' + c[1]] = { q: c[0], r: c[1], id: k[0], roof: k[1], tone: k[2] };
     });
+    try { JSON.parse(root.localStorage.getItem('preceptoros.built') || '[]').forEach(function (m) { // built in Settings
+      var key = m.q + ',' + m.r; if (!marks[key] && world.cells.at[key]) { marks[key] = m; picked.push([m.q, m.r]); } }); } catch (e) {}
     world.marks = marks; world.markList = picked.map(function (c) { return marks[c[0] + ',' + c[1]]; });
     return marks;
   }
@@ -101,9 +103,7 @@
 
   function shadow(g, c, x, top, o, H, hh) {
     var b = o.B[c[3] === 'water' ? 0 : Math.max(1, Math.min(3, c[2]))], corner = o.corner;
-    // Cast shadow: a higher neighbour on the sun's side darkens a band of this top along their shared edge, wider the higher
-    // it stands. Corner i sits between neighbours i and i+1, so neighbour i owns the edge corner[i-1]→corner[i]; the turned
-    // corners keep the shadow true under the orbit. Drawn in the floor's own ink (no new colour), alpha by the step height.
+    // Cast shadow: a higher sunward neighbour darkens a band along the shared edge (corner[i-1]→corner[i]), floor ink.
     for (var s = 0; s < 6; s++) {
       var d = H.NB[s], nb = o.at[(c[0] + d[0]) + ',' + (c[1] + d[1])], p0 = corner[(s + 5) % 6], p1 = corner[s];
       if (!nb || H.height(nb) <= hh) { continue; }
@@ -191,6 +191,27 @@
     });
     g.restore();
   }
+  // names(): buildings within REACH hexes of the crab carry a small Acho name pill; the map reads as it is walked.
+  var REACH = 6, NAMES = { hostel: 'Hostel', coliseum: 'Coliseum', choir: 'Choir', workshop: 'Workshop', tower: 'Model tower',
+    agora: 'Agora', customs: 'Customs', lottery: 'Lottery', 'visitor-house': 'Visitor house', doctor: 'Doctor' };
+  function names(g, V, w, dpr, cx, cy) {
+    if (!V.world.markList) { landmarks(V.world); }
+    var k = V.G.k, ink = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.ink)), paper = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.paper)), fs = Math.round(11 * dpr);
+    g.save(); g.font = '700 ' + fs + 'px ui-rounded, "SF Pro Rounded", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    V.world.markList.forEach(function (m) {
+      if (hexDist([m.q, m.r], [w.q, w.r]) > REACH) { return; }
+      var cell = V.world.cells.at[m.q + ',' + m.r], h0 = V.P(m.q, m.r), p = V.turn(h0.x, h0.y);
+      var x = V.G.cx + p.x * k, y = V.G.cy + p.y * k - ((cell ? V.height(cell) * V.HSTEP : 0) + (m.roof === 'spire' ? 58 : 44)) * k;
+      var t = NAMES[m.id] || m.id, tw = g.measureText(t).width + 12 * dpr, th = fs + 6 * dpr;
+      // A label over the crab moves under its building.
+      if (Math.abs(x - cx) < tw / 2 + 24 * k && Math.abs(y - cy) < th / 2 + 26 * k) { y += ((m.roof === 'spire' ? 58 : 44) + 22) * k; }
+      g.fillStyle = paper; g.strokeStyle = ink; g.lineWidth = Math.max(1, 1.6 * dpr);
+      g.beginPath(); g.moveTo(x - tw / 2 + th / 2, y - th / 2); g.lineTo(x + tw / 2 - th / 2, y - th / 2); g.arc(x + tw / 2 - th / 2, y, th / 2, -Math.PI / 2, Math.PI / 2);
+      g.lineTo(x - tw / 2 + th / 2, y + th / 2); g.arc(x - tw / 2 + th / 2, y, th / 2, Math.PI / 2, Math.PI * 1.5); g.closePath(); g.fill(); g.stroke();
+      g.fillStyle = ink; g.fillText(t, x, y + 0.5 * dpr);
+    });
+    g.restore();
+  }
   // The visitor layer: with no live colony the page draws only the floor, so the companion is drawn here on every
   // visitor:draw, its place is written for the map tap (dataset.youx/youy), and the camera follows it when it nears an
   // edge, unless the visitor is looking around (dataset.look, the left stick or a drag).
@@ -205,7 +226,9 @@
       var cell = V.world.cells.at[w.q + ',' + w.r], h0 = V.P(w.q, w.r), p = V.turn(h0.x, h0.y), k = V.G.k;
       var x = V.G.cx + p.x * k, y = V.G.cy + p.y * k - (cell ? V.height(cell) * V.HSTEP : 0) * k;
       s.dataset.youx = String(Math.round(x)); s.dataset.youy = String(Math.round(y));
-      var g = s.getContext('2d'); g.setTransform(1, 0, 0, 1, 0, 0); you(g, x, y, Math.max(k, 0.5), ow.t || 0, ow.reduced === true, V.H);
+      var g = s.getContext('2d'); g.setTransform(1, 0, 0, 1, 0, 0);
+      names(g, V, w, s.width / (s.getBoundingClientRect().width || s.width), x, y);
+      you(g, x, y, Math.max(k, 0.5), ow.t || 0, ow.reduced === true, V.H);
       var W = s.width, Hh = s.height;
       if (!s.dataset.look && (x < W * 0.25 || x > W * 0.75 || y < Hh * 0.3 || y > Hh * 0.7)) {
         s.dataset.panx = String(Math.round((Number(s.dataset.panx) || 0) + W / 2 - x));

@@ -20,7 +20,7 @@
   function close() { card.hidden = true; }
   function next(test) { return new Promise(function (ok) { function on(e) { if (test(e.detail || {})) { play.removeEventListener('visitor:render', on); ok(e.detail); } } play.addEventListener('visitor:render', on); }); }
   function press(id) { var b = doc.getElementById(id); if (!b || b.disabled) { throw new Error(id + ' is not available'); } b.click(); }
-  function ready(d) { var b = d.controls && d.controls.querySelector('#visitor-step'); return !!(d.state && b && !b.disabled); }
+  function ready(d) { return !!(d.state && d.controls && d.controls.querySelector('#visitor-step')); } // the walk hint: the visit is on
   play.addEventListener('visitor:render', function () { if (!go.disabled) { close(); } });
   look.addEventListener('click', function () { close(); var t = doc.getElementById('play-now'); if (t && !t.hidden) { t.focus({ preventScroll: true }); } });
   card.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.preventDefault(); look.click(); } });

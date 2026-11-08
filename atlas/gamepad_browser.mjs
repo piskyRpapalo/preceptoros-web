@@ -1,6 +1,7 @@
 // Gamepad (Sovereign, 2026-11-07), proved in a real browser on /openworld/ at the mini app window (420×642) and at a
 // phone (360×740). Laws:
-// - three pieces only: one status line on top (the place name), the map in the middle, one gamepad at the bottom;
+// - four pieces only: one status line on top (the place name), the map, the preceptor's small dialogue box (Sovereign,
+//   2026-11-08) and one gamepad at the bottom; the map still takes at least half the window;
 // - the gamepad holds the pan stick (left), the account buttons (middle) and the character stick, off (right):
 //   NO_DATA with cause character_not_born, never a fake move;
 // - every control is at least 44 px and carries its Acho spectrum (a floor colour); no horizontal overflow;
@@ -84,7 +85,7 @@ async function main() {
     const m = JSON.parse(await ev(MEDIR)); medidas[n] = m;
     ok(m.pad, n + ': the gamepad is not on the page');
     if (!m.pad) { continue; }
-    ok(m.kids.join(',') === 'topbar,stage,gamepad', n + ': the map is not three pieces (status line, map, gamepad): ' + m.kids.join(','));
+    ok(m.kids.join(',') === 'topbar,stage,preceptor-talk,gamepad', n + ': the map is not four pieces (status line, map, preceptor, gamepad): ' + m.kids.join(','));
     ok(m.topOnly && m.h1.h <= 24 && /\S/.test(m.place), n + ': the top is not one thin status line with the place name: ' + JSON.stringify([m.topOnly, m.h1, m.place]));
     ok(m.top.b <= m.stage.t && m.stage.b <= m.gp.t && m.gp.b <= m.alto, n + ': the pieces are not stacked top, map, gamepad inside the window');
     ok(m.stage.h >= m.alto * 0.5, n + ': the map does not take the space: ' + m.stage.h + ' of ' + m.alto);

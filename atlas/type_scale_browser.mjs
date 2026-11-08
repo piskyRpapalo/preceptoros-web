@@ -60,7 +60,7 @@ async function main() {
     const fs = (s) => { const e = document.querySelector(s); return e ? Math.round(e.getBoundingClientRect().height * 10) / 10 : null; };
     return { label: b.getAttribute('aria-label'), w: r.width, h: r.height, inMid: !!b.closest('#gamepad .gp-mid'), acho: b.classList.contains('gp-acho') && !!b.style.getPropertyValue('--gp'),
       step: document.documentElement.dataset.letters, h1: (() => { const e = [...document.querySelectorAll('#voices *')].find((x) => x.children.length === 0 && /\S/.test(x.textContent) && x.getBoundingClientRect().height > 0); return e ? Math.round(e.getBoundingClientRect().height * 10) / 10 : 0; })(), map: Math.round(document.getElementById('stage').getBoundingClientRect().width),
-      saved: (() => { try { return localStorage.getItem('preceptoros.letters'); } catch (e) { return 'NO_DATA'; } })(), state: (document.getElementById('state') || {}).textContent || '' }; })())`;
+      saved: (() => { try { return localStorage.getItem('preceptoros.letters'); } catch (e) { return 'NO_DATA'; } })(), state: (document.getElementById('state') || {}).textContent || '', said: (document.querySelector('#settings-sheet .bs-line') || {}).textContent || '' }; })())`;
   for (const [W, H, n] of [[420, 642, '420'], [360, 740, '360']]) {
     await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });
     await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
@@ -68,21 +68,24 @@ async function main() {
     await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
     await ev(`(() => { const c = document.querySelector('#gamepad .cats [data-cat=Welcome]') || document.querySelector('[data-cat=Welcome]'); c && c.click(); })()`); await espera(400);
     const a = JSON.parse(await ev(LEER) || 'null'); medidas['antes' + n] = a;
-    ok(a, n + ': no Aa button in the gamepad');
+    ok(a, n + ': no settings wheel in the gamepad');
     if (!a) { continue; }
-    ok(a.inMid && a.acho && a.w >= 44 && a.h >= 44 && a.label === 'Letters 100%' && a.step === '1', n + ': Aa is not a 44 px Acho button at Letters 100%: ' + JSON.stringify(a));
+    ok(a.inMid && a.acho && a.w >= 44 && a.h >= 44 && a.label === 'Settings' && a.step === '1', n + ': the settings wheel is not a 44 px Acho button at letters 100%: ' + JSON.stringify(a));
+    // The letters live inside the settings sheet (Sovereign, 2026-11-08): the gear opens it, «Letters size» steps them.
+    await ev(`document.getElementById('gp-letters').click()`); await espera(600);
+    ok(await ev(`!!document.getElementById('set-letters') && !document.getElementById('settings-sheet').hidden`), n + ': the gear does not open the settings sheet with Letters size');
     const pasos = [];
-    for (let i = 0; i < 4; i++) { await ev(`document.getElementById('gp-letters').click()`); await espera(150); pasos.push(JSON.parse(await ev(LEER))); }
+    for (let i = 0; i < 4; i++) { await ev(`document.getElementById('set-letters').click()`); await espera(250); pasos.push(JSON.parse(await ev(LEER))); }
     medidas['pasos' + n] = pasos.map((p) => [p.label, p.h1, p.map]);
-    ok(pasos.map((p) => p.label).join(',') === 'Letters 115%,Letters 130%,Letters 150%,Letters 100%', n + ': Aa does not cycle the four steps: ' + pasos.map((p) => p.label));
+    ok(pasos.map((p) => p.step).join(',') === '1.15,1.3,1.5,1', n + ': Letters size does not cycle the four steps: ' + pasos.map((p) => p.step));
     ok(pasos[2].h1 > a.h1 * 1.4 && pasos[3].h1 === a.h1, n + ': the reading panel letters do not grow with the step: ' + JSON.stringify([a.h1, pasos.map((p) => p.h1)]));
     ok(pasos.every((p) => p.map === a.map), n + ': the map changed size with the letters');
-    ok(pasos[0].state === 'Letters 115%', n + ': the step is not said in #state: ' + pasos[0].state);
+    ok(/Letters 115%/.test(pasos[0].said), n + ': the step is not said in the settings line: ' + pasos[0].said);
     // The step stays for the next visit.
-    await ev(`document.getElementById('gp-letters').click()`); await espera(100);
+    await ev(`document.getElementById('set-letters').click()`); await espera(250);
     await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
     const v = JSON.parse(await ev(LEER)); medidas['vuelta' + n] = v;
-    ok(v.label === 'Letters 115%' && v.step === '1.15' && v.saved === '1.15', n + ': the step is not remembered: ' + JSON.stringify(v));
+    ok(v.label === 'Settings' && v.step === '1.15' && v.saved === '1.15', n + ': the step is not remembered: ' + JSON.stringify(v));
     const s = await ev(`JSON.stringify({ scroll: document.documentElement.scrollWidth, w: innerWidth })`); const sc = JSON.parse(s);
     ok(sc.scroll <= sc.w, n + ': horizontal overflow at Letters 115%');
     await foto('letters-' + n + '.png');

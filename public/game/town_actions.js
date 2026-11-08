@@ -5,8 +5,7 @@
   'use strict';
   var ACTIONS = {
     letters: ['/game/type_scale.js', 'AtlasTypeScale', function (T, doc, done, c) {
-      var r = T.cycle(doc, c.win), aa = doc.getElementById('gp-letters');
-      if (aa && r.label) { aa.setAttribute('aria-label', r.label); aa.title = r.label; }
+      var r = T.cycle(doc, c.win); // the gear keeps its own name «Settings»
       done(r.label || ('NO_DATA · ' + r.causa));
     }],
     pulse: ['/game/pulse.js', 'AtlasPulse', function (P, doc, done, c) { done('measuring…'); P.start(c.win, 'weak', done); }],

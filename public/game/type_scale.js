@@ -43,22 +43,22 @@
   // restore(doc, win) → on page load: apply the saved step.
   function restore(doc, win) { return apply(doc, read(win)); }
 
-
-  // mount(doc, win, tries) → the «Aa» button in the gamepad middle (Opus wiring). It restores the saved step first.
-  // The gamepad loads late, so it waits for it (40 × 250 ms); with no gamepad it returns null and changes nothing.
+  // mount(doc, win, tries) → the settings wheel (Sovereign, 2026-11-08: the gear replaces «Aa»; the letters live in its
+  // sheet, settings_sheet.js). Restores the saved step; waits for the late gamepad (40 × 250 ms), else null.
   function mount(doc, win, tries) {
     var mid = doc.querySelector && doc.querySelector('#gamepad .gp-mid'), n = tries || 0, G = root.AtlasGamepad;
     if (!mid) { if (n < 40 && win && win.setTimeout) { win.setTimeout(function () { mount(doc, win, n + 1); }, 250); } return null; }
     if (doc.querySelector('#gp-letters')) { return null; }
-    var b = doc.createElement('button'), state = doc.querySelector('#state');
-    b.type = 'button'; b.id = 'gp-letters'; b.className = 'gp-b'; b.textContent = 'Aa';
-    function name(res) { var t = res && res.label ? res.label : label(read(win)); b.setAttribute('aria-label', t); b.title = t; return t; }
-    name(restore(doc, win));
-    if (G && G.paint) { G.paint(b, 'Letters'); }
+    var b = doc.createElement('button');
+    b.type = 'button'; b.id = 'gp-letters'; b.className = 'gp-b'; b.textContent = '\u2699\uFE0E';
+    b.setAttribute('aria-label', 'Settings'); b.title = 'Settings'; b.setAttribute('aria-controls', 'settings-sheet'); b.setAttribute('aria-expanded', 'false');
+    restore(doc, win);
+    if (G && G.paint) { G.paint(b, 'Settings'); }
     b.addEventListener('click', function () {
-      var t = name(cycle(doc, win));
-      if (G && G.move) { G.move(b, 'Letters', win); }
-      if (state) { state.textContent = t; }
+      if (G && G.move) { G.move(b, 'Settings', win); }
+      function go() { if (root.AtlasSettings) { root.AtlasSettings.toggle(doc, win, b); } }
+      if (root.AtlasSettings) { go(); return; }
+      var sc = doc.createElement('script'); sc.src = '/game/settings_sheet.js'; sc.onload = go; doc.head.appendChild(sc);
     });
     mid.appendChild(b);
     return b;

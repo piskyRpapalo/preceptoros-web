@@ -88,7 +88,7 @@
     btn = button(doc, 'gp-b', '⌂', 'Town'); btn.id = 'gp-town';
     btn.setAttribute('aria-label', 'Town: the nine buildings'); btn.title = 'Town: the nine buildings';
     btn.setAttribute('aria-controls', 'building-sheet'); btn.setAttribute('aria-expanded', 'false');
-    sheet = doc.createElement('section'); sheet.id = 'building-sheet'; sheet.hidden = true; sheet.setAttribute('aria-labelledby', 'bs-h');
+    sheet = doc.createElement('section'); sheet.id = 'building-sheet'; sheet.className = 'bs-sheet'; sheet.hidden = true; sheet.setAttribute('aria-labelledby', 'bs-h');
     var bar = doc.createElement('div'); bar.className = 'bs-bar';
     back = button(doc, 'bs-tool', 'Back', 'Back'); back.addEventListener('click', function () { draw(null); focusFirst(); });
     head = doc.createElement('h2'); head.id = 'bs-h'; head.textContent = 'Town';
