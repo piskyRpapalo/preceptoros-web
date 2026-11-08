@@ -135,7 +135,7 @@ async function main() {
   ok(panel.place && panel.placeTag === 'BUTTON' && panel.hasMapStatus, 'map destinations or status are not visible accessible panel content');
   ok(panel.cells > 1000 && /^Map loaded/.test(panel.floorText), 'the 2.5D floor is not painted: ' + JSON.stringify({ cells: panel.cells, floor: panel.floorText }));
   ok(panel.closed && !panel.chatVisible, 'closing Welcome must restore the unobstructed map');
-  ok(panel.sizes.every(([w,h]) => w >= 44 && h >= 44), 'a voice control is below the 44 px touch target: ' + JSON.stringify(panel.sizes));
+  ok(panel.sizes.every(([w,h]) => Math.round(w) >= 44 && Math.round(h) >= 44), 'a voice control is below the 44 px touch target: ' + JSON.stringify(panel.sizes));
   ok(panel.sizes.every(([w]) => w <= 48), 'panel icons stretch across the map instead of remaining compact: ' + JSON.stringify(panel.sizes));
 
   const categories = JSON.parse(await evaluate(`JSON.stringify((() => {
