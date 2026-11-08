@@ -67,5 +67,5 @@ Law: Sovereign commission «the crab alive, the map in depth and the fight on th
 - Doogee: a Reef duel's waves (green squares, violet triangles) moved and clashed over the zoomed map, beside the crab, with the bar at the foot.
 
 ### NO_DATA
-- The waves are not yet born from the crab's own point. The scene keeps its two columns, laid over the map; anchoring the visitor's column at the crab needs an `origin` option in the scene (a small change in `wave_duel_scene.js`, still inside its byte budget).
+- Done after the first cut: `wave_duel_scene.js` takes `origen: [fx, fy]`. On the map the visitor's troops are born at the crab (the centre: the camera centres it) and spring to their column. It is one line, with no clock and no chance, and the replay without `origen` is unchanged. On the Doogee the waves stood by the crab half a second in. The birth instant itself was too fast for a screen capture: NO_DATA for the first frames.
 - The scene is a layer exactly over the map canvas, not paint inside `#surface`. On screen it is the same place; for the code it is a separate canvas.

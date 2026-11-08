@@ -50,7 +50,7 @@
     dialog.append(sentence, canvas, bar, status, close);
     var CS = root.AtlasCrabStage; if (!(CS && CS.hold(dialog))) { box.append(dialog); dialog.showModal(); } // on the map, over the crab (crab_stage.js)
     function finish() { sentence.textContent = winner; canvas.setAttribute('aria-label', winner); }
-    renderer = root.AtlasWaveDuel.escena(canvas, result.defenders, result.attackers, result.combat, { semilla: result.seed, quieto: root.matchMedia('(prefers-reduced-motion: reduce)').matches, emulado: 0, alFin: finish });
+    renderer = root.AtlasWaveDuel.escena(canvas, result.defenders, result.attackers, result.combat, { semilla: result.seed, quieto: root.matchMedia('(prefers-reduced-motion: reduce)').matches, emulado: 0, alFin: finish, origen: dialog.classList.contains('duel') ? [0.5, 0.5] : null }); // staged: the camera centres the crab
     if (root.matchMedia('(prefers-reduced-motion: reduce)').matches) { renderer.salta(); finish(); }
   }
   root.addEventListener('pagehide', function () { last = null; if (renderer) { renderer.para(); } });
