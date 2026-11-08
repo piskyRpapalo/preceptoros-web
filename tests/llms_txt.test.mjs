@@ -34,8 +34,11 @@ test('SABOTAJE: el guardián de vocablos prohibidos se pone rojo con "cryptocurr
   if (prohibidos.some(w => bueno.toLowerCase().includes(w))) throw new Error('falso positivo: criptográfica aprobada cayó en la lista');
 });
 
-test('declara lo medido: cero peticiones en carga, NO_DATA con causa, cifras con fuente', () => {
-  if (!/zero external request/i.test(servido)) throw new Error('ya no declara la medida de carga');
+/* Decreto del Soberano (2026-11-07, PS de la poda): la frase del proyecto «0 peticiones
+   externas» se retira; entra «0 peticiones no declaradas» (zero undeclared requests):
+   toda peticion externa va declarada. */
+test('declara lo medido: cero peticiones no declaradas, NO_DATA con causa, cifras con fuente', () => {
+  if (!/zero undeclared request/i.test(servido)) throw new Error('ya no declara la medida del decreto: cero peticiones no declaradas');
   if (!/NO_DATA/i.test(servido)) throw new Error('ya no declara NO_DATA');
 });
 
