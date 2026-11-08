@@ -150,3 +150,7 @@ body{font-size:1rem}
 #gamepad .cats button[aria-pressed="true"]{outline:2px solid var(--fg);outline-offset:1px}
 @media (forced-colors: active){#gamepad :is(.gp-b,.cats button,.gp-off){background-image:none;border-color:ButtonText}}
 #gamepad .view-stick.gp-acho[data-on],#gamepad .view-stick.gp-acho:focus-visible{border-color:var(--fg)}
+/* Terminals are always dark (Sovereign, 2026-11-08): every panel where the visitor reads or types is a terminal.
+   The house colours are system colours (Canvas, CanvasText), so one color-scheme makes the whole subtree dark in
+   either theme; the map keeps the visitor's theme. Forced colours still win: the system palette replaces both. */
+#chat,#voices,#building-sheet,.radio-chat{color-scheme:dark;background-color:Canvas;color:CanvasText}
