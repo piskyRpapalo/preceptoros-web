@@ -114,17 +114,28 @@ async function main() {
   ok(d.clicks === c.clicks + 1, 'a tap did not reach the page: ' + (d.clicks - c.clicks) + ' clicks');
   ok(d.look === '', 'a tap did not hand the camera back to the crab');
   // 3b · a tap on a village building opens that building's card (and closes again for the next steps).
-  const casa = JSON.parse(await ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(), MP = window.AtlasMapPainter;
-    for (let y = r.top + 20; y < r.bottom - 20; y += 6) for (let x = r.left + 20; x < r.right - 20; x += 6) { const m = MP && MP.markAt && MP.markAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height); if (m) return JSON.stringify({ x, y, id: m.id }); }
-    return 'null'; })()`));
-  ok(casa, 'no village building is visible on the map');
+  const casa = JSON.parse(await ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(), MP = window.AtlasMapPainter; let best = null;
+    for (let y = r.top + 20; y < r.bottom - 20; y += 6) for (let x = r.left + 20; x < r.right - 20; x += 6) { const m = MP && MP.markAt && MP.markAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height); if (m && !m.fog && document.elementFromPoint(x, y) === s) { const d = Math.hypot(x - (r.left + r.right) / 2, y - (r.top + r.bottom) / 2); if (!best || d < best.d) best = { x, y, id: m.id, d }; } }
+    return JSON.stringify(best); })()`)); // one of the node's own buildings (the grey ones are NPCs')
+  ok(casa, 'no village building of the node is visible on the map');
   if (casa) {
     await dedo(casa.x, casa.y, 1, 0, 2); await espera(800);
-    const abierta = JSON.parse(await ev("JSON.stringify({ open: !document.getElementById('building-sheet').hidden, h: (document.getElementById('bs-h') || {}).textContent || '' })"));
+    const abierta = JSON.parse(await ev("JSON.stringify({ open: !document.getElementById('building-sheet').hidden, h: (document.getElementById('bs-h') || {}).textContent || '', say: ((document.getElementById('preceptor-talk') || {}).textContent || '').slice(0, 70), sel: document.getElementById('surface').dataset.sel || '' })"));
     medidas.edificio = [casa.id, abierta.h];
     ok(abierta.open && abierta.h !== 'Town', 'a tap on a building did not open its card: ' + JSON.stringify(abierta));
     await ev("(() => { const s = document.getElementById('building-sheet'); const c = [...s.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Close'); c && c.click(); return 1; })()"); await espera(400);
   }
+  // 3c · fog of war: a tap on an NPC's building still in the fog opens no card; the crab's bubble says an NPC holds it.
+  const npc = JSON.parse(await ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(), MP = window.AtlasMapPainter, F = window.AtlasMapFog;
+    for (let y = r.top + 20; y < r.bottom - 20; y += 6) for (let x = r.left + 20; x < r.right - 20; x += 6) { const m = MP && MP.markAt && MP.markAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height); if (m && m.fog && F && F.hidden(m) && document.elementFromPoint(x, y) === s) return JSON.stringify({ x, y, id: m.id }); }
+    return 'null'; })()`));
+  if (npc) {
+    await espera(400);
+    await dedo(npc.x, npc.y, 1, 0, 2); await espera(800);
+    const n = JSON.parse(await ev("JSON.stringify({ open: !document.getElementById('building-sheet').hidden, say: (document.getElementById('preceptor-talk') || {}).textContent || '' })"));
+    medidas.niebla = [npc.id, n.open, n.say.slice(0, 80)];
+    ok(!n.open && /NPC holds this/.test(n.say), 'a tap on an NPC building in the fog opened its card or said nothing: ' + JSON.stringify(n));
+  } else { medidas.niebla = 'NO_DATA: no NPC building in the fog on screen'; }
 
   // 4 · two fingers still pinch the zoom.
   const z0 = (await vista()).zoom;

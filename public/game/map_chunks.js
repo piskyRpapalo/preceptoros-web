@@ -58,6 +58,7 @@
     ['lottery', 'dome', 'PROPUESTA.base'], ['visitor-house', 'cone', 'cyan'], ['doctor', 'flag', 'LIVE.base']];
   function mixHash(q, r) { var h = (q * 73856093) ^ (r * 19349663) ^ 20261108; h = (h ^ (h >>> 13)) * 1274126177; return (h ^ (h >>> 16)) >>> 0; }
   function hexDist(a, b) { var dq = a[0] - b[0], dr = a[1] - b[1]; return (Math.abs(dq) + Math.abs(dr) + Math.abs(dq + dr)) / 2; }
+  var CITY = null;
   function landmarks(world) {
     if (world.marks) { return world.marks; }
     var picked = [], marks = {}, list = world.cells.list.filter(function (c) { return c[3] !== 'water' && hexDist(c, [0, 0]) > 2; });
@@ -70,6 +71,10 @@
     try { JSON.parse(root.localStorage.getItem('preceptoros.built') || '[]').forEach(function (m) { // built in Settings
       var key = m.q + ',' + m.r; if (!marks[key] && world.cells.at[key]) { marks[key] = m; picked.push([m.q, m.r]); } }); } catch (e) {}
     world.marks = marks; world.markList = picked.map(function (c) { return marks[c[0] + ',' + c[1]]; });
+    var near = {}; world.markList.forEach(function (m) { var d = hexDist([m.q, m.r], [0, 0]), n = near[m.id]; if (!n || d < n.d) { near[m.id] = { m: m, d: d }; } });
+    world.markList.forEach(function (m) { m.fog = !m.own && near[m.id].m !== m; }); // fog of war: one of each kind is the node's, the rest NPCs
+    var city = world.city = {}; world.cells.list.forEach(function (c) { if (c[3] !== 'water' && (hexDist(c, [0, 0]) <= 2 || world.markList.some(function (m) { return !m.fog && hexDist(c, [m.q, m.r]) <= 2; }))) { city[c[0] + ',' + c[1]] = 1; } });
+    CITY = city; // the node's city: the cabin district and one around each of its buildings
     return marks;
   }
   // oval(g, …): an ellipse arc as a polygon (any 2D context, even the test double).
@@ -77,6 +82,7 @@
   // building(g, m, x, top, o): a smaller prism on the cell's top, ink-outlined (comic), its roof by kind.
   function building(g, m, x, top, o, H) {
     var k = o.k, F = H.T.FRONT_DOOR, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), base = H.mix(H.rgbOf(F[m.tone]), H.rgbOf(H.T.NEUTRAL.paper), 0.18);
+    if (m.fog) { var l = Math.round(base[0] * 0.3 + base[1] * 0.59 + base[2] * 0.11); base = [l, l, l]; } // an NPC's building is grey
     var ring = o.corner.map(function (q) { return [q[0] * 0.5, q[1] * 0.5]; }), hb = (m.roof === 'spire' ? 26 : 16) * k, y0 = top - 2 * k;
     if (k * 48 <= 12) { g.fillStyle = H.css(base); g.beginPath(); g.arc(x, y0 - 3 * k, Math.max(1.5, 5 * k), 0, 7); g.fill(); return; }
     g.lineWidth = Math.max(0.8, 1.6 * k); g.strokeStyle = ink;
@@ -102,6 +108,12 @@
 
 
   function shadow(g, c, x, top, o, H, hh) {
+    if (CITY && CITY[c[0] + ',' + c[1]]) { // the node's city: one stone paving, no band (Sovereign, 2026-11-08)
+      var cb = { base: o.city || (o.city = H.mix(H.rgbOf(H.T.NEUTRAL.paper), H.rgbOf(H.T.FRONT_DOOR['PROPUESTA.base']), 0.22)) };
+      g.beginPath(); o.corner.forEach(function (q, j) { g[j ? 'lineTo' : 'moveTo'](x + q[0], top + q[1]); }); g.closePath();
+      g.fillStyle = H.css(H.shade(cb.base, (0.9 + 0.1 * H.LIGHT[2]) * o.lit)); g.fill(); g.strokeStyle = H.css(H.shade(cb.base, 0.62 * o.lit)); g.stroke();
+      o = { B: [cb, cb, cb, cb], corner: o.corner, at: o.at, lit: o.lit };
+    }
     var b = o.B[c[3] === 'water' ? 0 : Math.max(1, Math.min(3, c[2]))], corner = o.corner;
     // Cast shadow: a higher sunward neighbour darkens a band along the shared edge (corner[i-1]→corner[i]), floor ink.
     for (var s = 0; s < 6; s++) {
@@ -117,6 +129,7 @@
   }
   // pattern(): the floor's marks (waves, dots, hatch, cross), drawn for map_painter.js.
   function pattern(g, kind, x, y, k, base, lit, wt, c, H) {
+    if (CITY && CITY[c[0] + ',' + c[1]]) { return; } // city paving: no band texture
     g.save(); g.strokeStyle = g.fillStyle = H.css(H.shade(base, kind === 'water' ? 1.7 * lit : 0.6 * lit)); g.lineWidth = Math.max(0.6, k * 0.8);
     var s = 7 * k;
     if (kind === 'water') {
@@ -162,7 +175,7 @@
     var k = V.G.k, ink = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.ink)), paper = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.paper)), fs = Math.round(11 * dpr);
     g.save(); g.font = '700 ' + fs + 'px ui-rounded, "SF Pro Rounded", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
     V.world.markList.forEach(function (m) {
-      if (hexDist([m.q, m.r], [w.q, w.r]) > REACH) { return; }
+      if (hexDist([m.q, m.r], [w.q, w.r]) > REACH || m.fog) { return; } // NPC buildings carry no name: the map names the node's own
       var cell = V.world.cells.at[m.q + ',' + m.r], h0 = V.P(m.q, m.r), p = V.turn(h0.x, h0.y);
       var x = V.G.cx + p.x * k, y = V.G.cy + p.y * k - ((cell ? V.height(cell) * V.HSTEP : 0) + (m.roof === 'spire' ? 58 : 44)) * k;
       var t = NAMES[m.id] || m.id, tw = g.measureText(t).width + 12 * dpr, th = fs + 6 * dpr;
@@ -192,6 +205,7 @@
       var a = at(key), f = T && T.from ? at(T.from) : a, x = f.x + (a.x - f.x) * e, y = f.y + (a.y - f.y) * e; // the glide is projection only
       s.dataset.youx = String(Math.round(x)); s.dataset.youy = String(Math.round(y));
       var g = s.getContext('2d'); g.setTransform(1, 0, 0, 1, 0, 0);
+      if (root.AtlasMapFog) { root.AtlasMapFog.draw(g, V, s, w, oval); } // fog of war and the NPCs (map_fog_layer.js)
       if (root.AtlasMapAura) { root.AtlasMapAura.draw(g, V, s, still, oval, ow); } // the selected building's aura (map_aura.js)
       names(g, V, w, s.width / (s.getBoundingClientRect().width || s.width), x, y);
       if (B) { B.draw(g, x, y, Math.max(k, 0.5), B.pose(T.steps, still ? 1 : T.p, still ? 1 : T.gp), V.H, B.beat(ow.signal || null, Date.now()), oval); if (T.busy) { B.loop(ow.redraw); } }
@@ -210,6 +224,7 @@
     s.addEventListener('click', function (e) {
       var MP = root.AtlasMapPainter, BS = root.AtlasBuildingSheet, r = s.getBoundingClientRect();
       var mk = MP && MP.markAt && r.width ? MP.markAt((e.clientX - r.left) * (s.width / r.width), (e.clientY - r.top) * (s.height / r.height)) : null;
+      if (mk && mk.fog && root.AtlasMapFog && root.AtlasMapFog.hidden(mk)) { e.stopImmediatePropagation(); root.AtlasMapFog.tell(mk); return; }
       if (mk && BS && BS.open && BS.open(mk.id)) { e.stopImmediatePropagation(); if (root.AtlasMapAura) { root.AtlasMapAura.select(doc, s, mk.q + ',' + mk.r); } }
     }, true);
   }
