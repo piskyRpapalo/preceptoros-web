@@ -84,5 +84,7 @@ test('suelo liso primero (Soberano 2026-11-08): la arena es un solo color, sin t
   const drawn = M.floor(g, { k: 1.4, cx: 200, cy: 200 }, world, 0, true);
   assert.ok(world.cells.list.length > 10 && drawn > 10, 'sand drawn: ' + drawn);
   assert.equal(calls.arc, 0, 'no dots on the sand');
-  assert.equal(fills.size, 1, 'one flat colour for every sand top: ' + [...fills].join(','));
+  // The node's city (odd/tasks/fog-and-conquest.md C1, Sovereign 2026-11-08) paves its land in one stone colour: one more flat colour, no more.
+  const city = world.city && world.cells.list.some((c) => world.city[c[0] + ',' + c[1]]);
+  assert.equal(fills.size, city ? 2 : 1, 'one flat colour for the sand' + (city ? ' and one for the city' : '') + ': ' + [...fills].join(','));
 });

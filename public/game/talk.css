@@ -41,3 +41,13 @@
 #stage > dialog.on-map.duel > p{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 #stage > dialog.on-map.duel > div{justify-content:center;padding:4px;border-radius:999px;background:color-mix(in srgb,var(--afffdf6) 88%,transparent);border:2px solid var(--a1d1b26)}
 #stage > dialog.on-map.duel > button:last-child{width:auto;align-self:center;margin:0;padding:0 18px}
+
+/* The gamepad's middle (Sovereign, 2026-11-08: «3 abajo y 2 arriba, para que cuadren con los joysticks»): Town and
+   Settings ride high between the wings; Play, Welcome and Communication sit low in a smile. Chunky Acho glyphs, solid
+   like the app's mini window: bigger, their strokes thickened with their own colour. */
+#gamepad #gp-town{order:1}#gamepad #gp-letters{order:2}
+#gamepad .gp-mid::after{content:"";order:3;flex-basis:100%;height:0}
+#gamepad #gp-play{order:4;transform:translateY(-6px)}#gamepad .cats{order:5}
+#gamepad .cats [data-cat=Welcome]{transform:translateY(2px)}#gamepad .cats [data-cat=Communication]{transform:translateY(-6px)}
+#gamepad :is(.gp-b,.cats button){font-size:23px;font-weight:900;line-height:1;-webkit-text-stroke:1.6px currentColor;paint-order:stroke fill}
+@media (forced-colors:active){#gamepad :is(.gp-b,.cats button){-webkit-text-stroke:0}}
