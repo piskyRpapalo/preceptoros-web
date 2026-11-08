@@ -100,3 +100,18 @@ fn the_same_inputs_give_the_same_head() {
     let run = || { let mut l = Ledger::new(Rules::default()); l.grant(0, Resource::Oxygen, 50, "b"); l.conquer("b:tower:0,0", "tower", vec![700]); for s in 1..=30 { l.tick(s); } l.head().to_string() };
     assert_eq!(run(), run());
 }
+
+#[test]
+fn wasm_abi_round_trip() {
+    use crate::wasm::*;
+    ledger_reset();
+    ledger_grant(3, 100, 0);
+    assert_eq!(ledger_conquer(7, 0, 2, 1000), 1);
+    let mask = ledger_tick(1);
+    assert_eq!(mask & 8, 0, "no starvation with oxygen in the purse");
+    assert_eq!(ledger_balance(0), 6);
+    assert_eq!(ledger_count(), 1);
+    assert_eq!((ledger_holding_id(0), ledger_holding_kind(0), ledger_holding_waves(0), ledger_holding_life(0)), (7, 0, 2, 1000));
+    assert_eq!(ledger_verify(), 1);
+    assert_eq!(ledger_conquer(8, 99, 1, 1000), 0, "a kind outside the table is refused");
+}
