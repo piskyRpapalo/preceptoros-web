@@ -1,6 +1,6 @@
 # Las sesenta misiones de la doctrina compacta (2026-11-08)
 
-> Encargo del Soberano (2026-11-08): «hay partes importantes para hacer la doctrina más compacta, y permisiva. Centrándonos en que el preceptor respete los techos, pero sea libre.» Este documento trae las sesenta filas de las ideas del 8 de noviembre, adaptadas al formato completo de la casa. PROPONE: no crea misiones (la fuente única es la sección 9 de docs/canon-map-details-20261107.md) y no abre lista paralela (ley de la fuente única, PR #713): cada fila pide su ingreso a la fuente y el FIRMO la gradúa. Si otra cosecha de hoy trae lo mismo, manda la ley G6: se cita, se enriquece, la pieza que repite muere. SCRUB limpio: sin rutas privadas, sin IPs, el rack se llama el rack, el canal de la casa no lleva aquí su nombre de repo.
+> Encargo del Soberano (2026-11-08): «hay partes importantes para hacer la doctrina más compacta, y permisiva. Centrándonos en que el preceptor respete los techos, pero sea libre.» Este documento trae las sesenta filas de las ideas del 8 de noviembre, adaptadas al formato completo de la casa. PROPONE: no crea misiones (la fuente única es la sección 9 de docs/canon-map-details-20261107.md) y no abre lista paralela (ley de la fuente única, PR #713): cada fila pide su ingreso a la fuente y el FIRMO la gradúa. Si otra cosecha de hoy trae lo mismo, manda la ley G6: se cita, se enriquece, la pieza que repite muere. SCRUB limpio: sin rutas privadas, sin IPs, el rack se llama el rack, el canal de la casa no lleva aquí su nombre de repo. G6 declarado: el mismo decreto trajo una cosecha hermana ya fusionada en el carril companion (hilo/tasks/ideas-8nov, cabezas e2a319d2 y 1d4e01f7, FIRMA ·6720229318, main 6b5216a4); esta pieza la cita, se enriquece con sus hallazgos y no compite: el FIRMO gradúa una sola fila a la fuente.
 
 ## 0 · El marco: los techos sagrados, la libertad dentro
 
@@ -33,9 +33,9 @@ Los slugs nacen en español, tal como los trajo la cosecha; el FIRMO decide su b
 
 **W-04 · denominador-ci · D2 · silicio.** causa: las suites _cases.mjs corren sin denominador común; el CI puede callar una sin que nadie lo note. vara: gate.yml suma las 8 suites o declara la causa. BUSCAR: el conteo vivo de suites del gate. cadena: alimenta N-03 y R-19. puerta (ps): CI = todo corre.
 
-**W-05 · sellar-al-fusionar · D3 · silicio.** causa: medido esta noche: dos piezas tomaron el sello fq a la vez y la torre nació chocando (K4c; curado absorbiendo y re-sellando fr). vara: el sello VERSION se re-sella tras cada merge (CI o Mesa); el choque muere en la puerta. BUSCAR: la cascada mundo-contadores-huella ya medida. cadena: alimenta W-06. puerta (ps): mata choques de sellos.
+**W-05 · sellar-al-fusionar · D3 · silicio.** causa: medido esta noche: dos piezas tomaron el sello fq a la vez y la torre nació chocando (K4c; curado absorbiendo y re-sellando fr). vara: el sello VERSION se re-sella tras cada merge (CI o Mesa); el choque muere en la puerta. BUSCAR: la cascada mundo-contadores-huella ya medida. Choque citado (carril TF): T-42 viva; esta fila la enriquece. cadena: alimenta W-06. puerta (ps): mata choques de sellos.
 
-**W-06 · registro-de-sellos · D2 · silicio.** causa: las letras de sello se toman por memoria; hoy viven fm a fr sin tabla pública. vara: tabla append-only de sellos reservadas y consumidas en docs. BUSCAR: la LINEA_DEL_TIEMPO y el historial ya medidos. cadena: lee W-05; alimenta R-22. puerta (ps): letra viva no reasignada.
+**W-06 · registro-de-sellos · D2 · silicio.** causa: las letras de sello se toman por memoria; hoy viven fm a fr sin tabla pública. vara: tabla append-only de sellos reservadas y consumidas en docs. BUSCAR: la LINEA_DEL_TIEMPO y el historial ya medidos. Choque citado (carril TF): T-44. cadena: lee W-05; alimenta R-22. puerta (ps): letra viva no reasignada.
 
 **W-07 · censo-de-enlaces · D2 · silicio.** causa: los enlaces de READMEs, llms y METHOD pueden morir sin que nadie lo cante. vara: curl HEAD a cada enlace + recibo de 404/301. BUSCAR: el faro mide lo servido; esta fila mide lo citado. cadena: alimenta N-03. puerta (ps): link-lint.
 
@@ -47,7 +47,7 @@ Los slugs nacen en español, tal como los trajo la cosecha; el FIRMO decide su b
 
 **W-11 · llms-mapa-firmado · D3 · carbono.** causa: los llms del perfil y del web no cuentan el mapa entero. vara: texto cruzado con babel y companion; el perfil es manos carbono. BUSCAR: los llms.txt vivos. cadena: alimenta R-25. puerta (ps): lectores AI ven mapa real.
 
-**W-12 · fecha-tres · D1 · silicio.** causa: COMPANIONS y STATUS sin fecha = tablero que no se puede creer. vara: docs, una línea. BUSCAR: el COMPANIONS/STATUS vivo. cadena: alimenta W-10. puerta (ps): tablero confiable.
+**W-12 · fecha-tres · D1 · silicio.** causa: COMPANIONS y STATUS sin fecha = tablero que no se puede creer. vara: docs, una línea. BUSCAR: el COMPANIONS/STATUS vivo. Choque citado (carril TF): T-05. cadena: alimenta W-10. puerta (ps): tablero confiable.
 
 **W-13 · badge-komarev · D1 · carbono.** causa: el perfil carga un badge externo y la casa declara cero peticiones no declaradas. vara: quitar o sustituir el request externo. BUSCAR: los badges del perfil. cadena: con W-08. puerta (ps): coherencia zero external.
 
@@ -73,17 +73,17 @@ Los slugs nacen en español, tal como los trajo la cosecha; el FIRMO decide su b
 
 **O-06 · scope-DISAGREEMENTS-study · D1 · silicio.** causa: DISAGREEMENTS sin alcance declarado = dos casas para un concepto. vara: cabecera que declara alcance. BUSCAR: R-23 dirime la voz de la casa. cadena: alimenta R-23. puerta (ps): una casa por concepto.
 
-**O-07 · tarjeta-dos-trece · D4 · carbono.** causa: 13-objectives y 13-rosetta duplican índice en el estudio. vara: menú de dos opciones con coste; el carbono elige. BUSCAR: ambos docs vivos. cadena: alimenta N-02. puerta (ps): índice limpio.
+**O-07 · tarjeta-dos-trece · D4 · carbono.** causa: 13-objectives y 13-rosetta duplican índice en el estudio. vara: menú de dos opciones con coste; el carbono elige. BUSCAR: ambos docs vivos. Choque citado (carril TF): T-13. cadena: alimenta N-02. puerta (ps): índice limpio.
 
 **O-08 · post-de-la-coma · D4 · compartida.** causa: la historia del ecosistema no está contada en público desde dentro. vara: historia con recibo de Aimilios; FIRMO decide el broadcast. BUSCAR: los corpus ya medidos. cadena: lee O-03. puerta (ps): adopción pública.
 
-**O-09 · ceremonia-de-firma · D4 · carbono.** causa: la raíz de confianza de la flota no tiene runbook. vara: runbook del canon; la llave nace en manos carbono. BUSCAR: el canon de identidad y firmas ya vivo. cadena: habilita R-18 y T-01. puerta (ps): raíz de confianza, flota y mapa.
+**O-09 · ceremonia-de-firma · D4 · carbono.** causa: la raíz de confianza de la flota no tiene runbook. vara: runbook del canon; la llave nace en manos carbono. BUSCAR: el canon de identidad y firmas ya vivo. Choque citado (carril TF): T-01. cadena: habilita R-18 y T-01. puerta (ps): raíz de confianza, flota y mapa.
 
 **O-10 · tarjeta-scope-DIRECTORIO · D4 · carbono.** causa: tensión entre scrub y BABEL sin dirimencia en el DIRECTORIO del companion. vara: tres opciones de scrub; el carbono dirime. BUSCAR: el DIRECTORIO del companion. cadena: alimenta O-05. puerta (ps): tensión resuelta.
 
 ## 4 · ESTUDIO · familia L (1 fila)
 
-**L-01 · familias-bench · D2 · silicio.** causa: el estudio de las familias de bench declara nombres sin fila medida. vara: fila MEASURED o NO_DATA con caveat (study, 14-bench-families). BUSCAR: el censo del lab. cadena: alimenta R-13. puerta (ps): doctrina de familias viva.
+**L-01 · familias-bench · D2 · silicio.** causa: el estudio de las familias de bench declara nombres sin fila medida. vara: fila MEASURED o NO_DATA con caveat (study, 14-bench-families). BUSCAR: el censo del lab. Hallazgo del carril TF: cede a la madre v4. cadena: alimenta R-13. puerta (ps): doctrina de familias viva.
 
 ## 5 · REGISTRO DE MISIONES · familia N (7 filas)
 
@@ -177,5 +177,5 @@ A-01 y A-02 quedan NO_DATA con causa: la madre vive en la sesión previa del Sob
 - 60 filas: W 17 · O 10 · L 1 · N 7 · R 25. A-01 y A-02 quedan fuera del censo, NO_DATA con causa.
 - Niveles: D1 x 8 · D2 x 24 · D3 x 18 · D4 x 10.
 - Manos: silicio 49 · carbono 9 · compartida 2 (O-08 y R-18 nacen compartidas).
-- Cero dobles con la fuente: el guion declara familia nueva; las equivalencias vivas (N12=B4, N9=L1, N11=L5, N14=L15, B7=K9) no se tocan.
+- Dobles contra la fuente citados por el carril TF (ley G6, enriquecimiento servido): W-05=T-42, W-06=T-44, W-12=T-05, O-07=T-13, O-09=T-01; L-01 cede a la madre v4. El guion declara familia nueva; las equivalencias vivas (N12=B4, N9=L1, N11=L5, N14=L15, B7=K9) no se tocan; el FIRMO dirime en la graduación.
 - Puertas declaradas: cada fila trae la suya; N-02 las une en grafo cuando el FIRMO gradúe esta cosecha a la fuente única.
