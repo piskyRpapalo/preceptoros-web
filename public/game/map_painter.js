@@ -90,6 +90,19 @@
     g.beginPath(); corner.forEach(function (q, j) { if (j) { g.lineTo(x + q[0], top + q[1]); } else { g.moveTo(x + q[0], top + q[1]); } }); g.closePath();
     g.fillStyle = css(shade(b.base, (0.9 + 0.1 * LIGHT[2]) * o.lit * occl)); g.fill();
     g.strokeStyle = css(shade(b.base, 0.55 * o.lit)); g.lineWidth = Math.max(0.5, k * 0.6); g.stroke();
+    // Cast shadow: a taller neighbour on the sun's side darkens a band of this top along their shared edge, wider the taller
+    // it stands. Corner i sits between neighbours i and i+1, so neighbour i owns the edge corner[i-1]→corner[i]; the turned
+    // corners keep the shadow true under the orbit. Drawn in the floor's own ink (no new colour), alpha by the step height.
+    for (var s = 0; s < 6; s++) {
+      var d = NB[s], nb = o.at[(c[0] + d[0]) + ',' + (c[1] + d[1])], p0 = corner[(s + 5) % 6], p1 = corner[s];
+      if (!nb || height(nb) <= hh) { continue; }
+      if ((p0[0] + p1[0]) * LIGHT[0] + (p0[1] + p1[1]) * LIGHT[1] <= 0) { continue; }
+      var f = Math.min(0.85, 0.3 * (height(nb) - hh));
+      g.globalAlpha = 0.32; g.fillStyle = css(shade(b.base, 0.3 * o.lit));
+      g.beginPath(); g.moveTo(x + p0[0], top + p0[1]); g.lineTo(x + p1[0], top + p1[1]);
+      g.lineTo(x + p1[0] * (1 - f), top + p1[1] * (1 - f)); g.lineTo(x + p0[0] * (1 - f), top + p0[1] * (1 - f)); g.closePath(); g.fill();
+      g.globalAlpha = 1;
+    }
     if (o.lod && b.pattern !== 'solid' && !(o.still && b.kind === 'water')) { pattern(g, b.pattern, x, top, k, b.base, o.lit, o.wt, c); }
   }
 
