@@ -37,7 +37,7 @@
       frame.soundCause = 'no harmonic table in this catalogue';
       frame.residencia = 'NO_DATA';
       frame.causa = { CAUSA_RESIDENTE: CAUSA_RESIDENTE };
-      frame.huella = K().huella(frame);   // sha256 of the canon of every field above; same hex in the app
+      frame.sha256 = K().sha(K().canon(frame));   // sha256 of the canon of every field above; same hex in the app
       if (F.valida(frame).length) { return refuse('model frame breaks the Acho frame law'); }
       frames.push(frame);
     }

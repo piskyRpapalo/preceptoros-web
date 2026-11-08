@@ -23,14 +23,14 @@ const HUELLAS = {
 test('the seven frames carry the pinned sha256 shared with the app', () => {
   const out = B.project(catalog);
   assert.equal(out.ok, true);
-  assert.deepEqual(Object.fromEntries(out.frames.map((f) => [f.id, f.huella])), HUELLAS);
+  assert.deepEqual(Object.fromEntries(out.frames.map((f) => [f.id, f.sha256])), HUELLAS);
 });
 
-test('each huella is the canon sha256 of the frame without its huella field', () => {
+test('each sha256 is the canon hash of the frame without its own sha256 field', () => {
   for (const f of B.project(catalog).frames) {
-    const rest = Object.assign({}, f); delete rest.huella;
-    assert.equal(K.huella(rest), f.huella);
-    assert.match(f.huella, K.HEX64);
+    const rest = Object.assign({}, f); delete rest.sha256;
+    assert.equal(K.huella(rest), f.sha256);
+    assert.match(f.sha256, K.HEX64);
   }
 });
 
