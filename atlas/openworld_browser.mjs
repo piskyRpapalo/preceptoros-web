@@ -87,7 +87,7 @@ async function main() {
   ok(initial.canvases === 1, 'OpenWorld renders more than one canvas: ' + initial.canvases);
   ok(initial.inkPixels > 2000, 'the map is blank: ' + initial.inkPixels);
   ok(initial.panelParent === 'stage' && initial.panelHidden, 'voice panels are not mounted as a closed overlay on the shared map');
-  ok(initial.count === 3 && initial.labels.join('|') === 'Welcome|Profile|Communication', 'the three terminal leaves are missing or unnamed: ' + JSON.stringify(initial.labels));
+  ok(initial.count === 3 && initial.labels.join('|') === 'Help|Profile|Communication', 'the three terminal leaves are missing or unnamed: ' + JSON.stringify(initial.labels));
   ok(initial.profileHidden && initial.entryTools, 'Profile is visible before a visit or the entry Tools button is missing');
   ok(initial.bar[1] >= initial.stage[3] - 1, 'voice controls are not immediately below the map: ' + JSON.stringify(initial.bar));
 // Main's three-leaf entry starts closed; this is intentional after the communication moved behind its own leaf.
