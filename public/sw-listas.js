@@ -19,7 +19,7 @@ const JUEGO = [
   '/game/wave_duel_scene.js', '/game/node_preview.js', '/game/node_file_receiver.js', '/game/acho_editor.js',
   '/game/acho_paint.js', '/game/creation_package.js', '/game/creation_feedback.js', '/game/creation_flow.js',
   '/game/comic_accents.js', '/game/acho_language.js', '/game/acho_light.js', '/game/acho_bestiary.js',
-  '/game/acho_world.js', '/game/acho_letters.js', '/game/acho_icons.js', '/game/local_app_bridge.js',
+  '/game/acho_world.js', '/game/acho_letters.js', '/game/acho_icons.js',
   '/game/state_frames.js', '/game/brain_frame.js', '/game/brain_panel.js', '/game/hex_projection.js', '/game/colony_state.js', '/game/colony_buildings.js',
   '/assets/openworld.css',
   '/game/palette_cycle.js', '/game/openworld_state.js', '/game/colony_page.js', '/game/colony_controls.js', '/game/hitl_walkers.js',
