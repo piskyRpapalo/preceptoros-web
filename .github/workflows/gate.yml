@@ -81,6 +81,7 @@ jobs:
             node --test atlas/puros/crab_stage_cases.mjs
             node --test atlas/puros/crab_body_cases.mjs
             node --test atlas/puros/panel_x_cases.mjs
+            node --test atlas/puros/map_aura_cases.mjs
             node --test atlas/puros/tower_cases.mjs
             python bin/tower_ledger.py --check
             node --test atlas/puros/type_scale_cases.mjs

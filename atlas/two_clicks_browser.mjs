@@ -97,7 +97,7 @@ async function main() {
   ok(ojo.step === 'Walk your crab: every hex is one step.', 'the step hint is not human: ' + ojo.step);
   // Decree 2026-11-07, fulfilled 2026-11-08: the camera stick and the crab's stick, both labelled and at least 44 px.
   ok(ojo.zb.length === 2 && ojo.zb.every((b) => b.w >= 44 && b.h >= 44) && /^Turn and tilt the map/.test(ojo.zb[0].l || '') && /^Walk your character/.test(ojo.zb[1].l || '') && !ojo.bar, 'the map does not carry the labelled 44 px camera and character sticks: ' + JSON.stringify(ojo.zb));
-  ok(ojo.pl.length >= 4 && ojo.pl.every((p) => p.cap >= 12) && !ojo.overlap && !ojo.crab && !ojo.zoom, 'map place names are small, few or colliding: ' + JSON.stringify(ojo.pl));
+  ok(ojo.pl.length === 0, 'the old screen-fixed place names are retired (Sovereign 2026-11-08) and still drawn: ' + JSON.stringify(ojo.pl));
   const jugando = JSON.parse(await ev(`JSON.stringify((() => { const s = document.getElementById('visitor-summon-tc1'), t = (document.getElementById('visitor-play') || {}).textContent || '';
     const m = /Copper (\\d+)/.exec(t); return { card: document.getElementById('sheet-welcome').hidden, copper: m ? +m[1] : -1, summon: !!s && !s.disabled, end: !!document.getElementById('visitor-end'),
       tab: String(!!document.querySelector('#voices [data-speaker="House"]')?.contains(document.getElementById('visitor-play'))), state: document.getElementById('state').textContent, result: document.getElementById('welcome-result').textContent }; })())`));

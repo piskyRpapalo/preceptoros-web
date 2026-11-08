@@ -91,3 +91,13 @@ Law: Sovereign commission «the crab alive, the map in depth and the fight on th
   - Walls keep their height when the ground tilts. A true camera pitch would also scale wall height; that is `map_painter.js`, which is at its byte cap.
   - Walking by tapping reads the untilted squash for its direction; at strong tilts a diagonal tap may pick the neighbouring hex.
   - The crab drifts a few pixels (344 → 325) during a turn around itself.
+
+## After the commission (Sovereign in chat, 2026-11-08 evening)
+- **Aura:** a building tapped on the map, or chosen in the Town list, glows while its card is open (`map_aura.js`).
+  - A warm light rises over it, and a gold ring on its ground breathes outward (steady under reduced motion).
+  - The camera brings the building into the smaller map and goes back to the crab when the card closes.
+  - The pure breath is tested in `atlas/puros/map_aura_cases.mjs`.
+- **The old screen-fixed place names are retired** (Reef, Kelp, Ruins, Silt, Abyss, Core, drawn by `visitor_conquest.js` around the crab: «letters of an old engine»). The `two_clicks` guard now requires that none are drawn. The `places-on-the-map.md` mission keeps the idea of real hexes for them.
+- **«Show the technical panels» is retired:** the four technical panels stay veiled for good (`visitor_view.js`).
+- **The Army panel's inherited link to the old Army page is removed.**
+- **The bubble steps aside while any sheet is open.**
