@@ -2,7 +2,7 @@
 // - one «Aa» button in the gamepad middle, 44 px, with its Acho spectrum, starts at Letters 100%;
 // - each press goes 115% → 130% → 150% → 100%, says the step in #state, and the reading panel letters grow with it;
 // - the map does not change size; no horizontal overflow; the step is remembered for the next visit.
-// Sabotage: SABOTAJE=sin-letras (the page does not load type_scale.js) or SABOTAJE=sin-zoom (the CSS ignores the step) ⇒ red.
+// Sabotage: SABOTAJE=sin-letras (the gamepad does not load type_scale.js) or SABOTAJE=sin-zoom (the CSS ignores the step) ⇒ red.
 // Uso: node atlas/type_scale_browser.mjs [carpeta-captura]
 import { createServer } from 'node:http';
 import { readFileSync, writeFileSync, statSync } from 'node:fs';
@@ -23,7 +23,7 @@ function sirve(raiz) {
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
       let cuerpo = readFileSync(f);
       if (ruta === '/assets/openworld.css' && SAB === 'sin-zoom') { cuerpo = Buffer.from(String(cuerpo).replace('zoom:var(--letters,1)', 'zoom:1')); }
-      if (ruta === '/openworld/index.html' && SAB === 'sin-letras') { cuerpo = Buffer.from(String(cuerpo).replace('<script src="/game/type_scale.js"></script>', '')); }
+      if (ruta === '/game/gamepad.js' && SAB === 'sin-letras') { cuerpo = Buffer.from(String(cuerpo).replace("letters.src = '/game/type_scale.js'; doc.head.appendChild(letters);", '')); }
       res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
   });

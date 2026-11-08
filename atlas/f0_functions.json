@@ -540,29 +540,6 @@
      "text": "gamepad Play does not start the visit through Play now"
     }
    ]
-  },
-  {
-   "id": "letters",
-   "scripts": [
-    "/game/type_scale.js"
-   ],
-   "globals": [
-    "AtlasTypeScale"
-   ],
-   "guards": [
-    {
-     "file": "atlas/type_scale_browser.mjs",
-     "text": "Aa does not cycle the four steps"
-    },
-    {
-     "file": "atlas/type_scale_browser.mjs",
-     "text": "the reading panel letters do not grow with the step"
-    },
-    {
-     "file": "atlas/type_scale_browser.mjs",
-     "text": "the step is not remembered"
-    }
-   ]
   }
  ],
  "retiradas": [

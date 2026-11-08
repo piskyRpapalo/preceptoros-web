@@ -104,6 +104,8 @@
     }
     pad.appendChild(joy); pad.appendChild(mid); pad.appendChild(right);
     stage.parentNode.insertBefore(pad, stage.nextSibling);
+    // The Aa letters button (type_scale.js) joins the middle once the pad exists.
+    var letters = doc.createElement('script'); letters.src = '/game/type_scale.js'; doc.head.appendChild(letters);
     if (win && win.dispatchEvent && win.Event) { win.dispatchEvent(new win.Event('resize')); }
     return pad;
   }
