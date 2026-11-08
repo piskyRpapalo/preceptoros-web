@@ -13,7 +13,7 @@ Depth 3 — operating as a lane under commission: full study + the active
   commission in the Comando. Propose-only; the Signing Tray gates merges.
 Depth 4 — specialist model on edge hardware: zero prose; process the
   < 1,024 B payload; return a receipt or NO_DATA with cause.
-Loaded is loaded: do not re-fetch what you already hold.
+Loaded is loaded; hashes in ai-index.json.
 Anything deeper is NO_DATA, cause: beyond declared depth.
 
 # PreceptorOS
