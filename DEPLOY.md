@@ -8,8 +8,8 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 Current route-count receipt (measured with `python3 bin/count_routes.py`, 2026-11-07; includes the landing controller added in #651, `/game/place_name.js` and `/game/gamepad.js`):
 
-Rutas precargadas por el shell: 151
-Rutas distintas del shell: 151
+Rutas precargadas por el shell: 152
+Rutas distintas del shell: 152
 
 The workflow runs exactly:
 
