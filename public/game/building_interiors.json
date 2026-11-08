@@ -104,8 +104,8 @@
      "missions": [
       "D10"
      ],
-     "piece": null,
-     "cause": "audio_only_mode_not_built"
+     "piece": "public/game/audio_only.js",
+     "action": "audio"
     },
     {
      "id": "four-senses",
@@ -136,8 +136,8 @@
      "missions": [
       "J4"
      ],
-     "piece": null,
-     "cause": "merchant_not_built"
+     "piece": "public/game/typo_report.js",
+     "action": "typo"
     },
     {
      "id": "notebook",
@@ -367,6 +367,8 @@
   "letters": "type_scale.js cycles the letter step",
   "pulse": "pulse.js measures this device and says its verdict",
   "notebook": "notebook_export.js saves this device's notebook as one file",
-  "gaps": "gap_board.js says which options are still NO_DATA, their missions and causes"
+  "gaps": "gap_board.js says which options are still NO_DATA, their missions and causes",
+  "audio": "audio_only.js turns audio only on or off and says the map out loud",
+  "typo": "typo_report.js keeps the selected misspelt words in the notebook for the Mesa"
  }
 }
