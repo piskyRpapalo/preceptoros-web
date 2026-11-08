@@ -30,6 +30,7 @@
   function mount(doc, win) {
     var pad = doc.getElementById('gamepad');
     if (!pad || doc.getElementById('preceptor-talk')) { return null; }
+    var css = doc.createElement('link'); css.rel = 'stylesheet'; css.href = '/game/talk.css'; doc.head.appendChild(css);
     var box = doc.createElement('section'); box.id = 'preceptor-talk'; box.setAttribute('aria-label', 'Your preceptor');
     var head = doc.createElement('p'); head.className = 'pt-line';
     var who = doc.createElement('span'); who.className = 'pt-who'; who.textContent = 'Preceptor';

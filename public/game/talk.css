@@ -1,0 +1,11 @@
+/* The preceptor's box and the settings sheet titles, loaded by preceptor_talk.js (openworld.css keeps its 7168 B gzip share). */
+#preceptor-talk{position:relative;margin:4px 12px 8px;padding:6px 10px 8px;background:var(--afffdf6);color:var(--a1d1b26);border:3px solid var(--a1d1b26);border-radius:calc(var(--radius) + 10px);box-shadow:0 4px 0 var(--a1d1b26);font-family:ui-rounded,"SF Pro Rounded",system-ui,sans-serif}
+#preceptor-talk .pt-who{display:inline-block;margin:0 6px 0 0;vertical-align:1px;padding:1px 10px;border-radius:999px;background:var(--a5b2fb0);color:var(--afffdf6);font-size:.8rem;font-weight:800;letter-spacing:.02em}
+#preceptor-talk .pt-line{margin:0 0 6px;font-size:.95rem;line-height:1.3;font-weight:600}
+#preceptor-talk .pt-row{display:flex;flex-wrap:nowrap;gap:6px}
+#preceptor-talk .pt-row button{flex:1 1 auto;min-height:44px;min-width:44px;padding:0 8px;font-size:.88rem;line-height:1.1;border:2px solid var(--a1d1b26);border-radius:999px;background:var(--affe58a);color:var(--a1d1b26);font:inherit;font-weight:700;box-shadow:0 3px 0 var(--a1d1b26);cursor:pointer}
+#preceptor-talk .pt-row button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--a1d1b26)}
+#preceptor-talk.pt-rest .pt-line{margin:0 0 4px;font-size:.92rem}
+@media (prefers-reduced-motion:reduce){#preceptor-talk .pt-row button:active{transform:none}}
+@media (forced-colors:active){#preceptor-talk,#preceptor-talk .pt-row button{border-color:CanvasText;background:Canvas;color:CanvasText;box-shadow:none}#preceptor-talk .pt-who{background:CanvasText;color:Canvas}}
+#settings-sheet h3{margin:8px 0 0;font-size:13px;letter-spacing:.04em;text-transform:uppercase}

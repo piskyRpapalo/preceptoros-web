@@ -55,7 +55,7 @@
   function close() { sheet.hidden = true; btn.setAttribute('aria-expanded', 'false'); btn.focus(); }
   function make(doc) {
     var G = root.AtlasGamepad;
-    sheet = doc.createElement('section'); sheet.id = 'settings-sheet'; sheet.hidden = true; sheet.setAttribute('aria-labelledby', 'ss-h');
+    sheet = doc.createElement('section'); sheet.id = 'settings-sheet'; sheet.className = 'bs-sheet'; sheet.hidden = true; sheet.setAttribute('aria-labelledby', 'ss-h');
     var bar = doc.createElement('div'), h = doc.createElement('h2'); bar.className = 'bs-bar'; h.id = 'ss-h'; h.textContent = 'Settings';
     var shut = doc.createElement('button'); shut.type = 'button'; shut.className = 'bs-tool'; shut.textContent = 'Close'; shut.addEventListener('click', close);
     bar.appendChild(h); bar.appendChild(shut); sheet.appendChild(bar);
