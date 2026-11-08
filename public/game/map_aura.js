@@ -9,7 +9,30 @@
   function phase(t, still) { var p = still ? 0.5 : (t % 1600) / 1600; return { grow: p, alpha: still ? 0.55 : 0.7 * (1 - p) }; }
   function hexDist(a, b) { var dq = a[0] - b[0], dr = a[1] - b[1]; return (Math.abs(dq) + Math.abs(dr) + Math.abs(dq + dr)) / 2; }
   // draw(g, V, s, still, oval, ow): called by map_chunks.js youLayer before the names and the crab.
+  // near(): the node's buildings next to the crab (hex distance <= 1) wear their name 50 % larger, and that name answers a
+  // direct tap (Sovereign, 2026-11-08, Q-01). Picture plus a tap target; the rectangles live only in page memory.
+  var NAMES = { hostel: 'Hostel', coliseum: 'Coliseum', choir: 'Choir', workshop: 'Workshop', tower: 'Model tower', agora: 'Agora',
+    customs: 'Customs', lottery: 'Lottery', 'visitor-house': 'Visitor house', doctor: 'Doctor' }, hits = [];
+  function near(g, V, w, dpr) {
+    hits = []; if (!w || !V.world.markList) { return hits; }
+    var k = V.G.k, ink = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.ink)), paper = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.paper)), fs = Math.round(16.5 * dpr);
+    g.save(); g.font = '800 ' + fs + 'px ui-rounded, "SF Pro Rounded", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    V.world.markList.forEach(function (m) {
+      if (m.fog || hexDist([m.q, m.r], [w.q, w.r]) > 1) { return; }
+      var cell = V.world.cells.at[m.q + ',' + m.r], h0 = V.P(m.q, m.r), p = V.turn(h0.x, h0.y), t = NAMES[m.id] || m.id;
+      var x = V.G.cx + p.x * k, y = V.G.cy + p.y * k - ((cell ? V.height(cell) * V.HSTEP : 0) + (m.roof === 'spire' ? 58 : 44)) * k;
+      var tw = g.measureText(t).width + 18 * dpr, th = Math.max(fs + 10 * dpr, 44 * dpr * 0.6);
+      g.fillStyle = paper; g.strokeStyle = ink; g.lineWidth = Math.max(1.5, 2.2 * dpr);
+      g.beginPath(); g.moveTo(x - tw / 2 + th / 2, y - th / 2); g.arc(x + tw / 2 - th / 2, y, th / 2, -Math.PI / 2, Math.PI / 2);
+      g.arc(x - tw / 2 + th / 2, y, th / 2, Math.PI / 2, Math.PI * 1.5); g.closePath(); g.fill(); g.stroke();
+      g.fillStyle = ink; g.fillText(t, x, y + 0.5 * dpr);
+      hits.push({ m: m, x0: x - Math.max(tw, 44 * dpr) / 2, x1: x + Math.max(tw, 44 * dpr) / 2, y0: y - 22 * dpr, y1: y + 22 * dpr });
+    });
+    g.restore(); return hits;
+  }
+  function hitAt(px, py) { for (var i = 0; i < hits.length; i++) { var h = hits[i]; if (px >= h.x0 && px <= h.x1 && py >= h.y0 && py <= h.y1) { return h.m; } } return null; }
   function draw(g, V, s, still, oval, ow) {
+    var wk = ow && ow.controls && ow.controls.walker && ow.controls.walker(); near(g, V, wk, s.width / (s.getBoundingClientRect ? (s.getBoundingClientRect().width || s.width) : s.width));
     var key = s.dataset.sel, c = key && V.world.cells.at[key];
     if (!c) { return false; }
     var q = key.split(','), h0 = V.P(+q[0], +q[1]), p = V.turn(h0.x, h0.y), k = V.G.k, sq = 0.433 * (V.G.tilt || 1), R = 30 * k;
@@ -44,6 +67,14 @@
   }
   // A card chosen in the Town list lights the nearest building of its kind (to the crab) on the map.
   function listen(doc) {
+    var sf = doc.getElementById && doc.getElementById('surface');
+    if (sf) {
+      sf.addEventListener('click', function (e) {
+        var r = sf.getBoundingClientRect(), m = r.width ? hitAt((e.clientX - r.left) * (sf.width / r.width), (e.clientY - r.top) * (sf.height / r.height)) : null;
+        var BS = root.AtlasBuildingSheet;
+        if (m && BS && BS.open && BS.open(m.id)) { e.stopImmediatePropagation(); select(doc, sf, m.q + ',' + m.r); }
+      }, true);
+    }
     doc.addEventListener('building:enter', function (e) {
       var s = doc.getElementById('surface'), MP = root.AtlasMapPainter, V = MP && MP.view && MP.view(), MC = root.AtlasMapChunks;
       var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(), w = ow && ow.controls && ow.controls.walker && ow.controls.walker();
@@ -54,7 +85,7 @@
       if (best) { select(doc, s, best.q + ',' + best.r); }
     });
   }
-  var api = { phase: phase, draw: draw, select: select };
+  var api = { phase: phase, draw: draw, select: select, near: near, hitAt: hitAt, NAMES: NAMES };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasMapAura = api;
   if (root.document && root.document.addEventListener) { listen(root.document); }

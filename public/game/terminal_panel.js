@@ -76,7 +76,7 @@
   function categories(doc, voices) {
     var map = doc.getElementById('map'), stage = doc.getElementById('stage');
     if (!map || !stage || map.querySelector(':scope > .cats')) { return null; }
-    var bar = doc.createElement('div'), buttons = {}, current = null, hasVisit = false, icons = { Welcome: '◇', Profile: '♙', Communication: '◉' };
+    var bar = doc.createElement('div'), buttons = {}, current = null, hasVisit = false, icons = { Welcome: '?', Profile: '♙', Communication: '◉' }, labels = { Welcome: 'Help' };
     bar.className = 'cats'; bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'OpenWorld panels');
     voices.classList.add('map-voices');
     stage.appendChild(voices);
@@ -90,7 +90,7 @@
     }
     CATS.forEach(function (c) {
       if (!c.button) { return; }
-      var b = doc.createElement('button'); b.type = 'button'; b.textContent = icons[c.name]; b.dataset.cat = c.name; b.setAttribute('aria-label', c.name); b.title = c.name;
+      var b = doc.createElement('button'); b.type = 'button'; b.textContent = icons[c.name]; b.dataset.cat = c.name; b.setAttribute('aria-label', labels[c.name] || c.name); b.title = labels[c.name] || c.name;
       b.setAttribute('aria-controls', 'voices'); b.hidden = !!c.visit;
       b.addEventListener('click', function () { show(current === c.name ? null : c.name); });
       buttons[c.name] = b; bar.appendChild(b);

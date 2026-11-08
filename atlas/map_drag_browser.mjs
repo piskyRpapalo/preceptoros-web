@@ -122,7 +122,7 @@ async function main() {
     await dedo(casa.x, casa.y, 1, 0, 2); await espera(800);
     const abierta = JSON.parse(await ev("JSON.stringify({ open: !document.getElementById('building-sheet').hidden, h: (document.getElementById('bs-h') || {}).textContent || '', say: ((document.getElementById('preceptor-talk') || {}).textContent || '').slice(0, 70), sel: document.getElementById('surface').dataset.sel || '' })"));
     medidas.edificio = [casa.id, abierta.h];
-    ok(abierta.open && abierta.h !== 'Town', 'a tap on a building did not open its card: ' + JSON.stringify(abierta));
+    ok(abierta.open && abierta.h !== 'Node', 'a tap on a building did not open its card: ' + JSON.stringify(abierta));
     await ev("(() => { const s = document.getElementById('building-sheet'); const c = [...s.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Close'); c && c.click(); return 1; })()"); await espera(400);
   }
   // 3c · fog of war: a tap on an NPC's building still in the fog opens no card; the crab's bubble says an NPC holds it.
