@@ -103,11 +103,28 @@ async function main() {
   const c = await vista();
   ok(c.panx === b.panx && c.pany === b.pany, 'a redraw snapped the view back while looking around: ' + JSON.stringify([b.panx, c.panx]));
 
-  // 3 · a tap (2 px) still reaches the page and hands the camera back.
-  await dedo(centro.x, centro.y, 1, 0, 2); await espera(500);
+  // 3 · a tap (2 px) on open floor still reaches the page and hands the camera back. The map now has village buildings
+  // that take their own taps (building_sheet.js), so the tap goes to the nearest point where no building answers.
+  const suelo = JSON.parse(await ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(), MP = window.AtlasMapPainter;
+    const free = (x, y) => !(MP && MP.markAt && MP.markAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height));
+    for (let d = 0; d < 200; d += 8) for (const [dx, dy] of [[d, 0], [-d, 0], [0, d], [0, -d]]) { const x = ${centro.x} + dx, y = ${centro.y} + dy; if (free(x, y)) return JSON.stringify({ x, y }); }
+    return JSON.stringify({ x: ${centro.x}, y: ${centro.y} }); })()`));
+  await dedo(suelo.x, suelo.y, 1, 0, 2); await espera(500);
   const d = await vista();
   ok(d.clicks === c.clicks + 1, 'a tap did not reach the page: ' + (d.clicks - c.clicks) + ' clicks');
   ok(d.look === '', 'a tap did not hand the camera back to the crab');
+  // 3b · a tap on a village building opens that building's card (and closes again for the next steps).
+  const casa = JSON.parse(await ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(), MP = window.AtlasMapPainter;
+    for (let y = r.top + 20; y < r.bottom - 20; y += 6) for (let x = r.left + 20; x < r.right - 20; x += 6) { const m = MP && MP.markAt && MP.markAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height); if (m) return JSON.stringify({ x, y, id: m.id }); }
+    return 'null'; })()`));
+  ok(casa, 'no village building is visible on the map');
+  if (casa) {
+    await dedo(casa.x, casa.y, 1, 0, 2); await espera(800);
+    const abierta = JSON.parse(await ev("JSON.stringify({ open: !document.getElementById('building-sheet').hidden, h: (document.getElementById('bs-h') || {}).textContent || '' })"));
+    medidas.edificio = [casa.id, abierta.h];
+    ok(abierta.open && abierta.h !== 'Town', 'a tap on a building did not open its card: ' + JSON.stringify(abierta));
+    await ev("(() => { const s = document.getElementById('building-sheet'); const c = [...s.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Close'); c && c.click(); return 1; })()"); await espera(400);
+  }
 
   // 4 · two fingers still pinch the zoom.
   const z0 = (await vista()).zoom;

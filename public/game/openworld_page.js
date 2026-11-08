@@ -169,12 +169,9 @@
     if (more) { raiz.requestAnimationFrame(step); } else { looping = false; }
   }
   surface.addEventListener('click', function (e) {
+    if (!CCT || !colonia || !CP || colonia_error) { return; }
     var r = surface.getBoundingClientRect();
     var px = (e.clientX - r.left) * (surface.width / r.width), py = (e.clientY - r.top) * (surface.height / r.height);
-    // A tap on a village building opens its card (map_chunks.js markAt; building_sheet.js open).
-    var MP = raiz.AtlasMapPainter, BS = raiz.AtlasBuildingSheet, mk = MP && MP.markAt && MP.markAt(px, py);
-    if (mk && BS && BS.open && BS.open(mk.id)) { return; }
-    if (!CCT || !colonia || !CP || colonia_error) { return; }
     var id = null; // Legacy node illustrations are not visible on the floor-only surface.
     // Tap-to-step (compact terminal, 2026-11-02, the pad retired): a tap off any node, with free walk on, steps the crab
     // one cell toward the tap: the nearest of the six hex directions by screen angle, same names as the arrow keys.

@@ -113,8 +113,18 @@
     if (!sheet) { return false; }
     want = id && (!data || (data.buildings || []).some(function (b) { return b.id === id; })) ? id : null; openSheet(); return true;
   }
+  // A tap on a village building opens its card (map_chunks.js markAt via map_painter.js); taps elsewhere go on to the map.
+  function listenMap(doc) {
+    var s = doc.getElementById('surface');
+    if (!s) { return; }
+    s.addEventListener('click', function (e) {
+      var MP = root.AtlasMapPainter, r = s.getBoundingClientRect();
+      var mk = MP && MP.markAt && r.width ? MP.markAt((e.clientX - r.left) * (s.width / r.width), (e.clientY - r.top) * (s.height / r.height)) : null;
+      if (mk && open(mk.id)) { e.stopImmediatePropagation(); }
+    }, true);
+  }
   var api = { URL: URL_DOC, verdict: verdict, model: model, mount: mount, open: open };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasBuildingSheet = api;
-  if (root.document && root.document.getElementById) { mount(root.document, root); }
+  if (root.document && root.document.getElementById) { mount(root.document, root); listenMap(root.document); }
 })(typeof window !== 'undefined' ? window : globalThis);
