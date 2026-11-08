@@ -25,10 +25,11 @@
   function bands() {
     var N = T.NEUTRAL, F = T.FRONT_DOOR, ocean = rgbOf(N.ocean), cyan = rgbOf(N.cyan), paper = rgbOf(N.paper);
     return [
-      { h: 0, kind: 'water', pattern: 'waves', base: mix(ocean, cyan, 0.42) },
-      { h: 1, kind: 'sand', pattern: 'solid', base: mix(paper, rgbOf(F['PROPUESTA.base']), 0.35) },
-      { h: 2, kind: 'moss', pattern: 'hatch', base: mix(rgbOf(F['LIVE.base']), rgbOf(N.ink), 0.45) },
-      { h: 3, kind: 'rock', pattern: 'cross', base: mix(rgbOf(F['NO_DATA.base']), rgbOf(N.ink), 0.25) }];
+      // Acho floor (Sovereign, 2026-11-08: «todo visualmente nuevo»): a bright lagoon, golden sand, mint moss, lilac rock.
+      { h: 0, kind: 'water', pattern: 'waves', base: mix(mix(cyan, rgbOf(F['FIRMADO.base']), 0.4), ocean, 0.08) },
+      { h: 1, kind: 'sand', pattern: 'solid', base: mix(rgbOf(F['PROPUESTA.base']), paper, 0.38) },
+      { h: 2, kind: 'moss', pattern: 'hatch', base: mix(rgbOf(F['LIVE.base']), rgbOf(N.ink), 0.12) },
+      { h: 3, kind: 'rock', pattern: 'cross', base: mix(rgbOf(F['FIRMADO.base']), paper, 0.42) }];
   }
   function bandOf(cell) { return cell[3] === 'water' ? 0 : Math.max(1, Math.min(3, cell[2])); }
 
@@ -69,7 +70,55 @@
   function corners(k, turn) { return NB.map(function (d, i) { var e = NB[(i + 1) % 6], p = P(d[0] + e[0], d[1] + e[1]), r = turn ? turn(p.x, p.y) : p; return [r.x / 3 * k, r.y / 3 * k]; }); }
   function same(x, y) { return { x: x, y: y }; }
   function turnOf(G) { return G.turn || same; }
-  function litOf(t, reduced) { return 0.62 + 0.38 * PC.palette(t, reduced).dia / 256; }
+  function litOf(t, reduced) { return LIT_LO + (1 - LIT_LO) * PC.palette(t, reduced).dia / 256; } // night keeps 84 % of the colour (Acho floor)
+  // Landmarks: every chunk is a village. Its floor cells are walked in a fixed hash order and a building stands wherever no
+  // other stands within SPACE hexes; the cabin clearing (radius 2) stays free for the tutorial. No count is set: the land
+  // decides. The kinds are the nine town buildings (building_interiors.json) and the model tower, each with its own roof.
+  var SPACE = 4, KINDS = [['hostel', 'cone', 'PROPUESTA.base'], ['coliseum', 'arch', 'LIVE.base'], ['choir', 'dome', 'FIRMADO.base'],
+    ['workshop', 'chimney', 'PROPUESTA.base'], ['tower', 'spire', 'cyan'], ['agora', 'dome', 'LIVE.base'], ['customs', 'flag', 'FIRMADO.base'],
+    ['lottery', 'dome', 'PROPUESTA.base'], ['visitor-house', 'cone', 'cyan'], ['doctor', 'flag', 'LIVE.base']];
+  function mixHash(q, r) { var h = (q * 73856093) ^ (r * 19349663) ^ 20261108; h = (h ^ (h >>> 13)) * 1274126177; return (h ^ (h >>> 16)) >>> 0; }
+  function hexDist(a, b) { var dq = a[0] - b[0], dr = a[1] - b[1]; return (Math.abs(dq) + Math.abs(dr) + Math.abs(dq + dr)) / 2; }
+  function landmarks(world) {
+    if (world.marks) { return world.marks; }
+    var picked = [], marks = {}, list = world.cells.list.filter(function (c) { return c[3] !== 'water' && hexDist(c, [0, 0]) > 2; });
+    list.sort(function (a, b) { return mixHash(a[0], a[1]) - mixHash(b[0], b[1]) || a[0] - b[0] || a[1] - b[1]; });
+    list.forEach(function (c) {
+      if (picked.some(function (p) { return hexDist(p, c) < SPACE; })) { return; }
+      var k = KINDS[mixHash(c[1], c[0]) % KINDS.length];
+      picked.push(c); marks[c[0] + ',' + c[1]] = { q: c[0], r: c[1], id: k[0], roof: k[1], tone: k[2] };
+    });
+    world.marks = marks; world.markList = picked.map(function (c) { return marks[c[0] + ',' + c[1]]; });
+    return marks;
+  }
+  // oval(g, …): an ellipse arc as a polygon (any 2D context, even the test double).
+  function oval(g, x, y, rx, ry, a0, a1) { for (var i = 0; i <= 16; i++) { var a = a0 + (a1 - a0) * i / 16; g.lineTo(x + rx * Math.cos(a), y + ry * Math.sin(a)); } }
+  // building(g, m, x, top, o): a smaller prism on the cell's top, ink-outlined (comic), its roof by kind.
+  function building(g, m, x, top, o) {
+    var k = o.k, F = T.FRONT_DOOR, ink = css(rgbOf(T.NEUTRAL.ink)), base = mix(rgbOf(F[m.tone]), rgbOf(T.NEUTRAL.paper), 0.18);
+    var ring = o.corner.map(function (q) { return [q[0] * 0.5, q[1] * 0.5]; }), hb = (m.roof === 'spire' ? 26 : 16) * k, y0 = top - 2 * k;
+    if (k * 48 <= 12) { g.fillStyle = css(base); g.beginPath(); g.arc(x, y0 - 3 * k, Math.max(1.5, 5 * k), 0, 7); g.fill(); return; }
+    g.lineWidth = Math.max(0.8, 1.6 * k); g.strokeStyle = ink;
+    for (var i = 0; i < 6; i++) {
+      var a = ring[i], e = ring[(i + 1) % 6];
+      if ((a[1] + e[1]) / 2 <= 0) { continue; }
+      g.fillStyle = css(shade(base, (a[0] + e[0] < 0 ? 0.92 : 0.66) * o.lit));
+      g.beginPath(); g.moveTo(x + a[0], y0 + a[1] - hb); g.lineTo(x + e[0], y0 + e[1] - hb); g.lineTo(x + e[0], y0 + e[1]); g.lineTo(x + a[0], y0 + a[1]); g.closePath(); g.fill(); g.stroke();
+    }
+    g.fillStyle = css(shade(base, 1.08 * o.lit)); g.beginPath();
+    ring.forEach(function (q, j) { if (j) { g.lineTo(x + q[0], y0 + q[1] - hb); } else { g.moveTo(x + q[0], y0 + q[1] - hb); } }); g.lineTo(x + ring[0][0], y0 + ring[0][1] - hb); g.fill(); g.stroke();
+    var w = Math.abs(ring[0][0]) + Math.abs(ring[3][0]) || 10 * k, rt = y0 - hb, accent = css(shade(mix(base, rgbOf(T.NEUTRAL.paper), 0.4), o.lit));
+    g.fillStyle = accent; g.beginPath();
+    if (m.roof === 'cone') { g.moveTo(x - w * 0.42, rt); g.lineTo(x, rt - 14 * k); g.lineTo(x + w * 0.42, rt); g.closePath(); }
+    else if (m.roof === 'dome') { oval(g, x, rt, w * 0.36, 11 * k, Math.PI, 2 * Math.PI); g.closePath(); }
+    else if (m.roof === 'spire') { g.moveTo(x - w * 0.18, rt); g.lineTo(x, rt - 22 * k); g.lineTo(x + w * 0.18, rt); g.closePath(); }
+    else if (m.roof === 'chimney') { g.rect(x + w * 0.08, rt - 12 * k, w * 0.16, 12 * k); }
+    else if (m.roof === 'arch') { oval(g, x, rt, w * 0.34, 5 * k, 0, 2 * Math.PI); g.fill(); g.stroke(); g.fillStyle = css(shade(base, 0.5 * o.lit)); g.beginPath(); oval(g, x, rt, w * 0.2, 2.6 * k, 0, 2 * Math.PI); }
+    else { g.moveTo(x, rt); g.lineTo(x, rt - 16 * k); g.lineTo(x + 10 * k, rt - 12 * k); g.lineTo(x, rt - 8 * k); }
+    g.fill(); g.stroke();
+    if (m.roof === 'spire') { g.fillStyle = css(rgbOf(F.cyan)); g.beginPath(); g.arc(x, rt - 24 * k, 2.6 * k, 0, 7); g.fill(); g.stroke(); }
+  }
+
   // cell(g, c, x, y, o): one prism. o = { B, corner, k, lit, wt, lod, at, still }; still = baked (flat sea).
   function cell(g, c, x, y, o) {
     var b = o.B[bandOf(c)], hh = height(c), k = o.k;
@@ -104,13 +153,14 @@
       g.globalAlpha = 1;
     }
     if (o.lod && b.pattern !== 'solid' && !(o.still && b.kind === 'water')) { pattern(g, b.pattern, x, top, k, b.base, o.lit, o.wt, c); }
+    var mk = o.marks && o.marks[c[0] + ',' + c[1]]; if (mk) { building(g, mk, x, top, o); }
   }
 
   // floor(g, G, world, t, reduced): the live path, every prism every frame.
   function floor(g, G, world, t, reduced) {
     if (!world || !world.cells.list.length) { return 0; }
     var k = G.k, W = g.canvas.width, H = g.canvas.height, drawn = 0, turn = turnOf(G);
-    var o = { B: bands(), corner: corners(k, turn), k: k, lit: litOf(t, reduced), wt: reduced ? 0 : t * SEA.speed, lod: k * 48 > 18, at: world.cells.at, still: false };
+    var o = { B: bands(), corner: corners(k, turn), k: k, lit: litOf(t, reduced), wt: reduced ? 0 : t * SEA.speed, lod: k * 48 > 18, at: world.cells.at, still: false, marks: landmarks(world) };
     g.save(); g.lineJoin = 'round';
     orderAt(world.cells, G).forEach(function (c) {
       var h0 = P(c[0], c[1]), p = turn(h0.x, h0.y), x = G.cx + p.x * k, y = G.cy + p.y * k;
@@ -122,7 +172,7 @@
   }
 
   // 3.5D · one ImageBitmap per (chunk, zoom bucket, angle, dpr), day + night; per frame only blits, sea crests and haze.
-  var cache = { scope: '', map: {}, bakes: 0, hits: 0 }, LIMIT_BMP = 14, LIT_LO = 0.62;
+  var cache = { scope: '', map: {}, bakes: 0, hits: 0 }, LIMIT_BMP = 14, LIT_LO = 0.84;
   function groupsOf(world) {
     if (world.groups) { return world.groups; }
     var by = {}, open = [], edge = [];
@@ -149,7 +199,7 @@
     var mx = Math.ceil(reach + 2), mt = Math.ceil(reach + 3 * HSTEP * kb + 2), mb = Math.ceil(reach + 2);
     var w = Math.max(1, Math.ceil((b.x1 - b.x0) * kb) + 2 * mx), h = Math.max(1, Math.ceil((b.y1 - b.y0) * kb) + mt + mb);
     var surf = env.make(w, h), g = surf.getContext('2d');
-    var o = { B: bands(), corner: corner, k: kb, lit: lit, wt: 0, lod: kb * 48 > 18, at: world.cells.at, still: true };
+    var o = { B: bands(), corner: corner, k: kb, lit: lit, wt: 0, lod: kb * 48 > 18, at: world.cells.at, still: true, marks: landmarks(world) };
     g.lineJoin = 'round';
     b.order.forEach(function (c) { var p = P(c[0], c[1]), r = turn(p.x, p.y); cell(g, c, mx + (r.x - b.x0) * kb, mt + (r.y - b.y0) * kb, o); });
     cache.bakes++;
@@ -307,7 +357,7 @@
     return n;
   }
 
-  var api = { frameOf: frameOf, cellsOf: cellsOf, orderAt: orderAt, floor: floor, floorBaked: floorBaked, hazeAt: hazeAt, bands: bands, start: start, draw: draw,
+  var api = { landmarks: landmarks, KINDS: KINDS, frameOf: frameOf, cellsOf: cellsOf, orderAt: orderAt, floor: floor, floorBaked: floorBaked, hazeAt: hazeAt, bands: bands, start: start, draw: draw,
     cacheStats: function () { return { mode: lastMode, bakes: cache.bakes, hits: cache.hits, size: Object.keys(cache.map).length, scope: cache.scope }; },
     resetCache: function () { cache = { scope: '', map: {}, bakes: 0, hits: 0 }; }, setLive: function (on) { forceLive = on === true; }, setBake: function (on) { forceBake = on === true; },
     color: { rgbOf: rgbOf, mix: mix, shade: shade, css: css },
