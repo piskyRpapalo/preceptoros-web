@@ -552,7 +552,7 @@
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "the visitor view does not veil the four technical panels behind one honest button"
+     "text": "the visitor view does not keep the four technical panels veiled for good, with no toggle"
     }
    ]
   },

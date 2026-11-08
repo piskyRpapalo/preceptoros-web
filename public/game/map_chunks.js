@@ -161,7 +161,6 @@
     if (!V.world.markList) { landmarks(V.world); }
     var k = V.G.k, ink = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.ink)), paper = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.paper)), fs = Math.round(11 * dpr);
     g.save(); g.font = '700 ' + fs + 'px ui-rounded, "SF Pro Rounded", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-    var pills = []; // canvas px; the visit's place names (visitor_conquest.js) keep out of them
     V.world.markList.forEach(function (m) {
       if (hexDist([m.q, m.r], [w.q, w.r]) > REACH) { return; }
       var cell = V.world.cells.at[m.q + ',' + m.r], h0 = V.P(m.q, m.r), p = V.turn(h0.x, h0.y);
@@ -172,9 +171,9 @@
       g.fillStyle = paper; g.strokeStyle = ink; g.lineWidth = Math.max(1, 1.6 * dpr);
       g.beginPath(); g.moveTo(x - tw / 2 + th / 2, y - th / 2); g.lineTo(x + tw / 2 - th / 2, y - th / 2); g.arc(x + tw / 2 - th / 2, y, th / 2, -Math.PI / 2, Math.PI / 2);
       g.lineTo(x - tw / 2 + th / 2, y + th / 2); g.arc(x - tw / 2 + th / 2, y, th / 2, Math.PI / 2, Math.PI * 1.5); g.closePath(); g.fill(); g.stroke();
-      g.fillStyle = ink; g.fillText(t, x, y + 0.5 * dpr); pills.push([x - tw / 2, y - th / 2, tw, th].map(Math.round));
+      g.fillStyle = ink; g.fillText(t, x, y + 0.5 * dpr);
     });
-    g.restore(); g.canvas.dataset.pills = JSON.stringify(pills);
+    g.restore();
   }
   // The visitor layer: with no live colony the page draws only the floor, so the companion is drawn here on every
   // visitor:draw, its place is written for the map tap (dataset.youx/youy), and the camera follows it when it nears an
@@ -193,6 +192,7 @@
       var a = at(key), f = T && T.from ? at(T.from) : a, x = f.x + (a.x - f.x) * e, y = f.y + (a.y - f.y) * e; // the glide is projection only
       s.dataset.youx = String(Math.round(x)); s.dataset.youy = String(Math.round(y));
       var g = s.getContext('2d'); g.setTransform(1, 0, 0, 1, 0, 0);
+      if (root.AtlasMapAura) { root.AtlasMapAura.draw(g, V, s, still, oval, ow); } // the selected building's aura (map_aura.js)
       names(g, V, w, s.width / (s.getBoundingClientRect().width || s.width), x, y);
       if (B) { B.draw(g, x, y, Math.max(k, 0.5), B.pose(T.steps, still ? 1 : T.p, still ? 1 : T.gp), V.H, B.beat(ow.signal || null, Date.now()), oval); if (T.busy) { B.loop(ow.redraw); } }
       var W = s.width, Hh = s.height;
@@ -210,7 +210,7 @@
     s.addEventListener('click', function (e) {
       var MP = root.AtlasMapPainter, BS = root.AtlasBuildingSheet, r = s.getBoundingClientRect();
       var mk = MP && MP.markAt && r.width ? MP.markAt((e.clientX - r.left) * (s.width / r.width), (e.clientY - r.top) * (s.height / r.height)) : null;
-      if (mk && BS && BS.open && BS.open(mk.id)) { e.stopImmediatePropagation(); }
+      if (mk && BS && BS.open && BS.open(mk.id)) { e.stopImmediatePropagation(); if (root.AtlasMapAura) { root.AtlasMapAura.select(doc, s, mk.q + ',' + mk.r); } }
     }, true);
   }
   if (root.document && root.document.getElementById) {

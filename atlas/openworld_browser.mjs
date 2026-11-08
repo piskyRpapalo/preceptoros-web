@@ -162,13 +162,11 @@ async function main() {
     d.querySelector('summary').click(); t.click(); return JSON.stringify(result); })()`));
   ok(models.frames > 0 && /declared model frames/.test(models.status) && models.labels, 'the model panel does not show declared Acho frames with honest NO_DATA');
 
-  const depth = JSON.parse(await evaluate(`JSON.stringify((() => { const v=document.getElementById('voices'), t=document.getElementById('depth-toggle');
+  const depth = JSON.parse(await evaluate(`JSON.stringify((() => { const v=document.getElementById('voices');
     const quiet=[...v.querySelectorAll('[data-depth=tech]')].filter(e=>!e.querySelector('button')), acting=[...v.querySelectorAll('[data-depth=tech]')].filter(e=>e.querySelector('button'));
-    const veiledByMe=() => quiet.filter(e=>getComputedStyle(e).display==='none' && v.classList.contains('visitor')).length;
-    const r={quiet:quiet.length, acting:acting.length, before:veiledByMe(), actingShownRule:acting.every(e=>!e.matches('#voices.visitor>[data-depth=tech]:not(:has(button))')), pressed0:t.getAttribute('aria-pressed'), label:t.textContent};
-    t.click(); r.classAfter=v.classList.contains('visitor'); r.pressed1=t.getAttribute('aria-pressed'); t.click(); r.again=veiledByMe(); return r; })())`));
-  ok(depth.quiet + depth.acting === 4 && depth.before === depth.quiet && depth.again === depth.quiet && depth.classAfter === false && depth.actingShownRule && depth.pressed0 === 'false' && depth.pressed1 === 'true' && depth.label === 'Show the ' + depth.quiet + ' technical panels',
-    'the visitor view does not veil the four technical panels behind one honest button: ' + JSON.stringify(depth));
+    return {quiet:quiet.length, acting:acting.length, veiled:quiet.filter(e=>getComputedStyle(e).display==='none').length, toggle:!!document.getElementById('depth-toggle'), actingShown:acting.every(e=>!e.matches('#voices.visitor>[data-depth=tech]:not(:has(button))'))}; })())`));
+  ok(depth.quiet + depth.acting === 4 && depth.veiled === depth.quiet && !depth.toggle && depth.actingShown,
+    'the visitor view does not keep the four technical panels veiled for good, with no toggle: ' + JSON.stringify(depth));
 
   const board = JSON.parse(await evaluate(`(async () => { for (let i = 0; i < 20 && !window.AtlasVisitorBoard; i++) { await new Promise(r=>setTimeout(r,100)); }
     const B = window.AtlasVisitorBoard; if (!B) return JSON.stringify({loaded:false});

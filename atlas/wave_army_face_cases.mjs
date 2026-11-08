@@ -30,7 +30,7 @@ assert.ok(text.includes('/assets/pwa.js'));
 assert.ok(text.includes('/manifest.webmanifest'));
 assert.ok(text.includes('/assets/mark.svg'));
 assert.ok(readFileSync(new URL('../public/sw-listas.js', import.meta.url), 'utf8').includes("'/game/army.html'"));
-assert.ok(readFileSync(new URL('../public/openworld/index.html', import.meta.url), 'utf8').includes('href="/game/army.html"'));
+assert.ok(!readFileSync(new URL('../public/openworld/index.html', import.meta.url), 'utf8').includes('href="/game/army.html"'));
 assert.ok(!/https?:\/\//i.test(text));
 if (process.argv.includes('--sabotage')) assert.equal(digest(JSON.stringify(changed)), digest(JSON.stringify(a)));
 console.log('PASS: seeded fixture, row sizes, changed-state detection and page contract');
