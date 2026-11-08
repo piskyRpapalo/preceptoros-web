@@ -1,0 +1,372 @@
+{
+ "$id": "preceptoros:building-interiors/1",
+ "source": "docs/reparto-paneles-20261108.md §2 (Mesa, web PR #719): the map is the web menu; buildings are its panels",
+ "law": "3 to 7 options per building; fewer merges with a neighbour, more opens one sub-list door",
+ "exceptions": {
+  "lottery": "two options by design: see the odds before the roll, then roll (Mesa §2: if it asks for more buttons, it is corrupted)"
+ },
+ "buildings": [
+  {
+   "id": "hostel",
+   "name": "Hostel",
+   "role": "welcome",
+   "options": [
+    {
+     "id": "play-without-account",
+     "label": "Play without an account",
+     "missions": [
+      "D1"
+     ],
+     "piece": "public/game/welcome_card.js"
+    },
+    {
+     "id": "what-you-need",
+     "label": "What you need, measured",
+     "missions": [
+      "I2"
+     ],
+     "piece": "public/game/visitor_account.js"
+    },
+    {
+     "id": "welcome-again",
+     "label": "The welcome again",
+     "missions": [
+      "I3"
+     ],
+     "piece": "public/game/welcome_card.js"
+    },
+    {
+     "id": "fog",
+     "label": "The fog is never empty",
+     "missions": [
+      "I4"
+     ],
+     "piece": null,
+     "cause": "fog_piece_not_measured"
+    }
+   ]
+  },
+  {
+   "id": "customs",
+   "name": "Customs of three keys",
+   "role": "boundary",
+   "options": [
+    {
+     "id": "who-enters",
+     "label": "Who enters, with which permission",
+     "missions": [
+      "I1"
+     ],
+     "piece": "public/game/gdpr-art25-ephemeral-crab.js"
+    },
+    {
+     "id": "caravans",
+     "label": "Caravans: the contract, not the promise",
+     "missions": [
+      "E2"
+     ],
+     "piece": "atlas/puros/caravan.js"
+    },
+    {
+     "id": "economy",
+     "label": "Your place has a measured value",
+     "missions": [
+      "J7"
+     ],
+     "piece": null,
+     "cause": "economy_ledger_not_built"
+    }
+   ]
+  },
+  {
+   "id": "choir",
+   "name": "Choir",
+   "role": "communication",
+   "options": [
+    {
+     "id": "voices",
+     "label": "Radio, chat and echoes, each in its place",
+     "missions": [
+      "I6"
+     ],
+     "piece": "public/game/map_chat.js"
+    },
+    {
+     "id": "world-voice",
+     "label": "The world speaks in its own voice",
+     "missions": [
+      "C6"
+     ],
+     "piece": "public/game/acho_sonify.js"
+    },
+    {
+     "id": "audio-only",
+     "label": "Audio only",
+     "missions": [
+      "D10"
+     ],
+     "piece": null,
+     "cause": "audio_only_mode_not_built"
+    },
+    {
+     "id": "four-senses",
+     "label": "Seen, heard, felt and read",
+     "missions": [
+      "K3c"
+     ],
+     "piece": "public/game/acho_sonify.js"
+    }
+   ]
+  },
+  {
+   "id": "workshop",
+   "name": "Workshop",
+   "role": "the visitor's bench",
+   "options": [
+    {
+     "id": "change-table",
+     "label": "Change table: each change sounds",
+     "missions": [
+      "J5"
+     ],
+     "piece": "public/game/army-wave-panel.js"
+    },
+    {
+     "id": "misspelt",
+     "label": "The merchant of misspelt words",
+     "missions": [
+      "J4"
+     ],
+     "piece": null,
+     "cause": "merchant_not_built"
+    },
+    {
+     "id": "notebook",
+     "label": "Export your notebook",
+     "missions": [
+      "K8c"
+     ],
+     "piece": "public/game/notebook_export.js",
+     "action": "notebook"
+    },
+    {
+     "id": "land-tutorial",
+     "label": "The land tutorial",
+     "missions": [
+      "D12"
+     ],
+     "piece": "public/game/visitor_walk.js"
+    },
+    {
+     "id": "agenda",
+     "label": "The agenda board",
+     "missions": [
+      "L12"
+     ],
+     "piece": null,
+     "cause": "agenda_board_not_built"
+    }
+   ]
+  },
+  {
+   "id": "lottery",
+   "name": "Honest lottery",
+   "role": "the draw",
+   "options": [
+    {
+     "id": "odds",
+     "label": "See the odds before you roll",
+     "missions": [
+      "D4"
+     ],
+     "piece": "public/game/gacha.js"
+    },
+    {
+     "id": "roll",
+     "label": "Roll",
+     "missions": [
+      "D4"
+     ],
+     "piece": "public/game/gacha.js"
+    }
+   ]
+  },
+  {
+   "id": "coliseum",
+   "name": "Coliseum",
+   "role": "the duel",
+   "options": [
+    {
+     "id": "duel",
+     "label": "Duel the machine, clean and repeatable",
+     "missions": [
+      "D5"
+     ],
+     "piece": "public/game/wave_duel_scene.js"
+    },
+    {
+     "id": "waves",
+     "label": "Wave combat: one way to fight",
+     "missions": [
+      "D6"
+     ],
+     "piece": "public/game/wave_rules.js"
+    },
+    {
+     "id": "conquest",
+     "label": "Honest conquest: win only if you fought",
+     "missions": [
+      "D7"
+     ],
+     "piece": "public/game/visitor_conquest.js"
+    },
+    {
+     "id": "summons",
+     "label": "Summons with their own permission",
+     "missions": [
+      "D9"
+     ],
+     "piece": "public/game/live_invocation.js"
+    },
+    {
+     "id": "arenas",
+     "label": "Arenas between nodes",
+     "missions": [
+      "K6c"
+     ],
+     "piece": null,
+     "cause": "no_node_declared_alive"
+    }
+   ]
+  },
+  {
+   "id": "agora",
+   "name": "Agora",
+   "role": "the public square",
+   "options": [
+    {
+     "id": "privacy",
+     "label": "Privacy says its name",
+     "missions": [
+      "K7c"
+     ],
+     "piece": "public/game/gdpr-art25-ephemeral-crab.js"
+    },
+    {
+     "id": "building-chat",
+     "label": "The building chat: only what it knows",
+     "missions": [
+      "D3"
+     ],
+     "piece": "public/game/building_chat.js"
+    },
+    {
+     "id": "your-ai",
+     "label": "Connect your own AI",
+     "missions": [
+      "J2"
+     ],
+     "piece": null,
+     "cause": "byo_model_door_not_built"
+    },
+    {
+     "id": "neighbours",
+     "label": "Neighbours and the gap board",
+     "missions": [
+      "E4",
+      "L13"
+     ],
+     "piece": null,
+     "cause": "gap_board_not_built"
+    }
+   ]
+  },
+  {
+   "id": "visitor-house",
+   "name": "Visitor house",
+   "role": "the profile",
+   "options": [
+    {
+     "id": "pet",
+     "label": "The pet that grows with you",
+     "missions": [
+      "I5"
+     ],
+     "piece": "public/game/visitor_eggs.js"
+    },
+    {
+     "id": "crab",
+     "label": "The honest crab, always the same",
+     "missions": [
+      "D11"
+     ],
+     "piece": "public/game/gdpr-art25-ephemeral-crab.js"
+    },
+    {
+     "id": "two-lands",
+     "label": "Two lands, one account",
+     "missions": [
+      "J8"
+     ],
+     "piece": "public/game/visitor_account.js"
+    },
+    {
+     "id": "tower",
+     "label": "The ascension tower",
+     "missions": [
+      "K4c"
+     ],
+     "piece": null,
+     "cause": "tower_not_built"
+    },
+    {
+     "id": "voice-star",
+     "label": "The voice star",
+     "missions": [
+      "K2c"
+     ],
+     "piece": null,
+     "cause": "voice_star_not_built"
+    }
+   ]
+  },
+  {
+   "id": "doctor",
+   "name": "Doctor on duty",
+   "role": "accessibility",
+   "options": [
+    {
+     "id": "screen-reader",
+     "label": "The screen reader names what the eye sees",
+     "missions": [
+      "K11"
+     ],
+     "piece": "public/game/gamepad.js"
+    },
+    {
+     "id": "weak-device",
+     "label": "A weak device plays it all",
+     "missions": [
+      "K5c"
+     ],
+     "piece": "public/game/pulse.js",
+     "action": "pulse"
+    },
+    {
+     "id": "letters",
+     "label": "The right letters",
+     "missions": [
+      "I7"
+     ],
+     "piece": "public/game/type_scale.js",
+     "action": "letters"
+    }
+   ]
+  }
+ ],
+ "actions": {
+  "letters": "type_scale.js cycles the letter step",
+  "pulse": "pulse.js measures this device and says its verdict",
+  "notebook": "notebook_export.js saves this device's notebook as one file"
+ }
+}
