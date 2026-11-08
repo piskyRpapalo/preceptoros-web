@@ -80,7 +80,7 @@
 (function (root) {
   'use strict';
   var STAT = [['vida', 'Life'], ['armadura', 'Armour'], ['velocidad', 'Speed'], ['sigilo', 'Stealth'], ['inercia', 'Inertia'], ['profundidad', 'Depth'], ['aura', 'Aura']];
-  var RANK = { normal: 'Common', magico: 'Magic', raro: 'Rare', unico: 'Unique' };
+  var RANK = { normal: 'Normal', magico: 'Magic', raro: 'Rare', unico: 'Unique' };
 
   // [[label, value]] for every stat above zero, the rank first: what a child reads on the card.
   function stats(troop) {
@@ -117,6 +117,30 @@
     return li;
   }
 
+  // The quest board (the player's soul): the most human thing goes first — what you can do now and what it gives you.
+  // Rewards are materials (copper, light) that train the army; the game counts progress (visitor_eggs.js quests/claim).
+  function questBoard(doc, game, onClaim) {
+    var sec = doc.createElement('section'), h = doc.createElement('h3'), list = doc.createElement('ol'), meta = doc.createElement('ul');
+    sec.className = 'quests'; sec.setAttribute('aria-labelledby', 'quests-h'); h.id = 'quests-h'; h.textContent = 'Quests';
+    var qs = game.quests(), points = 0;
+    qs.forEach(function (q) {
+      if (q.taken) { points += q.copper + q.light; }
+      var li = doc.createElement('li'), t = doc.createElement('b'), bar = doc.createElement('progress'), btn = doc.createElement('button');
+      li.className = 'quest' + (q.taken ? ' taken' : q.ready ? ' ready' : '');
+      t.textContent = q.title; bar.max = q.need; bar.value = q.have; bar.setAttribute('aria-label', q.title + ': ' + q.have + ' of ' + q.need);
+      var gift = chips(doc, [['Copper', '+' + q.copper], ['Light', '+' + q.light]].filter(function (x) { return x[1] !== '+0'; }), 'gift');
+      btn.type = 'button'; btn.textContent = q.taken ? 'Done' : q.ready ? 'Claim' : q.have + ' / ' + q.need; btn.disabled = !q.ready;
+      btn.addEventListener('click', function () { try { game.claim(q.id); onClaim(); } catch (e) { btn.textContent = 'NO_DATA · ' + e.message; } });
+      li.append(t, bar, gift, btn); list.append(li);
+    });
+    meta.className = 'chips season';
+    [['Quest points', points], ['Tide event', 'NO_DATA · no shared event calendar yet'], ['Ranking', 'NO_DATA · no shared board yet']].forEach(function (p) {
+      var li = doc.createElement('li'), b = doc.createElement('b'); b.textContent = p[1]; li.append(p[0] + ' ', b); meta.append(li);
+    });
+    sec.append(h, meta, list);
+    return sec;
+  }
+
   function dress(box, detail) {
     var doc = box.ownerDocument, s = detail.state, c = detail.controls;
     if (!s || !c) { return; }
@@ -132,7 +156,17 @@
       box.append(tech);
     }
     [].forEach.call(c.querySelectorAll(':scope > p'), function (p) { if (/^Practice battles/.test(p.textContent)) { tech.append(p); } });
-    c.prepend(chips(doc, [['Copper', s.copper], ['Light', s.light], ['Steps', s.step], ['Troops', s.troops.length]], 'purse'));
+    var purse = chips(doc, [['Copper', s.copper], ['Light', s.light], ['Steps', s.step], ['Troops', s.troops.length]], 'purse');
+    c.prepend(purse);
+    if (detail.game && detail.game.quests) {
+      var redraw = function () {
+        var st = detail.game.state(), old = c.querySelector(':scope > .quests');
+        var np = chips(doc, [['Copper', st.copper], ['Light', st.light], ['Steps', st.step], ['Troops', st.troops.length]], 'purse');
+        c.querySelector(':scope > .purse').replaceWith(np);
+        if (old) { old.replaceWith(questBoard(doc, detail.game, redraw)); }
+      };
+      purse.after(questBoard(doc, detail.game, redraw));
+    }
     [].forEach.call(c.querySelectorAll('[id^=visitor-summon-]'), function (b) { b.classList.add('egg', 't' + b.id.slice(-1)); });
     [].forEach.call(c.querySelectorAll('[id^=visitor-hatch-]'), function (b) { b.classList.add('nest'); });
     var fights = c.querySelectorAll('[id^=visitor-fight-]');

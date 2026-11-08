@@ -15,7 +15,7 @@
           var troops = detail.game.state().troops.slice(0, 10).map(function (x) { return x.adopcion.tropa; });
           var result = await root.AtlasVisitorBattle.run(place.id, troops, detail.account.info().seed);
           if (!await root.AtlasVisitorBattle.verify(result, detail.account.info().seed)) { throw new Error('Replay did not verify'); }
-          detail.account.info(); last = result;
+          detail.account.info(); last = result; if (detail.game.fought) { detail.game.fought(result.combat.gana === 'asalto'); }
           show(result);
           box.dispatchEvent(new CustomEvent('visitor:battle', { detail: result }));
         } catch (error) { legend.textContent = 'NO_DATA: ' + error.message; }
@@ -28,7 +28,8 @@
     if (renderer) { renderer.para(); }
     var dialog = root.document.createElement('dialog'); dialog.setAttribute('aria-label', 'Wave battle over OpenWorld'); dialog.style.width = 'min(90vw, 800px)';
     var sentence = root.document.createElement('p'); sentence.id = 'visitor-battle-result';
-    sentence.textContent = (result.combat.gana === 'asalto' ? 'Visitor wins' : result.combat.gana === 'defensa' ? 'Patrol wins' : 'Draw') + ' · ' + result.combat.rondas + ' rounds · balance NO_DATA: historical provisional rules.';
+    var winner = (result.combat.gana === 'asalto' ? 'Visitor wins' : result.combat.gana === 'defensa' ? 'Patrol wins' : 'Draw') + ' · ' + result.combat.rondas + ' rounds · balance NO_DATA: historical provisional rules.';
+    sentence.textContent = 'Round by round…'; // the winner is set only when the replay ends (finish)
     var canvas = root.document.createElement('canvas'); canvas.style.width = '100%'; canvas.setAttribute('role', 'img'); canvas.setAttribute('aria-label', sentence.textContent);
     var close = root.document.createElement('button'); close.textContent = 'Return to the map'; close.style.minHeight = '44px'; close.addEventListener('click', function () { dialog.close(); });
     dialog.addEventListener('close', function () { if (renderer) { renderer.para(); renderer = null; } });
@@ -47,8 +48,9 @@
     }
     render();
     dialog.append(sentence, canvas, bar, status, close); box.append(dialog); dialog.showModal();
-    renderer = root.AtlasWaveDuel.escena(canvas, result.defenders, result.attackers, result.combat, { semilla: result.seed, quieto: root.matchMedia('(prefers-reduced-motion: reduce)').matches, emulado: 0, anuncia: function (text) { canvas.setAttribute('aria-label', text); } });
-    if (root.matchMedia('(prefers-reduced-motion: reduce)').matches) { renderer.salta(); }
+    function finish() { sentence.textContent = winner; canvas.setAttribute('aria-label', winner); }
+    renderer = root.AtlasWaveDuel.escena(canvas, result.defenders, result.attackers, result.combat, { semilla: result.seed, quieto: root.matchMedia('(prefers-reduced-motion: reduce)').matches, emulado: 0, alFin: finish });
+    if (root.matchMedia('(prefers-reduced-motion: reduce)').matches) { renderer.salta(); finish(); }
   }
   root.addEventListener('pagehide', function () { last = null; if (renderer) { renderer.para(); } });
 })(globalThis);
