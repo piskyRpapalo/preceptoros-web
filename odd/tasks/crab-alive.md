@@ -53,3 +53,19 @@ Law: Sovereign commission «the crab alive, the map in depth and the fight on th
   - the bubble's tail followed the crab (148 → 209 px);
   - the duel's result came out of the bubble after the fight;
   - at zoom 2.2 the tail points at the crab without covering it.
+
+## PR 4 as built (piece 6)
+- The duel no longer opens a window. `crab_stage.hold` marks a duel and `talk.css` makes it a transparent layer over the whole map.
+  - The scene's canvas is already transparent (`clearRect` in `wave_duel_scene.js`), so its waves are drawn over the zoomed hexes around the crab. They live, move and clash there.
+  - The «COMBAT · SIMULATED» seal stays in view.
+  - The controls (Pause, ×1, ×2, ×4, Return to the map) are a small Acho bar at the foot of the map.
+  - The result comes out of the crab's bubble (PR 3), quoting the motor.
+  - The two sentences stay in the DOM for the screen reader, but are hidden from view.
+- The motor (`atlas-motor.js`) and `wave_duel_scene.js` are untouched: no new imports and no clock. Same fight, same result.
+- Family-friendly as before: the reaction is detuning and clashing, never graphic harm.
+- Gates: the battle, conquest, replay and eggs guards, plus eye_carbon and gamepad, are green.
+- Doogee: a Reef duel's waves (green squares, violet triangles) moved and clashed over the zoomed map, beside the crab, with the bar at the foot.
+
+### NO_DATA
+- The waves are not yet born from the crab's own point. The scene keeps its two columns, laid over the map; anchoring the visitor's column at the crab needs an `origin` option in the scene (a small change in `wave_duel_scene.js`, still inside its byte budget).
+- The scene is a layer exactly over the map canvas, not paint inside `#surface`. On screen it is the same place; for the code it is a separate canvas.
