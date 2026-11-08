@@ -78,8 +78,4 @@
   var api = { KINDS: KINDS, render: render, mount: mount };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasHoldingsView = api;
-  // Boot on the page: the Rust ledger from WASM, painted in the Army voice; step 0 until the walk clock feeds it (C8).
-  if (root.document && !(typeof module === 'object' && module.exports) && root.AtlasHoldings) {
-    root.AtlasHoldings.load().then(function (led) { mount(root.document, led, 0); });
-  }
 })(typeof window !== 'undefined' ? window : globalThis);
