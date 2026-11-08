@@ -150,3 +150,5 @@ body{font-size:1rem}
 #gamepad .cats button[aria-pressed="true"]{outline:2px solid var(--fg);outline-offset:1px}
 @media (forced-colors: active){#gamepad :is(.gp-b,.cats button,.gp-off){background-image:none;border-color:ButtonText}}
 #gamepad .view-stick.gp-acho[data-on],#gamepad .view-stick.gp-acho:focus-visible{border-color:var(--fg)}
+/* I7 The right letters (type_scale.js): the reading panels scale by the visitor's step; the map and gamepad do not. */
+#chat,#voices,#building-sheet{zoom:var(--letters,1)}

@@ -109,7 +109,7 @@
   }
 
   var api = { MIN: MIN, SOIL: SOIL, BUTTONS: BUTTONS, fnv1a: fnv1a, spectrum: spectrum, value: value, curve: curve, path: path,
-    svg: svg, gesture: gesture, target: target, mount: mount };
+    svg: svg, gesture: gesture, target: target, paint: paint, move: move, mount: mount };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasGamepad = api;
   if (root.document && root.document.getElementById) { mount(root.document, root); }
