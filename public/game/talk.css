@@ -86,3 +86,7 @@
 #preceptor-talk.pt-min .pt-line>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 #preceptor-talk.pt-min.pt-new .pt-who::after{content:'';display:inline-block;width:8px;height:8px;margin-left:4px;border-radius:50%;background:currentColor}
 #stage>#preceptor-talk.pt-bubble.pt-min{width:max-content;max-width:min(86%,340px);padding:0 4px}#preceptor-talk.pt-min .pt-line{margin:0}
+
+/* The app's ball on every click (click_trail.js): above everything, never in the way. */
+.click-trail{position:fixed;inset:0;z-index:60;width:100vw;height:100vh;pointer-events:none}
+@media (forced-colors:active){.click-trail{display:none}}
