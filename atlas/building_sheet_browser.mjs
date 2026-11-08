@@ -78,16 +78,16 @@ async function main() {
     await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
     const town = await ev(`(() => { const b = document.getElementById('gp-town'); if (!b) return null; const r = b.getBoundingClientRect();
       return JSON.stringify({ w: r.width, h: r.height, inMid: !!b.closest('#gamepad .gp-mid'), acho: b.classList.contains('gp-acho'), label: b.getAttribute('aria-label') }); })()`);
-    ok(town, n + ': no Town button in the gamepad');
+    ok(town, n + ': no Node button in the gamepad');
     if (!town) { continue; }
     const t = JSON.parse(town); medidas['town' + n] = t;
-    ok(t.inMid && t.acho && t.w >= 44 && t.h >= 44, n + ': the Town button is not a 44 px Acho button in the gamepad middle: ' + JSON.stringify(t));
+    ok(t.inMid && t.acho && t.w >= 44 && t.h >= 44, n + ': the Node button is not a 44 px Acho button in the gamepad middle: ' + JSON.stringify(t));
     await ev(`document.getElementById('gp-town').click()`);
     const doors = await espera_hoja((m) => m.cards.length === 9);
     medidas['doors' + n] = { n: doors.cards.length, h: doors.h, focus: doors.focus };
     ok(doors.open && doors.expanded === 'true' && doors.cards.length === 9, n + ': the sheet does not show the nine buildings: ' + JSON.stringify(doors.cards.length));
     ok(doors.cards.every((c, i) => c.t.startsWith(contrato.buildings[i].name)), n + ': the doors are not the contract buildings in order');
-    ok(doors.conquestFirst, n + ': the Conquest card (flags, building types, build) is not first in Town');
+    ok(doors.conquestFirst, n + ': the Conquest card (flags, building types, build) is not first in Node');
     ok(doors.boxH >= 140 && doors.padB <= H, n + ': the sheet is not really visible, or pushes the gamepad out: ' + JSON.stringify([doors.boxH, doors.padB]));
     ok(/bs-card/.test(doors.focus || ''), n + ': focus does not move into the sheet: ' + doors.focus);
     ok(doors.small.length === 0 && doors.sinEspectro.length === 0, n + ': sheet controls under 44 px or without Acho: ' + JSON.stringify([doors.small, doors.sinEspectro]));

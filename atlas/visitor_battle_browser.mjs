@@ -57,10 +57,9 @@ async function main() {
   await ev('document.getElementById("visitor-beacon").click()');
   ok(await hasta('document.getElementById("visitor-beacon").disabled && !document.getElementById("visitor-summon-tc1").disabled',10000),'beacon granted once');
   await ev('document.getElementById("visitor-summon-tc1").click()');
-  ok(await hasta('!!document.getElementById("visitor-hatch-1")',10000),'paid egg exists');
+  ok(await hasta('document.getElementById("visitor-play").textContent.includes("Egg 1")', 10000),'paid egg exists');
   await ev(`(async()=>{for(let i=0;i<20;i++){document.getElementById('visitor-play').dispatchEvent(new CustomEvent('visitor:advance')) /* the crab walks one hex */;await new Promise(r=>setTimeout(r,0));}})()`);
-  ok(await hasta('!document.getElementById("visitor-hatch-1").disabled',10000),'egg ready after steps');
-  await ev('document.getElementById("visitor-hatch-1").click()');
+  ok(await hasta('!document.getElementById("visitor-hatch-1") && /Troops [1-9]/.test(document.getElementById("visitor-play").textContent)', 10000), 'the ready egg hatched by itself into the army (no sign step)');
   ok(await hasta('document.getElementById("visitor-play").textContent.includes("Troops 1")',10000),'adopted troop available');
   await ev(`document.getElementById('visitor-play').addEventListener('visitor:battle',e=>window.measuredBattle=e.detail,{once:true})`);
   await ev(`(async()=>{const V=AtlasMapPainter.view(),mk=V.world.markList.find(m=>m.fog);window.retado=mk;AtlasBuildingSheet.open(mk.id);await new Promise(r=>setTimeout(r,400));document.getElementById('surface').dataset.sel=mk.q+','+mk.r;for(let i=0;i<40&&!document.getElementById('bs-challenge');i++)await new Promise(r=>setTimeout(r,100));document.getElementById('bs-challenge').click();return 1})()`) /* C2: challenge a grey NPC building from its card (fog-and-conquest.md) */;

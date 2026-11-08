@@ -57,10 +57,9 @@ async function main() {
   await ev('document.getElementById("visitor-beacon").click()');
   ok(await hasta('document.getElementById("visitor-beacon").disabled && !document.getElementById("visitor-summon-tc1").disabled',10000),'beacon granted once');
   await ev('document.getElementById("visitor-summon-tc1").click()');
-  ok(await hasta('!!document.getElementById("visitor-hatch-1")',10000),'paid egg exists');
+  ok(await hasta('document.getElementById("visitor-play").textContent.includes("Egg 1")', 10000),'paid egg exists');
   await ev(`(async()=>{for(let i=0;i<20;i++){document.getElementById('visitor-play').dispatchEvent(new CustomEvent('visitor:advance')) /* the crab walks one hex */;await new Promise(r=>setTimeout(r,0));}})()`);
-  ok(await hasta('!document.getElementById("visitor-hatch-1").disabled',10000),'egg ready after steps');
-  await ev('document.getElementById("visitor-hatch-1").click()');
+  ok(await hasta('!document.getElementById("visitor-hatch-1") && /Troops [1-9]/.test(document.getElementById("visitor-play").textContent)', 10000), 'the ready egg hatched by itself into the army (no sign step)');
   ok(await hasta('document.getElementById("visitor-play").textContent.includes("Troops 1")',10000),'adopted troop available');
   ok(await hasta('!!document.querySelector(".revela canvas.revela-lienzo") && !!window.AtlasRevela',10000),'the egg opens: the reveal shows the hatched troop');
   ok(await ev('["Normal","Magic","Rare","Leviathan"].some(x => document.querySelector(".revela").textContent.includes(x))'), 'the reveal rarity is not in English');

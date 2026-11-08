@@ -33,13 +33,14 @@
     var css = doc.createElement('link'); css.rel = 'stylesheet'; css.href = '/game/talk.css'; doc.head.appendChild(css);
     var box = doc.createElement('section'); box.id = 'preceptor-talk'; box.setAttribute('aria-label', 'Your preceptor');
     var head = doc.createElement('p'); head.className = 'pt-line';
-    var who = doc.createElement('span'); who.className = 'pt-who'; who.textContent = 'Preceptor';
+    var who = doc.createElement('button'); who.type = 'button'; who.className = 'pt-who'; who.textContent = 'Preceptor'; who.setAttribute('aria-expanded', 'false');
     var line = doc.createElement('span'); line.setAttribute('aria-live', 'polite');
     var row = doc.createElement('div'); row.className = 'pt-row';
     head.appendChild(who); head.appendChild(line); box.appendChild(head); box.appendChild(row);
     var stage = doc.getElementById('stage');
     if (stage) { stage.appendChild(box); box.classList.add('pt-bubble'); } else { pad.parentNode.insertBefore(box, pad); }
-    var at = 'hello';
+    var at = 'hello'; box.classList.add('pt-min'); // minimized by default: it never insists (Sovereign, 2026-11-08); a tap on its name opens it
+    who.addEventListener('click', function () { var open = box.classList.toggle('pt-min') === false; who.setAttribute('aria-expanded', String(open)); box.classList.remove('pt-new'); place(); });
     function draw() {
       var l = LINES[at]; line.textContent = l[0]; row.textContent = ''; box.dataset.at = at; box.classList.toggle('pt-rest', at === 'rest');
       l[1].forEach(function (a, i) {
@@ -62,8 +63,8 @@
       box.style.setProperty('--tail', Math.round(Math.max(18, Math.min(w - 18, cx - left))) + 'px'); box.classList.toggle('pt-under', !up);
     }
     // news(text, who): a line that cites a result (the duel's winner from the motor's own sentence); OK goes back.
-    function news(text, who) {
-      var back = at; line.textContent = text; who0.textContent = who; row.textContent = '';
+    function news(text, who, open) {
+      var back = at; box.classList.add('pt-new'); if (open) { box.classList.remove('pt-min', 'pt-new'); who0.setAttribute('aria-expanded', 'true'); } line.textContent = text; who0.textContent = who; row.textContent = '';
       var b = doc.createElement('button'); b.type = 'button'; b.textContent = 'OK';
       b.addEventListener('click', function () { who0.textContent = 'Preceptor'; at = back; draw(); place(); });
       row.appendChild(b); place();
