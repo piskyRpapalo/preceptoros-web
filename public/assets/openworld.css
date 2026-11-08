@@ -164,3 +164,7 @@ body{font-size:1rem}
 @media (forced-colors: active){#building-sheet :is(.bs-card,.bs-tool){background-image:none;border-color:ButtonText}}
 /* I7 The right letters (type_scale.js): the reading panels scale by the visitor's step; the map and gamepad do not. */
 #chat,#voices,#building-sheet{zoom:var(--letters,1)}
+/* Terminals are always dark (Sovereign, 2026-11-08): every panel where the visitor reads or types is a terminal.
+   The house colours are system colours (Canvas, CanvasText), so one color-scheme makes the whole subtree dark in
+   either theme; the map keeps the visitor's theme. Forced colours still win: the system palette replaces both. */
+#chat,#voices,#building-sheet,.radio-chat{color-scheme:dark;background-color:Canvas;color:CanvasText}

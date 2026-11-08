@@ -136,6 +136,7 @@ jobs:
             node atlas/gamepad_browser.mjs
             node atlas/building_sheet_browser.mjs
             node atlas/type_scale_browser.mjs
+            node atlas/dark_terminals_browser.mjs
             node atlas/classroom_chat_browser.mjs
             node atlas/sw_first_load_browser.mjs
             node atlas/live_heartbeat_cases.mjs
