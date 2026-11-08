@@ -17,7 +17,7 @@ test('the pad and arrow-walk are retired; the view joystick stays; Enter walks o
   assert.equal(out.medidas.retiro.dataDirections, 0);
   assert.equal(out.medidas.retiro.arrowsWalk, false);
   assert.equal(out.medidas.joystick.present, true);
-  assert.equal(out.medidas.joystick.buttons, 1); // decree 2026-11-07: the right stick is born with the character
+  assert.equal(out.medidas.joystick.buttons, 2); // decree 2026-11-07, fulfilled 2026-11-08: the crab is born, its stick lives
   assert.ok(out.medidas.joystick.minHeight >= 44);
   assert.match(out.medidas.llegada, /terminal: basic/);
 });
