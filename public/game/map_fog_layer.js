@@ -41,9 +41,30 @@
       g.fillStyle = ink; g.beginPath(); g.arc(x + s * 0.38 * r + 0.08 * r, y - 1.2 * r, 0.13 * r, 0, 7); g.fill(); });
     g.restore();
   }
+  // Q-02 (Sovereign, 2026-11-08): each guardian walks a loop inside the hexagon it guards. The pace is a frame count and the
+  // offset comes from the building's key: no chance, no clock; reduced motion keeps it still. Near the crab (<= 3 hexes) a «?»
+  // floats over its head: a tap opens the guardian's profile (difficulty and reward; never its army).
+  var tick = 0, asks = [], timer = 0;
+  function spot(m, t, step, sq) { var a = t * 0.035 + (((m.q * 73856093) ^ (m.r * 19349663)) >>> 0) % 628 / 100; return [Math.cos(a) * 0.5 * step, Math.sin(a) * 0.5 * step * sq]; }
+  function ask(g, x, y, k, H) {
+    var ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), paper = H.css(H.rgbOf(H.T.NEUTRAL.paper)), r = 8 * k;
+    g.save(); g.lineWidth = Math.max(1, 1.6 * k); g.strokeStyle = ink; g.fillStyle = paper; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.stroke();
+    g.fillStyle = ink; g.font = '900 ' + Math.round(12 * k) + 'px ui-rounded, system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('?', x, y + 0.5 * k);
+    g.restore();
+  }
+  function profile(m) {
+    var T = root.AtlasPreceptorTalk && root.AtlasPreceptorTalk.view, B = root.AtlasVisitorBattle, name = String(m.id).replace(/-/g, ' ');
+    var pl = B && B.npcPlace ? B.npcPlace('b:' + m.id + ':' + m.q + ',' + m.r) : null, n = pl ? pl.troops.length : 0;
+    var hard = !pl ? 'NO_DATA: the battle rules are not loaded' : n <= 2 ? 'easy' : n <= 4 ? 'steady' : 'hard';
+    var text = 'Guardian of this ' + name + ' · difficulty: ' + hard + ' · reward: NO_DATA until holdings (C8). Clear the fog and challenge it from its card.';
+    if (T && T.news) { T.news(text, 'Guardian', true); }
+    return text;
+  }
+  function askAt(px, py) { for (var i = 0; i < asks.length; i++) { var h = asks[i]; if (px >= h.x0 && px <= h.x1 && py >= h.y0 && py <= h.y1) { return h.m; } } return null; }
   // draw(g, V, s, w, oval): called by map_chunks.js youLayer before the names, the aura and the crab.
   function draw(g, V, s, w) {
     seed(V); add(w.q, w.r, STEP);
+    var still = !!(root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches), moving = false; if (!still) { tick++; } asks = [];
     var k = V.G.k, P = function (q, r) { var h = V.P(q, r), p = V.turn(h.x, h.y), c = V.world.cells.at[q + ',' + r];
       return { x: V.G.cx + p.x * k, y: V.G.cy + p.y * k - (c ? V.height(c) * V.HSTEP : 0) * k }; };
     var o = P(0, 0), e = P(1, 0), step = Math.max(4, Math.hypot(e.x - o.x, e.y - o.y)), W = s.width, Hh = s.height, sq = 0.433 * (V.G.tilt || 1) * 2;
@@ -51,7 +72,14 @@
       var p = P(m.q, m.r);
       if (m.won) { flag(g, p.x + 0.35 * step, p.y - 0.2 * step, Math.max(k, 0.5), V.H); return; }
       if (!m.fog) { return; }
-      if (p.x > -40 && p.x < W + 40 && p.y > -40 && p.y < Hh + 60) { npc(g, p.x + 0.55 * step, p.y + 0.15 * step, Math.max(k, 0.5), V.H); }
+      if (p.x > -40 && p.x < W + 40 && p.y > -40 && p.y < Hh + 60) {
+        var d = spot(m, tick, step, sq / 2), kk = Math.max(k, 0.5), gx = p.x + d[0], gy = p.y + 0.15 * step + d[1]; moving = true;
+        npc(g, gx, gy, kk, V.H);
+        if (hexDist([m.q, m.r], [w.q, w.r]) <= 3) {
+          var ay = gy - 15.4 * 7 * kk / 7 - 12 * kk, half = Math.max(22, 10 * kk);
+          asks.push({ m: m, x: gx, y: ay, k: kk, x0: gx - half, x1: gx + half, y0: ay - half, y1: ay + half });
+        }
+      }
     });
     if (!fc) { fc = (root.document || {}).createElement ? root.document.createElement('canvas') : null; }
     if (!fc) { return; }
@@ -67,8 +95,21 @@
       f.fillStyle = gr; f.beginPath(); f.arc(0, 0, R, 0, 7); f.fill(); f.restore();
     });
     g.drawImage(fc, 0, 0);
+    asks.forEach(function (h) { ask(g, h.x, h.y, h.k, V.H); }); // over the fog: the question is always readable
+    if (moving && !still) { pace(); }
   }
-  var api = { clear: clear, hidden: hidden, won: won, npc: npc, tell: tell, draw: draw, CABIN: CABIN, OWN: OWN, STEP: STEP };
+  function pace() {
+    var ow = root.AtlasOpenworldView && root.AtlasOpenworldView();
+    if (!timer && ow && ow.redraw && !(root.document && root.document.hidden)) { timer = root.setTimeout(function () { timer = 0; ow.redraw(); }, 120); }
+  }
+  if (root.document && root.document.addEventListener) {
+    root.document.addEventListener('click', function (e) {
+      var sf = root.document.getElementById('surface'); if (!sf || e.target !== sf || !asks.length) { return; }
+      var r = sf.getBoundingClientRect(), m = r.width ? askAt((e.clientX - r.left) * (sf.width / r.width), (e.clientY - r.top) * (sf.height / r.height)) : null;
+      if (m) { e.stopImmediatePropagation(); e.preventDefault(); profile(m); }
+    }, true);
+  }
+  var api = { clear: clear, hidden: hidden, won: won, npc: npc, tell: tell, draw: draw, spot: spot, askAt: askAt, profile: profile, CABIN: CABIN, OWN: OWN, STEP: STEP };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasMapFog = api;
 })(typeof window !== 'undefined' ? window : globalThis);

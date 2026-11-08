@@ -60,3 +60,29 @@
 #conquest-sheet .cq-tech summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-size:.9em;text-decoration:underline}
 #conquest-sheet .cq-swatch{flex:0 0 1.2rem;height:1.2rem;border-radius:50%;border:2px solid var(--a1d1b26)}
 @media (forced-colors:active){#conquest-sheet .cq-bubble{background:Canvas;color:CanvasText;border-color:CanvasText}#conquest-sheet .cq-swatch{forced-color-adjust:none}}
+/* The pad in Acho, lifted (Sovereign, 2026-11-08: «iconos más Acho… a los botones y a los joysticks la sensación 3D de elevamiento»).
+   Each button keeps its aria-label; the text glyph gives way to a chunky inked icon with little eyes (a mask in the ink colour,
+   no raw colour: the shapes are black only as a mask). Buttons stand on an ink ledge and sink when pressed; the sticks are domes. */
+@supports ((-webkit-mask-image:none) or (mask-image:none)){
+#gamepad :is(.gp-b,.cats button){position:relative;font-size:0!important;-webkit-text-stroke:0}
+#gamepad :is(.gp-b,.cats button)::before{content:"";position:absolute;inset:6px 8px 12px;background:currentColor;-webkit-mask:var(--ic) center/contain no-repeat;mask:var(--ic) center/contain no-repeat}
+#gamepad #gp-play{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M7 4.6c0-1.3 1.4-2 2.4-1.4l10.6 7c1 .6 1 2 0 2.6L9.4 19.8c-1 .7-2.4 0-2.4-1.3zM11 8.2a1.4 1.4 0 1 0 0 2.8a1.4 1.4 0 1 0 0 -2.8zM11 13.2a1.4 1.4 0 1 0 0 2.8a1.4 1.4 0 1 0 0 -2.8z'/%3E%3C/svg%3E")}
+#gamepad #gp-town{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M2.5 11.4 12 3.2l9.5 8.2V20a1.6 1.6 0 0 1-1.6 1.6H4.1A1.6 1.6 0 0 1 2.5 20zM10 21.6v-4.4a2 2 0 0 1 4 0v4.4zM8.6 11.299999999999999a1.3 1.3 0 1 0 0 2.6a1.3 1.3 0 1 0 0 -2.6zM15.4 11.299999999999999a1.3 1.3 0 1 0 0 2.6a1.3 1.3 0 1 0 0 -2.6z'/%3E%3C/svg%3E")}
+#gamepad #gp-letters{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='8.3' fill='none' stroke='black' stroke-width='4.4' stroke-dasharray='3.2 3.3'/%3E%3Cpath fill-rule='evenodd' d='M12 5.6a6.4 6.4 0 1 0 0 12.8a6.4 6.4 0 1 0 0-12.8zM9.8 10.1a1.3 1.3 0 1 0 0 2.6a1.3 1.3 0 1 0 0 -2.6zM14.2 10.1a1.3 1.3 0 1 0 0 2.6a1.3 1.3 0 1 0 0 -2.6z'/%3E%3C/svg%3E")}
+#gamepad .cats [data-cat=Welcome]{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20zM9 9.2a3 3 0 1 1 4.6 2.5c-.9.6-1.3 1-1.3 2.1v.5h-2.2v-.7c0-1.6.7-2.4 1.7-3a1 1 0 1 0-1.6-.9zM11 16.2h2.4v2.4H11z'/%3E%3C/svg%3E")}
+#gamepad .cats [data-cat=Profile]{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M12 2.8a5.6 5.6 0 1 0 0 11.2a5.6 5.6 0 1 0 0-11.2zM10 6.999999999999999a1.2 1.2 0 1 0 0 2.4a1.2 1.2 0 1 0 0 -2.4zM14 6.999999999999999a1.2 1.2 0 1 0 0 2.4a1.2 1.2 0 1 0 0 -2.4z'/%3E%3Cpath fill-rule='evenodd' d='M3.5 21.5c0-4.3 3.8-6.6 8.5-6.6s8.5 2.3 8.5 6.6z'/%3E%3C/svg%3E")}
+#gamepad .cats [data-cat=Communication]{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M4.2 3.8h15.6A2.2 2.2 0 0 1 22 6v9.4a2.2 2.2 0 0 1-2.2 2.2h-7.6L7 21.6v-4H4.2A2.2 2.2 0 0 1 2 15.4V6a2.2 2.2 0 0 1 2.2-2.2zM7.4 9.2a1.5 1.5 0 1 0 0 3.0a1.5 1.5 0 1 0 0 -3.0zM12 9.2a1.5 1.5 0 1 0 0 3.0a1.5 1.5 0 1 0 0 -3.0zM16.6 9.2a1.5 1.5 0 1 0 0 3.0a1.5 1.5 0 1 0 0 -3.0z'/%3E%3C/svg%3E")}
+}
+#gamepad :is(.gp-b,.cats button){box-shadow:0 4px 0 var(--a1d1b26),0 9px 10px -6px color-mix(in srgb,var(--a1d1b26) 60%,transparent),inset 0 3px 0 color-mix(in srgb,var(--afffdf6) 80%,transparent),inset 0 -3px 0 color-mix(in srgb,var(--a1d1b26) 16%,transparent);transition:translate .08s,box-shadow .08s}
+#gamepad :is(.gp-b,.cats button):active{translate:0 3px;box-shadow:0 1px 0 var(--a1d1b26),inset 0 2px 0 color-mix(in srgb,var(--a1d1b26) 18%,transparent)}
+#gamepad > .view-joy > .view-stick.gp-acho{box-shadow:0 0 0 6px var(--af4ecda),0 0 0 9px var(--a1d1b26),0 6px 0 9px var(--a1d1b26),0 16px 18px 6px color-mix(in srgb,var(--a1d1b26) 30%,transparent),inset 0 10px 12px color-mix(in srgb,var(--afffdf6) 75%,transparent),inset 0 -12px 14px color-mix(in srgb,var(--a1d1b26) 16%,transparent)}
+#gamepad .view-stick > span{display:inline-grid;place-items:center;min-width:34px;min-height:34px;border-radius:50%;background:var(--afffdf6);border:2px solid var(--a1d1b26);box-shadow:0 4px 0 var(--a1d1b26),inset 0 3px 0 color-mix(in srgb,var(--afffdf6) 90%,transparent)}
+@media (prefers-reduced-motion:reduce){#gamepad :is(.gp-b,.cats button){transition:none}}
+@media (forced-colors:active){#gamepad :is(.gp-b,.cats button)::before{forced-color-adjust:none;background:CanvasText}#gamepad :is(.gp-b,.cats button),#gamepad .view-stick > span,#gamepad > .view-joy > .view-stick.gp-acho{box-shadow:none}}
+
+/* The bubble rests minimized (Sovereign, 2026-11-08): only its name shows; the line stays for screen readers. */
+#preceptor-talk .pt-who{font:inherit;font-weight:700;color:inherit;background:none;border:0;padding:0 6px;min-height:44px;min-width:44px;cursor:pointer}
+#preceptor-talk.pt-min .pt-row{display:none}
+#preceptor-talk.pt-min .pt-line>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+#preceptor-talk.pt-min.pt-new .pt-who::after{content:'';display:inline-block;width:8px;height:8px;margin-left:4px;border-radius:50%;background:currentColor}
+#stage>#preceptor-talk.pt-bubble.pt-min{width:max-content;max-width:min(86%,340px);padding:0 4px}#preceptor-talk.pt-min .pt-line{margin:0}

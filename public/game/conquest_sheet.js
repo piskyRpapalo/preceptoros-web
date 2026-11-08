@@ -1,7 +1,7 @@
 // The Conquest sheet (Sovereign, 2026-11-08; odd/tasks/fog-and-conquest.md C3): a conquest page with a flag on every
 // building held, and an expandable list of the building types and their customisation level, and Build leaves the web.
-// Its card sits first in the Town sheet: this file puts it there itself (building_sheet.js is at its byte ceiling), watching
-// the Town list and adding the card whenever the nine doors show. Loaded by visitor_battle_ui.js. Three parts:
+// Its card sits first in the Node sheet: this file puts it there itself (building_sheet.js is at its byte ceiling), watching
+// the Node list and adding the card whenever the nine doors show. Loaded by visitor_battle_ui.js. Three parts:
 //   Flags: every building this player controls: the node's own (one of each kind), the ones built on this device, and
 //     this visit's conquests (map_fog_layer.js won). A tap closes the sheet and opens that building's card on the map.
 //   Building types (expandable): the nine kinds and the model tower, each with its roof, its colour token and the
@@ -100,12 +100,12 @@
     var n = fill(); say('Conquest · ' + n + ' flag' + (n === 1 ? '' : 's') + ' · conquer a grey building to raise one more');
     var f = sheet.querySelector('#cq-flags button, summary'); if (f) { f.focus(); }
   }
-  // mount(doc, w): the «⚑ Conquest» card, first in the Town list whenever it shows the nine doors (not inside a building).
+  // mount(doc, w): the «⚑ Conquest» card, first in the Node list whenever it shows the nine doors (not inside a building).
   function mount(doc, w, tries) {
     var town = doc.getElementById('building-sheet'), list = town && town.querySelector('.bs-list'), h = town && town.querySelector('#bs-h');
     if (!list || !h) { if ((tries || 0) < 40) { w.setTimeout(function () { mount(doc, w, (tries || 0) + 1); }, 250); } return; }
     var put = function () {
-      if (!/^Town/.test(h.textContent) || !list.firstElementChild || doc.getElementById('bs-conquest')) { return; }
+      if (!/^Node/.test(h.textContent) || !list.firstElementChild || doc.getElementById('bs-conquest')) { return; }
       var li = doc.createElement('li'), b = card(doc, '\u2691 Conquest · flags and building types', 'bs-conquest');
       b.addEventListener('click', function () { toggle(doc, w, doc.getElementById('gp-town')); });
       li.appendChild(b); list.insertBefore(li, list.firstElementChild);

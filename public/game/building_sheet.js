@@ -16,15 +16,15 @@
   }
   // Pure: the sheet model. id null → the nine doors; id of a building → its options.
   function model(doc, id) {
-    if (!doc || !Array.isArray(doc.buildings)) { return { title: 'Town', cause: 'interiors_not_loaded', items: [] }; }
+    if (!doc || !Array.isArray(doc.buildings)) { return { title: 'Node', cause: 'interiors_not_loaded', items: [] }; }
     if (id == null) {
-      return { title: 'Town · nine buildings', items: doc.buildings.map(function (b) {
+      return { title: 'Node · its buildings', items: doc.buildings.map(function (b) {
         var live = b.options.filter(function (o) { return o.piece; }).length;
         return { id: b.id, name: b.name, label: b.name + ' · ' + b.role + ' · ' + live + ' of ' + b.options.length + ' live', live: live > 0 };
       }) };
     }
     var b = doc.buildings.filter(function (x) { return x.id === id; })[0];
-    if (!b) { return { title: 'Town', cause: 'building_unknown', items: [] }; }
+    if (!b) { return { title: 'Node', cause: 'building_unknown', items: [] }; }
     return { title: b.name + ' · ' + b.role, building: b, items: b.options.map(function (o) {
       return { id: o.id, name: b.name + ' ' + o.id, label: o.label, live: !!o.piece, say: verdict(b, o), action: o.action || null };
     }) };
@@ -76,7 +76,7 @@
     say('Loading the nine buildings…');
     var f = win.fetch ? win.fetch(URL_DOC, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }) : Promise.resolve(null);
     f.catch(function () { return null; }).then(function (d) {
-      data = d; draw(want); if (d) { say(want ? head.textContent : 'Town · choose a building'); focusFirst(); } want = null;
+      data = d; draw(want); if (d) { say(want ? head.textContent : 'Node · choose a building'); focusFirst(); } want = null;
     });
   }
 
@@ -85,13 +85,13 @@
     pad = doc.getElementById('gamepad'); var mid = pad && pad.querySelector('.gp-mid');
     if (!mid || doc.getElementById('gp-town')) { return null; }
     win = w;
-    btn = button(doc, 'gp-b', '⌂', 'Town'); btn.id = 'gp-town';
-    btn.setAttribute('aria-label', 'Town: the nine buildings'); btn.title = 'Town: the nine buildings';
+    btn = button(doc, 'gp-b', '⌂', 'Node'); btn.id = 'gp-town';
+    btn.setAttribute('aria-label', 'Node: the buildings of this node'); btn.title = 'Node: the buildings of this node';
     btn.setAttribute('aria-controls', 'building-sheet'); btn.setAttribute('aria-expanded', 'false');
     sheet = doc.createElement('section'); sheet.id = 'building-sheet'; sheet.className = 'bs-sheet'; sheet.hidden = true; sheet.setAttribute('aria-labelledby', 'bs-h');
     var bar = doc.createElement('div'); bar.className = 'bs-bar';
     back = button(doc, 'bs-tool', 'Back', 'Back'); back.addEventListener('click', function () { draw(null); focusFirst(); });
-    head = doc.createElement('h2'); head.id = 'bs-h'; head.textContent = 'Town';
+    head = doc.createElement('h2'); head.id = 'bs-h'; head.textContent = 'Node';
     var shut = button(doc, 'bs-tool', 'Close', 'Close'); shut.addEventListener('click', close);
     bar.appendChild(back); bar.appendChild(head); bar.appendChild(shut);
     list = doc.createElement('ul'); list.className = 'bs-list';

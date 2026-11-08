@@ -230,3 +230,19 @@ The Sovereign, 2026-11-08, with photos of the Doogee:
   - the star eye shrugs off the first detune.
   - Every number goes through the engine's rules, never the face.
  and move more (task 8's first half). Sound comes later, with the whole engine.
+
+## P2 · The pad in Acho, lifted (built)
+
+The Sovereign, 2026-11-08: «los botones pueden tener iconos algo más Acho; si pudieras dar a los botones y a los joysticks la sensación 3D de elevamiento, sería fantástico».
+
+- **Icons:** each pad button (Play, Town, Settings, Welcome, Profile, Communication) trades its text glyph for a chunky inked icon with little eyes: a play arrow, a house, a gear, a heart, a bust, a speech bubble.
+  - It is a CSS mask painted in the ink colour, so there is no raw colour.
+  - The aria-label is unchanged. Without mask support the glyphs stay.
+- **Lift:** the buttons stand on an ink ledge with a soft drop and a top light, and sink 3 px when pressed. Reduced motion drops the transition.
+- **Sticks:** the joysticks are domes (inner light and shade, a drop shadow), and their knob is a raised cream button.
+- **Forced colours:** plain borders and CanvasText icons.
+- **Measured:**
+  - `pad_lift_cases` (2);
+  - guards green: gamepad, two_clicks, eye_carbon, type_scale;
+  - `talk.css` 3796 B gzip;
+  - Doogee: the lifted pad with the new icons.
