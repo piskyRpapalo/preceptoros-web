@@ -273,8 +273,8 @@ body{font-size:1rem}
 .radio-chat{border-radius:calc(var(--radius) + 10px);padding:6px}
 .radio-chat-alterna,.radio-chat-tab{background:var(--afffdf6);color:var(--a1d1b26);border:3px solid var(--a1d1b26);border-radius:calc(var(--radius) + 6px);box-shadow:0 4px 0 var(--a1d1b26)}
 .radio-chat-tab[aria-selected="true"]{background:var(--affe58a)}
-.radio-msg-sello{display:inline-block;padding:0 8px;border-radius:999px;background:var(--a1d1b26);color:var(--afffdf6)}
+.radio-msg-cab > span[title]{display:inline-block;padding:0 8px;border-radius:999px;background:var(--a1d1b26);color:var(--afffdf6)}
 .radio-chat-no-data{border:3px dashed var(--afffdf6);border-radius:calc(var(--radius) + 6px)}
 #chat > form :is(input,button):active,#chat #map-brain :is(button,select):active,#chat > .tech summary:active,#building-sheet :is(.bs-card,.bs-tool):active,.radio-chat-alterna:active,.radio-chat-tab:active{transform:translateY(3px);box-shadow:0 1px 0 var(--a1d1b26)}
 @media (prefers-reduced-motion:reduce){#chat > form :is(input,button):active,#chat #map-brain :is(button,select):active,#chat > .tech summary:active,#building-sheet :is(.bs-card,.bs-tool):active,.radio-chat-alterna:active,.radio-chat-tab:active{transform:none}}
-@media (forced-colors:active){#chat,#building-sheet,.radio-chat,#chat > h2,#chat .log > li,#chat > form :is(input,button),#chat #map-brain :is(button,select),#chat > .tech summary,#building-sheet :is(.bs-card,.bs-tool,.bs-seal),.radio-chat-alterna,.radio-chat-tab,.radio-msg,.radio-msg-sello,.radio-chat-no-data{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}}
+@media (forced-colors:active){#chat,#building-sheet,.radio-chat,#chat > h2,#chat .log > li,#chat > form :is(input,button),#chat #map-brain :is(button,select),#chat > .tech summary,#building-sheet :is(.bs-card,.bs-tool,.bs-seal),.radio-chat-alterna,.radio-chat-tab,.radio-msg,.radio-msg-cab > span[title],.radio-chat-no-data{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}}
