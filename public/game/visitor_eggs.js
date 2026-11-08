@@ -7,7 +7,7 @@
     var copper = 0, light = 0, claimed = false, echoes = 0, step = 0, chain = [], pending = [], busy = false, ended = false;
     // Quests (2026-11-08, the player's soul): what the visit has really done, counted here; each reward is claimed once per
     // visit. Provisional values, like values.js: sized so a few minutes of play train enough waves to advance.
-    var done = { summons: 0, hatches: 0, fights: 0, wins: 0 }, taken = {};
+    var done = { summons: 0, hatches: 0, fights: 0, wins: 0, acts: 0 }, taken = {}, rooms = {};
     var QUESTS = [
       ['beacon', 'Light the beacon', function (s) { return [s.claimed ? 1 : 0, 1]; }, 0, 50],
       ['summon', 'Summon your first egg', function () { return [done.summons, 1]; }, 100, 0],
@@ -16,7 +16,9 @@
       ['fight', 'Fight once', function () { return [done.fights, 1]; }, 100, 0],
       ['win', 'Win a fight', function () { return [done.wins, 1]; }, 200, 100],
       ['squad', 'Raise a squad of three', function (s) { return [s.troops.length, 3]; }, 300, 150],
-      ['far', 'Walk 100 steps', function (s) { return [s.step, 100]; }, 0, 200]
+      ['far', 'Walk 100 steps', function (s) { return [s.step, 100]; }, 0, 200],
+      ['explore', 'Enter three buildings', function () { return [Object.keys(rooms).length, 3]; }, 150, 50],
+      ['act', 'Use a building', function () { return [done.acts, 1]; }, 100, 100]
     ];
     function quests() {
       var s = state();
@@ -34,6 +36,9 @@
         taken[id] = true; copper += q.copper; light += q.light; return state();
       },
       // the battle UI reports each verified fight; a win counts only when the replay verified (visitor_battle_ui.js)
+      // the building sheet reports each building entered and each action used (building_sheet.js events)
+      entered: function (id) { alive(); rooms[id] = true; return state(); },
+      acted: function () { alive(); done.acts++; return state(); },
       fought: function (won) { alive(); done.fights++; if (won) { done.wins++; } return state(); },
       beacon: function () { alive(); if (claimed) { throw new Error('Beacon already claimed in this visit'); } claimed = true; copper += 100; return state(); },
       // Voice Star: a verified model answer earns copper; the visit chain holds signed invocations only, so no receipt is added.

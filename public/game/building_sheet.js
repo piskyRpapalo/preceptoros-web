@@ -41,6 +41,7 @@
   function draw(id) {
     var doc = sheet.ownerDocument, m = model(data, id);
     at = id; head.textContent = m.title; back.hidden = id == null; list.textContent = '';
+    if (id != null && win.CustomEvent) { sheet.dispatchEvent(new win.CustomEvent('building:enter', { bubbles: true, detail: { id: id } })); } // quests count it
     if (m.cause) { say('NO_DATA · ' + m.cause); }
     m.items.forEach(function (it) {
       var li = doc.createElement('li'), b = button(doc, 'bs-card', it.label, it.name);
@@ -63,6 +64,7 @@
   function act(name, head) {
     load('/game/town_actions.js', 'AtlasTownActions', function (TA) {
       if (!TA) { say(head + ' · NO_DATA · piece_not_loaded'); return; }
+      if (win.CustomEvent) { sheet.dispatchEvent(new win.CustomEvent('building:act', { bubbles: true, detail: { name: name } })); }
       TA.run(name, { win: win, doc: sheet.ownerDocument, data: data, load: load }, function (text) { say(head + ' · ' + text); });
     });
   }

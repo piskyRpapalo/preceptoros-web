@@ -278,3 +278,18 @@ body{font-size:1rem}
 #chat > form :is(input,button):active,#chat #map-brain :is(button,select):active,#chat > .tech summary:active,#building-sheet :is(.bs-card,.bs-tool):active,.radio-chat-alterna:active,.radio-chat-tab:active{transform:translateY(3px);box-shadow:0 1px 0 var(--a1d1b26)}
 @media (prefers-reduced-motion:reduce){#chat > form :is(input,button):active,#chat #map-brain :is(button,select):active,#chat > .tech summary:active,#building-sheet :is(.bs-card,.bs-tool):active,.radio-chat-alterna:active,.radio-chat-tab:active{transform:none}}
 @media (forced-colors:active){#chat,#building-sheet,.radio-chat,#chat > h2,#chat .log > li,#chat > form :is(input,button),#chat #map-brain :is(button,select),#chat > .tech summary,#building-sheet :is(.bs-card,.bs-tool,.bs-seal),.radio-chat-alterna,.radio-chat-tab,.radio-msg,.radio-msg-cab > span[title],.radio-chat-no-data{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}}
+/* The controller as an inverted PlayStation pad (Sovereign, 2026-11-08): bigger sticks on the wings, and the middle that
+   shares panels and buttons drawn as a V — three face buttons above (the outer two ride higher), two below in a chin that
+   drops from the shell. The chin is a rotated square in the shell's own colour: its two lower edges are the V. */
+#gamepad{position:relative;z-index:0;margin-bottom:22px;padding-left:8px;padding-right:8px;column-gap:4px}
+#gamepad :is(.view-stick.gp-acho,.gp-off){flex:0 0 clamp(72px,20vw,104px);width:clamp(72px,20vw,104px);height:clamp(72px,20vw,104px)}
+#gamepad .gp-mid{max-width:none;gap:4px 6px;align-items:flex-start;padding-top:10px}
+#gamepad .cats{display:flex;flex-wrap:nowrap;gap:6px;max-width:none;order:2}
+#gamepad :is(.gp-b,.cats button){width:44px;height:44px;flex:0 0 44px}
+#gamepad #gp-play{order:1;transform:translateY(-8px)}
+
+#gamepad .cats [data-cat=Communication]{transform:translateY(-8px)}
+#gamepad .gp-mid::after{content:"";order:4;flex-basis:100%;height:0}
+#gamepad #gp-town{order:5}#gamepad #gp-letters{order:6}
+#gamepad::after{content:"";position:absolute;z-index:-1;left:50%;bottom:-22px;width:44px;height:44px;transform:translateX(-50%) rotate(45deg);background:var(--ae6dbc3);border-right:3px solid var(--a1d1b26);border-bottom:3px solid var(--a1d1b26)}
+@media (forced-colors:active){#gamepad::after{background:Canvas;border-color:CanvasText}}

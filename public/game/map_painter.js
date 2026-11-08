@@ -8,6 +8,9 @@
   var common = typeof module === 'object' && module.exports;
   var P = common ? require('./hex_projection.js') : root.HexProjection;
   var T = common ? require('./comic_tokens.js') : root.AtlasComicTokens;
+  // Villages, buildings and cast shadow: map_chunks.js.
+  var LM = common ? require('./map_chunks.js') : root.AtlasMapChunks, HH = null;
+  function H() { return HH || (HH = { css: css, shade: shade, mix: mix, rgbOf: rgbOf, T: T, NB: NB, LIGHT: LIGHT, height: height }); }
   var PC = common ? require('./palette_cycle.js') : root.AtlasPaletteCycle;
   var HSTEP = 7, LIGHT = [-0.45, -0.6, 0.66], SEA = { amp: 2, len: 5, speed: 3 }, LIMIT = 1024;
   var NB = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1]];
@@ -25,10 +28,10 @@
   function bands() {
     var N = T.NEUTRAL, F = T.FRONT_DOOR, ocean = rgbOf(N.ocean), cyan = rgbOf(N.cyan), paper = rgbOf(N.paper);
     return [
-      { h: 0, kind: 'water', pattern: 'waves', base: mix(ocean, cyan, 0.42) },
-      { h: 1, kind: 'sand', pattern: 'solid', base: mix(paper, rgbOf(F['PROPUESTA.base']), 0.35) },
-      { h: 2, kind: 'moss', pattern: 'hatch', base: mix(rgbOf(F['LIVE.base']), rgbOf(N.ink), 0.45) },
-      { h: 3, kind: 'rock', pattern: 'cross', base: mix(rgbOf(F['NO_DATA.base']), rgbOf(N.ink), 0.25) }];
+      { h: 0, kind: 'water', pattern: 'waves', base: mix(mix(cyan, rgbOf(F['FIRMADO.base']), 0.4), ocean, 0.08) },
+      { h: 1, kind: 'sand', pattern: 'solid', base: mix(rgbOf(F['PROPUESTA.base']), paper, 0.38) },
+      { h: 2, kind: 'moss', pattern: 'hatch', base: mix(rgbOf(F['LIVE.base']), rgbOf(N.ink), 0.12) },
+      { h: 3, kind: 'rock', pattern: 'cross', base: mix(rgbOf(F['FIRMADO.base']), paper, 0.42) }];
   }
   function bandOf(cell) { return cell[3] === 'water' ? 0 : Math.max(1, Math.min(3, cell[2])); }
 
@@ -69,7 +72,7 @@
   function corners(k, turn) { return NB.map(function (d, i) { var e = NB[(i + 1) % 6], p = P(d[0] + e[0], d[1] + e[1]), r = turn ? turn(p.x, p.y) : p; return [r.x / 3 * k, r.y / 3 * k]; }); }
   function same(x, y) { return { x: x, y: y }; }
   function turnOf(G) { return G.turn || same; }
-  function litOf(t, reduced) { return 0.62 + 0.38 * PC.palette(t, reduced).dia / 256; }
+  function litOf(t, reduced) { return LIT_LO + (1 - LIT_LO) * PC.palette(t, reduced).dia / 256; }
   // cell(g, c, x, y, o): one prism. o = { B, corner, k, lit, wt, lod, at, still }; still = baked (flat sea).
   function cell(g, c, x, y, o) {
     var b = o.B[bandOf(c)], hh = height(c), k = o.k;
@@ -90,14 +93,16 @@
     g.beginPath(); corner.forEach(function (q, j) { if (j) { g.lineTo(x + q[0], top + q[1]); } else { g.moveTo(x + q[0], top + q[1]); } }); g.closePath();
     g.fillStyle = css(shade(b.base, (0.9 + 0.1 * LIGHT[2]) * o.lit * occl)); g.fill();
     g.strokeStyle = css(shade(b.base, 0.55 * o.lit)); g.lineWidth = Math.max(0.5, k * 0.6); g.stroke();
+    if (LM && LM.shadow) { LM.shadow(g, c, x, top, o, H(), hh); }
     if (o.lod && b.pattern !== 'solid' && !(o.still && b.kind === 'water')) { pattern(g, b.pattern, x, top, k, b.base, o.lit, o.wt, c); }
+    var mk = o.marks && o.marks[c[0] + ',' + c[1]]; if (mk && LM) { LM.building(g, mk, x, top, o, H()); }
   }
 
   // floor(g, G, world, t, reduced): the live path, every prism every frame.
   function floor(g, G, world, t, reduced) {
     if (!world || !world.cells.list.length) { return 0; }
     var k = G.k, W = g.canvas.width, H = g.canvas.height, drawn = 0, turn = turnOf(G);
-    var o = { B: bands(), corner: corners(k, turn), k: k, lit: litOf(t, reduced), wt: reduced ? 0 : t * SEA.speed, lod: k * 48 > 18, at: world.cells.at, still: false };
+    var o = { B: bands(), corner: corners(k, turn), k: k, lit: litOf(t, reduced), wt: reduced ? 0 : t * SEA.speed, lod: k * 48 > 18, at: world.cells.at, still: false, marks: LM && LM.landmarks ? LM.landmarks(world) : null };
     g.save(); g.lineJoin = 'round';
     orderAt(world.cells, G).forEach(function (c) {
       var h0 = P(c[0], c[1]), p = turn(h0.x, h0.y), x = G.cx + p.x * k, y = G.cy + p.y * k;
@@ -109,7 +114,7 @@
   }
 
   // 3.5D · one ImageBitmap per (chunk, zoom bucket, angle, dpr), day + night; per frame only blits, sea crests and haze.
-  var cache = { scope: '', map: {}, bakes: 0, hits: 0 }, LIMIT_BMP = 14, LIT_LO = 0.62;
+  var cache = { scope: '', map: {}, bakes: 0, hits: 0 }, LIMIT_BMP = 14, LIT_LO = 0.84;
   function groupsOf(world) {
     if (world.groups) { return world.groups; }
     var by = {}, open = [], edge = [];
@@ -136,7 +141,7 @@
     var mx = Math.ceil(reach + 2), mt = Math.ceil(reach + 3 * HSTEP * kb + 2), mb = Math.ceil(reach + 2);
     var w = Math.max(1, Math.ceil((b.x1 - b.x0) * kb) + 2 * mx), h = Math.max(1, Math.ceil((b.y1 - b.y0) * kb) + mt + mb);
     var surf = env.make(w, h), g = surf.getContext('2d');
-    var o = { B: bands(), corner: corner, k: kb, lit: lit, wt: 0, lod: kb * 48 > 18, at: world.cells.at, still: true };
+    var o = { B: bands(), corner: corner, k: kb, lit: lit, wt: 0, lod: kb * 48 > 18, at: world.cells.at, still: true, marks: LM && LM.landmarks ? LM.landmarks(world) : null };
     g.lineJoin = 'round';
     b.order.forEach(function (c) { var p = P(c[0], c[1]), r = turn(p.x, p.y); cell(g, c, mx + (r.x - b.x0) * kb, mt + (r.y - b.y0) * kb, o); });
     cache.bakes++;
@@ -237,22 +242,7 @@
     });
     g.globalAlpha = 1;
   }
-  function pattern(g, kind, x, y, k, base, lit, wt, c) {
-    g.save(); g.strokeStyle = g.fillStyle = css(shade(base, kind === 'water' ? 1.7 * lit : 0.6 * lit)); g.lineWidth = Math.max(0.6, k * 0.8);
-    var s = 7 * k;
-    if (kind === 'water') {
-      var o = ((c[0] * 7 + c[1] * 5) % 6 - 3) * k + (wt % 24) / 24 * 4 * k;
-      g.beginPath(); g.moveTo(x - s + o, y); g.quadraticCurveTo(x - s / 2 + o, y - s / 3, x + o, y); g.stroke();
-      g.beginPath(); g.moveTo(x + o / 2, y + s / 2); g.quadraticCurveTo(x + s / 2 + o / 2, y + s / 6, x + s + o / 2, y + s / 2); g.stroke();
-    } else if (kind === 'dots') {
-      [[-0.5, -0.1], [0.4, 0.15], [-0.05, 0.35]].forEach(function (d) { g.beginPath(); g.arc(x + d[0] * s * 1.6, y + d[1] * s, Math.max(0.6, k * 0.9), 0, 6.283); g.fill(); });
-    } else if (kind === 'hatch') {
-      for (var i = -1; i <= 1; i++) { g.beginPath(); g.moveTo(x + i * s - s / 3, y + s / 3); g.lineTo(x + i * s + s / 3, y - s / 3); g.stroke(); }
-    } else {
-      g.beginPath(); g.moveTo(x - s / 2, y - s / 3); g.lineTo(x + s / 2, y + s / 3); g.moveTo(x + s / 2, y - s / 3); g.lineTo(x - s / 2, y + s / 3); g.stroke();
-    }
-    g.restore();
-  }
+  function pattern(g, kind, x, y, k, base, lit, wt, c) { if (LM) LM.pattern(g, kind, x, y, k, base, lit, wt, c, H()); }
 
   // start(onReady, opts) loads the 7 chunks around the centre; describe() is the text.
   var world = null, said = '', detail = '';
