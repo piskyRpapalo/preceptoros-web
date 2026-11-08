@@ -133,7 +133,8 @@ list below is promised.
   page says so.
 - **It works with no network.** The site installs as an app and keeps working
   offline.
-- **One language served today: English.** The nine-language matrix was retired with theGame
+- **One language served today: English** — until Hexelion can translate on the rack without paid tokens.
+  The nine-language matrix was retired with theGame
   (`LANGUAGES.md`); `bin/language_census.py` measures what the pages declare, so this line cannot drift.
 - **Every file under 25 MiB** (the chunk ceiling `test_web.py` enforces —
   the same limit the CDN serves per block). No framework, no bundler: what
