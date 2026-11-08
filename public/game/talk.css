@@ -9,6 +9,11 @@
 @media (prefers-reduced-motion:reduce){#preceptor-talk .pt-row button:active{transform:none}}
 @media (forced-colors:active){#preceptor-talk,#preceptor-talk .pt-row button{border-color:CanvasText;background:Canvas;color:CanvasText;box-shadow:none}#preceptor-talk .pt-who{background:CanvasText;color:Canvas}}
 #settings-sheet h3{margin:8px 0 0;font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+/* The speech bubble (commission «the crab alive», piece 3): on the map, its tail points at the crab. */
+#stage > #preceptor-talk.pt-bubble{position:absolute;z-index:3;margin:0;width:min(86%,340px);box-shadow:0 4px 0 var(--a1d1b26)}
+#stage > #preceptor-talk.pt-bubble::after{content:'';position:absolute;left:calc(var(--tail,50%) - 10px);bottom:-14px;width:20px;height:14px;background:var(--afffdf6);border:3px solid var(--a1d1b26);border-top:0;clip-path:polygon(0 0,100% 0,50% 100%)}
+#stage > #preceptor-talk.pt-bubble.pt-under::after{bottom:auto;top:-14px;clip-path:polygon(50% 0,100% 100%,0 100%)}
+#stage:has(> .on-map) > #preceptor-talk.pt-bubble,#stage > #preceptor-talk.pt-tuck{visibility:hidden} /* a scene on stage speaks for itself; the bubble keeps the result for after */
 /* The crab's stage (crab_stage.js): duels and hatched eggs pop out of the crab over the zoomed map, not over the page. */
 #stage{position:relative}
 #stage > .on-map{position:absolute;left:8px;right:8px;bottom:8px;z-index:4;margin:0;max-height:calc(100% - 16px);overflow:auto;transform-origin:var(--ox,50%) var(--oy,50%);animation:on-map-pop .42s cubic-bezier(.2,1.3,.4,1) both}
@@ -23,3 +28,16 @@
 @keyframes on-map-pop{from{transform:scale(.06);opacity:0}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){#stage > .on-map{animation:none}}
 @media (forced-colors:active){#stage > dialog.on-map,#stage > .revela.on-map{border-color:CanvasText;background:Canvas;color:CanvasText;box-shadow:none}}
+/* Every panel closes (panel_x.js): a 44 px ✕ in the voices panel; the sheets' «Close» shows its ✕ too. */
+#voices > .panel-x{position:sticky;top:0;z-index:2;width:44px;min-width:44px;min-height:44px;margin:0 0 -44px auto;justify-self:end;align-self:flex-end;padding:0;font:inherit;font-size:1.1rem;font-weight:800;color:var(--a1d1b26);background:var(--afffdf6);border:3px solid var(--a1d1b26);border-radius:999px;box-shadow:0 3px 0 var(--a1d1b26)}
+#voices[hidden] > .panel-x{display:none}
+.bs-sheet .bs-bar > .bs-tool:last-child::before{content:'\2715\00a0'}
+@media (forced-colors:active){#voices > .panel-x{border-color:CanvasText;background:Canvas;color:CanvasText;box-shadow:none}}
+/* The duel on the map (commission «the crab alive», piece 6): no window. The scene's canvas is transparent (clearRect),
+   so its waves are drawn over the zoomed map around the crab; the result comes out of the crab's bubble; the controls
+   are a small Acho bar at the foot of the map. The sentences stay for the screen reader. */
+#stage > dialog.on-map.duel{inset:0;width:auto;height:auto;max-height:none;max-width:none;margin:0;padding:0;overflow:visible;background:transparent;border:0;box-shadow:none;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;padding:8px}
+#stage > dialog.on-map.duel canvas{position:absolute;inset:0;width:100%;height:100% !important;z-index:-1}
+#stage > dialog.on-map.duel > p{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+#stage > dialog.on-map.duel > div{justify-content:center;padding:4px;border-radius:999px;background:color-mix(in srgb,var(--afffdf6) 88%,transparent);border:2px solid var(--a1d1b26)}
+#stage > dialog.on-map.duel > button:last-child{width:auto;align-self:center;margin:0;padding:0 18px}

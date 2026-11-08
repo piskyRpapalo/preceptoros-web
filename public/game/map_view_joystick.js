@@ -1,7 +1,7 @@
-// Map joysticks. The left stick is the camera (the old pan): it pushes the view, so the map slides the opposite way to
-// a drag (Sovereign, 2026-11-08). The right stick, reserved by decree 2026-11-07, is born with the character: it walks
-// the visitor's companion one hex at a time (map_chunks.js dirOf; colony_controls.js step). Turn and zoom stay on wheel,
-// pinch and keys.
+// Map joysticks. The left stick is two fingers on the map, one anchored at the crab (Sovereign's decree 2026-11-08, piece 1
+// of «the crab alive»: one finger already drags the map, so a stick that pans would be useless): left and right turn the
+// map on itself around the crab, up and down tilt it into its 2.5D perspective (map_zoom.js tilt). Zoom stays on pinch. The right stick, reserved by decree
+// 2026-11-07, is born with the character: it walks the visitor's companion one hex at a time (map_chunks.js dirOf).
 (function (root) {
   'use strict';
   var doc = root.document, stage = doc && doc.getElementById('stage');
@@ -48,8 +48,13 @@
     });
   }
 
-  make('view-joystick', 'left', '✥', { group: 'Map camera control', stick: 'Move the camera. Drag, or use arrow keys.' }, function (dx, dy) {
-    var scale = size(); pan.move(-dx * scale, -dy * scale);
+  var twist = 0;
+  make('view-joystick', 'left', '✥', { group: 'Map camera control', stick: 'Turn and tilt the map, like two fingers. Drag, or use arrow keys.' }, function (dx, dy) {
+    var Z = canvas.mapZoom, x = Number(canvas.dataset.youx), y = Number(canvas.dataset.youy), at = canvas.dataset.youx && isFinite(x) ? [x, y] : [];
+    if (!Z) { var scale = size(); pan.move(-dx * scale, -dy * scale); return; }  // no zoom piece: the old pan
+    if (dy && Z.tilt) { Z.tilt(Math.exp(dy * 0.008), at[0], at[1]); }       // up: the ground lies down into perspective
+    twist += dx * 0.5; var d = Math.trunc(twist);                                // turn: half a degree per pixel
+    if (d) { twist -= d; Z.rotate(d, at[0], at[1]); }
   });
   // The character stick: past 18 px from where the finger landed it steps toward the push, and keeps stepping while held.
   var lean = [0, 0], timer = null;

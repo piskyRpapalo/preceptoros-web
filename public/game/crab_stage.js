@@ -47,6 +47,13 @@
     }
     return true;
   }
+  // look(): after an accepted action, zoom onto the crab and stay (no way back is saved; the visitor's own pan or zoom
+  // takes the camera from here). A scene already on stage keeps its own camera.
+  function look() {
+    var s = surface(), v = view();
+    if (!s || !v || saved) { return false; }
+    delete s.dataset.look; tween(s, v, Number(s.dataset.zoom) || 1, Math.max(Number(s.dataset.zoom) || 1, ZOOM), null, null); return true;
+  }
   // The scene pops out of the crab: its transform origin is the crab's place on the map, in CSS pixels.
   function origin(el) {
     var s = surface(), r = s && s.getBoundingClientRect(), k = r && r.width ? r.width / s.width : 1;
@@ -62,7 +69,7 @@
   // hold(dialog): the duel opens on the map, not over the page (visitor_battle_ui.js); false → the caller shows it as before.
   function hold(d) {
     if (!onMap(d)) { return false; }
-    d.style.width = ''; d.show();
+    d.style.width = ''; if (d.querySelector('canvas')) { d.classList.add('duel'); } d.show(); // a duel: its waves on the map itself (piece 6)
     d.addEventListener('close', function () { focus(false); d.remove(); });
     d.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.preventDefault(); d.close(); } });
     var f = d.querySelector('button'); if (f) { f.focus({ preventScroll: true }); }
@@ -79,7 +86,7 @@
     }).observe(doc.body, { childList: true, subtree: true });
   }
 
-  var api = { ZOOM: ZOOM, ease: ease, centre: centre, focus: focus, hold: hold };
+  var api = { ZOOM: ZOOM, ease: ease, centre: centre, focus: focus, hold: hold, look: look };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasCrabStage = api;
   if (doc && doc.getElementById) { watch(); }

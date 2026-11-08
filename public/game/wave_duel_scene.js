@@ -59,7 +59,7 @@
         U[l].forEach(function (u, i) {
           var fila = n > 3 ? (i % 2 ? 0.07 : -0.02) : 0;
           u.hx = W * (l ? 0.2 + fila : 0.8 - fila); u.hy = paso * (i + 1) + H * 0.03;
-          if (!u.x) { u.x = u.hx; u.y = u.hy; }
+          if (!u.x) { var o0 = l && op.origen; u.x = o0 ? W * o0[0] : u.hx; u.y = o0 ? H * o0[1] : u.hy; } // origen: born at the crab
           u.r = Math.min(W * 0.09, paso * 0.44, 66 * dpr);
         });
       });
