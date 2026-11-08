@@ -57,7 +57,7 @@ jobs:
             python bin/seal_registry.py --check
             python -m unittest test_seal tests.test_state_v2 atlas.test_brain_tools
             node --test tools/preceptor-coder/preceptor_coder_cases.mjs
-            npx --yes --package=workerd@1.20261104.1 workerd test tests/world_worker_workerd.capns
+            npx --yes --package=workerd@1.20261104.1 workerd test tests/world_worker_workerd.capnp
             python bin/count_routes.py --check-doc DEPLOY.md
             node --test atlas/puros/decor_move_cases.mjs
             node --test atlas/puros/decor_command_cases.mjs
