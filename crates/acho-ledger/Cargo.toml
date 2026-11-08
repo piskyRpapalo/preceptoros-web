@@ -1,0 +1,11 @@
+[package]
+name = "acho-ledger"
+version = "0.1.0"
+edition = "2021"
+description = "C8 holdings and wave life: the signed rules, integer arithmetic, a hash-chained ledger that conserves every resource."
+license = "MIT"
+
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+[dependencies]

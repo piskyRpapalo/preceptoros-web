@@ -1,0 +1,11 @@
+# The Rust workspace of preceptoros (FIRMO 2026-11-08: «Firmo todo lo que pueda ser en rust desde ahora; se abre como la
+# nueva arquitectura»). One workspace, three outputs: WASM for the web, native for the app, a crate for A2A.
+[workspace]
+members = ["crates/acho-ledger"]
+resolver = "2"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"

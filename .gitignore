@@ -12,3 +12,4 @@ historial/
 # nodo. Meterlos en git seria inflar el repo con lo que ya vive en disco.
 public/downloads/*.gguf
 .aider*
+/target/
