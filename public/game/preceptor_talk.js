@@ -33,6 +33,7 @@
     var css = doc.createElement('link'); css.rel = 'stylesheet'; css.href = '/game/talk.css'; doc.head.appendChild(css);
     var trail = doc.createElement('script'); trail.src = '/game/click_trail.js'; doc.head.appendChild(trail); // the app's ball and sting on every click
     var talk = doc.createElement('script'); talk.src = '/game/open_talk.js'; doc.head.appendChild(talk); // E0: the basic chat to the rack (Communication)
+    var led = doc.createElement('script'); led.src = '/game/holdings_wasm.js'; led.onload = function () { var v = doc.createElement('script'); v.src = '/game/holdings_view.js'; doc.head.appendChild(v); }; doc.head.appendChild(led); // C8: Buildings owned, from the Rust ledger
     var box = doc.createElement('section'); box.id = 'preceptor-talk'; box.setAttribute('aria-label', 'Your preceptor');
     var head = doc.createElement('p'); head.className = 'pt-line';
     var who = doc.createElement('button'); who.type = 'button'; who.className = 'pt-who'; who.textContent = 'Preceptor'; who.setAttribute('aria-expanded', 'false');
