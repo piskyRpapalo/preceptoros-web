@@ -1,6 +1,8 @@
 // P4 · the 2.5D floor of the one map (odd/tasks/mapa-25d-aldea.md F3/F4): baked chunks become hex prisms, placed by
 // colonia_pagina geometry (cx, cy, k, turn) + HexProjection. Each chunk is also a Acho frame < 1,024 B. Deterministic;
 // house tokens only, a pattern per band (colour never the only cue); reduced motion: the sea stands still.
+// Solid floor first (Sovereign, 2026-11-08): the walkable sand is ONE flat colour, no texture and no neighbour shade, so
+// every raised hexagon (moss, rock, a building) reads against it. Its cue is being the lowest land; texture comes later.
 (function (root) {
   'use strict';
   var common = typeof module === 'object' && module.exports;
@@ -24,7 +26,7 @@
     var N = T.NEUTRAL, F = T.FRONT_DOOR, ocean = rgbOf(N.ocean), cyan = rgbOf(N.cyan), paper = rgbOf(N.paper);
     return [
       { h: 0, kind: 'water', pattern: 'waves', base: mix(ocean, cyan, 0.42) },
-      { h: 1, kind: 'sand', pattern: 'dots', base: mix(paper, rgbOf(F['PROPUESTA.base']), 0.35) },
+      { h: 1, kind: 'sand', pattern: 'solid', base: mix(paper, rgbOf(F['PROPUESTA.base']), 0.35) },
       { h: 2, kind: 'moss', pattern: 'hatch', base: mix(rgbOf(F['LIVE.base']), rgbOf(N.ink), 0.45) },
       { h: 3, kind: 'rock', pattern: 'cross', base: mix(rgbOf(F['NO_DATA.base']), rgbOf(N.ink), 0.25) }];
   }
@@ -73,7 +75,7 @@
     var b = o.B[bandOf(c)], hh = height(c), k = o.k;
     var wave = !o.still && b.kind === 'water' ? Math.round(SEA.amp * Math.sin((c[0] * 2 + c[1] * 3 + o.wt / 8) / SEA.len) * 10) / 10 : 0;
     var top = y - (hh * HSTEP + wave) * k, occl = 1, corner = o.corner;
-    NB.forEach(function (d) { var n = o.at[(c[0] + d[0]) + ',' + (c[1] + d[1])]; if (n && height(n) > hh) { occl -= 0.07; } });
+    if (b.pattern !== 'solid') NB.forEach(function (d) { var n = o.at[(c[0] + d[0]) + ',' + (c[1] + d[1])]; if (n && height(n) > hh) { occl -= 0.07; } });
     // Side faces toward the viewer, shaded by normal against the light.
     if (hh > 0) {
       for (var i = 0; i < 6; i++) {
@@ -88,7 +90,7 @@
     g.beginPath(); corner.forEach(function (q, j) { if (j) { g.lineTo(x + q[0], top + q[1]); } else { g.moveTo(x + q[0], top + q[1]); } }); g.closePath();
     g.fillStyle = css(shade(b.base, (0.9 + 0.1 * LIGHT[2]) * o.lit * occl)); g.fill();
     g.strokeStyle = css(shade(b.base, 0.55 * o.lit)); g.lineWidth = Math.max(0.5, k * 0.6); g.stroke();
-    if (o.lod && !(o.still && b.kind === 'water')) { pattern(g, b.pattern, x, top, k, b.base, o.lit, o.wt, c); }
+    if (o.lod && b.pattern !== 'solid' && !(o.still && b.kind === 'water')) { pattern(g, b.pattern, x, top, k, b.base, o.lit, o.wt, c); }
   }
 
   // floor(g, G, world, t, reduced): the live path, every prism every frame.
