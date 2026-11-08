@@ -57,14 +57,14 @@ jobs:
             python bin/seal_registry.py --check
             python -m unittest test_seal tests.test_state_v2 atlas.test_brain_tools
             node --test tools/preceptor-coder/preceptor_coder_cases.mjs
-            npx --yes --package=workerD@1.20261104.1 workerd test tests/world_worker_workerd.capns
+            npx --yes --package=workerd@1.20261104.1 workerd test tests/world_worker_workerd.capns
             python bin/count_routes.py --check-doc DEPLOY.md
             node --test atlas/puros/decor_move_cases.mjs
             node --test atlas/puros/decor_command_cases.mjs
             node --test atlas/puros/wave_duel_cases.mjs
             node --test atlas/wave_duel_stall_cases.mjs
             node --test atlas/puros/caravan_cases.mjs
-          node --test atlas/puros/byte_budget_cases.mjs
+            node --test atlas/puros/byte_budget_cases.mjs
             node --test atlas/puros/building_interiors_cases.mjs
             node --test atlas/puros/gap_board_cases.mjs
             node --test atlas/puros/audio_only_cases.mjs
@@ -95,14 +95,14 @@ jobs:
             node --test atlas/puros/state_frames_cases.mjs
             node --test atlas/puros/brain_frame_cases.mjs
             node --test atlas/puros/brain_frame_hash_cases.mjs
-            node --test atlas/puros/acbo_cases.mjs
-            node --test atlas/puros/acbo_reads_cases.mjs
-            node --test atlas/puros/node_terminal_cases.mjs
+            node --test atlas/puros/acho_cases.mjs
+            node --test atlas/puros/acho_reads_cases.mjs
+            node --test atlas/puros/node_terrain_cases.mjs
             node --test atlas/puros/room_voices_cases.mjs
             node --test atlas/puros/colony_state_cases.mjs
             node --test atlas/puros/hex_projection_cases.mjs
             node --test atlas/puros/room_log_cases.mjs
-            node --test atlas/puros/sweep_web_cases.mjs
+            node --test atlas/sweep_web_cases.mjs
             node --test atlas/map_chart_cases.mjs
             node --test atlas/map_chunks_cases.mjs
             node --test atlas/web_node_brain_cases.mjs
@@ -113,7 +113,7 @@ jobs:
             node --test atlas/f0_functions_cases.mjs
             node --test atlas/map_zoom_colony_cases.mjs
             node --test atlas/map_orbit_cases.mjs
-            node --test atlas/hit_walkers_cases.mjs
+            node --test atlas/hitl_walkers_cases.mjs
             node --test atlas/motor_35d_cases.mjs
             node atlas/hex_projection_gate.mjs
             node --test atlas/puros/catalog_iso_cases.mjs
@@ -125,7 +125,7 @@ jobs:
             node --test atlas/puros/colony_page_cases.mjs
             node --test atlas/puros/colony_controls_cases.mjs
             node --test atlas/puros/map_scene_cases.mjs
-            node --test atlas/puros/opentworld_state_cases.mjs
+            node --test atlas/puros/openworld_state_cases.mjs
             node --test atlas/puros/tutorial_walk_cases.mjs
             node --test atlas/puros/walk_route_cases.mjs
             node --test atlas/building_chat_cases.mjs
@@ -158,7 +158,7 @@ jobs:
             node atlas/egg_reload_browser.mjs
             node atlas/combat_screen_browser.mjs
             node atlas/landing_doors_browser.mjs
-            node atlas/opentorld_browser.mjs
+            node atlas/openworld_browser.mjs
             node atlas/live_invocation_browser.mjs
             node atlas/two_clicks_browser.mjs
             node atlas/eye_carbon_browser.mjs
@@ -176,13 +176,13 @@ jobs:
             node atlas/web_node_brain_browser.mjs
             node atlas/offline_brain_browser.mjs
             node atlas/rack_ideas_browser.mjs
-            node atlas/objectives_44_brower.mjs
+            node atlas/objectives_44_browser.mjs
             node atlas/infant_browser.mjs
             node atlas/walk_avatar_browser.mjs
             node atlas/walk_keys_browser.mjs
             node atlas/visitor_account_browser.mjs
             node atlas/visitor_eggs_browser.mjs
-            node --test atlas/voice_start_cases.mjs
+            node --test atlas/voice_star_cases.mjs
             node atlas/visitor_battle_browser.mjs
             node atlas/visitor_conquest_browser.mjs
             node atlas/battle_replay_controls_browser.mjs
@@ -192,7 +192,7 @@ jobs:
             node atlas/tutorial_places_browser.mjs
             node atlas/tutorial_walk_browser.mjs
             node atlas/wave_duel_browser.mjs
-            node atlas/agho_bestiary_cases.mjs
+            node atlas/acho_bestiary_cases.mjs
             node atlas/acho_icons_cases.mjs
             node atlas/acho_letters_cases.mjs
             node atlas/codex_cases.mjs
@@ -219,7 +219,7 @@ jobs:
             node atlas/shell_schematics_cases.mjs
             node atlas/z_cutoff_cases.mjs
             node atlas/lexical_projector_cases.mjs
-            node atlas/map_abho_cases.mjs
+            node atlas/map_acho_cases.mjs
             node atlas/discovery_runner.mjs
             python -m unittest tests.test_suite_census
             python bin/suite_census.py --check
