@@ -98,6 +98,10 @@ Decreto del Soberano (2026-11-07 noche): quien construye el mapa va a esta mesa 
 
 Catálogo gigante y vivo, cosechado de la biblioteca de la casa (2026-11-07 noche). Cada constructor propone UNA misión por turno y puede proponer misiones nuevas: este mapa se alimenta. Regla del catálogo: solo lo medido se afirma; todo NO_DATA lleva su causa; nada de esto es compromiso de orden; el catálogo se re-mide tras cada FIRMO. Los nombres de las misiones están en inglés con vocabulario ASD-STE100 (decreto del Soberano): una palabra, un significado; frases cortas.
 
+**LEY DE LA FUENTE UNICA (decreto del Soberano, 2026-11-08):** ESTA seccion es la unica fuente de misiones del ecosistema; nadie elige mision en otro sitio. El tablero del hueco honesto (docs/tablero-nodata-20261108.md) ORDENA estas misiones por dificultad: rango = huecos NO_DATA que la mision convierte en MEDIDO + piezas previas. El censo de la familia K (docs/censo-ideas-familia-k-20261108.md) ASIGNA cada idea a su funcion o a una mision de aqui. La campana EL NODO DESPIERTO (docs/campana-nodo-despierto-20261108.md) NARRA los actos con estas mismas misiones. Las vistas no crean misiones paralelas: toda mision nueva nace aqui con su vara y su recibo. El indice vivo que apunta a esta fuente es buzon#54.
+
+**EL BUCLE (decreto del Soberano, 2026-11-08):** al cerrar una pieza, el preceptor vuelve a esta seccion y toma la siguiente mision ANTES de pararse. Pararse sin mision siguiente elegida = turno abierto, no terminado. El FIRMO del Soberano es UNO por pieza entera y no detiene el bucle: la sesion sigue mientras queden misiones que la cuota alcance.
+
 ### A · Soberanía de Hexelion y LoRA
 
 - A1 · Connect the user brain: guía de cerebro remoto y llave propia en Ajustes; alguien ajeno conecta su cerebro sin ayuda; credenciales jamás dentro de la app descargable. Estado: propuesta (decreto de la casa). NO_DATA: flujo medido, causa: sin implementar.
@@ -204,6 +208,13 @@ Misiones que piden razonar a través de los repos, del canon y de la ley a la ve
 - I6 · Split the comms panel: tres botones separados: la radio (activa el modo completo para personas invidentes), el chat (en la parte baja de la web, los tres últimos mensajes en letras muy pequeñas; al pulsar, el panel crece) y Echoes (eventos y estado de la app y la web sobre las actualizaciones). Estado: propuesta (decreto).
 - I7 · Rebuild the panel letters: los tres paneles hoy acumulan letras innecesarias, enlaces rotos en su mayoría e información que no aporta: el rebuild interno corre PARALELO a la construcción de la cuenta efímera. Estado: problema medido (declarado por el Soberano); cura propuesta.
 - I8 · Make the buildings interactive: los edificios interactivos del mapa, tras los paneles. Estado: propuesta (decreto de orden).
+
+- I9 · Align the web icons with the app: lo nuevo manda, lo viejo se adapta (decreto del Soberano, 2026-11-08). Iconos y lenguaje visual de la web alineados con los de la app; ante incoherencia se guarda lo mas nuevo y se adapta lo viejo. Estado: propuesta (decreto).
+- I10 · Spread the brain context across devices: el contexto de Hexelion repartido entre los dispositivos del anillo sin copiar mundos ni romper la malla. Estado: propuesta (vector del preceptor claude). NO_DATA: reparto medido, causa: sin plano.
+
+### N · El hueco honesto: el ranking de NO_DATA (decreto del Soberano, 2026-11-08)
+
+- Las misiones N1 a N14 viven medidas en docs/tablero-nodata-20261108.md: cada una convierte huecos NO_DATA en MEDIDO con su causa y su vara (el comando que lo mide), ordenadas por rango I a IV (dificultad = huecos resueltos + piezas previas). Son parte de ESTA fuente; el tablero es su vista de ranking y se re-mide tras cada merge. Las misiones dormidas (esporas P2P, la Grieta, Audio Worklets) se citan ahi con su causa: sin vara medible no se inventa.
 
 ### H3 · Auditoría del mapa contra el código (2026-11-07 noche, Claude Opus)
 
