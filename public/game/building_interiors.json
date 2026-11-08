@@ -277,6 +277,16 @@
      ],
      "piece": "public/game/gap_board.js",
      "action": "gaps"
+    },
+    {
+     "id": "inhabitants",
+     "label": "The inhabitants and their state",
+     "missions": [
+      "E4",
+      "B5"
+     ],
+     "piece": "public/game/inhabitants.js",
+     "action": "inhabitants"
     }
    ]
   },
@@ -369,6 +379,7 @@
   "notebook": "notebook_export.js saves this device's notebook as one file",
   "gaps": "gap_board.js says which options are still NO_DATA, their missions and causes",
   "audio": "audio_only.js turns audio only on or off and says the map out loud",
-  "typo": "typo_report.js keeps the selected misspelt words in the notebook for the Mesa"
+  "typo": "typo_report.js keeps the selected misspelt words in the notebook for the Mesa",
+  "inhabitants": "inhabitants.js says each inhabitant's state from the node heartbeats, through the single state table"
  }
 }

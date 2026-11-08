@@ -26,6 +26,15 @@
       if (!e.ok) { done(T.line(e) + (e.cause === 'nothing_selected' ? ' · select the wrong words first' : '')); return; }
       var r = T.save(store, e.report); done(T.line(r, r.count));
     }],
+    inhabitants: ['/game/inhabitants.js', 'AtlasInhabitants', function (I, doc, done, c) {
+      if (!c.win.fetch) { done('NO_DATA · fetch_unavailable'); return; }
+      var get = function (u) { return c.win.fetch(u, { cache: 'no-store', credentials: 'omit' }).then(function (r) { return r.json(); }); };
+      c.load('/game/agent_state.js', 'AtlasAgentState', function (S) {
+        if (!S) { done('NO_DATA · piece_not_loaded'); return; }
+        Promise.all([get('/api/world-state'), get('/game/agent_states.json')]).then(function (x) { done(I.from(x[0], S, x[1]).line); },
+          function () { done('NO_DATA · world_state_unreachable'); });
+      });
+    }],
     notebook: ['/game/notebook_export.js', 'AtlasNotebook', function (N, doc, done, c) {
       var store = null; try { store = c.win.localStorage; } catch (e) { store = null; }
       var nb = N.build(store, new Date().toISOString());
