@@ -118,17 +118,18 @@ caso('invocar: fuera del enum de lo que un piloto puede proponer', () => {
   const enumAcc = acc.properties.accion.enum, origen = acc.properties.origen.enum;
   return todas(igual(enumAcc.includes('invocar'), false), igual(origen.includes('denso'), false));
 });
-caso('adoptar e invocar: solo ui.js, tras la firma de la persona; ningun modulo del laboratorio', () => {
+caso('adoptar e invocar: solo la UI del visitante, tras su consentimiento y su firma; ningun modulo del laboratorio', () => {
+  // Since Norte 7 corte D (752338ff) the /play/ files (sobres, arena, mercado, narragrafo, ui, ui-invoca) are retired; the
+  // law lives on in visitor_eggs.js (W-04, 2026-11-08: this case read the retired files and was red with nobody running it).
   const sin = (t) => t.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"\\])\/\/.*$/gm, '$1');
   const lee = (f) => sin(readFileSync(new URL('../public/game/' + f, import.meta.url), 'utf8'));
-  for (const f of ['canon.js', 'sobres.js', 'arena.js', 'mercado.js', 'narragrafo.js', 'brood.js', '../../atlas/puros/genome.js']) {
+  for (const f of ['canon.js', 'brood.js', '../../atlas/puros/genome.js']) {
     const c = lee(f);
     if (/\.adopta\(|\.invoca\(|Identity\.firmar|firmarTexto/.test(c)) { return f + ' adopta, invoca o firma'; }
   }
-  // FIRMO M1: la firma vive en ui-invoca.js (antes que ui.js en la familia).
-  const ui = lee('ui-invoca.js') + '\n' + lee('ui.js');
-  return todas(ui.indexOf('window.Identity.firmar(obj)') >= 0 || 'ui sin firma humana',
-               ui.indexOf('army.adopta(r.obj, r.firma)') > ui.indexOf('window.Identity.firmar(obj)') || 'adopta antes de firmar');
+  const ui = lee('visitor_eggs.js'), firma = ui.indexOf('account.sign(adoption, true)'), adopta = ui.indexOf('.adopta(adoption, signature)');
+  return todas(ui.indexOf("consent !== true") >= 0 || 'eclosion sin consentimiento explicito',
+               firma >= 0 || 'la UI del visitante no firma', adopta > firma || 'adopta antes de firmar');
 });
 
 process.stdout.write(JSON.stringify(casos) + '\n');

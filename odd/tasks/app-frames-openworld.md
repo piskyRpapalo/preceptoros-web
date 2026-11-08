@@ -1,6 +1,6 @@
 # The map inside the app (PreceptorOS mini window)
 
-**State: proposal. It loosens a security header, so it waits for the Sovereign's explicit FIRMO.**
+**State: SIGNED.** The Sovereign was asked in chat «Do you sign it?», and answered «Firmo todo! adelante» (2026-11-08). Built in this PR.
 
 ## What happens
 - The app's OpenWorld zone (`interface/app.html`, `#openworld-frame`) frames `https://preceptoros.org/openworld/`.
