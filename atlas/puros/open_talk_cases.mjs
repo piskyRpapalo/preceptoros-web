@@ -33,3 +33,9 @@ test('over 25 MB and empty messages never leave; a refused piece says its cause'
 test('the law is shown in plain words: text only, no IP or account, erased within 24 hours, data not orders', () => {
   assert.match(C.LAW, /25 MB/); assert.match(C.LAW, /no IP or account/); assert.match(C.LAW, /24 hours/); assert.match(C.LAW, /never as orders/);
 });
+test('the 24-hour list: the first look only learns what is there; a new message afterwards is fresh once', () => {
+  const seen = {};
+  assert.deepEqual(C.fresh(seen, [{ raiz: 'a' }, { raiz: 'b' }], true), [], 'old messages must not toast on arrival');
+  assert.deepEqual(C.fresh(seen, [{ raiz: 'c' }, { raiz: 'a' }], false).map((m) => m.raiz), ['c']);
+  assert.deepEqual(C.fresh(seen, [{ raiz: 'c' }], false), [], 'a message toasts twice');
+});
