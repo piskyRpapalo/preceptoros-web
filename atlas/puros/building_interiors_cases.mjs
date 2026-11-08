@@ -5,7 +5,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const B = createRequire(import.meta.url)('./building_interiors.js');
 const raiz = new URL('../../', import.meta.url);
-const doc = JSON.parse(readFileSync(new URL('data/building_interiors.json', raiz), 'utf8'));
+const doc = JSON.parse(readFileSync(new URL('public/game/building_interiors.json', raiz), 'utf8'));
 const existe = (p) => existsSync(new URL(p, raiz));
 const clon = () => JSON.parse(JSON.stringify(doc));
 

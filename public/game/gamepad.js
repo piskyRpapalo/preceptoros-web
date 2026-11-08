@@ -104,12 +104,14 @@
     }
     pad.appendChild(joy); pad.appendChild(mid); pad.appendChild(right);
     stage.parentNode.insertBefore(pad, stage.nextSibling);
+    // The Town button and its sheet of the nine buildings (building_sheet.js) join the middle once the pad exists.
+    var town = doc.createElement('script'); town.src = '/game/building_sheet.js'; doc.head.appendChild(town);
     if (win && win.dispatchEvent && win.Event) { win.dispatchEvent(new win.Event('resize')); }
     return pad;
   }
 
   var api = { MIN: MIN, SOIL: SOIL, BUTTONS: BUTTONS, fnv1a: fnv1a, spectrum: spectrum, value: value, curve: curve, path: path,
-    svg: svg, gesture: gesture, target: target, mount: mount };
+    svg: svg, gesture: gesture, target: target, paint: paint, move: move, mount: mount };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasGamepad = api;
   if (root.document && root.document.getElementById) { mount(root.document, root); }
