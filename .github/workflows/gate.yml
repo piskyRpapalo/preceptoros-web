@@ -41,6 +41,8 @@ jobs:
           node atlas/version_sw_gate.mjs
           node atlas/colony_page_gate.mjs
           node atlas/sweep_cases.mjs
+          node atlas/every_case.mjs --sabotage   # W-04: CI runs every case (odd/tasks/ci-every-case.md)
+          node atlas/every_case.mjs
           python test_web.py
 
       - name: Full gates, two complete passes
@@ -207,6 +209,8 @@ jobs:
             node questions/window_cases.mjs
             node atlas/echoes_cases.mjs
             node atlas/sweep_cases.mjs
+          node atlas/every_case.mjs --sabotage   # W-04: CI runs every case (odd/tasks/ci-every-case.md)
+          node atlas/every_case.mjs
             node atlas/acho_bust_cases.mjs
             node atlas/acho_crab_cases.mjs
             node atlas/chrome_launch_cases.mjs
