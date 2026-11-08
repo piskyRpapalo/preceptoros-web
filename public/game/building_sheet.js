@@ -30,7 +30,7 @@
     }) };
   }
 
-  var pad = null, sheet = null, list = null, head = null, line = null, back = null, btn = null, data = null, at = null, win = null;
+  var want = null, pad = null, sheet = null, list = null, head = null, line = null, back = null, btn = null, data = null, at = null, win = null;
   function G() { return root.AtlasGamepad; }
   function button(doc, cls, text, name) {
     var b = doc.createElement('button'); b.type = 'button'; b.className = cls; b.textContent = text;
@@ -72,11 +72,11 @@
   function close() { sheet.hidden = true; btn.setAttribute('aria-expanded', 'false'); btn.focus(); }
   function openSheet() {
     sheet.hidden = false; btn.setAttribute('aria-expanded', 'true');
-    if (data) { draw(null); focusFirst(); return; }
+    if (data) { draw(want); want = null; focusFirst(); return; }
     say('Loading the nine buildings…');
     var f = win.fetch ? win.fetch(URL_DOC, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }) : Promise.resolve(null);
     f.catch(function () { return null; }).then(function (d) {
-      data = d; draw(null); if (d) { say('Town · choose a building'); focusFirst(); }
+      data = d; draw(want); if (d) { say(want ? head.textContent : 'Town · choose a building'); focusFirst(); } want = null;
     });
   }
 
@@ -108,7 +108,12 @@
     return sheet;
   }
 
-  var api = { URL: URL_DOC, verdict: verdict, model: model, mount: mount };
+  // open(id): a building tapped on the map opens its own card (null or an unknown kind: the town list).
+  function open(id) {
+    if (!sheet) { return false; }
+    want = id && (!data || (data.buildings || []).some(function (b) { return b.id === id; })) ? id : null; openSheet(); return true;
+  }
+  var api = { URL: URL_DOC, verdict: verdict, model: model, mount: mount, open: open };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasBuildingSheet = api;
   if (root.document && root.document.getElementById) { mount(root.document, root); }
