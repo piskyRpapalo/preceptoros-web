@@ -25,7 +25,9 @@ test('the policy never allows inline script or eval; objects and foreign framing
   const script = POLICY.split('; ').find((d) => d.startsWith('script-src '));
   assert.doesNotMatch(script, /'unsafe-inline'|'unsafe-eval'/);
   assert.match(POLICY, /object-src 'none'/);
-  assert.match(POLICY, /frame-ancestors 'self'/);
+  const fa = POLICY.split('; ').find((d) => d.startsWith('frame-ancestors'));
+  assert.equal(fa, "frame-ancestors 'self' http://127.0.0.1:8742 http://localhost:8742", 'only the web and the app\'s loopback origins may frame it');
+  assert.ok(!/\*|https?:\/\/(?!127\.0\.0\.1:8742|localhost:8742)/.test(fa.replace("frame-ancestors 'self' ", '').replace(/ /g, ' ')), 'no wildcard, no other origin');
   assert.match(POLICY, /base-uri 'self'/);
 });
 
