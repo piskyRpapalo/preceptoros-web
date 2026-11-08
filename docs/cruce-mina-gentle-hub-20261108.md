@@ -27,7 +27,7 @@ Encargo del Soberano: el catálogo del Gentle Hub (94 entradas medidas) y los 16
 | M13 el blindaje y la paridad | F5, la telemetría blindada, con las puertas del sótano | Ajustes, harness y el sótano | gentle-dot: Dockerfile con cap_drop, check-package, connector-integrity, CI completa; el patrón del auditor de pnpm (escaneo de solo lectura y plan que revisas antes de aplicar) y del juez local que corre los pasos de CI sin quemar cuota |
 | M14 la distribución de 2 clics | F1 con F2, el tronco a 4 destinos | Ajustes | gentle-dot: scripts package con smoke test propio, setup-debian, canales homebrew y scoop |
 | M15 la compuerta | H4 con F10 el pase aprobado y K12 los interruptores | Aduana, Mando, Ajustes (el botón de pánico) | gentle-dot: approvals (native, fake, tests), approval-guard, isolation; el modo sin freno dura máximo 1 hora y solo lo enciende el humano |
-| M16 la doctrina citada | A3 el buzón y la casa, con D3 el chat que cita | La casa y el ágora | from-chat-to-cognitive-system (40 diapositivas) y gentle-wiki: doctrina con fuente, jamás cita inventada |
+| M16 la doctrina citada | A3, el canal y la casa, con D3 el chat que cita | La casa y el ágora | from-chat-to-cognitive-system (40 diapositivas) y gentle-wiki: doctrina con fuente, jamás cita inventada |
 
 ## 3. La fila nueva propuesta (UNA)
 
