@@ -176,11 +176,12 @@
       env.doc.documentElement.style.setProperty('--fg', c.fg);
       return c;
     }
-    function start() {
-      var c = env.colony();
-      if (!c || walker) { return; }
-      var home = c.nodes[0];
-      if (home) { walker = { node: home.id, q: home.q, r: home.r }; }
+    // start(visitor): the walker is born on the colony's first node; start(true) with no colony births the visitor's crab
+    // at the tutorial cabin (0, 0) on the bare floor. A colony that arrives later replaces that visitor birth.
+    function start(visitor) {
+      var c = env.colony(), home = c && c.nodes[0];
+      if (walker && !(walker.visitor && home)) { return; }
+      if (home) { walker = { node: home.id, q: home.q, r: home.r }; crab = null; } else if (visitor) { walker = { node: 'cabin', q: 0, r: 0, visitor: true }; }
     }
     // selectNeighbour(direction): choose the visible node in that direction (move() decides). Nothing moves yet.
     function selectNeighbour(direction) {

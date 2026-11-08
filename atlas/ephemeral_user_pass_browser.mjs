@@ -85,7 +85,8 @@ async function main() {
   ok(await pulsaId('visitor-start'), 'visit started');
   ok(await hasta('!!document.getElementById("visitor-beacon")', 10000), 'visit panel shows beacon');
   const titleDuringVisit = await ev(`document.getElementById('map-h').textContent`);
-  ok((VACIA ? /^Visitor-[a-f0-9]{8} · NO_DATA: visitor position unavailable$/ : /^Visitor-[a-f0-9]{8} · [A-Z][a-z]{3,9} · -?\d+, -?\d+$/).test(titleDuringVisit), 'map title must identify the active ephemeral visit and its location: ' + titleDuringVisit);
+  // 2026-11-08: with an empty colony the visitor's crab is born at the cabin, so the title carries a real place too.
+  ok((VACIA ? /^Visitor-[a-f0-9]{8} · [A-Z][a-z]{3,9} · 0, 0$/ : /^Visitor-[a-f0-9]{8} · [A-Z][a-z]{3,9} · -?\d+, -?\d+$/).test(titleDuringVisit), 'map title must identify the active ephemeral visit and its location: ' + titleDuringVisit);
   ok(await pulsaId('visitor-beacon'), 'beacon claimed');
   await espera(300);
   const panel = await ev(`document.getElementById('visitor-play').textContent`);

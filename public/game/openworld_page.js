@@ -169,7 +169,7 @@
     if (more) { raiz.requestAnimationFrame(step); } else { looping = false; }
   }
   surface.addEventListener('click', function (e) {
-    if (!CCT || !colonia || !CP || colonia_error) { return; }
+    if (!CCT || !CP) { return; }
     var r = surface.getBoundingClientRect();
     var px = (e.clientX - r.left) * (surface.width / r.width), py = (e.clientY - r.top) * (surface.height / r.height);
     var id = null; // Legacy node illustrations are not visible on the floor-only surface.

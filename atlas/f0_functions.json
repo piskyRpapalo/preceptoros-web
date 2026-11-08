@@ -347,7 +347,7 @@
     },
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "the view joystick is not the one-control view panner on the map"
+     "text": "the map sticks are not the camera and the character"
     }
    ]
   },
@@ -533,7 +533,7 @@
     },
     {
      "file": "atlas/gamepad_browser.mjs",
-     "text": "the character stick is not an honest off control"
+     "text": "the character stick is not a real walking control"
     },
     {
      "file": "atlas/gamepad_browser.mjs",

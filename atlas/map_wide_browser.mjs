@@ -80,7 +80,7 @@ async function main() {
   medidas.antes = { alto_mapa: a.h, ventana: a.alto, fraccion: +(a.h / a.alto).toFixed(2) };
   // Sovereign order 2026-11-07: the view bar (and with it the Explore button) is gone; only the two joysticks float over the map.
   ok(!a.boton && !a.barra, 'the map still carries a view bar or an Explore button: ' + JSON.stringify([a.boton, a.barra]));
-  ok(a.flotantes === 1, 'the map must carry exactly one floating control, the pan joystick (joystick decree 2026-11-07): ' + a.flotantes);
+  ok(a.flotantes === 2, 'the map must carry exactly two floating controls, the camera and the character sticks (joystick decree 2026-11-07, fulfilled 2026-11-08): ' + a.flotantes);
   await foto('g1-antes.png');
   await ev("document.querySelector('.cats [data-cat=Welcome]').click(), true");
 

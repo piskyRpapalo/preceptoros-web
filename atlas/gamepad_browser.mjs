@@ -42,8 +42,8 @@ const MEDIR = `JSON.stringify((() => {
   const map = q('#map'), top = q('#map > .topbar'), h1 = q('#map-h'), stage = q('#stage'), pad = q('#gamepad');
   if (!pad) return { pad: false };
   const kids = [...map.children].filter((e) => getComputedStyle(e).display !== 'none' && e.getBoundingClientRect().height > 0 && getComputedStyle(e).position !== 'absolute').map((e) => e.id || e.className);
-  const joy = pad.querySelector(':scope > #view-joystick'), mid = pad.querySelector(':scope > .gp-mid'), off = pad.querySelector(':scope > .gp-off');
-  const slot = q('#character-joystick-slot');
+  const joy = pad.querySelector(':scope > #view-joystick'), mid = pad.querySelector(':scope > .gp-mid'), off = pad.querySelector(':scope > #character-joystick') || pad.querySelector(':scope > .gp-off');
+  const walk = off && off.querySelector('button.view-stick');
   const ctrls = [...pad.querySelectorAll('button')].filter((b) => !b.hidden && b.getBoundingClientRect().width > 0);
   const all = [...document.querySelectorAll('#map *')].filter((e) => e.getBoundingClientRect().width > 0 && !e.closest('#voices'));
   return { pad: true, kids, top: box(top), h1: box(h1), place: h1.textContent, topOnly: top.children.length === 1 && top.firstElementChild === h1,
@@ -51,8 +51,8 @@ const MEDIR = `JSON.stringify((() => {
     order: !!joy && !!mid && !!off && joy.nextElementSibling === mid && mid.nextElementSibling === off,
     mid: [...mid.querySelectorAll('button')].filter((b) => !b.hidden).map((b) => b.getAttribute('aria-label')),
     small: ctrls.filter((b) => b.getBoundingClientRect().width < 44 || b.getBoundingClientRect().height < 44).map((b) => b.getAttribute('aria-label')),
-    sinEspectro: [...ctrls, off].filter((b) => !b.classList.contains('gp-acho') || !b.style.getPropertyValue('--gp')).map((b) => b.getAttribute('aria-label') || b.className),
-    slot: slot && { inOff: off.contains(slot), state: slot.dataset.state, cause: slot.dataset.cause, role: slot.getAttribute('role'), button: !!off.querySelector('button') },
+    sinEspectro: [...ctrls, ...(off && off.classList.contains('gp-off') ? [off] : [])].filter((b) => !b.classList.contains('gp-acho') || !b.style.getPropertyValue('--gp')).map((b) => b.getAttribute('aria-label') || b.className),
+    walk: walk && { label: walk.getAttribute('aria-label'), w: Math.round(walk.getBoundingClientRect().width), group: off.getAttribute('aria-label') },
     offW: off.getBoundingClientRect().width, desbordan: all.filter((e) => e.getBoundingClientRect().right > innerWidth + 0.5).length };
 })())`;
 
@@ -92,8 +92,9 @@ async function main() {
     ok(m.mid.length >= 3, n + ': the gamepad middle has fewer than 3 account buttons: ' + JSON.stringify(m.mid));
     ok(m.small.length === 0, n + ': gamepad controls under 44 px: ' + JSON.stringify(m.small));
     ok(m.sinEspectro.length === 0, n + ': gamepad controls without an Acho spectrum: ' + JSON.stringify(m.sinEspectro));
-    ok(m.slot && m.slot.inOff && m.slot.state === 'NO_DATA' && m.slot.cause === 'character_not_born' && m.slot.role === 'note' && !m.slot.button && m.offW >= 44,
-      n + ': the character stick is not an honest off control: ' + JSON.stringify(m.slot));
+    // Decree 2026-11-07, fulfilled 2026-11-08: the right stick is born with the character (the visitor's crab) and walks it.
+    ok(m.walk && /Walk your character/.test(m.walk.label) && m.walk.group === 'Character control' && m.walk.w >= 44,
+      n + ': the character stick is not a real walking control: ' + JSON.stringify(m.walk));
     ok(m.scroll <= m.ancho && m.desbordan === 0, n + ': horizontal overflow: ' + JSON.stringify([m.scroll, m.ancho, m.desbordan]));
     await foto('gamepad-' + n + '.png');
   }

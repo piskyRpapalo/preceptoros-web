@@ -145,6 +145,75 @@
     return best;
   }
 
+  // dirOf(dx, dy, deg, squash): a screen gesture → one of the six hex steps. The vector is turned back to the 0° view on
+  // the ground (as the map tap does), so «up the screen» stays up at any orbit angle.
+  var SIX = [['east', 0], ['north-east', 60], ['north-west', 120], ['west', 180], ['south-west', 240], ['south-east', 300], ['east', 360]];
+  function dirOf(dx, dy, deg, squash) {
+    var q = squash || 1, vy = dy / q, th = -(deg || 0) * Math.PI / 180;
+    var ux = dx * Math.cos(th) - vy * Math.sin(th), uy = (dx * Math.sin(th) + vy * Math.cos(th)) * q, a = (Math.atan2(-uy, ux) * 180 / Math.PI + 360) % 360;
+    return SIX.reduce(function (b, d) { return Math.abs(a - d[1]) < Math.abs(a - b[1]) ? d : b; })[0];
+  }
+  // you(g, x, y, k, t, still, H): the visitor's crab, drawn in Acho from the anatomy of gdpr-art25-ephemeral-crab.js
+  // (shell, claws, legs, eyes; class «sea» for a visitor with no node). The shell is a polar wave r(θ) = R(1 + 0.09 cos 6θ),
+  // the scalloped edge; three legs a side paddle, the claws open and close, the eyes stand on stalks. A ring marks its
+  // hex. With reduced motion every phase is 0: it stands still.
+  function you(g, x, y, k, t, still, H) {
+    var F = H.T.FRONT_DOOR, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), paper = H.rgbOf(H.T.NEUTRAL.paper);
+    var sea = H.mix(H.rgbOf(F.cyan), H.rgbOf(F['FIRMADO.base']), 0.35), ph = still ? 0 : t / 4, bob = Math.sin(ph) * 1.2 * k;
+    var R = 12 * k, cy = y - 11 * k + bob, i, a;
+    g.save(); g.lineJoin = 'round'; g.lineCap = 'round';
+    g.globalAlpha = still ? 0.6 : 0.4 + 0.3 * Math.sin(t / 7); g.lineWidth = Math.max(1, 2.2 * k); g.strokeStyle = H.css(H.rgbOf(F['PROPUESTA.base']));
+    g.beginPath(); oval(g, x, y - 2 * k, 19 * k, 7.5 * k, 0, 2 * Math.PI); g.stroke();
+    g.globalAlpha = 0.25; g.fillStyle = ink; g.beginPath(); oval(g, x, y - 2 * k, 13 * k, 4.5 * k, 0, 2 * Math.PI); g.fill();
+    g.globalAlpha = 1; g.strokeStyle = ink; g.lineWidth = Math.max(1, 1.8 * k);
+    for (i = 0; i < 3; i++) {                      // legs: three a side, each a bent stroke that paddles in its own phase
+      [-1, 1].forEach(function (s) {
+        var sw = Math.sin(ph * 2 + i * 2.1 + (s > 0 ? 1.6 : 0)) * 2 * k, bx = x + s * (6 + i * 3.5) * k, by = cy + 3 * k;
+        g.beginPath(); g.moveTo(bx, by); g.lineTo(bx + s * 5 * k, by + 3 * k + sw * 0.4); g.lineTo(bx + s * 7 * k + sw, by + 7 * k); g.stroke();
+      });
+    }
+    var open = still ? 0.5 : 0.5 + 0.5 * Math.sin(ph * 1.5);   // claws: arm, then two jaws that open and close
+    [-1, 1].forEach(function (s) {
+      var hx = x + s * 17 * k, hy = cy - 6 * k;
+      g.beginPath(); g.moveTo(x + s * 9 * k, cy - 1 * k); g.quadraticCurveTo(x + s * 15 * k, cy - 1 * k, hx, hy); g.stroke();
+      g.fillStyle = H.css(H.shade(sea, 0.92)); g.beginPath(); g.arc(hx, hy, 4.6 * k, 0, 2 * Math.PI); g.fill(); g.stroke();
+      g.fillStyle = H.css(paper); g.beginPath(); g.moveTo(hx, hy); g.arc(hx, hy - 1 * k, 4.6 * k, -Math.PI / 2 - 0.25 - 0.55 * open, -Math.PI / 2 + 0.25 + 0.55 * open); g.closePath(); g.fill(); g.stroke();
+    });
+    g.fillStyle = H.css(sea); g.beginPath();      // the shell: a scalloped dome from the polar wave, flattened like a crab
+    for (i = 0; i <= 72; i++) { a = Math.PI * 2 * i / 72; var rr = R * (1 + 0.09 * Math.cos(6 * a)); g.lineTo(x + rr * Math.cos(a) * 1.08, cy + rr * Math.sin(a) * (Math.sin(a) < 0 ? 0.78 : 0.5)); }
+    g.closePath(); g.fill(); g.stroke();
+    g.fillStyle = H.css(H.mix(sea, paper, 0.55)); g.beginPath(); oval(g, x - 3 * k, cy - 5 * k, 5 * k, 2.2 * k, 0, 2 * Math.PI); g.fill();
+    [-1, 1].forEach(function (s) {                 // eyes on stalks
+      var ex = x + s * 4.5 * k, ey = cy - 12 * k - (still ? 0 : Math.max(0, Math.sin(ph * 0.7 + s)) * 1.5 * k);
+      g.beginPath(); g.moveTo(x + s * 3 * k, cy - 6 * k); g.lineTo(ex, ey); g.stroke();
+      g.fillStyle = H.css(paper); g.beginPath(); g.arc(ex, ey, 3 * k, 0, 2 * Math.PI); g.fill(); g.stroke();
+      g.fillStyle = ink; g.beginPath(); g.arc(ex + 0.6 * k, ey + 0.3 * k, 1.3 * k, 0, 2 * Math.PI); g.fill();
+    });
+    g.restore();
+  }
+  // The visitor layer: with no live colony the page draws only the floor, so the companion is drawn here on every
+  // visitor:draw, its place is written for the map tap (dataset.youx/youy), and the camera follows it when it nears an
+  // edge, unless the visitor is looking around (dataset.look, the left stick or a drag).
+  function youLayer(doc) {
+    var s = doc.getElementById('surface');
+    if (!s) { return; }
+    s.addEventListener('visitor:draw', function () {
+      var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(), MP = root.AtlasMapPainter, V = MP && MP.view && MP.view();
+      var C = ow && !ow.colony && V && ow.controls, w = C && C.walker && C.walker();
+      if (C && !w && C.start) { C.start(true); w = C.walker(); }
+      if (!w) { return; }
+      var cell = V.world.cells.at[w.q + ',' + w.r], h0 = V.P(w.q, w.r), p = V.turn(h0.x, h0.y), k = V.G.k;
+      var x = V.G.cx + p.x * k, y = V.G.cy + p.y * k - (cell ? V.height(cell) * V.HSTEP : 0) * k;
+      s.dataset.youx = String(Math.round(x)); s.dataset.youy = String(Math.round(y));
+      var g = s.getContext('2d'); g.setTransform(1, 0, 0, 1, 0, 0); you(g, x, y, Math.max(k, 0.5), ow.t || 0, ow.reduced === true, V.H);
+      var W = s.width, Hh = s.height;
+      if (!s.dataset.look && (x < W * 0.25 || x > W * 0.75 || y < Hh * 0.3 || y > Hh * 0.7)) {
+        s.dataset.panx = String(Math.round((Number(s.dataset.panx) || 0) + W / 2 - x));
+        s.dataset.pany = String(Math.round((Number(s.dataset.pany) || 0) + Hh / 2 - y));
+        if (ow.redraw && root.requestAnimationFrame) { root.requestAnimationFrame(function () { ow.redraw(); }); }
+      }
+    });
+  }
   // A tap on a village building opens its card (building_sheet.js open); a tap elsewhere goes on to the map.
   function listen(doc) {
     var s = doc.getElementById('surface');
@@ -156,10 +225,10 @@
     }, true);
   }
   if (root.document && root.document.getElementById) {
-    if (root.document.readyState === 'loading') { root.document.addEventListener('DOMContentLoaded', function () { listen(root.document); }); } else { listen(root.document); }
+    if (root.document.readyState === 'loading') { root.document.addEventListener('DOMContentLoaded', function () { listen(root.document); youLayer(root.document); }); } else { listen(root.document); youLayer(root.document); }
   }
 
-  var api = { load: load, pattern: pattern, markAt: markAt, landmarks: landmarks, building: building, shadow: shadow, KINDS: KINDS };
+  var api = { load: load, pattern: pattern, markAt: markAt, dirOf: dirOf, you: you, landmarks: landmarks, building: building, shadow: shadow, KINDS: KINDS };
   root.AtlasMapChunks = api;
   if (typeof module !== 'undefined' && module.exports) { module.exports = api; }
 })(typeof globalThis !== 'undefined' ? globalThis : this);
