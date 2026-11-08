@@ -1,3 +1,4 @@
+// [deprecated 2026-11-08] replaced_by=/game/duel_face.js (D1: the only fight face, crab vs ghost). Kept only as the fallback when duel_face.js is not ready.
 // [W] O1 (2026-10-27) · the wave duel: the ONE combat face of the game. escena(lienzo, def, asa, combate, op) → { velocidad,
 // salta, otra, para }. op.vivo: a LIVE fight whose combate.registro grows tick by tick; it ends only once combate.gana is set.
 // HYBRID (Sovereign's ruling): v1.1's LAYOUT (columns, a life bar per troop, the attacker on a sine trail, a dark sea of 5 sine

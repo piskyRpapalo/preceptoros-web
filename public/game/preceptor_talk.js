@@ -31,6 +31,8 @@
     var pad = doc.getElementById('gamepad');
     if (!pad || doc.getElementById('preceptor-talk')) { return null; }
     var css = doc.createElement('link'); css.rel = 'stylesheet'; css.href = '/game/talk.css'; doc.head.appendChild(css);
+    var trail = doc.createElement('script'); trail.src = '/game/click_trail.js'; doc.head.appendChild(trail); // the app's ball and sting on every click
+    var talk = doc.createElement('script'); talk.src = '/game/open_talk.js'; doc.head.appendChild(talk); // E0: the basic chat to the rack (Communication)
     var box = doc.createElement('section'); box.id = 'preceptor-talk'; box.setAttribute('aria-label', 'Your preceptor');
     var head = doc.createElement('p'); head.className = 'pt-line';
     var who = doc.createElement('button'); who.type = 'button'; who.className = 'pt-who'; who.textContent = 'Preceptor'; who.setAttribute('aria-expanded', 'false');
