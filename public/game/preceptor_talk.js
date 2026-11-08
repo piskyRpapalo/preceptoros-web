@@ -63,8 +63,8 @@
       box.style.setProperty('--tail', Math.round(Math.max(18, Math.min(w - 18, cx - left))) + 'px'); box.classList.toggle('pt-under', !up);
     }
     // news(text, who): a line that cites a result (the duel's winner from the motor's own sentence); OK goes back.
-    function news(text, who) {
-      var back = at; box.classList.add('pt-new'); line.textContent = text; who0.textContent = who; row.textContent = '';
+    function news(text, who, open) {
+      var back = at; box.classList.add('pt-new'); if (open) { box.classList.remove('pt-min', 'pt-new'); who0.setAttribute('aria-expanded', 'true'); } line.textContent = text; who0.textContent = who; row.textContent = '';
       var b = doc.createElement('button'); b.type = 'button'; b.textContent = 'OK';
       b.addEventListener('click', function () { who0.textContent = 'Preceptor'; at = back; draw(); place(); });
       row.appendChild(b); place();

@@ -9,7 +9,7 @@
   function phase(t, still) { var p = still ? 0.5 : (t % 1600) / 1600; return { grow: p, alpha: still ? 0.55 : 0.7 * (1 - p) }; }
   function hexDist(a, b) { var dq = a[0] - b[0], dr = a[1] - b[1]; return (Math.abs(dq) + Math.abs(dr) + Math.abs(dq + dr)) / 2; }
   // draw(g, V, s, still, oval, ow): called by map_chunks.js youLayer before the names and the crab.
-  // near(): the node's buildings next to the crab (hex distance <= 1) wear their name 50 % larger, and that name answers a
+  // near(): the node's buildings next to the crab (hex distance <= 2) wear their name 50 % larger, and that name answers a
   // direct tap (Sovereign, 2026-11-08, Q-01). Picture plus a tap target; the rectangles live only in page memory.
   var NAMES = { hostel: 'Hostel', coliseum: 'Coliseum', choir: 'Choir', workshop: 'Workshop', tower: 'Model tower', agora: 'Agora',
     customs: 'Customs', lottery: 'Lottery', 'visitor-house': 'Visitor house', doctor: 'Doctor' }, hits = [];
@@ -18,7 +18,7 @@
     var k = V.G.k, ink = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.ink)), paper = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.paper)), fs = Math.round(16.5 * dpr);
     g.save(); g.font = '800 ' + fs + 'px ui-rounded, "SF Pro Rounded", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
     V.world.markList.forEach(function (m) {
-      if (m.fog || hexDist([m.q, m.r], [w.q, w.r]) > 1) { return; }
+      if (m.fog || hexDist([m.q, m.r], [w.q, w.r]) > 2) { return; }
       var cell = V.world.cells.at[m.q + ',' + m.r], h0 = V.P(m.q, m.r), p = V.turn(h0.x, h0.y), t = NAMES[m.id] || m.id;
       var x = V.G.cx + p.x * k, y = V.G.cy + p.y * k - ((cell ? V.height(cell) * V.HSTEP : 0) + (m.roof === 'spire' ? 58 : 44)) * k;
       var tw = g.measureText(t).width + 18 * dpr, th = Math.max(fs + 10 * dpr, 44 * dpr * 0.6);
