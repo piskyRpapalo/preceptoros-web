@@ -4,6 +4,7 @@
   if (!box) { return; }
   var doc = root.document, cur = null, surface = doc.getElementById('surface');
   var face = doc.createElement('script'); face.src = '/game/duel_face.js'; doc.head.appendChild(face); // the duel's creature-wave face
+  var cq = doc.createElement('script'); cq.src = '/game/conquest_sheet.js'; doc.head.appendChild(cq); // C3: the Conquest card in Town
   // House keeps the squad and one honest line; the fights are the NPC buildings on the map (odd/tasks/fog-and-conquest.md C2:
   // the Sovereign moved the combat places out of House; the account fights and conquers the NPC buildings).
   box.addEventListener('visitor:render', function (event) {

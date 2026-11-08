@@ -54,15 +54,37 @@ This continues `mundo-grande.md` (G4 the fog on the floor, G5 the patrols on the
   - Combat waves must be the summon's creature waves, with no extra adornments; the triangle and star squads are discarded.
   - Summoned waves must flow and move. Sound comes later, with the whole engine.
 
-## C3 · The Conquest page (next)
+## C3 · The Conquest sheet (built)
 
-- A page `/game/conquest.html` (its own file: `openworld/index.html` is at its ceiling).
-  - It shows a flag on each controlled building: the node's own, plus this visit's conquests.
-- **An expandable «Building types» list:** the nine kinds and the model tower. For each kind:
-  - its roof;
-  - its colour token;
-  - the customisation level reached (none, name, skin, speech). It is honest: what is not yet built says NO_DATA with its cause.
-- **Build moves here from Settings.** `settings_sheet.js` loses its Build section, and the same `preceptoros.built` list is kept (no data lost).
+**Where:** a «⚑ Conquest» card, first in the Town sheet. `conquest_sheet.js` (new, 3.7 KB gzip) puts it there itself, watching the Town list, because `building_sheet.js` is at its 8000-byte raw ceiling (the Town guard caught 8367). `visitor_battle_ui.js` loads it, beside the conquest itself.
+
+**Its three parts:**
+- **Flags · the buildings you hold:**
+  - the node's own (one of each kind);
+  - the ones built on this device;
+  - this visit's conquests.
+  - A tap closes the sheet and opens that building's card on the map.
+- **Building types (expandable), family friendly** (Sovereign: «family friendly, con título y descripción + desplegable técnico»):
+  - each of the ten kinds shows its title, a short plain line («Where waves meet in friendly duels.») and its colour swatch;
+  - each building is a plain cream panel that folds, like the terminal's (first a speech bubble; the Sovereign: «no necesita el pico, hazlo un panel uniforme, con color crema de la terminal») («cada edificio con su desplegable y descripción… en un bocadillo color crema; mantén el círculo del color del edificio en el mapa»). Closed, it shows the building's map colour and title; open, it says what the building does;
+  - a folded «Technical» part holds the roof, the colour token, how many stand on this device and the customisation level (none, name, skin, speech).
+  - Today the level is honestly «none» for all.
+  - The next level says NO_DATA with its cause; speech is C5, gated.
+- **No Build in the web** (Sovereign: «la cuenta efímera solo puede conquistar; solo los nodos pueden construir, así que es una función que va a la app»).
+  - Build left Settings and does not come back here.
+  - What an earlier version built on this device is still read (`preceptoros.built`), so it keeps its flag.
+  - Building is task #4: buildings originated in the app.
+
+**Settings** keeps only Device and Notes.
+
+**For the app:** the Sovereign wants these bubbles sent to the PreceptorOS app once they are accessible and family friendly. They are plain DOM (details and summary, 44 px, forced-colors, the paper and ink tokens), so the app's World tab can show the same sheet. Packaging is task #4 (buildings originated in the app).
+
+**Measured:**
+- `conquest_cases` (5): no build in the web, the flags (never an NPC's building), the types and levels, the cream panels.
+- `settings_cases`: Build is gone.
+- Town guard: the nine doors in order, and the Conquest card first.
+- Guards green: type_scale, map_drag.
+- Doogee (real taps on Town, then Conquest): 10 flags; «Building types (10)» unfolds with swatches and honest levels.
 
 ## C4 · House shows the user's live buildings (next)
 

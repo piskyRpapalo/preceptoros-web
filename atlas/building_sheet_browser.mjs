@@ -63,7 +63,8 @@ async function main() {
     const s = document.getElementById('building-sheet'), list = s && s.querySelector('.bs-list');
     const vis = [...(s ? s.querySelectorAll('button') : [])].filter((b) => !b.hidden && b.getBoundingClientRect().width > 0);
     return { open: !!s && !s.hidden, boxH: s ? Math.round(s.getBoundingClientRect().height) : 0, padB: Math.round(document.getElementById('gamepad').getBoundingClientRect().bottom), h: s && s.querySelector('h2').textContent, line: s && s.querySelector('.bs-line').textContent,
-      cards: list ? [...list.querySelectorAll('.bs-card')].map((b) => ({ t: b.firstChild.textContent, seal: b.dataset.seal })) : [],
+      cards: list ? [...list.querySelectorAll('.bs-card:not(#bs-conquest)')].map((b) => ({ t: b.firstChild.textContent, seal: b.dataset.seal })) : [],
+      conquestFirst: !!list && !!list.firstElementChild && !!list.firstElementChild.querySelector('#bs-conquest'),
       small: vis.filter((b) => b.getBoundingClientRect().width < 44 || b.getBoundingClientRect().height < 44).map((b) => b.textContent),
       sinEspectro: vis.filter((b) => !b.classList.contains('gp-acho') || !b.style.getPropertyValue('--gp')).map((b) => b.textContent),
       focus: document.activeElement && document.activeElement.className, expanded: document.getElementById('gp-town').getAttribute('aria-expanded'),
@@ -86,6 +87,7 @@ async function main() {
     medidas['doors' + n] = { n: doors.cards.length, h: doors.h, focus: doors.focus };
     ok(doors.open && doors.expanded === 'true' && doors.cards.length === 9, n + ': the sheet does not show the nine buildings: ' + JSON.stringify(doors.cards.length));
     ok(doors.cards.every((c, i) => c.t.startsWith(contrato.buildings[i].name)), n + ': the doors are not the contract buildings in order');
+    ok(doors.conquestFirst, n + ': the Conquest card (flags, building types, build) is not first in Town');
     ok(doors.boxH >= 140 && doors.padB <= H, n + ': the sheet is not really visible, or pushes the gamepad out: ' + JSON.stringify([doors.boxH, doors.padB]));
     ok(/bs-card/.test(doors.focus || ''), n + ': focus does not move into the sheet: ' + doors.focus);
     ok(doors.small.length === 0 && doors.sinEspectro.length === 0, n + ': sheet controls under 44 px or without Acho: ' + JSON.stringify([doors.small, doors.sinEspectro]));
