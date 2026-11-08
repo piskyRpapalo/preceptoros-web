@@ -1,0 +1,37 @@
+{
+ "number": 749,
+ "title": "HITL · E4+B5 los habitantes: tabla única de estados",
+ "headRefOid": "a1c7a7742eda5e0f3b9d8c7a6b5e4d3c2b1a0f9e",
+ "mergeStateStatus": "DIRTY",
+ "statusCheckRollup": [
+  {
+   "__typename": "CheckRun",
+   "name": "ci-job-001",
+   "status": "COMPLETED",
+   "conclusion": "SUCCESS",
+   "workflowName": "CI"
+  },
+  {
+   "__typename": "CheckRun",
+   "name": "ci-job-002",
+   "status": "COMPLETED",
+   "conclusion": "SUCCESS",
+   "workflowName": "CI"
+  },
+  {
+   "__typename": "CheckRun",
+   "name": "ci-job-003",
+   "status": "COMPLETED",
+   "conclusion": "SUCCESS",
+   "workflowName": "CI"
+  },
+  {
+   "__typename": "CheckRun",
+   "name": "ephemeral_user_pass",
+   "status": "COMPLETED",
+   "conclusion": "FAILURE",
+   "workflowName": "CI"
+  }
+ ],
+ "body": "## Qué\nTabla única de estados y latidos reales.\n"
+}

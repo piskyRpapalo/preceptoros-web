@@ -1,0 +1,30 @@
+{
+ "number": 748,
+ "title": "HITL · K4c La Torre de la Ascensión: un piso por sello medido",
+ "headRefOid": "0959633b685a1c2e9f0d4b7a6c3e8f1d2a5b9c04",
+ "mergeStateStatus": "CLEAN",
+ "statusCheckRollup": [
+  {
+   "__typename": "CheckRun",
+   "name": "ci-job-001",
+   "status": "COMPLETED",
+   "conclusion": "SUCCESS",
+   "workflowName": "CI"
+  },
+  {
+   "__typename": "CheckRun",
+   "name": "ci-job-002",
+   "status": "COMPLETED",
+   "conclusion": "SUCCESS",
+   "workflowName": "CI"
+  },
+  {
+   "__typename": "CheckRun",
+   "name": "ci-job-003",
+   "status": "COMPLETED",
+   "conclusion": "SUCCESS",
+   "workflowName": "CI"
+  }
+ ],
+ "body": "## Qué\nUn piso por sello medido (387 desde el 2026-08-30).\n\nVERDE · 3/3 en gate CI local\nVisto en el Doogee: Visitor house > The ascension tower dice los pisos y «floor 388 (25-fq) is under construction».\n"
+}
