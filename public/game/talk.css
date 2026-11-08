@@ -51,3 +51,12 @@
 #gamepad .cats [data-cat=Welcome]{transform:translateY(2px)}#gamepad .cats [data-cat=Communication]{transform:translateY(-6px)}
 #gamepad :is(.gp-b,.cats button){font-size:23px;font-weight:900;line-height:1;-webkit-text-stroke:1.6px currentColor;paint-order:stroke fill}
 @media (forced-colors:active){#gamepad :is(.gp-b,.cats button){-webkit-text-stroke:0}}
+/* the Conquest sheet (conquest_sheet.js): the building types list, each with a swatch of its colour token */
+#conquest-sheet details{margin:.4rem 0}#conquest-sheet summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
+#conquest-sheet .cq-types{list-style:none;margin:.4rem 0;padding:0;display:grid;gap:.7rem}
+#conquest-sheet .cq-bubble{padding:0 .8rem;color:var(--a1d1b26);background:var(--afffdf6);border:2px solid var(--a1d1b26);border-radius:18px}
+#conquest-sheet .cq-bubble>summary{display:flex;align-items:center;gap:.6rem;min-height:44px;cursor:pointer;font-size:1.05em}
+#conquest-sheet .cq-bubble p{margin:.1rem 0 .4rem}
+#conquest-sheet .cq-tech summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-size:.9em;text-decoration:underline}
+#conquest-sheet .cq-swatch{flex:0 0 1.2rem;height:1.2rem;border-radius:50%;border:2px solid var(--a1d1b26)}
+@media (forced-colors:active){#conquest-sheet .cq-bubble{background:Canvas;color:CanvasText;border-color:CanvasText}#conquest-sheet .cq-swatch{forced-color-adjust:none}}
