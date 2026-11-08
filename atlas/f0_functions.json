@@ -533,7 +533,7 @@
     },
     {
      "file": "atlas/gamepad_browser.mjs",
-     "text": "the character stick is not an honest off control"
+     "text": "the character stick is not a real walking control"
     },
     {
      "file": "atlas/gamepad_browser.mjs",
