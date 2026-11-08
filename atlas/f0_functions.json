@@ -58,7 +58,7 @@
    "guards": [
     {
      "file": "atlas/a11y_filler_browser.mjs",
-     "text": "Tab never reached the cabin proxy"
+     "text": "Tab never reached the first-node proxy"
     }
    ]
   },
@@ -301,11 +301,13 @@
    "scripts": [
     "/game/map_chart.js",
     "/game/map_chunks.js",
+    "/game/place_name.js",
     "/game/map_painter.js"
    ],
    "globals": [
     "AtlasMapCarta",
     "AtlasMapChunks",
+    "AtlasPlaceName",
     "AtlasMapPainter"
    ],
    "guards": [
@@ -345,7 +347,7 @@
     },
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "the view joystick is not the two-control view panner on the map"
+     "text": "the map sticks are not the camera and the character"
     }
    ]
   },
@@ -451,7 +453,7 @@
     },
     {
      "file": "atlas/live_invocation_browser.mjs",
-     "text": "entering the cabin does not play the worm tunnel first"
+     "text": "entering the first node does not play the worm tunnel first"
     }
    ]
   },
@@ -471,7 +473,7 @@
     },
     {
      "file": "atlas/a11y_filler_browser.mjs",
-     "text": "Tab never reached the cabin proxy"
+     "text": "Tab never reached the first-node proxy"
     },
     {
      "file": "atlas/a11y_filler_browser.mjs",
@@ -515,6 +517,57 @@
     {
      "file": "atlas/map_drag_browser.mjs",
      "text": "the pan left its bound"
+    }
+   ]
+  },
+  {
+   "id": "gamepad",
+   "scripts": [
+    "/game/map_drag.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/gamepad_browser.mjs",
+     "text": "the map is not three pieces (status line, map with the bubble, gamepad)"
+    },
+    {
+     "file": "atlas/gamepad_browser.mjs",
+     "text": "the character stick is not a real walking control"
+    },
+    {
+     "file": "atlas/gamepad_browser.mjs",
+     "text": "gamepad Play does not start the visit through Play now"
+    }
+   ]
+  },
+  {
+   "id": "visitor-view",
+   "scripts": [
+    "/game/visitor_view.js"
+   ],
+   "globals": [
+    "AtlasVisitorView"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the visitor view does not veil the four technical panels behind one honest button"
+    }
+   ]
+  },
+  {
+   "id": "visitor-board",
+   "scripts": [
+    "/game/visitor_view.js"
+   ],
+   "globals": [
+    "AtlasVisitorBoard"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the House board does not dress the panel"
     }
    ]
   }

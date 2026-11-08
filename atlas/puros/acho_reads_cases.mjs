@@ -16,8 +16,8 @@ const ola = [[1, 9, 9, 0], [-4, 3, 3, 0]];
 const mapa = [
   ...estado.colonia.nodes.map((n) => CP.botFrame(n, 0, true)),
   CP.youFrame({ q: 0, r: 0 }, 0, true),
-  ...Object.keys(W.STATES).map((s) => W.walkerFrame({ id: 'w', state: s, path: ['cabin', 'reef'], at: 'cabin' }, 0)),
-  SF.stateFrame({ id: 'cabin', sentence: 'the cabin is lit' }),
+  ...Object.keys(W.STATES).map((s) => W.walkerFrame({ id: 'w', state: s, path: ['pier', 'reef'], at: 'pier' }, 0)),
+  SF.stateFrame({ id: 'pier', sentence: 'the pier is lit' }),
 ];
 const suenan = [
   SF.stateFrame({ id: 'reef', sentence: 'the reef sings', waves: [ola] }),
@@ -75,7 +75,7 @@ test('measured, not a target: the map frames that sound today (AC-3 coverage rea
   const n = mapa.filter((f) => A.oye(f).ok).length;
   // 2026-11-02: 0 of 10. Bots, the visitor, the walkers and the state frames declare no waves. This case records the
   // reading; a future piece that gives the map its voice changes this number on purpose, with its own receipt.
-  assert.equal(mapa.length, 10);
+  assert.equal(mapa.length, 6);   // 2026-11-07: the served colony is empty (cabin retired; the web without nodes), so no bot frame
   assert.equal(n, 0);
 });
 

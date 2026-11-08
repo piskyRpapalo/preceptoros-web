@@ -99,8 +99,8 @@
     WF.follow({ win: root, tutorial: function () { return data; },
       live: function (merged) {
         apply(merged);
-        var vivos = Object.keys(seals).filter(function (id) { return id !== 'cabin' && seals[id] === 'LIVE'; });
-        causeText.textContent = 'Live nodes: ' + vivos.length + ' LIVE' + (vivos.length ? ' (' + vivos.join(', ') + ')' : '') + ' · source /api/world-state, merged with the tutorial cabin of /openworld/state.json.';
+        var vivos = Object.keys(seals).filter(function (id) { return seals[id] === 'LIVE'; });
+        causeText.textContent = 'Live nodes: ' + vivos.length + ' LIVE' + (vivos.length ? ' (' + vivos.join(', ') + ')' : '') + ' · source /api/world-state.';
         draw();
       },
       fail: function (cause) { apply(data); causeText.textContent = base + ' · Live nodes NO_DATA: ' + cause; draw(); }
@@ -111,7 +111,7 @@
     colony = parsed.colonia; looks = parsed.looks; seals = parsed.seals;
     sourceNodes = data && data.colonia && Array.isArray(data.colonia.nodes) ? data.colonia.nodes : [];
     var at = walker && colony && colony.nodes.filter(function (n) { return n.id === walker.node; })[0];
-    var home = at || colony && colony.nodes.filter(function (n) { return n.id === 'cabin'; })[0] || colony && colony.nodes[0];
+    var home = at || colony && colony && colony.nodes[0];
     walker = home ? { node: home.id, q: home.q, r: home.r } : null;
     return parsed;
   }

@@ -6,7 +6,7 @@ import { createRequire } from 'node:module';
 const C = createRequire(import.meta.url)('../public/game/map_chart.js');
 const R = 8;
 const frame = { t: 'Tutorial cabin chunk', d: 'Floor and water around the tutorial cabin.' };
-const carta = () => ({ v: 'atlas.carta/1', radius: R, seed: 1, frame, chunks: [{ id: '0_0', c: [0, 0], sha256: 'a'.repeat(64), bytes: 900, frame }] });
+const carta = () => ({ v: 'atlas.carta/1', radius: R, seed: 1, frame, chunks: [{ id: '0_0', c: [0, 0], sha256: 'a'.repeat(64), bytes: 900, frame }], budget: { chunk_b: 8192, neighbourhood_b: 65536 } });
 
 test('el teselado es exacto: cada celda cae en un solo chunk y cada chunk tiene 3R²+3R+1 celdas', () => {
   const n = new Map();

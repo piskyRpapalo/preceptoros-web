@@ -10,7 +10,7 @@
       "id": "map.open",
       "title": "Open the map",
       "deep_link": "/openworld/#map",
-      "what": "The global map: the tutorial cabin and the live nodes. Tap or click a node to walk there; arrow keys choose a neighbour, Enter walks.",
+      "what": "The global map: the floor and the live nodes. Tap or click a node to walk there; arrow keys choose a neighbour, Enter walks.",
       "needs": "nothing",
       "state": "LIVE",
       "evidence": "public/openworld/index.html: section#map"

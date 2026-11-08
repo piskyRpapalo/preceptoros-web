@@ -5,11 +5,13 @@
   'use strict';
   var common = typeof module === 'object' && module.exports;
 
-  // Short route (Sovereign, 2026-10-31): cabin, then beelink, then the cabin again. The Doggee steps are out.
+  // Short route (Sovereign, 2026-10-31): first node, then beelink, then the first node again. The Doggee steps are out.
+  // The tutorial cabin is retired (2026-11-07): place 'first' is the first node alive in the state, never an invented one.
+  var FIRST = 'first';
   var STEPS = [
-    { id: 'key', place: 'cabin' },
+    { id: 'key', place: FIRST },
     { id: 'beacon', place: 'beelink' },
-    { id: 'node', place: 'cabin' }
+    { id: 'node', place: FIRST }
   ];
 
   function fail(causa) { throw new Error('tutorial_walk: ' + causa); }
@@ -21,9 +23,20 @@
     return s.place;
   }
 
+  // whereIs(stepId, seals) → the node id the step is walked on now, or null when it has none (the colony is empty).
+  // seals maps a node id to its seal, in the state's order; the first LIVE or STALE one is the first node alive.
+  function whereIs(id, seals) {
+    var place = placeFor(id);
+    if (place !== FIRST) { return place; }
+    var ids = Object.keys(seals || {});
+    for (var i = 0; i < ids.length; i++) { if (seals[ids[i]] === 'LIVE' || seals[ids[i]] === 'STALE') { return ids[i]; } }
+    return null;
+  }
+
   // canWalk(stepId, seals) → { ok, cause }. seals maps a node id to its seal. Only LIVE or STALE places are walked.
   function canWalk(id, seals) {
-    var place = placeFor(id);
+    var place = whereIs(id, seals);
+    if (place === null) { return { ok: false, cause: 'NO_DATA: no node is alive to visit yet' }; }
     var seal = (seals || {})[place];
     if (seal === 'LIVE' || seal === 'STALE') { return { ok: true, cause: '' }; }
     return { ok: false, cause: 'NO_DATA: place ' + place + ' is not alive (seal ' + (seal || 'absent') + ')' };
@@ -54,8 +67,8 @@
       if (!next) { return { log: cur, said: 'tutorial: complete' }; }
       var ok = canWalk(next.id, seals);
       if (!ok.ok) { cur = record(cur, next.id, 'skipped'); said = 'tutorial: ' + next.id + ' skipped · ' + ok.cause; continue; }
-      if (placeFor(next.id) === node) { return { log: record(cur, next.id, 'played'), said: (said ? said + '. ' : '') + 'tutorial: ' + next.id + ' played' }; }
-      return { log: cur, said: said || 'tutorial: next step is at ' + placeFor(next.id) };
+      if (whereIs(next.id, seals) === node) { return { log: record(cur, next.id, 'played'), said: (said ? said + '. ' : '') + 'tutorial: ' + next.id + ' played' }; }
+      return { log: cur, said: said || 'tutorial: next step is at ' + whereIs(next.id, seals) };
     }
     return { log: cur, said: said };
   }
@@ -76,7 +89,7 @@
     return STEPS.map(function (s) { return s.id; }).filter(function (id) { return played.indexOf(id) >= 0; });
   }
 
-  var AtlasTutorialWalk = { STEPS: STEPS, placeFor: placeFor, canWalk: canWalk, record: record, progress: progress, nextStep: nextStep, advance: advance, close: close };
+  var AtlasTutorialWalk = { STEPS: STEPS, placeFor: placeFor, whereIs: whereIs, canWalk: canWalk, record: record, progress: progress, nextStep: nextStep, advance: advance, close: close };
   if (common) { module.exports = AtlasTutorialWalk; }
   else { root.AtlasTutorialWalk = AtlasTutorialWalk; }
 })(typeof globalThis === 'object' ? globalThis : this);

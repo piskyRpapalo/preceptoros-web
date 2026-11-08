@@ -70,7 +70,7 @@ async function main() {
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
 
   const vista = async () => JSON.parse(await ev(`JSON.stringify((() => { const d = document.getElementById('surface').dataset, V = window.AtlasOpenworldView && AtlasOpenworldView(), w = V && V.controls && V.controls.walker ? V.controls.walker() : null;
-    return { panx: Number(d.panx) || 0, pany: Number(d.pany) || 0, zoom: d.zoom, look: d.look || '', clicks: window.__clicks || 0, walker: w ? JSON.stringify([w.node, w.to, w.q, w.r]) : null, say: (document.getElementById('zoom-state') || {}).textContent || '' }; })())`));
+    return { panx: Number(d.panx) || 0, pany: Number(d.pany) || 0, zoom: d.zoom, angle: d.angle || '0', tilt: d.tilt || '1', look: d.look || '', clicks: window.__clicks || 0, walker: w ? JSON.stringify([w.node, w.to, w.q, w.r]) : null, say: (document.getElementById('zoom-state') || {}).textContent || '' }; })())`));
   await ev("window.__clicks = 0; document.addEventListener('click', (e) => { if (e.target && e.target.id === 'surface') { window.__clicks++; } }), true");
   const centro = JSON.parse(await ev("(() => { const c = document.getElementById('surface'); c.scrollIntoView({ block: 'start' }); const r = c.getBoundingClientRect(); return JSON.stringify({ x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height * 0.6), k: c.width / r.width }); })()"));
   await espera(300);
@@ -103,11 +103,28 @@ async function main() {
   const c = await vista();
   ok(c.panx === b.panx && c.pany === b.pany, 'a redraw snapped the view back while looking around: ' + JSON.stringify([b.panx, c.panx]));
 
-  // 3 · a tap (2 px) still reaches the page and hands the camera back.
-  await dedo(centro.x, centro.y, 1, 0, 2); await espera(500);
+  // 3 · a tap (2 px) on open floor still reaches the page and hands the camera back. The map now has village buildings
+  // that take their own taps (building_sheet.js), so the tap goes to the nearest point where no building answers.
+  const suelo = JSON.parse(await ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(), MP = window.AtlasMapPainter;
+    const free = (x, y) => !(MP && MP.markAt && MP.markAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height));
+    for (let d = 0; d < 200; d += 8) for (const [dx, dy] of [[d, 0], [-d, 0], [0, d], [0, -d]]) { const x = ${centro.x} + dx, y = ${centro.y} + dy; if (free(x, y)) return JSON.stringify({ x, y }); }
+    return JSON.stringify({ x: ${centro.x}, y: ${centro.y} }); })()`));
+  await dedo(suelo.x, suelo.y, 1, 0, 2); await espera(500);
   const d = await vista();
   ok(d.clicks === c.clicks + 1, 'a tap did not reach the page: ' + (d.clicks - c.clicks) + ' clicks');
   ok(d.look === '', 'a tap did not hand the camera back to the crab');
+  // 3b · a tap on a village building opens that building's card (and closes again for the next steps).
+  const casa = JSON.parse(await ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(), MP = window.AtlasMapPainter;
+    for (let y = r.top + 20; y < r.bottom - 20; y += 6) for (let x = r.left + 20; x < r.right - 20; x += 6) { const m = MP && MP.markAt && MP.markAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height); if (m) return JSON.stringify({ x, y, id: m.id }); }
+    return 'null'; })()`));
+  ok(casa, 'no village building is visible on the map');
+  if (casa) {
+    await dedo(casa.x, casa.y, 1, 0, 2); await espera(800);
+    const abierta = JSON.parse(await ev("JSON.stringify({ open: !document.getElementById('building-sheet').hidden, h: (document.getElementById('bs-h') || {}).textContent || '' })"));
+    medidas.edificio = [casa.id, abierta.h];
+    ok(abierta.open && abierta.h !== 'Town', 'a tap on a building did not open its card: ' + JSON.stringify(abierta));
+    await ev("(() => { const s = document.getElementById('building-sheet'); const c = [...s.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Close'); c && c.click(); return 1; })()"); await espera(400);
+  }
 
   // 4 · two fingers still pinch the zoom.
   const z0 = (await vista()).zoom;
@@ -134,49 +151,39 @@ async function main() {
   ok(Math.abs(e.panx) <= lim.x && Math.abs(e.pany) <= lim.y, 'the pan left its bound: ' + JSON.stringify(medidas.limite));
 
   // 7 · ⌂ brings the view home and hands the camera back.
-  await ev("document.getElementById('view-reset').click(), true"); await espera(300);
+  await ev("AtlasMapView.reset(), true"); await espera(300);
   // With free walk on, home is the crab: follow() places the view, so the law is «the camera is handed back».
   const h = await vista();
   medidas.casa = [h.panx, h.pany];
   ok(h.look === '' && (h.panx !== e.panx || h.pany !== e.pany), 'home did not hand the view back to the crab: ' + JSON.stringify(h));
 
   // The view joystick is separate from the visitor and works with real touch, mouse and keyboard input.
-  const stickBox = await ev(`(() => { const s=document.getElementById('view-stick'); if(!s)return null; const r=s.getBoundingClientRect(); return {x:r.left+r.width/2,y:r.top+r.height/2,w:r.width,h:r.height}; })()`);
+  const stickBox = await ev(`(() => { const s=document.querySelector('#view-joystick .view-stick'); if(!s)return null; const r=s.getBoundingClientRect(); return {x:r.left+r.width/2,y:r.top+r.height/2,w:r.width,h:r.height}; })()`);
   ok(stickBox && stickBox.w >= 44 && stickBox.h >= 44, 'map view joystick missing or smaller than 44 px');
   if (stickBox) {
     const beforeTouch = await vista();
     await dedo(stickBox.x, stickBox.y, 5, 0, 6); await espera(150);
     const afterTouch = await vista();
-    ok(afterTouch.panx !== beforeTouch.panx && afterTouch.walker === beforeTouch.walker, 'touch joystick must pan view without walking visitor');
-    await ev("document.getElementById('view-stick').focus(), true");
+    ok(afterTouch.angle !== beforeTouch.angle && afterTouch.walker === beforeTouch.walker, 'touch joystick must turn the map on itself (two fingers, decree 2026-11-08) without walking visitor');
+    await ev("document.querySelector('#view-joystick .view-stick').focus(), true");
     const beforeKey = await vista();
     for (const type of ['keyDown', 'keyUp']) await cmd('Input.dispatchKeyEvent', {type, key:'ArrowRight', code:'ArrowRight', windowsVirtualKeyCode:39});
     await espera(150);
     const afterKey = await vista();
-    ok(afterKey.panx !== beforeKey.panx && afterKey.walker === beforeKey.walker, 'focused joystick arrows must pan without walking visitor');
-    const contextBeforeMode = await ev("document.getElementById('brain-context').textContent");
-    await ev("document.getElementById('view-stick-mode').click(), true");
-    const contextAfterMode = await ev("document.getElementById('brain-context').textContent");
-    ok(contextAfterMode === contextBeforeMode, 'changing camera mode must not change the chat context');
-    await ev("document.getElementById('view-stick-mode').focus(), true");
-    const beforeModeKey = await vista();
-    for (const type of ['keyDown', 'keyUp']) await cmd('Input.dispatchKeyEvent', {type, key:'ArrowLeft', code:'ArrowLeft', windowsVirtualKeyCode:37});
-    await espera(300);
-    const afterModeKey = await vista();
-    const angleAfterKey = await ev("Number(document.getElementById('surface').dataset.angle)");
-    ok(angleAfterKey !== 0 && afterModeKey.walker === beforeModeKey.walker, 'focused mode arrows must turn the view without walking visitor');
-    await ev("document.getElementById('view-reset').click(), true"); await espera(250);
-    const beforeMouse = await vista();
-    await cmd('Emulation.setTouchEmulationEnabled', {enabled:false});
-    await cmd('Input.dispatchMouseEvent', {type:'mouseMoved', x:stickBox.x, y:stickBox.y});
-    await cmd('Input.dispatchMouseEvent', {type:'mousePressed', x:stickBox.x, y:stickBox.y, button:'left', clickCount:1});
-    await cmd('Input.dispatchMouseEvent', {type:'mouseMoved', x:stickBox.x+30, y:stickBox.y-30, button:'left', buttons:1});
-    await cmd('Input.dispatchMouseEvent', {type:'mouseReleased', x:stickBox.x+30, y:stickBox.y-30, button:'left', clickCount:1});
-    await espera(600);
-    const afterMouse = await vista();
-    const modeState = await ev("({angle:document.getElementById('surface').dataset.angle,mode:document.getElementById('view-stick-mode').getAttribute('aria-pressed')})");
-    medidas.viewJoystick = {touchPan:afterTouch.panx-beforeTouch.panx,keyPan:afterKey.panx-beforeKey.panx,zoomBefore:beforeMouse.zoom,zoomAfter:afterMouse.zoom,angle:modeState.angle};
-    ok(modeState.mode === 'true' && Number(modeState.angle) !== 0 && Number(afterMouse.zoom) > Number(beforeMouse.zoom) && afterMouse.walker === beforeMouse.walker, 'mouse joystick must turn and zoom without walking visitor: ' + JSON.stringify(medidas.viewJoystick));
+    ok(afterKey.angle !== beforeKey.angle && afterKey.walker === beforeKey.walker, 'focused joystick arrows must turn the map without walking visitor');
+    for (const type of ['keyDown', 'keyUp']) await cmd('Input.dispatchKeyEvent', {type, key:'ArrowUp', code:'ArrowUp', windowsVirtualKeyCode:38});
+    await espera(150);
+    ok((await vista()).tilt !== afterKey.tilt, 'focused joystick up arrow must tilt the map into its 2.5D perspective');
+    // Decree 2026-11-07, fulfilled 2026-11-08: the right side belongs to the character; it is born, so its stick lives.
+    const right = await ev("(() => { const n = document.getElementById('character-joystick-slot'); return {turn:!!document.getElementById('view-joystick-turn'), sticks:document.querySelectorAll('#map .view-joy').length /* gamepad (2026-11-07) */, slot:n ? n.dataset.state + ':' + n.dataset.cause : null, walk:!!document.querySelector('#character-joystick .view-stick')}; })()");
+    ok(!right.turn && right.sticks === 2 && right.slot === null && right.walk, 'two sticks: the camera on the left and the character on the right: ' + JSON.stringify(right));
+    await ev("AtlasMapView.reset(), true"); await espera(250);
+    const beforeView = await vista();
+    await ev("AtlasMapView.turn(1), AtlasMapView.zoom(1), true"); await espera(300);
+    const afterView = await vista();
+    const angle = await ev("Number(document.getElementById('surface').dataset.angle)");
+    medidas.viewJoystick = {touchPan:afterTouch.panx-beforeTouch.panx,keyPan:afterKey.panx-beforeKey.panx,zoomBefore:beforeView.zoom,zoomAfter:afterView.zoom,angle,rightStick:right.turn};
+    ok(angle !== 0 && Number(afterView.zoom) > Number(beforeView.zoom) && afterView.walker === beforeView.walker, 'turn and zoom must still work without a joystick: ' + JSON.stringify(medidas.viewJoystick));
   }
 
   console.log(JSON.stringify({ piece: 'la-mano', sabotaje: SAB || null, receipt: fallos.length ? 'ROJO' : 'VERDE', medidas, fallos }));

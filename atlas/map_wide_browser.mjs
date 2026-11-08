@@ -1,8 +1,7 @@
 // G1 · LA VENTANA GRANDE (odd/tasks/mundo-grande.md, web#608), proved in a real browser on /openworld/ at the edge phone's
 // size (360×716 CSS). Laws:
 // - before Explore, the map keeps its measured half (this is the starting point, not a law);
-// - Explore enlarges the canvas while the chat remains visible, and canvas pixels follow;
-// - the button is a 44 px target in the map tools, with aria-pressed and words; Escape restores the map size;
+// - the Explore button and the view bar are retired (Sovereign, 2026-11-07): the map carries only the two joysticks;
 // - openworld_page.js and openworld/index.html do not grow; map_wide.js stays under 4 KiB.
 // Sabotage: SABOTAJE=sin-ancho serves map_wide.js without its CSS ⇒ the canvas keeps its half ⇒ red.
 // Uso: node atlas/map_wide_browser.mjs [carpeta-captura]
@@ -73,29 +72,31 @@ async function main() {
   const caja = async () => JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('surface'), r = c.getBoundingClientRect(), b = document.getElementById('map-wide'), br = b ? b.getBoundingClientRect() : null;
     return { h: Math.round(r.height), w: Math.round(r.width), px: c.height, alto: innerHeight, chat: getComputedStyle(document.getElementById('chat')).display,
       boton: b ? { w: Math.round(br.width), h: Math.round(br.height), pressed: b.getAttribute('aria-pressed'), label: b.getAttribute('aria-label'), enBarra: b.parentElement && b.parentElement.id } : null,
+      barra: !!document.getElementById('zoom-controls'), flotantes: [...document.querySelectorAll('#map button')].filter((x) => x.closest('.view-joy')).length,
       say: (document.getElementById('zoom-state') || {}).textContent || '' }; })())`));
 
   // 1 · the starting point, measured: the map has about half the window.
   const a = await caja();
   medidas.antes = { alto_mapa: a.h, ventana: a.alto, fraccion: +(a.h / a.alto).toFixed(2) };
-  ok(!!a.boton, 'there is no Explore button in the map tools');
-  ok(a.boton && a.boton.w >= 44 && a.boton.h >= 44, 'the Explore button is under 44 px: ' + JSON.stringify(a.boton));
-  ok(a.boton && a.boton.enBarra === 'zoom-controls' && a.boton.pressed === 'false' && /Explore/.test(a.boton.label || ''), 'the Explore button is not a labelled toggle in the map tools: ' + JSON.stringify(a.boton));
+  // Sovereign order 2026-11-07: the view bar (and with it the Explore button) is gone; only the two joysticks float over the map.
+  ok(!a.boton && !a.barra, 'the map still carries a view bar or an Explore button: ' + JSON.stringify([a.boton, a.barra]));
+  ok(a.flotantes === 2, 'the map must carry exactly two floating controls, the camera and the character sticks (joystick decree 2026-11-07, fulfilled 2026-11-08): ' + a.flotantes);
   await foto('g1-antes.png');
   await ev("document.querySelector('.cats [data-cat=Welcome]').click(), true");
 
   // The terminal controls belong below the map; panels cover the map, not the conversation.
   const terminal = await ev(`(() => { const stage = document.getElementById('stage'), voices = document.getElementById('voices'),
 // Main's narrow terminal has two visible leaves; Welcome owns map places, Communication owns chat.
-    bar = document.querySelector('.cats'), joy = stage.querySelector('#view-joystick'),
+    bar = document.querySelector('.cats'), joy = document.querySelector('#gamepad > #view-joystick'), // gamepad (2026-11-07): stick and leaves sit in the gamepad under the map
+   
     composer = document.getElementById('entry'), buttons = bar && [...bar.querySelectorAll('button')].filter(b=>!b.hidden);
     if (!bar || !joy || !buttons || buttons.length !== 2) return null;
     const welcome=bar.querySelector('[data-cat=Welcome]'); welcome.click();
     const placesInWelcome=!!voices.querySelector('#map-node-list'); welcome.click();
     const communication=bar.querySelector('[data-cat=Communication]'); communication.click();
     const out = { panelOnMap: voices.parentElement === stage && !voices.hidden,
-      barBelowMap: bar.parentElement.id === 'map' && bar.getBoundingClientRect().top >= stage.getBoundingClientRect().bottom,
-      joyOnMap: joy.parentElement === stage, chatClosed: document.getElementById('chat').hidden,
+      barBelowMap: !!bar.closest('#map > #gamepad') && bar.getBoundingClientRect().top >= stage.getBoundingClientRect().bottom,
+      joyOnMap: joy.parentElement.parentElement === stage.parentElement, chatClosed: document.getElementById('chat').hidden,
       composerVisible: composer.getBoundingClientRect().height >= 44 && composer.getBoundingClientRect().bottom <= innerHeight, pressed: communication.getAttribute('aria-pressed'),
       noInvisibleTargets: !stage.querySelector(':scope > #map-proxies, :scope > .hitl-mark'),
       placesInPanel: placesInWelcome };
@@ -105,23 +106,6 @@ async function main() {
     return out; })()`);
   medidas.terminal = terminal;
   ok(terminal && Object.values(terminal).every(v => v === true || v === 'true'), 'terminal layout or panel toggle failed: ' + JSON.stringify(terminal));
-
-  // 2 · Explore: the single-map showcase grows and its pixels follow.
-  await ev("document.getElementById('map-wide').click(), true"); await espera(700);
-  const b = await caja();
-  medidas.explore = { alto_mapa: b.h, ventana: b.alto, fraccion: +(b.h / b.alto).toFixed(2), px: b.px, chat: b.chat };
-  ok(b.h >= a.h && b.h / b.alto >= 0.8, 'Explore did not retain the full map showcase: ' + JSON.stringify(medidas.explore));
-  ok(b.px >= b.h, 'the canvas pixels did not follow the new height (no redraw): ' + JSON.stringify(medidas.explore));
-  ok(b.chat === 'none' && b.boton.pressed === 'true', 'communication remains open or the button is not pressed');
-  ok(/Explore/.test(b.say), 'Explore is not spoken: ' + b.say);
-  await foto('g1-explore.png');
-
-  // 3 · Escape closes Explore and restores the Welcome leaf.
-  await cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
-  await cmd('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 }); await espera(500);
-  const c = await caja();
-  medidas.escape = { alto_mapa: c.h, chat: c.chat };
-  ok(c.chat === 'none' && c.boton.pressed === 'false' && (W < 900 ? c.h <= b.h : c.w <= b.w), 'Escape did not restore the map: ' + JSON.stringify(medidas.escape));
 
   console.log(JSON.stringify({ piece: 'g1-ventana-grande', sabotaje: SAB || null, receipt: fallos.length ? 'ROJO' : 'VERDE', medidas, fallos }));
 }

@@ -1,3 +1,5 @@
+> **DEPRECIADO por decreto 2026-11-07.** Pieles y sesión gráfica quedan fuera del norte simplificado; este documento permanece solo como archivo histórico. No borrar.
+
 # past-acho-drawings
 
 Date: 2026-10-31

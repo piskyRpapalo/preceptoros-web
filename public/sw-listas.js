@@ -10,7 +10,7 @@ const JUEGO = [
   '/game/scene.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/summon-wave-card.js',
   '/game/summon_reveal.js', '/game/workshop.js', '/game/army-wave-panel.js', '/game/ui-workshop.js',
   '/game/combat_ticks.js', '/game/fog_of_war.js', '/game/isometric_floor_projection.js',
-  '/game/world_camera.js', '/game/map_zoom.js', '/game/map_drag.js', '/game/map_view_joystick.js', '/game/map_wide.js', '/game/sea.js',
+  '/game/world_camera.js', '/game/map_zoom.js', '/game/map_drag.js', '/game/map_view_joystick.js', '/game/gamepad.js', '/game/building_sheet.js', '/game/preceptor_talk.js', '/game/talk.css', '/game/settings_sheet.js', '/game/crab_stage.js', '/game/crab_body.js', '/game/panel_x.js', '/game/building_interiors.json', '/game/type_scale.js', '/game/pulse.js', '/game/notebook_export.js', '/game/gap_board.js', '/game/audio_only.js', '/game/typo_report.js', '/game/town_actions.js', '/game/tower.js', '/game/tower_floors.json', '/game/agent_state.js', '/game/agent_states.json', '/game/inhabitants.js', '/game/visitor_view.js', '/game/map_wide.js', '/game/sea.js',
   '/game/crab_render_hd.js',
   '/game/local_app_bridge.js', '/game/sea-floor.js', '/game/node_reception_contract.js',
   '/game/node_trust_anchor.js', '/game/node_trust_manifest.js', '/game/node_signature_messages.js',
@@ -19,14 +19,14 @@ const JUEGO = [
   '/game/wave_duel_scene.js', '/game/node_preview.js', '/game/node_file_receiver.js', '/game/acho_editor.js',
   '/game/acho_paint.js', '/game/creation_package.js', '/game/creation_feedback.js', '/game/creation_flow.js',
   '/game/comic_accents.js', '/game/acho_language.js', '/game/acho_light.js', '/game/acho_bestiary.js',
-  '/game/acho_world.js', '/game/acho_letters.js', '/game/acho_icons.js', '/game/local_app_bridge.js',
+  '/game/acho_world.js', '/game/acho_letters.js', '/game/acho_icons.js',
   '/game/state_frames.js', '/game/brain_frame.js', '/game/brain_panel.js', '/game/hex_projection.js', '/game/colony_state.js', '/game/colony_buildings.js',
   '/assets/openworld.css',
   '/game/palette_cycle.js', '/game/openworld_state.js', '/game/colony_page.js', '/game/colony_controls.js', '/game/hitl_walkers.js',
   '/game/tutorial-phases.css', '/face/', '/get-the-app/', '/aduana/', '/face/basic.html',
   '/face/face_openworld_terminal.js', '/game/army.html', '/game/face_canon.css', '/game/face_terminal.js',
-  '/game/map_chart.js', '/game/map_chunks.js', '/game/map_painter.js', '/game/terminal_panel.js', '/game/map_focus.js', '/game/visitor_walk.js', '/game/welcome_card.js', '/game/web_node_brain.js', '/map/chart.json', '/art/sea-palette.json',
-  '/map/chunks/-17_8.138e3dc3.json', '/map/chunks/-8_-9.5dfe5918.json', '/map/chunks/-9_17.da8dad7a.json', '/map/chunks/0_0.327b5e07.json', '/map/chunks/17_-8.3d6ed233.json', '/map/chunks/8_9.da39026b.json', '/map/chunks/9_-17.1a9d0a5b.json'
+  '/game/map_chart.js', '/game/map_chunks.js', '/game/place_name.js', '/game/map_painter.js', '/game/terminal_panel.js', '/game/map_focus.js', '/game/visitor_walk.js', '/game/welcome_card.js', '/game/web_node_brain.js', '/map/chart.json', '/art/sea-palette.json',
+  '/map/chunks/-17_8.4f6b2fb7.json', '/map/chunks/-8_-9.2952fe44.json', '/map/chunks/-9_17.73887b02.json', '/map/chunks/0_0.3a4eaa1f.json', '/map/chunks/17_-8.7eb13144.json', '/map/chunks/8_9.ad8fef77.json', '/map/chunks/9_-17.aeed1d05.json'
 ];
 
 const PORTADA = [

@@ -53,6 +53,8 @@ jobs:
             python -m unittest tests.test_preflight
             python -m unittest tests.test_deploy_guard
             python -m unittest tests.test_trailers_hook
+            python -m unittest tests.test_seal_registry tests.test_paquete_firmo
+            python bin/seal_registry.py --check
             python -m unittest test_seal tests.test_state_v2 atlas.test_brain_tools
             node --test tools/preceptor-coder/preceptor_coder_cases.mjs
             npx --yes --package=workerd@1.20261104.1 workerd test tests/world_worker_workerd.capnp
@@ -60,8 +62,38 @@ jobs:
             node --test atlas/puros/decor_move_cases.mjs
             node --test atlas/puros/decor_command_cases.mjs
             node --test atlas/puros/wave_duel_cases.mjs
+            node --test atlas/puros/caravan_cases.mjs
+            node --test atlas/puros/byte_budget_cases.mjs
+            node --test atlas/puros/building_interiors_cases.mjs
+            node --test atlas/puros/gap_board_cases.mjs
+            node --test atlas/puros/audio_only_cases.mjs
+            node --test atlas/puros/typo_report_cases.mjs
+            node --test atlas/puros/town_actions_cases.mjs
+            node --test atlas/puros/agent_state_cases.mjs
+            node --test atlas/puros/inhabitants_cases.mjs
+            node --test atlas/puros/visitor_view_cases.mjs
+            node --test atlas/puros/visitor_board_cases.mjs
+            node --test atlas/puros/hatch_stats_cases.mjs
+            node --test atlas/puros/quests_cases.mjs
+            node --test atlas/puros/map_taps_cases.mjs
+            node --test atlas/puros/preceptor_talk_cases.mjs
+            node --test atlas/puros/settings_cases.mjs
+            node --test atlas/puros/crab_stage_cases.mjs
+            node --test atlas/puros/crab_body_cases.mjs
+            node --test atlas/puros/panel_x_cases.mjs
+            node --test atlas/puros/tower_cases.mjs
+            python bin/tower_ledger.py --check
+            node --test atlas/puros/type_scale_cases.mjs
+            node --test atlas/puros/pulse_cases.mjs
+            node --test atlas/puros/gacha_odds_cases.mjs
+            node --test atlas/puros/duel_states_cases.mjs
+            node --test atlas/puros/fog_cases.mjs
+            node --test atlas/puros/map_focus_cases.mjs
+            node --test atlas/puros/notebook_export_cases.mjs
+            node --test atlas/puros/place_name_cases.mjs
             node --test atlas/puros/state_frames_cases.mjs
             node --test atlas/puros/brain_frame_cases.mjs
+            node --test atlas/puros/brain_frame_hash_cases.mjs
             node --test atlas/puros/acho_cases.mjs
             node --test atlas/puros/acho_reads_cases.mjs
             node --test atlas/puros/node_terrain_cases.mjs
@@ -101,12 +133,15 @@ jobs:
             node --test atlas/live_invocation_cases.mjs
             node atlas/colony_buildings_gate.mjs
             node --test atlas/puros/palette_cycle_cases.mjs
+            node --test atlas/puros/gamepad_cases.mjs
             node atlas/palette_cycle_gate.mjs
             node atlas/colony_page_gate.mjs
             node --test atlas/lexicon_gate_cases.mjs
             node atlas/lexicon_gate.mjs
             python test_web.py
             python atlas/test_atlas.py
+            python -m unittest tests.test_language_census
+            python bin/language_census.py --check
             node sw_harness.mjs
             node --test 'tests/*.test.mjs'
             node atlas/npc_occupancy_cases.mjs
@@ -129,6 +164,10 @@ jobs:
             node atlas/heartbeat_load_browser.mjs
             node atlas/map_drag_browser.mjs
             node atlas/map_wide_browser.mjs
+            node atlas/gamepad_browser.mjs
+            node atlas/building_sheet_browser.mjs
+            node atlas/type_scale_browser.mjs
+            node atlas/dark_terminals_browser.mjs
             node atlas/classroom_chat_browser.mjs
             node atlas/sw_first_load_browser.mjs
             node atlas/live_heartbeat_cases.mjs
@@ -181,4 +220,6 @@ jobs:
             node atlas/lexical_projector_cases.mjs
             node atlas/map_acho_cases.mjs
             node atlas/discovery_runner.mjs
+            python -m unittest tests.test_suite_census
+            python bin/suite_census.py --check
           done

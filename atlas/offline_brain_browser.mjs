@@ -85,7 +85,7 @@ async function main() {
     const radio = [...document.querySelectorAll('#radio-chat-lista li')].map((li) => li.textContent);
     return JSON.stringify({ page, load_ms: Math.round(t1 - t0), reply_ms: Math.round(performance.now() - t1), ready, announced: said.some((t) => t === 'Web node brain · offline · from this device'),
       text: a.text || null, sha_ok: !!a.text && h === a.sha, verified: a.verified === true, radio: radio.some((l) => !!a.text && l.includes(a.text)), floor: document.getElementById('floor-state').textContent }); })()`));
-  ok(r.page.title === 'OpenWorld · PreceptorOS' && /^Location · /.test(r.page.location) && r.page.online === false, '/openworld/ did not retain site identity and the location title in airplane mode: ' + JSON.stringify(r.page));
+  ok(r.page.title === 'OpenWorld · PreceptorOS' && /^([A-Z][a-z]{3,9} · -?\d+, -?\d+|NO_DATA: visitor position unavailable)$/.test(r.page.location) && r.page.online === false, '/openworld/ did not retain site identity and the location title in airplane mode: ' + JSON.stringify(r.page));
   ok(/ready on this device · offline/.test(r.ready), 'the brain did not load offline from this device: ' + r.ready);
   ok(r.announced, 'the offline load was not announced in #chat-note');
   ok(r.verified && r.sha_ok, 'no verified offline answer: ' + JSON.stringify(r));

@@ -93,7 +93,7 @@ caso('prefers-reduced-motion: still frames, independent of the clock', (src) => 
 
 caso('the screen reader reads the fight as text: round, alive troops, harmonics and seals', (src) => {
   const a = juega(src, 1, { emulado: 0 }, 200).L.atributos;
-  return a.role === 'img' && /Round \d+ · left \d\/3 · right \d\/2 alive · [\d/]+ harmonics · .*EMULADO/.test(a['aria-label'] || '') ? 'OK' : 'aria-label: ' + a['aria-label'];
+  return a.role === 'img' && /Round \d+ · left \d\/3 · right \d\/2 alive · [\d/]+ harmonics · .*SIMULATED/.test(a['aria-label'] || '') ? 'OK' : 'aria-label: ' + a['aria-label'];
 }, DUELO.replace('      anuncia();\n', ''));
 
 caso('pure: no system randomness, clock with authority, network or raw colour in the module', (src) => {

@@ -7,8 +7,7 @@
   function updateMapHeading() {
     var view = root.AtlasOpenworldView && root.AtlasOpenworldView(), controls = view && view.controls;
     var p = controls && controls.walker ? controls.walker() : null;
-    var place = p && Number.isFinite(p.q) && Number.isFinite(p.r) ? 'Location · ' + p.q + ', ' + p.r : 'Location · NO_DATA: visitor position unavailable';
-    if (mapHeading) { mapHeading.textContent = (visitName ? visitName + ' · ' : '') + place; }
+    if (mapHeading) { root.AtlasPlaceName.mark(mapHeading, p, visitName ? visitName + ' \u00B7 ' : ''); }
   }
   if (mapHeading && mapSurface) {
     box.addEventListener('visitor:render', function (event) {
@@ -64,7 +63,8 @@
     line('Copper ' + s.copper + ' · Light ' + s.light + ' · Step ' + s.step + ' · Troops ' + s.troops.length + ' · Pity NO_DATA: not approved.');
     var star = doc.createElement('p'); star.id = 'visitor-voice-star'; star.textContent = 'Voice Star ' + s.echoes + '/' + s.echoCap; controls.append(star);
     button('Visit the beacon · claim 100 copper once', 'visitor-beacon', function () { game.beacon(); }, s.claimed);
-    button('Wait one turn', 'visitor-step', function () { game.advance(); });
+    // Steps are walked, not pressed (Sovereign, 2026-11-08): every hex the crab walks dispatches visitor:advance.
+    var hint = doc.createElement('p'); hint.id = 'visitor-step'; hint.className = 'walk-hint'; hint.textContent = 'Walk your crab: every hex is one step.'; controls.append(hint);
     Object.keys(root.AtlasGacha.TCS).forEach(function (tc) {
       var cost = root.AtlasGacha.TCS[tc].coste, odds = root.AtlasGacha.odds(tc);
       line(tc + ' · ' + cost.cobre + ' copper / ' + cost.luz + ' light · odds per thousand: ' + root.AtlasGacha.RAREZAS.map(function (r, i) { return r + ' ' + odds[i]; }).join(', '));
@@ -78,6 +78,9 @@
     button('End this visit', 'visitor-end', function () { game.end(); box.dispatchEvent(new Event('visitor:end')); game = null; account = null; });
     box.dispatchEvent(new CustomEvent('visitor:render', { detail: { state: s, game: game, account: account, controls: controls } }));
   }
+  // Buildings feed the quests: entering one and using its action count in this visit (building_sheet.js events).
+  doc.addEventListener('building:enter', function (e) { if (game) { try { game.entered(e.detail.id); } catch (_) { /* visit ended */ } } });
+  doc.addEventListener('building:act', function () { if (game) { try { game.acted(); } catch (_) { /* visit ended */ } } });
   // Free walk: each accepted step on the floor is one game step of an active visit, so walking hatches eggs.
   box.addEventListener('visitor:advance', function () { if (!game || waiting) { return; } try { game.advance(); } catch (_) { return; } render(); });
   // Voice Star rewards model answers, never the page-grounded controls response.

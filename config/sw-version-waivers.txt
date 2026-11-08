@@ -2,3 +2,4 @@
 # A line counts ONLY in the diff that adds it; once merged it never covers a later PR.
 # One line per exact path. Use it rarely: bumping VERSION (bin/seal.py --sellar) is cheap.
 #   public/<exact path> | YYYY-MM-DD | why a stale cached copy is harmless
+public/game/judge_corpus.js | 2026-11-07 | new file, loaded by no page yet: no visitor holds a stale copy

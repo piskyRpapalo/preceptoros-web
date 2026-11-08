@@ -11,7 +11,7 @@
   'use strict';
   var MANIFEST = '/models/web-node/manifest.json', CACHE = 'web-node-brain-1';
   // The facts the guide may use: the real labels of this page. Small models invent when they are not given facts.
-  var SYSTEM = 'You are the guide of the tutorial cabin on the PreceptorOS web map. Reply in one or two short sentences. ' +
+  var SYSTEM = 'You are the guide of the PreceptorOS web map. Reply in one or two short sentences. ' +
     'Facts: Tap a hex to walk; Welcome contains node places; press Enter on a focused place to go in. The view joystick pans the map; its arrow keys work only while it has focus. Press "Start an ephemeral visit" to play. ' +
     '"Visit the beacon" gives 100 copper once per visit. "Summon at the Reef" summons a wave creature for 50 copper. ' +
     'Eggs hatch after some steps with "Sign adoption". Battles are practice and are replayed exactly. ' +
@@ -133,7 +133,7 @@
     if (typeof text !== 'string' || !text.trim() || new TextEncoder().encode(text).length > 600) { return Promise.reject(noData('input_out_of_bounds', 'Chat input exceeds its context budget')); }
     state.status = 'busy';
     return state.engine.createChatCompletion({
-      messages: [{ role: 'system', content: SYSTEM + ' Selected on the map: ' + String(context || 'Tutorial cabin').slice(0, 160) + '.' }, { role: 'user', content: text }],
+      messages: [{ role: 'system', content: SYSTEM + ' Selected on the map: ' + String(context || 'The map').slice(0, 160) + '.' }, { role: 'user', content: text }],
       temperature: 0, temp: 0, top_k: 1, seed: 1, max_tokens: 56, stream: false
     }).then(function (r) {
       var out = (r && r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content || '').trim();

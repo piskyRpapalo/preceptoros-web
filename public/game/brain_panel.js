@@ -29,7 +29,9 @@
     canvas.setAttribute('role', 'img');
     canvas.setAttribute('aria-label', frame.atoms[0].r);
     var note = doc.createElement('p');
-    note.textContent = 'NO_DATA · residency not measured';
+    note.textContent = 'NO_DATA · residency: ' + ((frame.causa && frame.causa.CAUSA_RESIDENTE) || 'not measured') +
+      (frame.sha256 ? ' · sha256 ' + frame.sha256.slice(0, 12) : '');
+    if (frame.sha256) { note.title = 'sha256 ' + frame.sha256 + ' (the app computes the same hash)'; }
     item.append(heading, canvas, note);
     var ctx = canvas.getContext('2d');
     root.AtlasComicAtoms.paint(ctx, root.AtlasAcho.compile(frame));

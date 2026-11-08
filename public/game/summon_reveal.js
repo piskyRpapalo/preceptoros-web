@@ -13,6 +13,15 @@
     var J = raiz.AtlasJuego, e = J && J.instantanea ? J.instantanea() : null;
     return e && Number.isSafeInteger(e.ciclo) ? e.ciclo : null;
   }
+  // The troop's stats as chips under the caption: the House board's own stats() (visitor_view.js), hidden until the caption is written.
+  function statChips(doc, t) {
+    var V = raiz.AtlasVisitorBoard;
+    if (!V) { return null; }
+    var ul = doc.createElement('ul');
+    ul.className = 'chips reveal-stats'; ul.hidden = true;
+    V.stats(t).forEach(function (p) { var li = doc.createElement('li'), b = doc.createElement('b'); b.textContent = p[1]; li.append(p[0] + ' ', b); ul.append(li); });
+    return ul;
+  }
 
 
   function batalla() { var b = document.getElementById('thegame-batalla'); return b && !b.hidden ? b : null; }
@@ -36,6 +45,7 @@
     var pie = el('div', 'revela-pie'), txt = el('p', 'revela-txt'), b = el('button', 'boton revela-ok', T('revela_ok', 'Continue'));
     b.type = 'button'; txt.setAttribute('role', 'status');
     pie.appendChild(txt);
+    var chipsEl = statChips(document, t); if (chipsEl) { pie.appendChild(chipsEl); }
     var tarjeta = raiz.AtlasRevelaFicha && raiz.AtlasRevelaFicha.monta(t), personaliza = tarjeta && tarjeta.button;
     if (tarjeta) { pie.appendChild(tarjeta.element); personaliza.addEventListener('click', function () { cierra(); raiz.AtlasRevelaFicha.personaliza(); }); }
     pie.appendChild(b); fondo.appendChild(cv); fondo.appendChild(pie);
@@ -105,7 +115,7 @@
           color: col, grosor: 2.6 * dpr, brillo: 0.6 + 0.4 * crece, estela: q ? 0 : 6, respira: !q, calidad: 2, face: true });
       }
       if (tarjeta && p >= 1) { tarjeta.element.hidden = false; }
-      if (p >= 1 && !txt.textContent) { txt.textContent = rar + ' · ' + cuenta; if (inicioCiclo === null) { txt.title = 'NO_DATA (game cycle unavailable; showing the measured final frame)'; } b.focus(); tiembla = ciclo; if (S && S.vozDe) { S.suena(S.vozDe(t)); } }
+      if (p >= 1 && !txt.textContent) { txt.textContent = rar + ' · ' + cuenta; if (chipsEl) { chipsEl.hidden = false; } if (inicioCiclo === null) { txt.title = 'NO_DATA (game cycle unavailable; showing the measured final frame)'; } b.focus(); tiembla = ciclo; if (S && S.vozDe) { S.suena(S.vozDe(t)); } }
 
       var faseTemblor = tiembla === null || q ? 0 : Math.max(0, 3 - (ciclo - tiembla));
       cv.style.transform = faseTemblor ? 'translate(' + (Math.sin((ciclo - tiembla) * Math.PI / 2) * 3 * faseTemblor / 3).toFixed(1) + 'px,0)' : '';

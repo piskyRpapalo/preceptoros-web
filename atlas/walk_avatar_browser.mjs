@@ -10,15 +10,15 @@ import { fileURLToPath } from 'node:url';
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// Two LIVE nodes side by side: the cabin (0,0) and ring-e (1,0). Shaped as the server writes state.json (schema 2).
+// Two LIVE nodes side by side: the first node (0,0) and ring-e (1,0). Shaped as the server writes state.json (schema 2).
 const ESTADO = {
   esquema: 'preceptoros.openworld-estado/2', nodes: [],
   colonia: {
     nodes: [
-      { id: 'cabin', q: 0, r: 0, alive: true, seal: 'LIVE', since: '2026-10-31', look: 'basic' },
+      { id: 'home', q: 0, r: 0, alive: true, seal: 'LIVE', since: '2026-10-31', look: 'basic' },
       { id: 'ring-e', q: 1, r: 0, alive: true, seal: 'LIVE', since: '2026-10-31', look: 'basic' }
     ],
-    buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' }],
+    buildings: [{ id: 'b-home', node: 'home' }, { id: 'b-ring-e', node: 'ring-e' }],
     units: []
   }
 };
@@ -80,14 +80,14 @@ async function main() {
   ok(await hasta(`(document.querySelector('#joy .state') || {}).textContent && document.querySelector('#joy .state').textContent.includes('terminal') || document.getElementById('state-tech').textContent.includes('Colony:')`, 15000), 'colony drawn from the state');
   await espera(300);
 
-  // 1 · a click on the cabin enters it (the walker starts there): the key of the tutorial is played.
-  const cabina = await anclaDe('cabin');
-  ok(cabina && typeof cabina.x === 'number', 'cabin hex has an anchor');
-  ok(await clicNodo('cabin'), 'visible Welcome leaf offers a touch-sized cabin action');
+  // 1 · a click on the first node enters it (the walker starts there): the key of the tutorial is played.
+  const casa = await anclaDe('home');
+  ok(casa && typeof casa.x === 'number', 'home hex has an anchor');
+  ok(await clicNodo('home'), 'visible Welcome leaf offers a touch-sized home action');
   await espera(300);
   const primero = await estado();
-  ok(/tutorial: key played/.test(primero), 'click on the cabin enters it: ' + primero.slice(0, 140));
-  medidas.cabina = primero.slice(0, 160);
+  ok(/tutorial: key played/.test(primero), 'click on the first node enters it: ' + primero.slice(0, 140));
+  medidas.casa = primero.slice(0, 160);
 
   // 2 · a click on the east neighbour walks there over the visible route, then enters it.
   const vecino = await anclaDe('ring-e');
@@ -105,19 +105,29 @@ async function main() {
   ok(dibujos >= 12, 'the walk is drawn frame by frame (12 frames per step): ' + dibujos);
   medidas.llegada = llegada.slice(0, 180);
   ok(/terminal: basic/.test(llegada), 'arrival anchors the terminal: ' + llegada.slice(0, 140));
-  ok(/beacon skipped · NO_DATA/.test(llegada) || /next step is at cabin/.test(llegada) || /tutorial:/.test(llegada), 'arrival reports the tutorial: ' + llegada.slice(0, 180));
+  ok(/beacon skipped · NO_DATA/.test(llegada) || /next step is at home/.test(llegada) || /tutorial:/.test(llegada), 'arrival reports the tutorial: ' + llegada.slice(0, 180));
 
   // 3 · with free walk off (the W-4 node law), a click on an empty hex walks nowhere and says NO_DATA.
   // With free walk on (compact terminal, 2026-11-02: the pad is retired), the same tap steps the crab one cell toward it.
   const libre = (on) => ev(`(() => { const f = document.getElementById('free-walk'); if (f && f.checked !== ${on}) { f.click(); } return !!f; })()`);
   await libre(false);
-  const vacio = await anclaDe('cabin');
+  const vacio = await anclaDe('home');
+  // A tap on the map with a panel open only closes the panel (Sovereign, 2026-11-08; panel_x.js outside()): when a panel
+  // is open (arrival opens the node's; the free-walk switch lives in one), the first tap closes it and walks nowhere.
+  const panel = () => ev(`!!(document.querySelector('#map .cats button[aria-pressed="true"]') || document.querySelector('#entry-tools[aria-expanded="true"]') || [...document.querySelectorAll('#building-sheet,#settings-sheet')].some((x) => !x.hidden))`);
+  const cierra = async () => {
+    if (!(await panel())) { return; }
+    await clicEn(vacio.x + 200, vacio.y + 200); await espera(200);
+    ok(!(await panel()) && !/walking to|^You walk/.test(await estado()), 'a tap on the map with a panel open closes the panel and walks nowhere');
+  };
+  await cierra();
   await clicEn(vacio.x + 200, vacio.y + 200);
   await espera(200);
   const vacia = await estado();
   ok(!/walking to/.test(vacia), 'an empty hex does not start a walk');
   ok(/NO_DATA: no visible node on that hex/.test(vacia), 'an empty hex says NO_DATA: ' + vacia.slice(0, 120));
   ok(await libre(true), 'the free-walk checkbox is missing');
+  await cierra();
   await clicEn(vacio.x + 200, vacio.y + 200); await espera(200);
   const paso = await estado();
   ok(/^You walk (east|south-east|south-west|west|north-east|north-west) to /.test(paso), 'with free walk on, a tap off any node does not step the crab: ' + paso.slice(0, 120));

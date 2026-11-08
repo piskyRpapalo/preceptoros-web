@@ -79,8 +79,6 @@
     c.addEventListener('pointerup', lift); c.addEventListener('pointercancel', lift);
     // A click that survives map_zoom's guard is a tap: the camera goes back to the crab.
     c.addEventListener('click', function () { if (c.dataset.look) { coast++; home(); } });
-    var reset = doc.getElementById('view-reset');
-    if (reset) { reset.addEventListener('click', function () { coast++; home(); }); }
     doc.addEventListener('keydown', function (e) {
       var t = e.target, field = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
       if (field || e.ctrlKey || e.metaKey || e.altKey) { return; }

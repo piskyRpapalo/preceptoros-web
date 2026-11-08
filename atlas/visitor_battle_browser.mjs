@@ -58,7 +58,7 @@ async function main() {
   ok(await hasta('document.getElementById("visitor-beacon").disabled && !document.getElementById("visitor-summon-tc1").disabled',10000),'beacon granted once');
   await ev('document.getElementById("visitor-summon-tc1").click()');
   ok(await hasta('!!document.getElementById("visitor-hatch-1")',10000),'paid egg exists');
-  await ev(`(async()=>{for(let i=0;i<20;i++){document.getElementById('visitor-step').click();await new Promise(r=>setTimeout(r,0));}})()`);
+  await ev(`(async()=>{for(let i=0;i<20;i++){document.getElementById('visitor-play').dispatchEvent(new CustomEvent('visitor:advance')) /* the crab walks one hex */;await new Promise(r=>setTimeout(r,0));}})()`);
   ok(await hasta('!document.getElementById("visitor-hatch-1").disabled',10000),'egg ready after steps');
   await ev('document.getElementById("visitor-hatch-1").click()');
   ok(await hasta('document.getElementById("visitor-play").textContent.includes("Troops 1")',10000),'adopted troop available');
@@ -70,7 +70,7 @@ async function main() {
   ok(!!battle && battle.frames.length>0,'session replay has frames');
   ok(battle.frames.every(f=>Buffer.byteLength(JSON.stringify(f))<1024),'bounded round frames');
   ok(await ev(`(async()=>{const a=await AtlasVisitorAccount.create(true),i=a.info();const x=await AtlasVisitorBattle.run('arrecife',[{tc:'tc1',semilla:'a'.repeat(64)}],i.seed);const y=await AtlasVisitorBattle.run('arrecife',[{tc:'tc1',semilla:'a'.repeat(64)}],i.seed);if(JSON.stringify(x)!==JSON.stringify(y))return false;x.frames[0].commits[0]='0'.repeat(64);return !await AtlasVisitorBattle.verify(x,i.seed)})()`),'determinism twice and changed commitment rejected');
-  await ev('document.querySelector("#visitor-play dialog button").click()');
+  await ev('document.querySelector("#stage > dialog[open] button, #visitor-play dialog[open] button").click()');
   const saved=await ev(`(async()=>{const x=await AtlasArmy.cajaWeb('atlas-army','army','mia',true).lee();return x;})()`);
   const result={record:saved[0].adopcion,signature:saved[0].firma,publicKey:saved[0].adopcion.clave_publica};
   ok(await ev('typeof Identity === "undefined"'),'no persistent identity used');

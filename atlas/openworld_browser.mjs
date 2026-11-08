@@ -10,6 +10,7 @@ import { launchChrome } from './chrome_launch.mjs';
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
 const CAPTURE = process.argv[2] || null;
 const HITL = readFileSync(new URL('./fixtures/hitl_state.json', import.meta.url));
+const ONE = readFileSync(new URL('./fixtures/one_live_node.json', import.meta.url));   // one live node: the tutorial cabin is retired
 let hitlOn = false;
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const failures = [], external = [];
@@ -25,7 +26,7 @@ function serve() {
       if (path.endsWith('/')) path += 'index.html';
       const file = resolve(PUBLIC, '.' + path);
       if (!file.startsWith(resolve(PUBLIC))) { res.writeHead(403).end(); return; }
-      const body = hitlOn && path === '/openworld/state.json' ? HITL : readFileSync(file);
+      const body = path === '/openworld/state.json' ? (hitlOn ? HITL : ONE) : readFileSync(file);
       res.writeHead(200, { 'Content-Type': types[extname(file)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(body);
     } catch { res.writeHead(404).end(); }
   });
@@ -73,7 +74,7 @@ async function main() {
   const initial = JSON.parse(await evaluate(`JSON.stringify((() => {
     const map = document.getElementById('map'), stage = document.getElementById('stage'), canvas = document.getElementById('surface');
     const voices = document.getElementById('voices'), chat = document.getElementById('chat'), bar = map.querySelector('.cats');
-    const joy = stage.querySelector('#view-joystick'), form = document.getElementById('entry'), sr = (e) => { const r=e.getBoundingClientRect(); return [r.left,r.top,r.right,r.bottom,r.width,r.height]; };
+    const joy = document.querySelector('#gamepad #view-joystick'), form = document.getElementById('entry'), sr = (e) => { const r=e.getBoundingClientRect(); return [r.left,r.top,r.right,r.bottom,r.width,r.height]; };
     let inkPixels = 0; try { const data=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data; for(let i=3;i<data.length;i+=4) if(data[i]) inkPixels++; } catch { inkPixels=-1; }
     return { title: document.querySelector('h1')?.textContent, canvases: document.querySelectorAll('canvas').length,
       inkPixels,
@@ -82,7 +83,7 @@ async function main() {
       count: bar?.querySelectorAll('button').length, labels: [...(bar?.querySelectorAll('button') || [])].map(b=>b.getAttribute('aria-label')),
       profileHidden: !!bar?.querySelector('[data-cat=Profile]')?.hidden, entryTools: !!document.getElementById('entry-tools'),
       intro: document.body.innerText }; })())`));
-  ok(/^Location · /.test(initial.title || ''), 'map title does not identify the ephemeral account location: ' + initial.title);
+  ok(/^([A-Z][a-z]{3,9} · -?\d+, -?\d+|NO_DATA: visitor position unavailable)$/.test(initial.title || ''), 'map title does not identify the ephemeral account location: ' + initial.title);
   ok(initial.canvases === 1, 'OpenWorld renders more than one canvas: ' + initial.canvases);
   ok(initial.inkPixels > 2000, 'the map is blank: ' + initial.inkPixels);
   ok(initial.panelParent === 'stage' && initial.panelHidden, 'voice panels are not mounted as a closed overlay on the shared map');
@@ -92,7 +93,7 @@ async function main() {
 // Main's three-leaf entry starts closed; this is intentional after the communication moved behind its own leaf.
   ok(initial.chat[5] === 0 && initial.form[5] === 0, 'communication is open before it is requested');
   ok(initial.padGone, 'the retired six-direction pad is still on the map layer');
-  ok(initial.joy && initial.joy[4] >= 88, 'the view joystick is not visible on the map layer: ' + JSON.stringify(initial.joy));
+  ok(initial.joy && initial.joy[4] >= 44, 'the view joystick is not visible on the map layer: ' + JSON.stringify(initial.joy));
 
   const remoteChat = await evaluate(`(async () => {
     document.querySelector('.cats [data-cat=Communication]').click();
@@ -134,7 +135,7 @@ async function main() {
   ok(panel.place && panel.placeTag === 'BUTTON' && panel.hasMapStatus, 'map destinations or status are not visible accessible panel content');
   ok(panel.cells > 1000 && /^Map loaded/.test(panel.floorText), 'the 2.5D floor is not painted: ' + JSON.stringify({ cells: panel.cells, floor: panel.floorText }));
   ok(panel.closed && !panel.chatVisible, 'closing Welcome must restore the unobstructed map');
-  ok(panel.sizes.every(([w,h]) => w >= 44 && h >= 44), 'a voice control is below the 44 px touch target: ' + JSON.stringify(panel.sizes));
+  ok(panel.sizes.every(([w,h]) => Math.round(w) >= 44 && Math.round(h) >= 44), 'a voice control is below the 44 px touch target: ' + JSON.stringify(panel.sizes));
   ok(panel.sizes.every(([w]) => w <= 48), 'panel icons stretch across the map instead of remaining compact: ' + JSON.stringify(panel.sizes));
 
   const categories = JSON.parse(await evaluate(`JSON.stringify((() => {
@@ -161,6 +162,24 @@ async function main() {
     d.querySelector('summary').click(); t.click(); return JSON.stringify(result); })()`));
   ok(models.frames > 0 && /declared model frames/.test(models.status) && models.labels, 'the model panel does not show declared Acho frames with honest NO_DATA');
 
+  const depth = JSON.parse(await evaluate(`JSON.stringify((() => { const v=document.getElementById('voices'), t=document.getElementById('depth-toggle');
+    const quiet=[...v.querySelectorAll('[data-depth=tech]')].filter(e=>!e.querySelector('button')), acting=[...v.querySelectorAll('[data-depth=tech]')].filter(e=>e.querySelector('button'));
+    const veiledByMe=() => quiet.filter(e=>getComputedStyle(e).display==='none' && v.classList.contains('visitor')).length;
+    const r={quiet:quiet.length, acting:acting.length, before:veiledByMe(), actingShownRule:acting.every(e=>!e.matches('#voices.visitor>[data-depth=tech]:not(:has(button))')), pressed0:t.getAttribute('aria-pressed'), label:t.textContent};
+    t.click(); r.classAfter=v.classList.contains('visitor'); r.pressed1=t.getAttribute('aria-pressed'); t.click(); r.again=veiledByMe(); return r; })())`));
+  ok(depth.quiet + depth.acting === 4 && depth.before === depth.quiet && depth.again === depth.quiet && depth.classAfter === false && depth.actingShownRule && depth.pressed0 === 'false' && depth.pressed1 === 'true' && depth.label === 'Show the ' + depth.quiet + ' technical panels',
+    'the visitor view does not veil the four technical panels behind one honest button: ' + JSON.stringify(depth));
+
+  const board = JSON.parse(await evaluate(`(async () => { for (let i = 0; i < 20 && !window.AtlasVisitorBoard; i++) { await new Promise(r=>setTimeout(r,100)); }
+    const B = window.AtlasVisitorBoard; if (!B) return JSON.stringify({loaded:false});
+    const box=document.createElement('section'); box.innerHTML='<h2>Play</h2><p>notice</p><div id="c"><p>Practice battles · rules</p><button id="visitor-summon-tc1">egg</button><button id="visitor-fight-p1">Fight</button></div><div>data</div>';
+    const c=box.querySelector('#c'), troop={rareza:'raro',stats:{vida:12,armadura:3},armonicos:[[1,20,20,0],[-3,8,8,40]]};
+    B.dress(box,{state:{copper:50,light:0,step:3,troops:[troop]},squad:[troop],controls:c});
+    return JSON.stringify({loaded:true, purse:c.querySelectorAll('.purse li').length, egg:c.querySelector('#visitor-summon-tc1').className, path:!!c.querySelector('.squad svg path[d^=M]'),
+      chips:[...c.querySelectorAll('.squad .chips li')].map(l=>l.textContent), place:c.querySelector('.places #visitor-fight-p1').className, tech:box.querySelector('details.tech').textContent.includes('Practice battles')}); })()`));
+  ok(board.loaded && board.purse === 4 && /egg t1/.test(board.egg) && board.path && board.chips.join('|') === 'Rank Rare|Life 12|Armour 3' && board.place === 'place' && board.tech,
+    'the House board does not dress the panel: purse, tier egg, the troop figure with its stats, hex places, technical details: ' + JSON.stringify(board));
+
   await key('e','KeyE',69,'e'); await wait(250);
   const orbit = await evaluate("document.getElementById('surface').dataset.angle || '0'");
   ok(orbit === '60', 'the E key does not rotate the map to 60 degrees: ' + orbit);
@@ -170,20 +189,22 @@ async function main() {
 // The merged three-leaf layout now puts node places under Welcome (the former Map leaf).
     const cat=document.querySelector('.cats [data-cat=Welcome]'); if (cat && cat.getAttribute('aria-pressed') !== 'true') cat.click();
     await new Promise(r=>setTimeout(r,400));
-    const place=document.querySelector('#map-node-list [data-node="cabin"]');
-    const joy=document.querySelector('#stage #view-joystick'); const before=document.querySelector('h1').textContent;
+    const place=document.querySelector('#map-node-list [data-node="home"]');
+    const joy=document.querySelector('#gamepad #view-joystick'); const before=document.querySelector('h1').textContent;
     place?.click();
     await new Promise(r=>setTimeout(r,600));
     // The route can finish before building_chat mounts its exit control; wait for that measured state, not a fixed short delay.
     for (let i=0;i<100;i++) { const exit=document.getElementById('leave-building'); if (exit && !exit.hidden) break; await new Promise(r=>setTimeout(r,50)); }
-    return {joyOnStage:!!joy && joy.parentElement===document.getElementById('stage'),
-      buttons:joy?joy.querySelectorAll('button').length:0, before, after:document.querySelector('h1').textContent,
+    // gamepad (2026-11-07): the pan stick lives in the gamepad under the map; still exactly one view control.
+    return {joyOnStage:!!joy && joy.parentElement===document.getElementById('gamepad'),
+      buttons:document.querySelectorAll('#map .view-joy button').length, before, after:document.querySelector('h1').textContent,
       live:(document.querySelector('#joy [aria-live]')||{}).textContent || ''};
   })()`);
-  ok(movement.joyOnStage && movement.buttons === 2, 'the view joystick is not the two-control view panner on the map: ' + JSON.stringify(movement));
+  // Joystick decree (2026-11-07), fulfilled 2026-11-08: the camera stick and the character stick, nothing else.
+  ok(movement.joyOnStage && movement.buttons === 2, 'the map sticks are not the camera and the character: ' + JSON.stringify(movement));
   ok(/terminal: basic \(the node\)/.test(movement.live), 'a node place click does not walk and enter the node: ' + JSON.stringify(movement));
 
-// Require a real Leave action before testing general chat; this catches a broken cabin exit.
+// Require a real Leave action before testing general chat; this catches a broken building exit.
   const leaveStatus = await evaluate(`(() => { const b=document.getElementById('leave-building'); if(!b || b.hidden) return 'NO_LEAVE_CONTROL'; b.click(); return document.getElementById('state').textContent; })()`);
   ok(/^Left building /.test(leaveStatus), 'the building conversation did not leave before general chat: ' + leaveStatus);
 

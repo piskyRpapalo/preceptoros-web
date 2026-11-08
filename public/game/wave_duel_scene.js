@@ -11,7 +11,7 @@
   // Terms per seal, from the jewel's TABLA_SEMANTICA (fourier-shapes.js:38-95, measured 2026-10-27). LIVE keeps the troop's
   // full spectrum; the others are capped, so an emulated, stale or empty troop reads simpler at a glance.
   var TERMINOS = Object.freeze({ LIVE: null, PROPUESTA: 4, FIRMADO: 5, ERROR: 4, NO_DATA: 1, SIMULATED: 2, STALE: 2 });
-  var SELLO_TEXTO = Object.freeze({ LIVE: 'LIVE', SIMULATED: 'EMULADO', STALE: 'STALE', NO_DATA: 'NO_DATA' });
+  var SELLO_TEXTO = Object.freeze({ LIVE: 'LIVE', SIMULATED: 'SIMULATED', STALE: 'STALE', NO_DATA: 'NO_DATA' });
 
   // q1..q8 (canon-graficos-parte2 §2): semi-deterministic state; xorshift32 seeded from the fight's seed, reseeded per seal.
   function estado(semilla) {
@@ -59,7 +59,7 @@
         U[l].forEach(function (u, i) {
           var fila = n > 3 ? (i % 2 ? 0.07 : -0.02) : 0;
           u.hx = W * (l ? 0.2 + fila : 0.8 - fila); u.hy = paso * (i + 1) + H * 0.03;
-          if (!u.x) { u.x = u.hx; u.y = u.hy; }
+          if (!u.x) { var o0 = l && op.origen; u.x = o0 ? W * o0[0] : u.hx; u.y = o0 ? H * o0[1] : u.hy; } // origen: born at the crab
           u.r = Math.min(W * 0.09, paso * 0.44, 66 * dpr);
         });
       });
@@ -162,7 +162,7 @@
       var d = (op.ronda && ronda ? op.ronda.replace('{r}', ronda) + ' · ' : '') + 'left ' + vivos[1] + '/' + U[1].length + ' · right ' +
               vivos[0] + '/' + U[0].length + ' alive · ' + todos.map(function (u) { return arm(u, selloDe(u, op)).length; }).join('/') +
               ' harmonics · ' + sellos.join(' ');
-      if (d !== dicho) { dicho = d; lienzo.setAttribute('role', 'img'); lienzo.setAttribute('aria-label', d); }
+      if (d !== dicho && !acabado) { dicho = d; lienzo.setAttribute('role', 'img'); lienzo.setAttribute('aria-label', d); } // after the end, the caller's label stands
     }
     function pinta(ts, dt) {
       var W = lienzo.width, H = lienzo.height, t = quieto ? 0 : ts;
@@ -194,7 +194,7 @@
       g.globalAlpha = 1; g.fillStyle = texto;
       if (ronda && op.ronda) { g.fillText(op.ronda.replace('{r}', ronda), W / 2, 20 * dpr); }
       if (!cal) { g.font = '700 ' + Math.round(11 * dpr) + 'px ui-monospace, monospace'; g.fillText(T('rp_ahorro'), W / 2, 40 * dpr); }
-      if (op.emulado != null) { g.font = '700 ' + Math.round(11 * dpr) + 'px ui-monospace, monospace'; g.fillText('COMBAT · EMULADO', W / 2, H - 8 * dpr); }
+      if (op.emulado != null) { g.font = '700 ' + Math.round(11 * dpr) + 'px ui-monospace, monospace'; g.fillText('COMBAT · SIMULATED', W / 2, H - 8 * dpr); }
       if (acabado && op.letrero) {
         var l = op.letrero(combate), a2 = quieto ? 1 : Math.min(1, (vt - finVt) / 500);
         g.save(); g.globalAlpha = a2 * 0.72; g.fillStyle = N.ocean || texto; g.fillRect(0, H / 2 - 30 * dpr, W, 56 * dpr);

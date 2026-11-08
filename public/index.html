@@ -16,6 +16,16 @@
 <meta name="theme-color" content="#17131F">
 <link rel="stylesheet" href="/assets/landing.css">
 <style>
+.welcome-card{display:grid;grid-template-columns:64px 1fr 64px;gap:8px;align-items:center;margin:18px 0;padding:14px 10px;background:#ffe58a;color:#1d1b26;border:3px solid #1d1b26;border-radius:calc(var(--radius) + 8px);box-shadow:0 6px 0 #d49a1c}
+.welcome-card svg{width:64px;height:64px;color:#0b5d9a}.welcome-card>div{grid-column:1/-1}.welcome-card h2{text-align:center}.welcome-card svg.r{color:#5b2fb0}
+.welcome-card path{fill:none;stroke:currentColor;stroke-width:3.2;stroke-linejoin:round}
+.welcome-card h2{margin:0 0 6px;font-size:1.3rem}.welcome-card p{margin:6px 0}.welcome-card p a{display:inline-flex;align-items:center;min-height:44px;color:inherit;font-weight:700}
+.welcome-card ul{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:8px 0}
+.welcome-card li{border:2px solid #1d1b26;border-radius:999px;padding:2px 10px;font-size:.85rem;background:#fffdf6}
+.welcome-card .start{display:inline-block;min-height:44px;padding:10px 16px;background:#157a45;color:#fffdf6;border:3px solid #1d1b26;border-radius:calc(var(--radius) + 6px);box-shadow:0 4px 0 #1d1b26;font-weight:700;text-decoration:none}
+@media (prefers-reduced-motion:no-preference){.welcome-card svg{animation:creature 24s linear infinite}.welcome-card svg.r{animation-direction:reverse}}
+@keyframes creature{to{transform:rotate(360deg)}}
+@media (forced-colors:active){.welcome-card,.welcome-card li,.welcome-card .start{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}}
 button.door{width:100%;font:inherit;background:var(--bg);text-align:left;cursor:pointer}
 #tools-dispositivo{margin-top:8px}
 #tools-dispositivo h2{font-size:1.25rem;margin:24px 0 4px}
@@ -34,6 +44,22 @@ button.door{width:100%;font:inherit;background:var(--bg);text-align:left;cursor:
 <img class="mark" src="/assets/mark.svg" alt="" width="48" height="48">
 <h1>PreceptorOS</h1>
 <p class="lead">A world of waves that runs on your own device. No account, no cloud, no tracking.</p>
+<section class="welcome-card" aria-labelledby="welcome-title">
+<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M91 64L92 64L91 61L90 57L89 52L88 48L88 46L86 46L81 48L75 51L68 53L60 56L54 57L51 60L49 63L49 69L50 75L50 83L50 89L49 93L50 94L51 93L55 91L59 88L63 86L66 85L66 83L63 80L58 75L53 69L49 63L45 57L42 54L38 53L33 55L27 57L20 60L14 62L10 63L8 63L9 64L12 66L16 70L19 73L22 75L23 75L25 72L28 67L32 60L37 54L41 48L44 44L44 40L41 37L37 32L32 26L28 20L26 16L25 14L24 15L23 18L21 23L19 27L17 30L17 32L20 33L26 34L33 36L41 38L48 41L53 42L57 41L60 38L63 33L67 27L71 21L74 17L76 15L76 15L73 15L68 14L63 13L59 13L57 13L57 16L58 21L58 28L59 36L58 43L58 49L60 53L63 55L69 57L76 58L83 60L88 63L91 64Z"/></svg>
+<h2 id="welcome-title">Welcome to OpenWorld</h2>
+<svg class="r" viewBox="0 0 100 100" aria-hidden="true"><path d="M83 68L84 72L84 75L84 77L83 77L83 76L83 74L84 72L85 69L87 68L89 66L91 66L91 67L91 68L89 69L85 70L81 70L76 69L70 67L65 65L61 62L57 59L55 57L53 55L51 55L49 56L46 58L43 61L39 64L34 66L28 68L23 69L18 69L14 68L11 67L10 66L10 65L11 66L13 67L14 68L16 71L16 74L16 76L16 77L15 77L14 76L14 74L15 71L18 67L21 63L25 59L30 56L34 54L39 52L42 51L44 50L45 48L45 46L45 43L44 39L44 33L44 28L45 22L47 17L50 13L52 10L55 8L56 7L57 8L56 9L54 9L52 10L49 10L47 9L45 8L44 7L44 6L45 6L47 7L50 10L52 14L54 18L55 24L55 29L55 35L54 39L53 43L53 45L54 47L56 48L59 49L63 51L67 53L72 56L77 60L80 64L83 68Z"/></svg>
+<div>
+<p>A shared isometric world drawn only in waves. Every building is a door to something real: a model you can run, a chat, a workshop, a duel. Nothing here is drawn by hand; each creature is computed from its own harmonics.</p>
+<p>Create your signature on this device (the key never leaves it), then walk the map, enter buildings, talk to the guides and summon your first troop.</p>
+<ul aria-label="What comes next, said honestly">
+<li>Other visitors online · NO_DATA · no shared count yet</li>
+<li>Your own building · NO_DATA · not open yet</li>
+<li>Nodes building the world · NO_DATA until measured</li>
+</ul>
+<p>Participate in our benchmarks, and learn about the project to create your companion: <a href="https://github.com/piskyRpapalo/preceptoros-companion">the companion door</a>.</p>
+<a class="start" href="/openworld/">Create your signature and play</a>
+</div>
+</section>
 <nav id="doors" aria-label="Doors">
 <a class="door" href="/openworld/"><b>OpenWorld</b><span>Play now: the map, your crab and the chat.</span></a>
 <button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo" aria-expanded="false"><b>Tools</b><span id="tools-estado">Install the app on this device, or pick a download below.</span></button>
