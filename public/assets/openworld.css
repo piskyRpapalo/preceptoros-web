@@ -162,3 +162,5 @@ body{font-size:1rem}
 #building-sheet .bs-card[data-seal=NO_DATA]{border-style:dashed}
 #building-sheet .bs-line{margin:0;font-size:13px;min-height:1.3em}
 @media (forced-colors: active){#building-sheet :is(.bs-card,.bs-tool){background-image:none;border-color:ButtonText}}
+/* I7 The right letters (type_scale.js): the reading panels scale by the visitor's step; the map and gamepad do not. */
+#chat,#voices,#building-sheet{zoom:var(--letters,1)}
