@@ -242,7 +242,7 @@
     });
     g.globalAlpha = 1;
   }
-  function pattern(g, kind, x, y, k, base, lit, wt, c) { LM.pattern(g, kind, x, y, k, base, lit, wt, c, H()); }
+  function pattern(g, kind, x, y, k, base, lit, wt, c) { if (LM) LM.pattern(g, kind, x, y, k, base, lit, wt, c, H()); }
 
   // start(onReady, opts) loads the 7 chunks around the centre; describe() is the text.
   var world = null, said = '', detail = '';
