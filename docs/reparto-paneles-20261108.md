@@ -94,7 +94,7 @@ Opciones del panel Lab (5): la lista de experimentos; los interruptores de agent
 
 Quince misiones del territorio OTROS y catorce puertas de la web viven fuera de la pantalla. Sus superficies son tres: el sello del cabecero, la luz del semáforo y la línea de firma.
 
-- **El buzón y la casa:** A3 (Hexelion escribe su recibo), G1 (actas limpias), G2 (la litera viva), G3 (PRs verdes), G5 (sellos re-medidos), G6 (el foco único), G7 (la poda).
+- **El canal y la casa:** A3 (Hexelion escribe su recibo), G1 (actas limpias), G2 (la litera viva), G3 (PRs verdes), G5 (sellos re-medidos), G6 (el foco único), G7 (la poda).
 - **Los contratos:** H1 (la ley del nodo), H3 (auditar el mapa contra el código), H4 (la primera puerta de escritura: todos los ataques pensados con su respuesta; trabaja PARA la Aduana), N3 (la ley muerta retirada), N14 (la firma externa, dormida), L16 (el Mac ausente).
 - **El vigilante del enjambre:** H5 trabaja para el Lab aunque viva aquí.
 
@@ -136,3 +136,5 @@ Las doce piezas-puente del toque nativo son el mapa de navegación entre paneles
 - La K doble: cosecha de campaña vs censo de ideas (el índice las mantiene como dos rankings: el tablero N por ley #713, la escalera L como familia de instrumentos).
 - La mudanza de tarjetas de la app (cédulas → Gobierno; anidar y bandeja → Cuaderno): FIRMO del preceptor gráfico cuando amueble.
 - La estética exacta de cada puerta: del plan del preceptor. Este documento da el número de opciones y la lista de misiones por puerta; el resto lo declara él dentro de la jaula.
+
+Agent: preceptor-orquestador-github · Model: GLM (Vibe) · Run: NO_DATA
