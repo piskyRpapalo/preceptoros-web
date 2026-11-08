@@ -68,7 +68,7 @@
     });
     g.drawImage(fc, 0, 0);
   }
-  var api = { clear: clear, hidden: hidden, won: won, tell: tell, draw: draw, CABIN: CABIN, OWN: OWN, STEP: STEP };
+  var api = { clear: clear, hidden: hidden, won: won, npc: npc, tell: tell, draw: draw, CABIN: CABIN, OWN: OWN, STEP: STEP };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasMapFog = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -3,6 +3,7 @@
   var box = root.document.getElementById('visitor-play'), last = null, renderer = null, running = false;
   if (!box) { return; }
   var doc = root.document, cur = null, surface = doc.getElementById('surface');
+  var face = doc.createElement('script'); face.src = '/game/duel_face.js'; doc.head.appendChild(face); // the duel's creature-wave face
   // House keeps the squad and one honest line; the fights are the NPC buildings on the map (odd/tasks/fog-and-conquest.md C2:
   // the Sovereign moved the combat places out of House; the account fights and conquers the NPC buildings).
   box.addEventListener('visitor:render', function (event) {
@@ -74,7 +75,9 @@
     dialog.append(sentence, canvas, bar, status, close);
     var CS = root.AtlasCrabStage; if (!(CS && CS.hold(dialog))) { box.append(dialog); dialog.showModal(); } // on the map, over the crab (crab_stage.js)
     function finish() { sentence.textContent = winner; canvas.setAttribute('aria-label', winner); }
-    renderer = root.AtlasWaveDuel.escena(canvas, result.defenders, result.attackers, result.combat, { semilla: result.seed, quieto: root.matchMedia('(prefers-reduced-motion: reduce)').matches, emulado: 0, alFin: finish, origen: dialog.classList.contains('duel') ? [0.5, 0.5] : null }); // staged: the camera centres the crab
+    var F = root.AtlasDuelFace, L = { log: function () { return result.hits || []; } };
+    // the creature-wave face when the wave renderer is there (duel_face.js); else the older face, never a blank
+    renderer = F && F.ready() ? F.scene(canvas, result.defenders, result.attackers, result.combat, Object.assign(L, { semilla: result.seed, quieto: root.matchMedia('(prefers-reduced-motion: reduce)').matches, emulado: 0, alFin: finish, origen: dialog.classList.contains('duel') ? [0.5, 0.5] : null })) : root.AtlasWaveDuel.escena(canvas, result.defenders, result.attackers, result.combat, { semilla: result.seed, quieto: root.matchMedia('(prefers-reduced-motion: reduce)').matches, emulado: 0, alFin: finish, origen: dialog.classList.contains('duel') ? [0.5, 0.5] : null }); // staged: the camera centres the crab
     if (root.matchMedia('(prefers-reduced-motion: reduce)').matches) { renderer.salta(); finish(); }
   }
   root.addEventListener('pagehide', function () { last = null; if (renderer) { renderer.para(); } });
