@@ -208,7 +208,7 @@
       if (root.AtlasMapFog) { root.AtlasMapFog.draw(g, V, s, w, oval); } // fog of war and the NPCs (map_fog_layer.js)
       if (root.AtlasMapAura) { root.AtlasMapAura.draw(g, V, s, still, oval, ow); } // the selected building's aura (map_aura.js)
       names(g, V, w, s.width / (s.getBoundingClientRect().width || s.width), x, y);
-      if (B) { B.draw(g, x, y, Math.max(k, 0.5), B.pose(T.steps, still ? 1 : T.p, still ? 1 : T.gp), V.H, B.beat(ow.signal || null, Date.now()), oval); if (T.busy) { B.loop(ow.redraw); } }
+      if (B && !s.dataset.duel) { B.draw(g, x, y, Math.max(k, 0.5), B.pose(T.steps, still ? 1 : T.p, still ? 1 : T.gp), V.H, B.beat(ow.signal || null, Date.now()), oval); if (T.busy) { B.loop(ow.redraw); } }
       var W = s.width, Hh = s.height;
       if (!s.dataset.look && (x < W * 0.25 || x > W * 0.75 || y < Hh * 0.3 || y > Hh * 0.7)) {
         s.dataset.panx = String(Math.round((Number(s.dataset.panx) || 0) + W / 2 - x));

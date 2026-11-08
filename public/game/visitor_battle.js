@@ -45,7 +45,7 @@
         frames.push(entry);
       }
     }
-    return { rules: RULES, place: place.id, seed: seed, defenders: place.troops, attackers: squad, combat: combat, frames: frames, balance: 'NO_DATA: historical provisional rules; fairness not measured' };
+    return { rules: RULES, place: place.id, seed: seed, defenders: place.troops, attackers: squad, combat: combat, hits: combat.registro, frames: frames, balance: 'NO_DATA: historical provisional rules; fairness not measured' };
   }
   async function verify(result, visitSeed) {
     try {

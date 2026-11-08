@@ -61,7 +61,19 @@
       if (alCerrar) { alCerrar(); } else if (antes && antes.focus) { antes.focus(); }
     }
     function tecla(e) { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); cierra(); } }
-    var sonado = false, tiembla = null, cicloMs = raiz.AtlasMotor && raiz.AtlasMotor.CICLO_MS || 1000;
+    // the backdrop: a far view of the open world as it was when the wave was found (a snapshot of the map), drifting in a
+    // slow loop behind the summon, soft and dimmed so any wave colour stands out (Sovereign, 2026-11-08).
+    var map = raiz.document.getElementById('surface'), back = null;
+    if (map && map.width && map.getContext) { try { back = raiz.document.createElement('canvas'); back.width = map.width; back.height = map.height; back.getContext('2d').drawImage(map, 0, 0); } catch (e) { back = null; } }
+    function backdrop(W, H, look) {
+      if (!back) { return false; }
+      var s = Math.max(W / back.width, H / back.height) * (1.18 + (q ? 0 : 0.06 * Math.sin(look * 0.00045))), bw = back.width * s, bh = back.height * s;
+      var px = (W - bw) / 2 + (q ? 0 : Math.sin(look * 0.00031) * (bw - W) * 0.45), py = (H - bh) / 2 + (q ? 0 : Math.cos(look * 0.00023) * (bh - H) * 0.4);
+      g.save(); g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1; g.filter = 'blur(' + (2 * dpr).toFixed(1) + 'px) saturate(0.8)';
+      g.drawImage(back, px, py, bw, bh); g.filter = 'none'; g.fillStyle = raiz.AtlasComicTokens.NEUTRAL.ink + 'b3'; g.fillRect(0, 0, W, H); // the night tint, from the ink token g.restore();
+      return true;
+    }
+    var look = 0, sonado = false, tiembla = null, cicloMs = raiz.AtlasMotor && raiz.AtlasMotor.CICLO_MS || 1000;
 
     function anticipa(W, H, cx, cy, k) {
       g.globalCompositeOperation = 'source-over'; g.fillStyle = 'rgba(4,4,14,.55)'; g.fillRect(0, 0, W, H);
@@ -85,7 +97,9 @@
       if (!q && transcurrido < ANT) { anticipa(W, H, cx, cy, transcurrido / ANT); return; }
       if (!sonado) { sonado = true; if (!q && S && S.suena) { S.suena({ tipo: 'sonar', portadora: 1320, moduladora: 660, indice: 90, dur: 0.6, gan: 0.06 }); } }
       var p = q ? 1 : Math.min(1, Math.max(0, (transcurrido - ANT) / DURA)), crece = q ? 1 : Math.max(0, Math.min(1, (p - 0.18) / 0.6));
-      g.globalCompositeOperation = 'source-over'; g.fillStyle = 'rgba(4,4,14,' + (q ? 1 : 0.35) + ')'; g.fillRect(0, 0, W, H);
+      g.globalCompositeOperation = 'source-over';
+      look += 16; // a frame count, not a clock: the reveal's law is the game cycle (test_web q2); this only paints motion
+      if (!backdrop(W, H, look)) { g.fillStyle = 'rgba(4,4,14,' + (q ? 1 : 0.35) + ')'; g.fillRect(0, 0, W, H); }
       g.globalCompositeOperation = 'lighter';
 
       if (!q && p < 0.28) {
@@ -111,8 +125,10 @@
         g.beginPath(); g.arc(cx, cy, R * (0.3 + d * 1.1), 0, Math.PI * 2); g.stroke();
       });
       if (crece > 0) {
-        O.dibuja(g, t.armonicos, cx, cy, R * (0.6 + 0.4 * crece), { t: transcurrido, crece: crece, giro: q ? 0 : transcurrido * 0.00035,
-          color: col, grosor: 2.6 * dpr, brillo: 0.6 + 0.4 * crece, estela: q ? 0 : 6, respira: !q, calidad: 2, face: true });
+        // the body keeps turning, smooth, until Continue (Sovereign, 2026-11-08); the eyes do not turn (drawFace takes no spin).
+        // The game cycle moves in whole steps, so the motion runs on a frame count (look); the phases stay on the cycle.
+        O.dibuja(g, t.armonicos, cx, cy, R * (0.6 + 0.4 * crece), { t: look, crece: crece, giro: q ? 0 : look * 0.0011,
+          color: col, grosor: 2.6 * dpr, brillo: 0.6 + 0.4 * crece, estela: q ? 0 : 6, respira: !q, calidad: 2, face: true, eye: O.eyeKind ? O.eyeKind(t) : null, eyes: O.eyeCount ? O.eyeCount(t) : 2, eyeSeed: O.eyeSeed ? O.eyeSeed(t) : 0 });
       }
       if (tarjeta && p >= 1) { tarjeta.element.hidden = false; }
       if (p >= 1 && !txt.textContent) { txt.textContent = rar + ' · ' + cuenta; if (chipsEl) { chipsEl.hidden = false; } if (inicioCiclo === null) { txt.title = 'NO_DATA (game cycle unavailable; showing the measured final frame)'; } b.focus(); tiembla = ciclo; if (S && S.vozDe) { S.suena(S.vozDe(t)); } }

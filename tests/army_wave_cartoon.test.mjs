@@ -10,8 +10,9 @@ test('wave_render exports drawFace and dibuja honors face flag', () => {
   assert.ok(/function drawFace\(/.test(src), 'drawFace defined');
   assert.ok(/drawFace: drawFace/.test(src), 'drawFace exported in AtlasOnda');
   assert.ok(/if \(o\.face\)/.test(src), 'dibuja calls drawFace when face:true');
-  assert.ok(/arc\(x \+ s \* ex/.test(src), 'two eyes as arcs');
-  assert.ok(/0\.15 \* Math\.PI, 0\.85 \* Math\.PI/.test(src), 'smile arc from 0.15pi to 0.85pi');
+  assert.ok(/g\.arc\(cx, cy, fr, 0, 2 \* Math\.PI\)/.test(src), 'the eyes are arcs');
+  // the Sovereign, 2026-11-08: «no les pongas boca a las ondas, solo ojos» (odd/tasks/fog-and-conquest.md E1)
+  assert.ok(!/0\.15 \* Math\.PI, 0\.85 \* Math\.PI/.test(src), 'no smile arc: eyes only');
 });
 
 test('face uses named paper and ink bands and preserves canvas state', async () => {
@@ -31,9 +32,10 @@ test('face uses named paper and ink bands and preserves canvas state', async () 
     stroke() { marks.push(['stroke', this.strokeStyle, this.globalAlpha]); }
   };
   scope.AtlasOnda.drawFace(g, 50, 50, 30, {});
-  assert.equal(marks.length, 7);
+  // two eyes by default, no mouth: each is a white disc (fill + ink stroke), an ink pupil and a white glint
+  assert.equal(marks.length, 8);
   assert.deepEqual(marks.filter(m => m[0] === 'fill').map(m => m[1]),
-    [palette.NEUTRAL.paper, palette.NEUTRAL.ink, palette.NEUTRAL.paper, palette.NEUTRAL.ink]);
+    [palette.NEUTRAL.paper, palette.NEUTRAL.ink, palette.NEUTRAL.paper, palette.NEUTRAL.paper, palette.NEUTRAL.ink, palette.NEUTRAL.paper]);
   assert.ok(marks.filter(m => m[0] === 'stroke').every(m => m[1] === palette.NEUTRAL.ink));
   assert.ok(marks.every(m => m[2] > 0 && m[2] <= 0.5));
   assert.deepEqual([g.globalAlpha, g.fillStyle, g.strokeStyle, g.lineWidth], [0.5, 'previous', 'previous', 2]);
