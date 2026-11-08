@@ -1,6 +1,7 @@
-// Map view joystick. One fixed stick on the left pans the map, never the visitor.
-// The right side is reserved for the ephemeral character's joystick (decree 2026-11-07):
-// it is born with the character. Turn and zoom stay on wheel, pinch and keys.
+// Map joysticks. The left stick is the camera (the old pan): it pushes the view, so the map slides the opposite way to
+// a drag (Sovereign, 2026-11-08). The right stick, reserved by decree 2026-11-07, is born with the character: it walks
+// the visitor's companion one hex at a time (map_chunks.js dirOf; colony_controls.js step). Turn and zoom stay on wheel,
+// pinch and keys.
 (function (root) {
   'use strict';
   var doc = root.document, stage = doc && doc.getElementById('stage');
@@ -47,14 +48,24 @@
     });
   }
 
-  make('view-joystick', 'left', '✥', { group: 'Map pan control', stick: 'Pan the map. Drag, or use arrow keys.' }, function (dx, dy) {
-    var scale = size(); pan.move(dx * scale, dy * scale);
+  make('view-joystick', 'left', '✥', { group: 'Map camera control', stick: 'Move the camera. Drag, or use arrow keys.' }, function (dx, dy) {
+    var scale = size(); pan.move(-dx * scale, -dy * scale);
   });
-  // The right slot is declared, not drawn: NO_DATA until the character exists.
-  var slot = doc.createElement('span'); slot.id = 'character-joystick-slot'; slot.className = 'sr';
-  slot.setAttribute('role', 'note'); slot.dataset.side = 'right'; slot.dataset.state = 'NO_DATA'; slot.dataset.cause = 'character_not_born';
-  slot.textContent = 'Character joystick: NO_DATA, the ephemeral character does not exist yet.';
-  stage.appendChild(slot);
+  // The character stick: past 18 px from where the finger landed it steps toward the push, and keeps stepping while held.
+  var lean = [0, 0], timer = null;
+  function walkOnce() {
+    var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(), M = root.AtlasMapChunks, CP = root.AtlasColoniaPagina;
+    if (!ow || !ow.controls || !M) { announce('NO_DATA: the character is not on the map yet.'); return; }
+    if (Math.abs(lean[0]) + Math.abs(lean[1]) < 18) { return; }
+    ow.controls.step(M.dirOf(lean[0], lean[1], Number(canvas.dataset.angle) || 0, CP && CP.SQUASH));
+  }
+  make('character-joystick', 'right', '✥', { group: 'Character control', stick: 'Walk your character. Push toward a direction, or use arrow keys.' }, function (dx, dy, end) {
+    if (end) { lean = [0, 0]; root.clearInterval(timer); timer = null; return; }
+    var key = Math.abs(dx) === 24 || Math.abs(dy) === 24;
+    lean = [lean[0] + dx, lean[1] + dy];
+    if (key) { walkOnce(); lean = [0, 0]; return; }
+    if (!timer && Math.abs(lean[0]) + Math.abs(lean[1]) >= 18) { delete canvas.dataset.look; walkOnce(); timer = root.setInterval(walkOnce, 260); }
+  });
   // The gamepad (gamepad.js) gathers both sticks and the account buttons under the map.
   var pad = doc.createElement('script'); pad.src = '/game/gamepad.js'; doc.head.appendChild(pad);
 })(typeof window !== 'undefined' ? window : globalThis);

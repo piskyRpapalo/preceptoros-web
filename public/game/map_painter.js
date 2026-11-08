@@ -285,7 +285,8 @@
     return n;
   }
 
-  var api = { markAt: function (px, py) { return LM && lastG && world ? LM.markAt(world, lastG, px, py, { P: P, turn: turnOf(lastG), HSTEP: HSTEP, height: height }) : null; }, frameOf: frameOf, cellsOf: cellsOf, orderAt: orderAt, floor: floor, floorBaked: floorBaked, hazeAt: hazeAt, bands: bands, start: start, draw: draw,
+  function view() { return lastG && world ? { G: lastG, world: world, P: P, turn: turnOf(lastG), HSTEP: HSTEP, height: height, H: H() } : null; }
+  var api = { view: view, markAt: function (px, py) { var v = view(); return LM && v ? LM.markAt(v.world, v.G, px, py, v) : null; }, frameOf: frameOf, cellsOf: cellsOf, orderAt: orderAt, floor: floor, floorBaked: floorBaked, hazeAt: hazeAt, bands: bands, start: start, draw: draw,
     cacheStats: function () { return { mode: lastMode, bakes: cache.bakes, hits: cache.hits, size: Object.keys(cache.map).length, scope: cache.scope }; },
     resetCache: function () { cache = { scope: '', map: {}, bakes: 0, hits: 0 }; }, setLive: function (on) { forceLive = on === true; }, setBake: function (on) { forceBake = on === true; },
     color: { rgbOf: rgbOf, mix: mix, shade: shade, css: css },

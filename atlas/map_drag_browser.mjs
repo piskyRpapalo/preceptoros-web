@@ -171,9 +171,9 @@ async function main() {
     await espera(150);
     const afterKey = await vista();
     ok(afterKey.panx !== beforeKey.panx && afterKey.walker === beforeKey.walker, 'focused joystick arrows must pan without walking visitor');
-    // Decree 2026-11-07: the right side belongs to the ephemeral character; no character, no second stick.
-    const right = await ev("(() => { const n = document.getElementById('character-joystick-slot'); return {turn:!!document.getElementById('view-joystick-turn'), sticks:document.querySelectorAll('#map .view-joy').length /* gamepad (2026-11-07) */, slot:n ? n.dataset.state + ':' + n.dataset.cause : null}; })()");
-    ok(!right.turn && right.sticks === 1 && right.slot === 'NO_DATA:character_not_born', 'only the left pan joystick may live until the character exists: ' + JSON.stringify(right));
+    // Decree 2026-11-07, fulfilled 2026-11-08: the right side belongs to the character; it is born, so its stick lives.
+    const right = await ev("(() => { const n = document.getElementById('character-joystick-slot'); return {turn:!!document.getElementById('view-joystick-turn'), sticks:document.querySelectorAll('#map .view-joy').length /* gamepad (2026-11-07) */, slot:n ? n.dataset.state + ':' + n.dataset.cause : null, walk:!!document.querySelector('#character-joystick .view-stick')}; })()");
+    ok(!right.turn && right.sticks === 2 && right.slot === null && right.walk, 'two sticks: the camera on the left and the character on the right: ' + JSON.stringify(right));
     await ev("AtlasMapView.reset(), true"); await espera(250);
     const beforeView = await vista();
     await ev("AtlasMapView.turn(1), AtlasMapView.zoom(1), true"); await espera(300);

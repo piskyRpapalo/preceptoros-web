@@ -84,10 +84,8 @@
     if (!map || !stage || !joy || doc.getElementById('gamepad')) { return null; }
     var pad = doc.createElement('div'); pad.id = 'gamepad'; pad.setAttribute('role', 'group'); pad.setAttribute('aria-label', 'Gamepad');
     var mid = doc.createElement('div'); mid.className = 'gp-mid';
-    var right = doc.createElement('div'); right.className = 'gp-off'; right.title = 'Character joystick: NO_DATA, the character does not exist yet.';
-    var knob = doc.createElement('span'); knob.setAttribute('aria-hidden', 'true'); knob.textContent = '✥'; right.appendChild(knob);
-    var slot = doc.getElementById('character-joystick-slot'); if (slot) { right.appendChild(slot); }
-    paint(right, 'Character');
+    var right = doc.getElementById('character-joystick'), cs = right && right.querySelector('.view-stick');
+    if (cs) { paint(cs, 'Character'); } else { right = doc.createElement('div'); right.className = 'gp-off'; paint(right, 'Character'); }
     var stick = joy.querySelector('.view-stick'); if (stick) { paint(stick, 'Map'); }
     // Play: the visit's own «Play now» button; the gamepad copy hides with it.
     var real = doc.getElementById('play-now'), play = doc.createElement('button');

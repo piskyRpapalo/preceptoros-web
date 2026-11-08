@@ -200,8 +200,8 @@ async function main() {
       buttons:document.querySelectorAll('#map .view-joy button').length, before, after:document.querySelector('h1').textContent,
       live:(document.querySelector('#joy [aria-live]')||{}).textContent || ''};
   })()`);
-  // Joystick decree (2026-11-07): one pan stick on the map; the right slot waits, NO_DATA, for the ephemeral character.
-  ok(movement.joyOnStage && movement.buttons === 1, 'the view joystick is not the one-control view panner on the map: ' + JSON.stringify(movement));
+  // Joystick decree (2026-11-07), fulfilled 2026-11-08: the camera stick and the character stick, nothing else.
+  ok(movement.joyOnStage && movement.buttons === 2, 'the map sticks are not the camera and the character: ' + JSON.stringify(movement));
   ok(/terminal: basic \(the node\)/.test(movement.live), 'a node place click does not walk and enter the node: ' + JSON.stringify(movement));
 
 // Require a real Leave action before testing general chat; this catches a broken building exit.
