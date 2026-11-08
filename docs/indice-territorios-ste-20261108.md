@@ -1,7 +1,7 @@
 # El índice de territorios y niveles STE · la vista que divide la fuente única (2026-11-08)
 
 > Decreto del Soberano (2026-11-08): «repasa el total de misiones, asegúrate de que todas están en el mismo lugar, divididas por app, web, lab y otros, con niveles de dificultad basados en el vocabulario ASD-STE100 y completamente explicadas con el método de autenticidad del preceptor, no solo el NO_DATA». Este documento ES esa vista. No crea misiones (la fuente única las crea); las reparte por territorio, les pone nivel STE y les exige las cinco marcas. Propose-only; se re-mide tras cada FIRMO.
-> Re-medida (2026-11-08): 133 filas. Once misiones suben un nivel STE (toque nativo, web #718 con FIRMO) y K5c sube a 3 (la comisión la llama K5); K6 y L15 nacen con fila propia (censo y escalera, ya fusionados); los estados de escalera y tablero pasan a fusionado. Sin dobles: cada fila sigue siendo única.
+> Re-medida (2026-11-08): 133 filas. Once misiones suben un nivel STE (toque nativo, web #718 con FIRMO) y K5c sube a 3 (la comisión la llama K5); K6 y L15 nacen con fila propia (censo y escalera, ya fusionados); los estados de escalera y tablero pasan a fusionado. Sin dobles: cada fila sigue siendo única. Las uniones de la protesta del archivo (deltas de fuente en L13, D4, D5, L12 y N3) se sirven en esta re-medida.
 
 ## 1 · Un solo lugar para mirar
 
@@ -57,8 +57,8 @@ Fuente: familias C, D, E, I (sección 9), J y cosecha K (campaña, fusionada), K
 | D1 · Make the ephemeral visitor | 4 | identidad en 2 pasos Ed25519; IndexedDB; ciclo vivo en navegador | canon medido; ciclo NO_DATA: plano sin firmar |
 | D2 · Add the second joystick | 3 | joystick del personaje al nacer; 44 px; teclado alcanza todo | decreto; personaje NO_DATA |
 | D3 · Add chat to the buildings | 3 | responde del léxico, hecho medido o NO_DATA; lector vivo | canon; puente NO_DATA: sin firmar |
-| D4 · Make the honest gacha | 4 | odds exactas por clase; crónica sellada; sfc32 determinista | medido en el metal; gacha de la visita NO_DATA |
-| D5 · Make the duel without two nodes | 4 | tropas vs NPC o lugar; commitment SHA-256; ABANDON 900 | canon medido; cara de ondas NO_DATA |
+| D4 · Make the honest gacha | 4 | odds exactas por clase; crónica sellada; sfc32 determinista | medido en el metal; gacha de la visita NO_DATA; doctrina medida: GACHA_CIBERPOLITICO de la biblia (la casa jamás gana; techo 21 B, D68) |
+| D5 · Make the duel without two nodes | 4 | tropas vs NPC o lugar; commitment SHA-256; ABANDON 900 | canon medido; cara de ondas NO_DATA; fuente medida: COMBATE_NPC de la biblia (Estrella de Mar → puente a K4) |
 | D6 · Make the wave combat | 4 | UNA cara de combate (carta W); el modo viejo muere en la MISMA PR | propuesta |
 | D7 · Make the conquest honest | 3 | lugar luchado despejado (radio 200); conquista con recibo | canon |
 | D8 · Put the schema buildings on the map | 3 | botella, monumento, guardería y baliza desde el metal medido | propuesta |
@@ -105,8 +105,8 @@ Fuente: familias C, D, E, I (sección 9), J y cosecha K (campaña, fusionada), K
 | L7 · La vara de voz | 4 | tabla de disparos y tolerancia firmada; qué se oye tras un corte | escalera (fusionado) |
 | L8 · La auditoría de WebLLM | 4 | recibo de red completo; cero a oscuras; la excepción se firma | escalera (fusionado) |
 | L9 · El acreditador de Lúmenes | 4 | eco real cruzado: paquete visible, hash, firma y rate; la aduana acuña | escalera (fusionado) |
-| L12 · La agenda geopolítica | 2 | las 24 mejoras con triaje: ya vive / misión con dueño / sentencia con cita | escalera (fusionado) |
-| L13 · Los huecos de lore | 3 | cada hueco de la biblia del juego con causa y dependencia | escalera (fusionado) |
+| L12 · La agenda geopolítica | 2 | las 24 mejoras con triaje: ya vive / misión con dueño / sentencia con cita | escalera (fusionado); fuente medida: GEOPOLITICA_A2A de la biblia (las 24, FIRMO) |
+| L13 · Los huecos de lore | 3 | cada hueco de la biblia del juego con causa y dependencia | escalera (fusionado); fuente medida: VERIFICACION de la biblia (FIRMO 2026-10-11; los huecos ya inventariados) |
 | N2 · Show the receipt | 1 | el recibo del faro o contadores del 1 de noviembre con su SHA | tablero (fusionado); NO_DATA medido: counters del 1-nov 404 en historial, el recibo más antiguo es el 2026-11-02 |
 | N4 · Project the first frame | 4 | silueta Acho <1.024 B con CAUSA_RESIDENTE; misma huella en app y web | tablero (fusionado) |
 | N5 · Declare the map mathematics | 4 | la lista de piezas FIRMADAS que corren; lo PROPOSED renderiza NO_DATA | tablero (fusionado) |
@@ -195,7 +195,7 @@ Fuente: familias G y H (sección 9), A3 (sección 9), N3/N14 (tablero), L15/L16 
 | H3 · Audit the mission map against the code | 3 | cada «Estado» comprobado con fichero:línea en los main | corriendo (55 misiones A-G verificadas) |
 | H4 · Threat-model the first write door | 4 | revisión adversarial del puente aduana→estado del mapa | propuesta |
 | H5 · Review the swarm | 3 | cada rebanada: VERDE repetido + citas comprobadas antes de su PR | medido (primera prueba: #700) |
-| N3 · Retire the dead law | 2 | diff del texto público contra el canon D2; el texto se propone, no se edita | tablero (fusionado) |
+| N3 · Retire the dead law | 2 | diff del texto público contra el canon D2; el texto se propone, no se edita | tablero (fusionado); primer caso medido: el llms.txt del perfil contra D2 (texto de cura propuesto; el perfil es mano del Soberano) |
 | N14 · The qualified review (= L15) | 4 | firma de humano cualificado; postura de diseño ≠ cumplimiento | DORMIDA (la vara es externa) |
 | L15 · El dossier de conformidad | 4 | la lista de sign-offs pendientes con dueño y evidencia por fila (GDPR Art. 25 y AI Act Art. 14 como postura de ingeniería) | propuesta (= N14; la firma es externa) |
 | L16 · El Mac ausente | 2 | el nodo iOS se prueba manual o queda NO_DATA con causa | escalera (fusionado) |
