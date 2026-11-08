@@ -78,6 +78,9 @@ jobs:
             node --test atlas/puros/gacha_odds_cases.mjs
             node --test atlas/puros/duel_states_cases.mjs
             node --test atlas/puros/fog_cases.mjs
+            node --test atlas/puros/map_focus_cases.mjs
+            node --test atlas/puros/notebook_export_cases.mjs
+            node --test atlas/puros/place_name_cases.mjs
             node --test atlas/puros/state_frames_cases.mjs
             node --test atlas/puros/brain_frame_cases.mjs
             node --test atlas/puros/brain_frame_hash_cases.mjs
@@ -207,4 +210,6 @@ jobs:
             node atlas/lexical_projector_cases.mjs
             node atlas/map_acho_cases.mjs
             node atlas/discovery_runner.mjs
+            python -m unittest tests.test_suite_census
+            python bin/suite_census.py --check
           done
