@@ -4,7 +4,7 @@
 
 ## 1 · Un solo lugar para mirar
 
-- **LA FUENTE**: la sección 9 de `docs/canon-map-details-20261107.md`. Toda misión nace ahí; ninguna vista crea misiones paralelas (ley de la fuente única, PR #713). El índice vivo que apunta a la fuente: buzon#54.
+- **LA FUENTE**: la sección 9 de `docs/canon-map-details-20261107.md`. Toda misión nace ahí; ninguna vista crea misiones paralelas (ley de la fuente única, PR #713). El índice vivo que apunta a la fuente: la puerta 54 del canal interno de la casa.
 - **LAS VISTAS** (todas leen la fuente, ninguna manda): el tablero (`docs/tablero-nodata-20261108.md`, PR #711) ordena por huecos NO_DATA; la escalera (`docs/escalera-niebla-familia-l-20261108.md`, PR #712) funda los instrumentos L; el censo (`docs/censo-ideas-familia-k-20261108.md`, fusionado) asigna cada idea a su función o a su misión; la campaña (`docs/campana-nodo-despierto-20261108.md`, fusionada) narra los actos; ESTE índice divide por territorio y nivel STE. **Para ELEGIR misión se abre este índice; para VERIFICAR su estado se abre su fila (la fuente con ancla); para NARRAR se abre la campaña.**
 - **EL BUCLE** (decreto): al cerrar una pieza, el preceptor vuelve aquí, elige la siguiente misión y la construye ANTES de pararse. Pararse sin misión siguiente elegida = turno abierto, no terminado.
 
@@ -175,13 +175,13 @@ Fuente: A2/A9 y familia B (sección 9), H2/H6 (sección 9), K7-K9 (censo), L2-L5
 | N11 · Stamp the honest energy (= L5) | 4 | vatios medidos o NO_DATA sensor_not_exposed | tablero (#711 abierto) |
 | N12 · Close the factory loop (= B4) | 4 | benchmarks LIVE con sello de procedencia; el LoRA come preguntas medidas | tablero (#711 abierto) |
 
-## 8 · OTROS (buzón · perfil · gobernanza · legal · el estudio adversarial)
+## 8 · OTROS (el canal · perfil · gobernanza · legal · el estudio adversarial)
 
 Fuente: familias G y H (sección 9), A3 (sección 9), N3/N14 (tablero), L16 (escalera).
 
 | Misión | STE | La vara | Estado |
 |---|---|---|---|
-| A3 · Let Hexelion write receipts | 3 | el primer recibo suyo en el buzón; escritura sin habilitar | propuesta (decreto) |
+| A3 · Let Hexelion write receipts | 3 | el primer recibo suyo en el canal; escritura sin habilitar | propuesta (decreto) |
 | G1 · Keep the judge bench | 3 | actas y recibos <1.024 B, SCRUB, sin ejecutar sin propuesta | medido, viva |
 | G2 · Keep the live litera | 3 | el latido toca SOLO cabezas firmadas; llave rotada bilateral | 401 medido; rotación pendiente |
 | G3 · Make green PRs | 2 | gate local completo antes de abrir; SCRUB y trailer | ley en obra |
