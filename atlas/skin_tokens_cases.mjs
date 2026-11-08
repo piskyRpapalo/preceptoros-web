@@ -13,7 +13,7 @@ const SRC = readFileSync(new URL('../public/game/skin_tokens.js', import.meta.ur
 
 test('tiles are the floor bands, in map order, each with its pattern', () => {
   assert.deepEqual(S.TILES.map((t) => [t.kind, t.pattern]), M.bands().map((b) => [b.kind, b.pattern]));
-  assert.deepEqual(S.TILES.map((t) => t.pattern), ['waves', 'dots', 'hatch', 'cross']);
+  assert.deepEqual(S.TILES.map((t) => t.pattern), ['waves', 'solid', 'hatch', 'cross']);
   M.bands().forEach((b, i) => {
     assert.equal(S.TILES[i].base, M.color.css(b.base));
     assert.equal(S.TILES[i].height, b.h * M.HSTEP);
