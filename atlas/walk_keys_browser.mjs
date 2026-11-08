@@ -93,7 +93,8 @@ async function main() {
   medidas.joystick = joystick;
   // gamepad (2026-11-07): the pan joystick now sits in the gamepad under the map, not over the stage.
   ok(joystick.present && joystick.onStage, 'the view joystick is not in the map gamepad: ' + JSON.stringify(joystick));
-  ok(joystick.buttons === 1 && joystick.minHeight >= 44 && !joystick.mode, 'the map does not carry exactly one 44 px pan joystick (decree 2026-11-07): ' + JSON.stringify(joystick));
+  // Decree 2026-11-07, fulfilled 2026-11-08: the camera stick and the character stick, each at least 44 px.
+  ok(joystick.buttons === 2 && joystick.minHeight >= 44 && !joystick.mode, 'the map does not carry the camera and the character sticks (decree 2026-11-07): ' + JSON.stringify(joystick));
 
   // 2 · Enter with no choice says how to choose.
   await tecla('Enter');
