@@ -42,3 +42,14 @@ Law: Sovereign commission «the crab alive, the map in depth and the fight on th
 - Doogee, real taps:
   - the ✕ (44 × 44) closed Welcome;
   - «Visit the beacon» closed the House and the camera zoomed to 2.2 on the crab.
+
+## PR 3 as built (piece 3)
+- `preceptor_talk.js`: the preceptor's box leaves the space above the gamepad and becomes a comic speech bubble on the map (`#stage`).
+  - Its tail points at the crab. `place()` puts it above the crab, or below it near the top edge, and follows the crab as it walks and zooms; the gap grows with the zoom.
+  - The map gets back the box's height. The gamepad guard goes back to three pieces: status line, map with the bubble, gamepad.
+- `news(text, who)`: the duel's result comes out of the bubble («Duel · Patrol wins · 7 rounds · balance NO_DATA…»). It quotes the motor's own sentence and invents nothing. While a scene is on stage the bubble steps aside, and after the scene it keeps the result.
+- Accessible as before: `aria-live` on the line, 44 px answers, real DOM rather than paint.
+- Doogee:
+  - the bubble's tail followed the crab (148 → 209 px);
+  - the duel's result came out of the bubble after the fight;
+  - at zoom 2.2 the tail points at the crab without covering it.
