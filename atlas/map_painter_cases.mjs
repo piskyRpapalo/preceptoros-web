@@ -70,3 +70,19 @@ test('sin azar ni reloj; colores sólo de la casa; cada banda con su patrón pro
   assert.ok(!/#[0-9a-fA-F]{3,8}\b|rgba?\(/.test(src), 'ni un color crudo');
   const pats = M.bands().map((b) => b.pattern); assert.equal(new Set(pats).size, 4);
 });
+
+test('suelo liso primero (Soberano 2026-11-08): la arena es un solo color, sin textura ni sombra de vecinos', () => {
+  const sand = M.bands().find((b) => b.kind === 'sand');
+  assert.equal(sand.pattern, 'solid');
+  const fills = new Set(), calls = { arc: 0, n: 0 };   // a top is moveTo + 5 lineTo; a side face is moveTo + 3
+  const g = { canvas: { width: 400, height: 400 }, save() {}, restore() {}, beginPath() { calls.n = 0; }, moveTo() {}, lineTo() { calls.n++; }, closePath() {}, stroke() {},
+    quadraticCurveTo() {}, arc() { calls.arc++; }, fill() { if (calls.n === 5) { fills.add(this.fillStyle); } }, lineJoin: '', fillStyle: '', strokeStyle: '', lineWidth: 1 };
+  const flat = chunks['0_0'];
+  const world = { cells: { list: flat.cells.filter((c) => c[3] !== 'water' && c[2] === 1), at: {} } };
+  world.cells.list.forEach((c) => { world.cells.at[c[0] + ',' + c[1]] = c; });
+  for (const c of flat.cells) { if (c[2] > 1) { world.cells.at[c[0] + ',' + c[1]] = c; } }   // taller neighbours stay, but do not shade the sand
+  const drawn = M.floor(g, { k: 1.4, cx: 200, cy: 200 }, world, 0, true);
+  assert.ok(world.cells.list.length > 10 && drawn > 10, 'sand drawn: ' + drawn);
+  assert.equal(calls.arc, 0, 'no dots on the sand');
+  assert.equal(fills.size, 1, 'one flat colour for every sand top: ' + [...fills].join(','));
+});
