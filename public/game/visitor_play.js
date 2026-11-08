@@ -2,7 +2,7 @@
   'use strict';
   var doc = root.document, box = doc.getElementById('visitor-play');
   if (!box) { return; }
-  var game = null, account = null, waiting = false;
+  var game = null, account = null, waiting = false, hatching = {};
   var mapHeading = doc.getElementById('map-h'), mapSurface = doc.getElementById('surface'), visitName = null;
   function updateMapHeading() {
     var view = root.AtlasOpenworldView && root.AtlasOpenworldView(), controls = view && view.controls;
@@ -19,7 +19,7 @@
     mapSurface.addEventListener('visitor:draw', updateMapHeading);
   }
   var heading = doc.createElement('h2'); heading.textContent = 'Play without a node'; box.append(heading);
-  var notice = doc.createElement('p'); notice.textContent = 'Your visit key stays in memory and ends with this page. Only explicitly adopted troops are saved. After leaving, you can view those records but cannot sign for them. No persistent identity is created.'; box.append(notice);
+  var notice = doc.createElement('p'); notice.textContent = 'Your visit key stays in memory and ends with this page. Hatched waves go straight to your army and are saved on this device. After leaving, you can view those records but cannot sign for them. No persistent identity is created.'; box.append(notice);
   var status = doc.createElement('p'); status.setAttribute('role', 'status'); box.append(status);
   var controls = doc.createElement('div'); box.append(controls);
   var details = doc.createElement('div'); box.append(details);
@@ -73,7 +73,12 @@
       var lack = [cost.cobre - s.copper > 0 ? (cost.cobre - s.copper) + ' more copper' : '', cost.luz - s.light > 0 ? (cost.luz - s.light) + ' more light' : ''].filter(Boolean);
       button('Summon at the ' + place(tc) + ' · ' + cost.cobre + ' copper' + (cost.luz ? ' + ' + cost.luz + ' light' : '') + (lack.length ? ' · needs ' + lack.join(', ') : ''), 'visitor-summon-' + tc, async function () { var after = await game.summon(tc, true), e = after.eggs[after.eggs.length - 1] || {}; doc.dispatchEvent(new CustomEvent('invocation:signed', { detail: { tc: tc, copper: cost.cobre, seq: e.seq, step: after.step } })); }, s.copper < cost.cobre || s.light < cost.luz);
     });
-    s.eggs.forEach(function (egg) { button('Sign adoption · egg ' + egg.seq + (egg.ready ? ' · ready' : ' · ' + egg.remaining + ' steps'), 'visitor-hatch-' + egg.seq, async function () { var after = await game.hatch(egg.seq, true); var R = root.AtlasHatchReveal; if (R) { R.show(after, function (t) { status.textContent = t; }); } }, !egg.ready); });
+    // Q-06 (Sovereign, 2026-11-08): no «sign for adoption» step. The call was the consent: a ready egg hatches by itself and its
+    // wave goes straight to the army (still signed with the visit key in visitor_eggs.js, so the chain stays verifiable).
+    s.eggs.forEach(function (egg) {
+      line('Egg ' + egg.seq + (egg.ready ? ' · hatching into your army' : ' · hatches in ' + egg.remaining + ' steps'));
+      if (egg.ready && !hatching[egg.seq]) { hatching[egg.seq] = true; game.hatch(egg.seq, true).then(function (after) { var R = root.AtlasHatchReveal; if (R) { R.show(after, function (t) { status.textContent = t; }); } if (!waiting) { render(); } }, function (e) { hatching[egg.seq] = false; status.textContent = 'NO_DATA: ' + e.message; }); }
+    });
     s.chronicle.forEach(function (e) { line('Invocation ' + e.seq + ' · ' + e.tc + ' · seal ' + e.sello + ' · ' + e.rareza); });
     button('End this visit', 'visitor-end', function () { game.end(); box.dispatchEvent(new Event('visitor:end')); game = null; account = null; });
     box.dispatchEvent(new CustomEvent('visitor:render', { detail: { state: s, game: game, account: account, controls: controls } }));

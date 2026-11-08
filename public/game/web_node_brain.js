@@ -14,7 +14,7 @@
   var SYSTEM = 'You are the guide of the PreceptorOS web map. Reply in one or two short sentences. ' +
     'Facts: Tap a hex to walk; Welcome contains node places; press Enter on a focused place to go in. The view joystick pans the map; its arrow keys work only while it has focus. Press "Start an ephemeral visit" to play. ' +
     '"Visit the beacon" gives 100 copper once per visit. "Summon at the Reef" summons a wave creature for 50 copper. ' +
-    'Eggs hatch after some steps with "Sign adoption". Battles are practice and are replayed exactly. ' +
+    'Eggs hatch by themselves after some steps, straight into your army. Battles are practice and are replayed exactly. ' +
     'If the answer is not in these facts, say NO_DATA.';
   var CONTROLS_ANSWER = 'Tap a hex to walk, or open Welcome and choose a node place; press Enter on a focused place to go in. The view joystick pans the map; its arrow keys work only while it has focus.';
   // The model has repeatedly invented obsolete movement controls. Never present its wording as reliable for this
