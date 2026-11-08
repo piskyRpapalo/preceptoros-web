@@ -69,6 +69,8 @@ jobs:
             node --test atlas/puros/audio_only_cases.mjs
             node --test atlas/puros/typo_report_cases.mjs
             node --test atlas/puros/town_actions_cases.mjs
+            node --test atlas/puros/agent_state_cases.mjs
+            node --test atlas/puros/inhabitants_cases.mjs
             node --test atlas/puros/tower_cases.mjs
             python bin/tower_ledger.py --check
             node --test atlas/puros/type_scale_cases.mjs

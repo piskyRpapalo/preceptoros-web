@@ -1,0 +1,50 @@
+{
+ "$id": "preceptoros:agent-states/1",
+ "source": "docs/misiones-claude-clave-v2-20261108.md §5 E4+B5",
+ "states": {
+  "ready": {
+   "shape": "circle",
+   "text": "ready"
+  },
+  "working": {
+   "shape": "arrow",
+   "text": "working"
+  },
+  "needs-you": {
+   "shape": "question",
+   "text": "needs you"
+  },
+  "unavailable": {
+   "shape": "dash",
+   "text": "unavailable",
+   "cause_required": true
+  }
+ },
+ "start": "ready",
+ "table": {
+  "ready": {
+   "start": "working",
+   "ask": "needs-you",
+   "drop": "unavailable"
+  },
+  "working": {
+   "finish": "ready",
+   "ask": "needs-you",
+   "drop": "unavailable"
+  },
+  "needs-you": {
+   "signed": "working",
+   "refused": "ready",
+   "drop": "unavailable"
+  },
+  "unavailable": {
+   "revive": "ready"
+  }
+ },
+ "causes": [
+  "connection_closed",
+  "response_cut_without_finish_reason",
+  "no_heartbeat",
+  "station_unreachable"
+ ]
+}
