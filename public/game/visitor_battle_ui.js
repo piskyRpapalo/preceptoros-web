@@ -15,7 +15,7 @@
           var troops = detail.game.state().troops.slice(0, 10).map(function (x) { return x.adopcion.tropa; });
           var result = await root.AtlasVisitorBattle.run(place.id, troops, detail.account.info().seed);
           if (!await root.AtlasVisitorBattle.verify(result, detail.account.info().seed)) { throw new Error('Replay did not verify'); }
-          detail.account.info(); last = result;
+          detail.account.info(); last = result; if (detail.game.fought) { detail.game.fought(result.combat.gana === 'asalto'); }
           show(result);
           box.dispatchEvent(new CustomEvent('visitor:battle', { detail: result }));
         } catch (error) { legend.textContent = 'NO_DATA: ' + error.message; }

@@ -239,3 +239,16 @@ body{font-size:1rem}
 #visitor-play dialog::backdrop{background:transparent}
 #visitor-play dialog button{background:var(--afffdf6);color:var(--a1d1b26);border:3px solid var(--a1d1b26);border-radius:calc(var(--radius) + 6px);font-weight:600}
 @media (forced-colors:active){#visitor-play.board .place,#visitor-play.board .egg,#visitor-play.board .troop,#visitor-play dialog{background:Canvas;color:CanvasText;border:2px solid CanvasText;clip-path:none}}
+/* The quest board (the player's soul, 2026-11-08): first in the House, rounded letters, one bright card per quest, a real
+   <progress> bar, the reward as chips and one Claim button. Event and ranking are NO_DATA until they exist. */
+#visitor-play.board{font-family:ui-rounded,"SF Pro Rounded",system-ui,sans-serif}
+#visitor-play.board .quests h3{font-size:1.3rem;margin:4px 0}
+#visitor-play.board .quests ol{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;list-style:none;padding:0;margin:6px 0}
+#visitor-play.board .quest{display:grid;gap:6px;background:var(--afffdf6);border:3px solid var(--a1d1b26);border-radius:calc(var(--radius) + 8px);padding:10px;box-shadow:0 5px 0 var(--a7c8296)}
+#visitor-play.board .quest.ready{background:var(--affe58a);box-shadow:0 5px 0 var(--ad49a1c)}
+#visitor-play.board .quest.taken{background:var(--ab8f0a8);box-shadow:0 5px 0 var(--a3f9a3a)}
+#visitor-play.board .quest progress{width:100%;height:12px;accent-color:var(--a157a45)}
+#visitor-play.board .quest button{min-height:44px}
+#visitor-play.board .quest.ready button{background:var(--a157a45);color:var(--afffdf6)}
+#visitor-play.board .season li{background:var(--adcc8ff)}
+@media (forced-colors:active){#visitor-play.board .quest{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}}

@@ -73,6 +73,8 @@ jobs:
             node --test atlas/puros/inhabitants_cases.mjs
             node --test atlas/puros/visitor_view_cases.mjs
             node --test atlas/puros/visitor_board_cases.mjs
+            node --test atlas/puros/hatch_stats_cases.mjs
+            node --test atlas/puros/quests_cases.mjs
             node --test atlas/puros/tower_cases.mjs
             python bin/tower_ledger.py --check
             node --test atlas/puros/type_scale_cases.mjs
