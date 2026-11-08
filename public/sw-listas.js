@@ -26,7 +26,7 @@ const JUEGO = [
   '/game/tutorial-phases.css', '/face/', '/get-the-app/', '/aduana/', '/face/basic.html',
   '/face/face_openworld_terminal.js', '/game/army.html', '/game/face_canon.css', '/game/face_terminal.js',
   '/game/map_chart.js', '/game/map_chunks.js', '/game/place_name.js', '/game/map_painter.js', '/game/terminal_panel.js', '/game/map_focus.js', '/game/visitor_walk.js', '/game/welcome_card.js', '/game/web_node_brain.js', '/map/chart.json', '/art/sea-palette.json',
-  '/map/chunks/-17_8.138e3dc3.json', '/map/chunks/-8_-9.5dfe5918.json', '/map/chunks/-9_17.da8dad7a.json', '/map/chunks/0_0.327b5e07.json', '/map/chunks/17_-8.3d6ed233.json', '/map/chunks/8_9.da39026b.json', '/map/chunks/9_-17.1a9d0a5b.json'
+  '/map/chunks/-17_8.4f6b2fb7.json', '/map/chunks/-8_-9.2952fe44.json', '/map/chunks/-9_17.73887b02.json', '/map/chunks/0_0.3a4eaa1f.json', '/map/chunks/17_-8.7eb13144.json', '/map/chunks/8_9.ad8fef77.json', '/map/chunks/9_-17.aeed1d05.json'
 ];
 
 const PORTADA = [
