@@ -274,8 +274,9 @@
     return side <= BAKE_MAX_SIDE;
   }
   var lastMode = 'live', forceBake = false;
+  var lastG = null;
   function draw(g, G, t, reduced) {
-    var e = envOf(g), tt = Math.round(t) || 0;
+    var e = envOf(g), tt = Math.round(t) || 0; lastG = G;
     // Orbit: bake only at rest angles (multiples of 60°); twist and tween frames draw live.
     var rest = ((G.angle || 0) % 60) === 0;
     if (e && (forceBake || (rest && worthBaking(G)))) { lastMode = 'baked'; return floorBaked(g, G, world, tt, reduced === true, e); }
@@ -284,7 +285,7 @@
     return n;
   }
 
-  var api = { frameOf: frameOf, cellsOf: cellsOf, orderAt: orderAt, floor: floor, floorBaked: floorBaked, hazeAt: hazeAt, bands: bands, start: start, draw: draw,
+  var api = { markAt: function (px, py) { return LM && lastG && world ? LM.markAt(world, lastG, px, py, { P: P, turn: turnOf(lastG), HSTEP: HSTEP, height: height }) : null; }, frameOf: frameOf, cellsOf: cellsOf, orderAt: orderAt, floor: floor, floorBaked: floorBaked, hazeAt: hazeAt, bands: bands, start: start, draw: draw,
     cacheStats: function () { return { mode: lastMode, bakes: cache.bakes, hits: cache.hits, size: Object.keys(cache.map).length, scope: cache.scope }; },
     resetCache: function () { cache = { scope: '', map: {}, bakes: 0, hits: 0 }; }, setLive: function (on) { forceLive = on === true; }, setBake: function (on) { forceBake = on === true; },
     color: { rgbOf: rgbOf, mix: mix, shade: shade, css: css },

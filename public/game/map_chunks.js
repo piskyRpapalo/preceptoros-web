@@ -133,7 +133,33 @@
     g.restore();
   }
 
-  var api = { load: load, pattern: pattern, landmarks: landmarks, building: building, shadow: shadow, KINDS: KINDS };
+  // markAt(world, G, px, py, V): the building whose roof is nearest a tap (canvas pixels), or null beyond reach.
+  // V = { P, turn, HSTEP, height } from the painter, so the hit test uses the very placement the floor was drawn with.
+  function markAt(world, G, px, py, V) {
+    var k = G.k, best = null, bd = 20 + 30 * k;
+    landmarks(world); world.markList.forEach(function (m) {
+      var h0 = V.P(m.q, m.r), p = V.turn(h0.x, h0.y), x = G.cx + p.x * k;
+      var y = G.cy + p.y * k - (V.height(world.cells.at[m.q + ',' + m.r]) * V.HSTEP + 12) * k, d = Math.sqrt((px - x) * (px - x) + (py - y) * (py - y));
+      if (d < bd) { bd = d; best = m; }
+    });
+    return best;
+  }
+
+  // A tap on a village building opens its card (building_sheet.js open); a tap elsewhere goes on to the map.
+  function listen(doc) {
+    var s = doc.getElementById('surface');
+    if (!s) { return; }
+    s.addEventListener('click', function (e) {
+      var MP = root.AtlasMapPainter, BS = root.AtlasBuildingSheet, r = s.getBoundingClientRect();
+      var mk = MP && MP.markAt && r.width ? MP.markAt((e.clientX - r.left) * (s.width / r.width), (e.clientY - r.top) * (s.height / r.height)) : null;
+      if (mk && BS && BS.open && BS.open(mk.id)) { e.stopImmediatePropagation(); }
+    }, true);
+  }
+  if (root.document && root.document.getElementById) {
+    if (root.document.readyState === 'loading') { root.document.addEventListener('DOMContentLoaded', function () { listen(root.document); }); } else { listen(root.document); }
+  }
+
+  var api = { load: load, pattern: pattern, markAt: markAt, landmarks: landmarks, building: building, shadow: shadow, KINDS: KINDS };
   root.AtlasMapChunks = api;
   if (typeof module !== 'undefined' && module.exports) { module.exports = api; }
 })(typeof globalThis !== 'undefined' ? globalThis : this);
