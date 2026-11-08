@@ -86,7 +86,7 @@ and the installable guide. The old home-page game, **theGame**, was retired
 on 2026-10-28 (corte D); the world it served lives on at `/openworld/`.
 
 **Usage contract — the only two things we ask:** respect the ceilings (every
-file under 25 MiB, zero external requests on load, pure standard library,
+file under 25 MiB, zero undeclared requests, pure standard library,
 human signature before any consequential action, no telemetry), and share
 back any tool that adapts natively to the app. Pull requests carry their own
 measurement; issues only carry opinions.
