@@ -1,0 +1,16 @@
+{
+ "$id": "preceptoros:seal-registry/1",
+ "consumed_top": "preceptoros-2026-25-fr",
+ "reserved": [
+  {
+   "version": "preceptoros-2026-25-fd",
+   "by": "Mesa",
+   "cause": "reserved for the Mesa"
+  },
+  {
+   "version": "preceptoros-2026-25-fe",
+   "by": "Mesa",
+   "cause": "reserved for the Mesa"
+  }
+ ]
+}
