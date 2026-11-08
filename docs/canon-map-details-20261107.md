@@ -77,8 +77,8 @@ Estado: colonia sellada sin productor (el estado del mundo con colonia sellada y
 - Tutorial: dentro del mapa. Medido.
 - Carga diferida por chunk: dentro del mapa; se activa con el primer envío del chat. Medido.
 - Radio: FUERA del mapa; los módulos de radio viven fuera de /openworld/. Acción propuesta: re-montar el radio en /openworld/ reutilizando lo existente, con sello de estado.
-- Retiro de la cabaña del tutorial (colonia vacía, sin nombres internos): PR #695 abierto, sin fundir; un test aún busca el nodo retirado y debe curarse antes de la firma.
-- Cromo del mapa (joystick del mapa a la izquierda, nombre del lugar, iconos de terminal): hecho y medido, sin commit y sin PR; el joystick del personaje espera a que el personaje exista.
+- Retiro de la cabaña del tutorial (colonia vacía, sin nombres internos): medido y en main; el test del nodo retirado quedó curado (33/33) y la web en vivo no tiene cabina. El PR #695 quedó cerrado como cadena: su sustancia entró con los PRs del cromo.
+- Cromo del mapa y las tres piezas (línea del lugar arriba, mapa en medio, mando Acho abajo): hecho, medido, fusionado y desplegado (#697 y #703): joystick de pan a la izquierda, Play, Welcome y Profile en el centro, joystick del personaje NO_DATA hasta que nazca. La web en vivo lo sirve.
 
 ## 8 · La mesa: cómo se construye este canon
 
@@ -92,11 +92,15 @@ Decreto del Soberano (2026-11-07 noche): quien construye el mapa va a esta mesa 
 - GRÁFICO DESDE ACHO (decreto del Soberano 2026-11-07 noche): TODO gráfico del mapa y de la pieza se hace desde Acho (la casa acho/1: las burbujas que DECLARAN; el pintor pinta las primitivas del compilador). Cero assets, cero red. El suelo floor/1 y las burbujas acho/1 obedecen la misma ley (state_frames) y el mismo color (tabla_semantica). Todo elemento gráfico declara su sonido y su coordenada: lo que aún no suena es NO_DATA sonoro con causa, no un hueco oculto.
 - LECTURA PROBADA POR EL JUEZ MINI (decreto del Soberano 2026-11-07 noche): todo gráfico se entrega con su lectura probada por el mini-modelo local LoRA (su único propósito: traducir Acho), que actúa como revisor juez nativo. El preceptor auto-revisa: los ojos del mini-modelo leen el Acho y traducen lo que ven; esa lectura se compara con lo que el preceptor construyó. Si la lectura y la construcción no coinciden, la pieza no está entregada.
 - NATIVO PRIMERO (decreto del Soberano 2026-11-07 noche): todo lo que se pueda se hace nativo. Si una función actual puede optimizar o abrir el paso a una función antigua escrita en el sistema, el preceptor que la encuentre como referencia puede traerla como PROPUESTA bajo la arquitectura ground truth: para optimizar, para rellenar un NO_DATA, o para abrir una puerta nueva de automatización de Hexelion y su control del ecosistema. La referencia se trae medida (fichero, línea, contrato); jamás se copia sin declarar.
-- Lo único que no espera turno: un test rojo medido es urgencia técnica; se cura y se declara antes de proponer lo siguiente (caso abierto hoy: un test busca el nodo retirado del tutorial en #695).
+- Lo único que no espera turno: un test rojo medido es urgencia técnica; se cura y se declara antes de proponer lo siguiente (caso del nodo retirado del tutorial: curado, fusionado y en vivo).
 
 ## 9 · El mapa de misiones (donde elegir)
 
 Catálogo gigante y vivo, cosechado de la biblioteca de la casa (2026-11-07 noche). Cada constructor propone UNA misión por turno y puede proponer misiones nuevas: este mapa se alimenta. Regla del catálogo: solo lo medido se afirma; todo NO_DATA lleva su causa; nada de esto es compromiso de orden; el catálogo se re-mide tras cada FIRMO. Los nombres de las misiones están en inglés con vocabulario ASD-STE100 (decreto del Soberano): una palabra, un significado; frases cortas.
+
+**LEY DE LA FUENTE UNICA (decreto del Soberano, 2026-11-08):** ESTA seccion es la unica fuente de misiones del ecosistema; nadie elige mision en otro sitio. El tablero del hueco honesto (docs/tablero-nodata-20261108.md) ORDENA estas misiones por dificultad: rango = huecos NO_DATA que la mision convierte en MEDIDO + piezas previas. El censo de la familia K (docs/censo-ideas-familia-k-20261108.md) ASIGNA cada idea a su funcion o a una mision de aqui. La campana EL NODO DESPIERTO (docs/campana-nodo-despierto-20261108.md) NARRA los actos con estas mismas misiones. Las vistas no crean misiones paralelas: toda mision nueva nace aqui con su vara y su recibo. El indice vivo que apunta a esta fuente es buzon#54.
+
+**EL BUCLE (decreto del Soberano, 2026-11-08):** al cerrar una pieza, el preceptor vuelve a esta seccion y toma la siguiente mision ANTES de pararse. Pararse sin mision siguiente elegida = turno abierto, no terminado. El FIRMO del Soberano es UNO por pieza entera y no detiene el bucle: la sesion sigue mientras queden misiones que la cuota alcance.
 
 ### A · Soberanía de Hexelion y LoRA
 
@@ -105,7 +109,7 @@ Catálogo gigante y vivo, cosechado de la biblioteca de la casa (2026-11-07 noch
 - A3 · Let Hexelion write receipts: recibos <1.024 B, SCRUB, append-only, jamás FIRMO. Estado: propuesta (decreto). NO_DATA: primer recibo suyo, causa: escritura sin habilitar.
 - A4 · Add voice to the app: canon de audio medido (ADSR, FM de tres senos, receta de tono por color 220 a 880 Hz, vibrato 3 Hz con 5 Hz de desvío) con 3 arreglos ya diagnosticados: FM sin conectar, pulso sin sincronizar al audio, lector del grosor del pulso ausente. Estado: canon medido. NO_DATA: voz en la app, causa: los 3 arreglos sin portar.
 - A5 · Make memory that stays: una sola conversación continua con memoria y rotación por resumen; la memoria salva a su propio proyecto. Estado: propuesta (patrón de referencia MIT). NO_DATA: medida propia, causa: sin adoptar.
-- A6 · Make the local mini orchestrator: agente local en el estilo de la casa alimentando a Hexelion en continuo. Estado: propuesta. NO_DATA: medida, causa: sin construir.
+- A6 · Make the local mini orchestrator: agente local en el estilo de la casa alimentando a Hexelion en continuo. Estado: cimiento medido (canal del Lab por tubería); bucle continuo sin construir. NO_DATA: bucle con Hexelion, causa: sin conectar.
 - A7 · Add the GitHub reader (read only): ya medido y aprobado: GET público sin credenciales, allowlist, NO_DATA con huella, suite de tests verde. Estado: medido PASS, esperando aterrizar en la pieza. NO_DATA: integración, causa: sin FIRMO.
 - A8 · Wake the brain by message: puerta de despertar al cerebro desde la app; protocolo y juez. Estado: propuesta. NO_DATA: socket medido, causa: diseño sin firmar.
 - A9 · Make the Acho LoRA: el mini-modelo local cuyo único propósito es traducir Acho; revisor juez nativo de todo gráfico (lee el Acho, traduce lo que ve, su lectura se compara con lo construido). Estado: decreto del Soberano (2026-11-07 noche). NO_DATA: entreno del mini, causa: sin pares medidos de lectura.
@@ -136,7 +140,7 @@ Catálogo gigante y vivo, cosechado de la biblioteca de la casa (2026-11-07 noch
 ### D · El visitante y el personaje
 
 - D1 · Make the ephemeral visitor: identidad en 2 pasos (clave local Ed25519, seudónimo = hash de la pública, sin correo ni teléfono ni huella; puerta de viaje firmada por el nodo); fases efímera (solo memoria, muere con la pestaña), puente y errante. El cangrejo visual y el paseante NO son cuenta: sus pruebas prohíben almacenamiento. Estado: canon medido (identidad opcional persiste en IndexedDB). NO_DATA: ciclo del visitante en navegador, causa: plano sin firmar.
-- D2 · Add the second joystick: nace con el personaje (decreto 2026-11-07); ley de accesibilidad: coordenada y sonido, 44 px, teclado alcanza todo; movimiento por clic con reporte de audio por coordenada (la interacción por clic ES accesibilidad). Estado: decreto. NO_DATA: personaje, causa: cuenta sin firmar.
+- D2 · Add the second joystick: nace con el personaje (decreto 2026-11-07); ley de accesibilidad: coordenada y sonido, 44 px, teclado alcanza todo; movimiento por clic con reporte de audio por coordenada (la interacción por clic ES accesibilidad). Estado: cara de hoy medida, fusionada y en vivo (#697, #703): un joystick de pan y hueco derecho NO_DATA character_not_born; el del personaje nace con él. NO_DATA: personaje, causa: cuenta sin firmar.
 - D3 · Add chat to the buildings (U1): responde desde el léxico de la casa, hecho medido o NO_DATA con causa, jamás prosa inventada; el visitante planta su chatbot en un edificio. Estado: canon (la puerta del edificio ya existe con cadena de confianza). NO_DATA: lector vivo, causa: puente sin firmar.
 - D4 · Make the honest gacha: costes visibles y odds exactas por clase (Arrecife 50 de cobre, Ruinas 200 y 100, Bosque 600 y 300, Abismo 1500 y 500), crónica sellada por invocación, semilla determinista sfc32, piedad NO_DATA sin firma. Estado: medido en el metal (gacha.js, db.js, adopción y tropa con firma Ed25519 verificada). NO_DATA: gacha de la visita con semilla propia, causa: cuenta efímera sin firmar.
 - D5 · Make the duel without two nodes (JN-4): combatientes = tropas del visitante contra NPC o lugar del mapa, semilla = lugar + semilla de la visita; commitment SHA-256, ABANDON 900; balance NO_DATA hasta medirse. Estado: canon medido (duelo puro en el metal, esquema de combate sin DOM ni red ni reloj ni azar). NO_DATA: cara de ondas, causa: puerto sin FIRMO.
@@ -146,15 +150,15 @@ Catálogo gigante y vivo, cosechado de la biblioteca de la casa (2026-11-07 noch
 - D9 · Add summons and controls: santuario = 1 edificio inconquistable, 1 onda, techo 1.024 B, acuñar = FIRMA aparte. Estado: canon. NO_DATA: acuñación, causa: tier sin acuñar.
 - D10 · Make audio mode (Preceptor report): uso sin mirar la pantalla; el comando responde con opciones contextuales de la pantalla actual; TTS local sin red; la entrada de voz en Android suele viajar a la nube del proveedor: declarar qué oye el micrófono y adónde va. Estado: propuesta con cimiento hecho (fase 1 fusionada). NO_DATA: modo completo, causa: sin plan FIRMO.
 - D11 · Keep the crab honest: forma y paseo calculados del espectro; Math.random prohibido (xorshift32); cada golpe desafina una onda. Estado: medido.
-- D12 · Keep the ephemeral tutorial: entrar como cangrejo, el territorio muestra sus reglas antes de entrar; tutorial dentro del mapa, medido; la cabaña se retira (PR #695). Estado: medido.
+- D12 · Keep the ephemeral tutorial: entrar como cangrejo, el territorio muestra sus reglas antes de entrar; tutorial dentro del mapa, medido; la cabaña retirada y en main (el PR #695 quedó en cadena). Estado: medido.
 
 ### E · La colonia
 
 - E1 · Open the state producer: puente de la aduana al estado del mapa, escritura firmada; aduana viva (contrato v2, D1 medido), latido <1.024 B por nodo, receptor cada 240 s. Estado: cadena medida con primer ancla LIVE. NO_DATA: colonia des-sellada, causa: emisor sin desplegar y tramo sin firmar.
-- E2 · Make the caravans: estados explícitos (propuesto, activa, interceptada, completada, huida, caducada); el evento público jamás revela identidad. Estado: canon. NO_DATA, causa: sin motor.
+- E2 · Make the caravans: estados explícitos (propuesto, activa, interceptada, completada, huida, caducada); el evento público jamás revela identidad. Estado: contrato propuesto, revisado y fusionado (#700: huir exige intercepción). NO_DATA: motor, causa: sin construir.
 - E3 · Make the seven benchmark families: tríada telemetría, medida y recibo (máquina, fecha, huella); plantilla de estudio con vector de tendencia, modelos base, corpus, adaptador y matriz de hardware; solo pesos abiertos en local, jamás servicios de terceros en vivo. Estado: canon. NO_DATA: en vivo, causa: sin productor.
 - E4 · Put AIs in the buildings: meta visual de colonia isométrica sobre rejilla hexagonal (módulos por color, domos y torres, bots como ciudadanos de primera clase); la referencia externa se cita, NO se copia su motor; la PRIMERA medida de fps corre en el dispositivo más débil. Estado: propuesta. NO_DATA: colisión, causa: por medir.
-- E5 · Climb the isometric ladder: IC1 a IC5 fusionadas (incluida paleta día y noche); IC6 en obra con la referencia descargada; IC7 tutorial, IC8 verificación visual, IC9 gemelo en la app. Estado: medido hasta IC5. NO_DATA: IC6 en adelante, causa: en obra.
+- E5 · Climb the isometric ladder: IC1 a IC5 fusionadas (incluida paleta día y noche); IC6 en obra con la referencia descargada; IC7 tutorial, IC8 verificación visual, IC9 gemelo en la app. Estado: medido hasta IC6 (IC6 gate green en main); IC7 con contrato de sello en casos. NO_DATA: IC7 en adelante, causa: en obra.
 - E6 · Keep the wave army block: bloque visible del mapa (4 ondas sintéticas, malla 7×5, tabla de tier, celda, bordes y armónicos); cada mundo aporta su dibujo al mapa global. Estado: medido.
 - E7 · Open the valve (fase 4): adaptadores propios en sandboxes sin E/S; estudios raw contra estudios bajo harness; el producto se mide a sí mismo y publica lo que pierde. Estado: propuesta.
 
@@ -163,7 +167,7 @@ Catálogo gigante y vivo, cosechado de la biblioteca de la casa (2026-11-07 noch
 - F1 · Make the two-click package: patrón de 4 paquetes (daemon, protocolo, ui, escritorio); la seguridad vive FUERA del agente: grant de sesión, parada de pánico, blocklist, aprobaciones nativas; iconos desde el emblema. Estado: propuesta (patrón MIT medido).
 - F2 · Translate the trunk to four targets: Android, Ubuntu, Windows e iPhone 8; test del hardware ajeno: la pieza abre sin cerebro, sin proxy y sin la web; ausencias NO_DATA con causa. Estado: propuesta.
 - F3 · Cure the small viewport: 10 paneles de 44 px no caben en la pantalla del teléfono. Estado: medido. NO_DATA: cura, causa: pendiente.
-- F4 · Make the panel interiors: plan documento con PR y recibo. Estado: propuesta.
+- F4 · Make the panel interiors: plan documento con PR y recibo. Estado: plan entregado y fusionado (app #214: los nueve tabs como funciones del nodo); interiores por construir.
 - F5 · Shield the telemetry: cero peticiones no declaradas; auditoría de runtime (buscar palabras no es prueba de presencia ni de ausencia: se mide la red al ejecutar). Estado: propuesta.
 - F6 · Make live device benchmarks: con sello de procedencia nativo. Estado: propuesta.
 - F7 · Make full accessibility: EN 301 549, 44 px táctiles, reduced-motion, 8 lenguas, color y texto jamás solo color, texto a la izquierda, «undefined» jamás llega al usuario (NO_DATA con causa), lector de pantalla lee el espectro, no los píxeles. Estado: doctrina medida. NO_DATA: plan completo, causa: pendiente de dar la app por buena.
@@ -178,7 +182,7 @@ Decreto del Soberano (2026-11-07 noche): el mapa de misiones también alimenta a
 - G1 · Keep the judge bench: la Mesa mide, escribe actas y recibos <1.024 B con SCRUB, sella versiones y jamás ejecuta sin propuesta. Estado: medido, viva (este documento sale de su turno).
 - G2 · Keep the live litera: el latido toca solo cabezas firmadas; la llave del worker está por rotar (401 medido; rotación bilateral pendiente de ambas partes). Estado: litera rota hasta la cura. NO_DATA: latido verde, causa: llave sin rotar.
 - G3 · Make green PRs: cada PR abre verde: gate local completo antes de abrir, rama sobre la cabeza fresca de main, SCRUB y trailer; jamás merge propio: el FIRMO es del Soberano. Estado: ley en obra (PRs verdes medidos en main).
-- G4 · Add the measured optimizations: ETag y 304, text-wrap, scrollbar-gutter, forced-colors, prefers-contrast y view transitions: hoy 0 en el tronco (medido en v140). Cada optimización entra como PR propio con medida antes y después. Estado: 0 medido. NO_DATA: mejora, causa: sin proponer.
+- G4 · Add the measured optimizations: ETag y 304, text-wrap, scrollbar-gutter, forced-colors, prefers-contrast y view transitions: Estado: medido: forced-colors y prefers-contrast presentes (openworld.css:85 y :98, colony_page.js:199; app: 1 de cada en interface/); text-wrap, scrollbar-gutter, view transitions y ETag: 0 en ambos troncos. Cada optimización entra como PR propio con medida antes y después. NO_DATA: mejora de los que faltan, causa: sin proponer.
 - G5 · Keep the seals and receipts: cada cabeza firmada lleva su recibo; sello de versión y huella se re-miden tras cada cambio de lo servido. Estado: ley en obra (los gates lo exigen).
 - G6 · Watch the single focus: una cabeza, un foco de trabajo (canon del norte 13); la patrulla reporta focos duplicados o huérfanos con fichero y línea, sin ejecutar la cura. Estado: doctrina medida (la patrulla ya corre).
 - G7 · Prune the merged branches: higiene de ramas ya fusionadas: la poda lleva guardia, recibo y confirmación del merge; nada se borra por aproximación. Estado: propuesta con guardia (bypass solo por orden explícita del Soberano).
@@ -193,6 +197,24 @@ Misiones que piden razonar a través de los repos, del canon y de la ley a la ve
 - H4 · Threat-model the first write door: revisión adversarial del puente aduana→estado del mapa (repetición de firma, tamaño, SCRUB, nombres de casa, kill-switch, orden de escritura); los tests rojos se listan ANTES de cualquier código. Estado: propuesta. NO_DATA: puerta abierta, causa: espera FIRMO.
 - H5 · Review the swarm: cada rebanada de haiku pasa por plata (VERDE repetido por el revisor, citas comprobadas, deriva del canon corregida) antes de su PR. Estado: medido (primera prueba: #700, la máquina de caravanas corregida en revisión: huir exige intercepción). Tomada: Claude Opus.
 - H6 · Write the Acho reading exam: el examen que el juez mini A9 debe aprobar (operaciones Acho → lectura esperada), regla ciega de familia, definido y medible ANTES de entrenar. Estado: propuesta. NO_DATA: A9, causa: sin entrenar.
+
+### I · El boundary del nodo y los paneles del visitante (decreto del Soberano, 2026-11-08 madrugada)
+
+- I1 · Bind the node boundary (app): en boundary se adhiere TODO lo que un nodo puede cambiar de comportamiento respecto a sus fronteras, visitantes y colores; enfocado a benchmarks que sirvan hoy y mañana. La pieza no se cierra hasta el primer benchmark de nodos medido. Estado: propuesta (decreto). NO_DATA: primer benchmark de nodos, causa: sin correr.
+- I2 · Chart the ephemeral needs: lluvia de ideas medida de lo que un carbono necesita al visitar la web, en el entorno que tiene hoy (dos joysticks, tres botones y el mapa). Estado: propuesta (decreto).
+- I3 · Rebuild the welcome panel: triángulo rojo con "!" al entrar; lista desplegable de nombres con iconos, con "Brain download" como mínimo (una AI local descargada a la web: brainstorm abierto de las funciones que esta técnica da a la web); edificios cercanos visibles; mensaje que anima a probar los chatbots o a preguntar al preceptor (la AI asistente mini ya vive en chunks de la web); explica qué son los NPCs y dónde luchar con ellos; explica cómo capturar un edificio y lleva a uno disponible cerca. Escrito completo en Acho, bordes afinados. Estado: propuesta (decreto).
+- I4 · Keep the fog buildings ready: la web mantiene SIEMPRE edificios en la niebla preparados por si entra un visitante. Estado: propuesta (decreto). NO_DATA: reserva de edificios, causa: sin diseñar.
+- I5 · Rebuild the profile panel: la casa del jugador; las invocaciones como regalo de una mascota que evoluciona contigo; pura matemática que evoluciona con los recursos ganados en los combates con NPCs y con los edificios bajo tu poder. Escrito completo en Acho, bordes afinados. Estado: propuesta (decreto).
+- I6 · Split the comms panel: tres botones separados: la radio (activa el modo completo para personas invidentes), el chat (en la parte baja de la web, los tres últimos mensajes en letras muy pequeñas; al pulsar, el panel crece) y Echoes (eventos y estado de la app y la web sobre las actualizaciones). Estado: propuesta (decreto).
+- I7 · Rebuild the panel letters: los tres paneles hoy acumulan letras innecesarias, enlaces rotos en su mayoría e información que no aporta: el rebuild interno corre PARALELO a la construcción de la cuenta efímera. Estado: problema medido (declarado por el Soberano); cura propuesta.
+- I8 · Make the buildings interactive: los edificios interactivos del mapa, tras los paneles. Estado: propuesta (decreto de orden).
+
+- I9 · Align the web icons with the app: lo nuevo manda, lo viejo se adapta (decreto del Soberano, 2026-11-08). Iconos y lenguaje visual de la web alineados con los de la app; ante incoherencia se guarda lo mas nuevo y se adapta lo viejo. Estado: propuesta (decreto).
+- I10 · Spread the brain context across devices: el contexto de Hexelion repartido entre los dispositivos del anillo sin copiar mundos ni romper la malla. Estado: propuesta (vector del preceptor claude). NO_DATA: reparto medido, causa: sin plano.
+
+### N · El hueco honesto: el ranking de NO_DATA (decreto del Soberano, 2026-11-08)
+
+- Las misiones N1 a N14 viven medidas en docs/tablero-nodata-20261108.md: cada una convierte huecos NO_DATA en MEDIDO con su causa y su vara (el comando que lo mide), ordenadas por rango I a IV (dificultad = huecos resueltos + piezas previas). Son parte de ESTA fuente; el tablero es su vista de ranking y se re-mide tras cada merge. Las misiones dormidas (esporas P2P, la Grieta, Audio Worklets) se citan ahi con su causa: sin vara medible no se inventa.
 
 ### H3 · Auditoría del mapa contra el código (2026-11-07 noche, Claude Opus)
 
