@@ -61,3 +61,5 @@ None.
 ## Next step
 
 G4-1 after the G1 and G2 merges and the producer merge.
+
+> Enriched 2026-11-09 by the Sovereign's chat (odd/tasks/chat-9nov-tanda.md): Y4 (to the first summon without the step counter: «Your first wave» and «Your first fight» walk the crab to the place, deterministically).

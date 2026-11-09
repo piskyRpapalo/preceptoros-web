@@ -17,6 +17,13 @@ test('every mission of the night tanda waits at exactly one building', () => {
     assert.equal(Object.values(M.WAIT).filter((l) => l.includes(c)).length, 1, c);
   });
 });
+test('every mission of the chat of 2026-11-09 waits at the building its index names, once', () => {
+  const idx = readFileSync(new URL('../../odd/tasks/chat-9nov-tanda.md', import.meta.url), 'utf8');
+  const names = { Coliseum: 'coliseum', Agora: 'agora', 'Visitor house': 'visitor-house', Hostel: 'hostel', Customs: 'customs', Choir: 'choir', Workshop: 'workshop' };
+  const rows = [...idx.matchAll(/^\| \*\*(Y\d+) ?\*\* \| ([A-Za-z ]+?) \|/gm)];
+  assert.equal(rows.length, 12);
+  rows.forEach(([, code, place]) => assert.deepEqual(Object.keys(M.WAIT).filter((k) => M.WAIT[k].includes(code)), [names[place]], code));
+});
 test('no duplicates: a code is placed once, and only at real buildings', () => {
   const all = Object.values(M.WAIT).flat();
   assert.equal(new Set(all).size, all.length);
@@ -24,9 +31,9 @@ test('no duplicates: a code is placed once, and only at real buildings', () => {
   Object.keys(M.WAIT).forEach((id) => assert.ok(ids.has(id), id));
 });
 test('spots: the node\'s own building only, one per kind, never a fogged NPC', () => {
-  const list = [{ id: 'agora', q: 1, r: 0, fog: false }, { id: 'agora', q: 5, r: 2, fog: true }, { id: 'hostel', q: 2, r: 0, fog: false }, { id: 'agora', q: 3, r: 0, fog: false }];
+  const list = [{ id: 'agora', q: 1, r: 0, fog: false }, { id: 'agora', q: 5, r: 2, fog: true }, { id: 'lottery', q: 2, r: 0, fog: false }, { id: 'agora', q: 3, r: 0, fog: false }];
   const s = M.spots(list);
-  assert.deepEqual(s.map((x) => [x.m.q, x.codes.join()]), [[1, 'E1,J2']]);
+  assert.deepEqual(s.map((x) => [x.m.q, x.codes.join()]), [[1, M.WAIT.agora.join()]]);
 });
 test('draw on a test double: one tap target of at least 44 px per spot, no raw colour, no chance, no clock', () => {
   const g = new Proxy({}, { get: (t, k) => (k in t ? t[k] : k === 'measureText' ? () => ({ width: 30 }) : () => {}), set: (t, k, v) => { t[k] = v; return true; } });

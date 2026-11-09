@@ -246,3 +246,5 @@ The Sovereign, 2026-11-08: «los botones pueden tener iconos algo más Acho; si 
   - guards green: gamepad, two_clicks, eye_carbon, type_scale;
   - `talk.css` 3796 B gzip;
   - Doogee: the lifted pad with the new icons.
+
+> Enriched 2026-11-09 by the Sovereign's chat (odd/tasks/chat-9nov-tanda.md): Y6 (the Node button explains every building type: what a collaborator can conquer).

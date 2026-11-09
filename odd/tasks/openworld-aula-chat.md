@@ -34,3 +34,5 @@ Sources: `odd/tasks/ephemeral-visitor-charter.md`, `odd/tasks/chat-del-aula.md`,
 `public/game/map_chat.js`; live heartbeat read 2026-11-05 via `/api/world-state`
 returned one LIVE and two STALE nodes plus one building. CLAIM buzon#53
 comment 6651798910.
+
+> Enriched 2026-11-09 by the Sovereign's chat (odd/tasks/chat-9nov-tanda.md): Y10 (Communication is the live chat: «Radio · news of the map» leaves its top; «Chat to the rack» becomes «Chat live»).

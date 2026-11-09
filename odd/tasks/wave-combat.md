@@ -69,3 +69,5 @@ None.
 ## Next step
 
 The map's measured state must first declare two eligible combatants with wave data; then W2 can be implemented and verified against the existing wave scene. Balance remains NO_DATA until measured.
+
+> Enriched 2026-11-09 by the Sovereign's chat (odd/tasks/chat-9nov-tanda.md): Y1 (a life bar over each wave in a fight), Y2 (fights half as long; waves seek their enemies; a far larger side crashes its extra waves into the air).

@@ -101,3 +101,5 @@ Law: Sovereign commission «the crab alive, the map in depth and the fight on th
 - **«Show the technical panels» is retired:** the four technical panels stay veiled for good (`visitor_view.js`).
 - **The Army panel's inherited link to the old Army page is removed.**
 - **The bubble steps aside while any sheet is open.**
+
+> Enriched 2026-11-09 by the Sovereign's chat (odd/tasks/chat-9nov-tanda.md): Y5 (key: the crabs of other live accounts are seen between machines; the messages already are).
