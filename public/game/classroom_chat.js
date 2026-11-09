@@ -67,7 +67,7 @@
     return result.verdict.state === 'PROPOSED' ? 'Decision proposed. Hexelion advises; it never signs.' : 'NO_DATA · ' + result.verdict.cause;
   }
   function renderReceipt(doc, list, result) {
-    if (!list) return;
+    if (!list || (result && result.cause === 'receipt_unavailable')) return; // a door that sends no receipt is not an error line (2026-11-09); an invalid one still says so
     var item = doc.createElement('li'); item.className = 'turn receipt';
     var label = doc.createElement('p'); label.textContent = 'Hexelion · ' + receiptSummary(result); item.appendChild(label);
     if (result && result.ok) {

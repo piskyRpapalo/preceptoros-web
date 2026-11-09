@@ -52,3 +52,10 @@ test('renderer uses text nodes and folded details, never action or signing contr
  assert.match(details.children[1].textContent,/<img/);
  assert.equal(log.children[0].children.some(e=>e.tag==='button'),false);
 });
+test('an absent receipt adds no line under the answer; an invalid one still does',async()=>{
+ function el(tag) { return {tag,children:[],style:{},textContent:'',appendChild(child){this.children.push(child);}}; }
+ const doc={createElement:el};const log=el('ol');
+ A.renderReceipt(doc,log,await A.verifyReceipt(undefined));assert.equal(log.children.length,0);
+ A.renderReceipt(doc,log,await A.verifyReceipt({veredicto:{},trailer:{}}));assert.equal(log.children.length,1);
+ assert.match(log.children[0].children[0].textContent,/invalid/);
+});

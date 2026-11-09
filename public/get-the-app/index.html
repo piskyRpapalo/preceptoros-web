@@ -50,12 +50,29 @@
 </ol>
 <h2>Android</h2>
 <ol>
-<li>Download <a href="/get-the-app/PreceptorOS-android-1.0.0.apk" download type="application/vnd.android.package-archive">PreceptorOS-android-1.0.0.apk</a> (1.2 MB), straight from this site. The same file is mirrored in the <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/download/android-v1.0.0/PreceptorOS-android-1.0.0.apk">app's release</a>. It is this web, installed as an app: it opens the world with no address bar and keeps nothing extra on the phone. Tested on an Android phone on 2026-11-09.</li>
-<li>Check its fingerprint. Its SHA-256 must be<br><code class="sha" data-asset="PreceptorOS-android-1.0.0.apk">388fa54d4c871ccb7929fd79e541cd44b1034b6fe6660122753ef5313f085782</code></li>
+<li>Download <a href="/get-the-app/PreceptorOS-android-1.0.1.apk" download type="application/vnd.android.package-archive">PreceptorOS-android-1.0.1.apk</a> (1.3 MB), straight from this site. The same file is mirrored in the <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/download/android-v1.0.1/PreceptorOS-android-1.0.1.apk">app's release</a>. It is this web, installed as an app: it opens the world with no address bar and keeps nothing extra on the phone. Tested on an Android phone on 2026-11-09.</li>
+<li>Check its fingerprint. Its SHA-256 must be<br><code class="sha" data-asset="PreceptorOS-android-1.0.1.apk">8db3176a20ed973dab1f28642972bb97ab1ccd70ddbc7cf95f7a44affc7c4d8b</code></li>
 <li>Open the file and allow the install. The app's signing certificate is declared at <a href="/.well-known/assetlinks.json">/.well-known/assetlinks.json</a>.</li>
 </ol>
 <p>To run the full app (the local model and the node) on Android, the app's own guide, <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/INSTALACION_ANDROID.md">INSTALACION_ANDROID.md</a> (in Spanish), covers Termux.</p>
 <p class="get-app"><a href="/aduana/">Next: create a node</a></p>
+<h2 id="first-steps">First steps for collaborators</h2>
+<p>Each link opens one place of the map; in the Android app the same four are a long press on its icon. A link only opens and fills: you press Send or Play yourself.</p>
+<ul class="first-steps">
+<li><a href="/openworld/?go=help">Help and the missions waiting</a>: the embers beside buildings are missions; tap one to open its card.</li>
+<li><a href="/openworld/?go=chat">Public chat</a>: text only, no account, erased within 24 hours.</li>
+<li><a href="/openworld/?go=guide">The guide on this device</a>: it downloads once and answers offline.</li>
+<li><a href="/openworld/?go=hexelion">Hexelion</a>, the AI on the rack: start a visit first; it advises and never signs.</li>
+<li><a href="/openworld/?go=building&amp;id=agora">The Agora</a>, <a href="/openworld/?go=building&amp;id=coliseum">the Coliseum</a>, <a href="/openworld/?go=building&amp;id=workshop">the Workshop</a>: a building's card, straight away.</li>
+</ul>
+<p>Basic scripts to try with the guide (each fills the question; you send it):</p>
+<ul class="first-steps">
+<li><a href="/openworld/?go=guide&amp;ask=What%20is%20this%20map%3F">What is this map?</a></li>
+<li><a href="/openworld/?go=guide&amp;ask=How%20do%20I%20move%3F">How do I move?</a></li>
+<li><a href="/openworld/?go=guide&amp;ask=What%20are%20the%20embers%20beside%20buildings%3F">What are the embers beside buildings?</a></li>
+<li><a href="/openworld/?go=guide&amp;ask=What%20is%20a%20live%20node%3F">What is a live node?</a></li>
+<li><a href="/openworld/?go=hexelion&amp;ask=Hello%20Hexelion%2C%20what%20can%20you%20do%3F">Hello Hexelion, what can you do?</a></li>
+</ul>
 <h2>What has been tested</h2>
 <table class="pruebas"><thead><tr><th>System</th><th>State</th><th>Detail</th></tr></thead><tbody><tr data-asset="install.sh" data-estado="PROBADO"><td>Linux</td><td>Tested</td><td>Run end to end on 2026-08-31 on the development node, with an isolated home.</td></tr><tr data-asset="install.sh" data-estado="NO_PROBADO"><td>macOS</td><td>Not tested</td><td>The Homebrew branch is written and reviewed, but there is no Mac in the rack.</td></tr><tr data-asset="install.ps1" data-estado="NO_PROBADO"><td>Windows</td><td>Not tested</td><td>Reviewed line by line, never run: there is no Windows machine in the rack.</td></tr><tr data-asset="INSTALACION_ANDROID.md" data-estado="NO_DATA"><td>Android · Termux</td><td>NO_DATA</td><td>The app&#x27;s own guide says Termux works today and the APK does not exist yet. Not measured here.</td></tr></tbody></table>
 <details class="tech"><summary>Technical details</summary><p>This page is written from the release card the web serves (<a href="/release.json">release.json</a>, measured 2026-09-13 · seal STALE: measured 2026-09-13; fingerprints re-checked 2026-10-26; install tests not re-run on a fleet device since). Its fingerprints match the live v1.3 release (re-checked 2026-10-26). Release page: <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/tag/v1.3">piskyRpapalo/PreceptorOS v1.3</a>. Manifest sha256: <code class="sha">75619007eb1b4c923f4299a754a436dcffa6e471f4d4f11b284351b752abaa7f</code></p></details>

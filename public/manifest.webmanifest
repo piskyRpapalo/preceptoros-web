@@ -30,5 +30,55 @@
    "type": "image/png",
    "purpose": "maskable"
   }
+ ],
+ "shortcuts": [
+  {
+   "name": "The map",
+   "short_name": "Map",
+   "url": "/openworld/",
+   "icons": [
+    {
+     "src": "/assets/icon-192.png",
+     "sizes": "192x192",
+     "type": "image/png"
+    }
+   ]
+  },
+  {
+   "name": "Public chat",
+   "short_name": "Chat",
+   "url": "/openworld/?go=chat",
+   "icons": [
+    {
+     "src": "/assets/icon-192.png",
+     "sizes": "192x192",
+     "type": "image/png"
+    }
+   ]
+  },
+  {
+   "name": "Ask the guide on this device",
+   "short_name": "Guide",
+   "url": "/openworld/?go=guide",
+   "icons": [
+    {
+     "src": "/assets/icon-192.png",
+     "sizes": "192x192",
+     "type": "image/png"
+    }
+   ]
+  },
+  {
+   "name": "Help and the missions waiting",
+   "short_name": "Help",
+   "url": "/openworld/?go=help",
+   "icons": [
+    {
+     "src": "/assets/icon-192.png",
+     "sizes": "192x192",
+     "type": "image/png"
+    }
+   ]
+  }
  ]
 }
