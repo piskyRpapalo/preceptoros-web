@@ -49,7 +49,12 @@
 <li>Check its fingerprint. <code>Get-FileHash install.ps1</code> must print<br><code class="sha" data-asset="install.ps1">b10d7b8ade7ea0f301fd325336ae97dba6fd954786956703a3c1c6a80641f19b</code></li>
 </ol>
 <h2>Android</h2>
-<p>The app's own guide, <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/INSTALACION_ANDROID.md">INSTALACION_ANDROID.md</a> (in Spanish), covers Termux. There is no APK yet.</p>
+<ol>
+<li>Download <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/download/android-v1.0.0/PreceptorOS-android-1.0.0.apk">PreceptorOS-android-1.0.0.apk</a> (1.2 MB). It is this web, installed as an app: it opens the world with no address bar and keeps nothing extra on the phone. Tested on an Android phone on 2026-11-09.</li>
+<li>Check its fingerprint. Its SHA-256 must be<br><code class="sha" data-asset="PreceptorOS-android-1.0.0.apk">388fa54d4c871ccb7929fd79e541cd44b1034b6fe6660122753ef5313f085782</code></li>
+<li>Open the file and allow the install. The app's signing certificate is declared at <a href="/.well-known/assetlinks.json">/.well-known/assetlinks.json</a>.</li>
+</ol>
+<p>To run the full app (the local model and the node) on Android, the app's own guide, <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/INSTALACION_ANDROID.md">INSTALACION_ANDROID.md</a> (in Spanish), covers Termux.</p>
 <p class="get-app"><a href="/aduana/">Next: create a node</a></p>
 <h2>What has been tested</h2>
 <table class="pruebas"><thead><tr><th>System</th><th>State</th><th>Detail</th></tr></thead><tbody><tr data-asset="install.sh" data-estado="PROBADO"><td>Linux</td><td>Tested</td><td>Run end to end on 2026-08-31 on the development node, with an isolated home.</td></tr><tr data-asset="install.sh" data-estado="NO_PROBADO"><td>macOS</td><td>Not tested</td><td>The Homebrew branch is written and reviewed, but there is no Mac in the rack.</td></tr><tr data-asset="install.ps1" data-estado="NO_PROBADO"><td>Windows</td><td>Not tested</td><td>Reviewed line by line, never run: there is no Windows machine in the rack.</td></tr><tr data-asset="INSTALACION_ANDROID.md" data-estado="NO_DATA"><td>Android · Termux</td><td>NO_DATA</td><td>The app&#x27;s own guide says Termux works today and the APK does not exist yet. Not measured here.</td></tr></tbody></table>
