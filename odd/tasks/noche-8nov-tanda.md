@@ -40,4 +40,20 @@ row; what exists is enriched, not re-created. Each line below names the mission 
   of crates with three outputs (WASM for the web, native for the app, a crate for A2A). First: the engine numbers, the C8 ledger,
   the fail-closed verifiers, the seal tooling. The rack's Python services are ported when they are touched.
 
+## On the map (2026-11-09, «puntos calientes esperando»)
+
+Each mission waits as an ember at the node's own building where its interactive will live (`public/game/mission_hotspots.js`,
+cases `atlas/puros/mission_hotspots_cases.mjs`); a tap opens that building's card and names the codes. No duplicate: the
+gaps the buildings already declare (J7, L12, K6c, J2, K2c) are the same rows, pointed at, not re-created.
+
+| Building | Waiting |
+|---|---|
+| Visitor house | H1 · K2c |
+| Coliseum | A1 · K6c |
+| Doctor | W1 |
+| Agora | E1 (gated by Q-L1) · J2 |
+| Choir | R1 |
+| Workshop | S1 · L12 · RS1 |
+| Customs | N1 · J7 |
+
 Agent: claude-code · Model: claude-opus-5-5
