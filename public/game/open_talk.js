@@ -76,7 +76,7 @@
     if (!list || doc.getElementById('open-chat')) { return null; }
     var li = doc.createElement('li'); li.className = 'voice'; li.id = 'open-chat'; li.dataset.speaker = 'Radio'; li.dataset.cat = 'Communication';
     li.style.display = 'none'; // shown with the Communication sheet (terminal_panel.js show)
-    var h = doc.createElement('h3'); h.textContent = 'Chat to the rack';
+    var h = doc.createElement('h3'); h.textContent = 'Chat live';
     var law = doc.createElement('p'); law.className = 'state'; law.textContent = LAW;
     var box = doc.createElement('textarea'); box.id = 'open-chat-text'; box.rows = 5; box.setAttribute('aria-label', 'Your message');
     var files = doc.createElement('input'); files.type = 'file'; files.multiple = true; files.accept = 'text/*,.md,.txt,.json,.csv'; files.setAttribute('aria-label', 'Text files to send, each one a message');
@@ -84,7 +84,9 @@
     var st = doc.createElement('p'); st.setAttribute('role', 'status'); st.setAttribute('aria-live', 'polite');
     var pin = doc.createElement('p'); pin.className = 'ot-pin'; pin.textContent = '📌 Messages here are public and erased every 24 hours.';
     var day = doc.createElement('ol'); day.className = 'ot-day'; day.setAttribute('aria-label', 'Messages of the last 24 hours');
-    li.append(pin, h, law, box, files, go, st, day); list.appendChild(li);
+    li.append(pin, h, law, box, files, go, st, day);
+    // Y10 (2026-11-09): the live chat leads the Communication panel; the radio and the guide follow it.
+    var radio = list.querySelector('[data-speaker="Radio"]'); if (radio) { list.insertBefore(li, radio); } else { list.appendChild(li); }
     // Nothing leaves the page until the visitor asks: the 24-hour list (and its toasts on the map) start behind this button.
     var show = doc.createElement('button'); show.type = 'button'; show.className = 'ot-show'; show.textContent = 'Show the last 24 hours';
     show.addEventListener('click', function () { show.remove(); watch(doc, win, day); });
