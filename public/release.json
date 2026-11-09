@@ -106,5 +106,18 @@
    "detalle": "Termux funciona hoy. El APK no existe — la guía explica en su §3 por qué, en vez de prometerlo"
   }
  ],
- "nota": "Lo escribe `<private-ref>/bin/release_publica.py` (sha256: NO_DATA, causa: fichero del repo privado, no presente en este repo) del lado servidor. La pagina NO llama a GitHub: lee este fichero same-origin, network-first y sin cachear, porque es una medida."
+ "nota": "Lo escribe `<private-ref>/bin/release_publica.py` (sha256: NO_DATA, causa: fichero del repo privado, no presente en este repo) del lado servidor. La pagina NO llama a GitHub: lee este fichero same-origin, network-first y sin cachear, porque es una medida.",
+ "android": {
+  "version": "android-v1.0.0",
+  "fecha": "2026-11-09",
+  "que": "Trusted Web Activity of https://preceptoros.org/openworld/ (Bubblewrap); certificate declared in /.well-known/assetlinks.json",
+  "assets": [
+   {
+    "nombre": "PreceptorOS-android-1.0.0.apk",
+    "sha256": "388fa54d4c871ccb7929fd79e541cd44b1034b6fe6660122753ef5313f085782",
+    "bytes": 1228974
+   }
+  ],
+  "probado": "installed and opened on an Android phone, 2026-11-09"
+ }
 }

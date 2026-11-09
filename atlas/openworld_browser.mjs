@@ -69,7 +69,7 @@ async function main() {
   await command('Runtime.enable'); await command('Page.enable'); await command('Network.enable');
   await command('Network.setBlockedURLs', { urls: ['https://api.preceptoros.org/*'] });
   await command('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
-  await command('Page.navigate', { url: origin + '/openworld/' }); await wait(2000);
+  await command('Page.navigate', { url: origin + '/openworld/?colony=alone' }); await wait(2000);
 
   const initial = JSON.parse(await evaluate(`JSON.stringify((() => {
     const map = document.getElementById('map'), stage = document.getElementById('stage'), canvas = document.getElementById('surface');
@@ -212,7 +212,7 @@ async function main() {
   ok(/^NO_DATA · /.test(chatAnswer), 'chat does not report unavailable model honestly: ' + chatAnswer);
 
   hitlOn = true;
-  await command('Page.navigate', { url: origin + '/openworld/' }); await wait(1700);
+  await command('Page.navigate', { url: origin + '/openworld/?colony=alone' }); await wait(1700);
   await evaluate("document.querySelector('.cats [data-cat=Welcome]').click()");
   const hitl = JSON.parse(await evaluate(`JSON.stringify((() => { const b=document.querySelector('#voice-walkers .hitl-mark');
     const r=b?.getBoundingClientRect(); return {exists:!!b, tag:b?.tagName, label:b?.getAttribute('aria-label'), width:r?.width||0,height:r?.height||0,
