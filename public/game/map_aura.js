@@ -91,7 +91,7 @@
   root.AtlasMapAura = api;
   if (root.document && root.document.addEventListener) {
     listen(root.document);
-    ['mission_hotspots', /[?&](go|ask)=/.test((root.location || {}).search || '') && 'map_links'].forEach(function (n) { // the missions waiting; a link's place
+    ['mission_hotspots', 'node_live', /[?&](go|ask)=/.test((root.location || {}).search || '') && 'map_links'].forEach(function (n) { // the missions waiting; a link's place
       if (n && root.document.head) { var e = root.document.createElement('script'); e.src = '/game/' + n + '.js'; root.document.head.appendChild(e); }
     });
   }
