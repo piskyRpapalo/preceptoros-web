@@ -86,3 +86,29 @@
 #preceptor-talk.pt-min .pt-line>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 #preceptor-talk.pt-min.pt-new .pt-who::after{content:'';display:inline-block;width:8px;height:8px;margin-left:4px;border-radius:50%;background:currentColor}
 #stage>#preceptor-talk.pt-bubble.pt-min{width:max-content;max-width:min(86%,340px);padding:0 4px}#preceptor-talk.pt-min .pt-line{margin:0}
+
+/* The app's ball on every click (click_trail.js): above everything, never in the way. */
+.click-trail{position:fixed;inset:0;z-index:60;width:100vw;height:100vh;pointer-events:none}
+@media (forced-colors:active){.click-trail{display:none}}
+
+/* The page stays put on phones (Sovereign, 2026-11-08: «el html no está fijo»): no pull-to-refresh or rubber band. */
+html,body{overscroll-behavior:none}
+
+/* E0 chat (open_talk.js): the pinned 24-hour notice, the day's list, and the nearly transparent toast over the map. */
+#open-chat .ot-pin{margin:0 0 8px;padding:8px 12px;border:2px solid var(--a1d1b26);border-radius:14px;background:var(--afffdf6);color:var(--a1d1b26);font-weight:700}
+#open-chat .ot-show{min-height:44px;margin:8px 0 0;padding:0 14px;border:2px solid var(--a1d1b26);border-radius:14px;background:var(--afffdf6);color:var(--a1d1b26);font-weight:700}
+#open-chat .ot-day{list-style:none;margin:8px 0 0;padding:0;max-height:40vh;overflow:auto}
+#open-chat .ot-day li{margin:0 0 6px;padding:6px 10px;border-radius:12px;background:var(--afffdf6);color:var(--a1d1b26);white-space:pre-wrap;overflow-wrap:anywhere}
+.ot-toast{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:5;max-width:min(86%,340px);margin:0;padding:6px 12px;border-radius:14px;background:var(--afffdf6);color:var(--a1d1b26);opacity:.72;pointer-events:none;font-weight:600}
+@media (prefers-reduced-motion:no-preference){.ot-toast{animation:ot-fade 5s ease forwards}}
+@keyframes ot-fade{0%{opacity:0}10%{opacity:.72}80%{opacity:.72}100%{opacity:0}}
+@media (forced-colors:active){.ot-toast{opacity:1;border:2px solid CanvasText}}
+/* Communication: each voice is a one-column grid whose track may not grow to its nowrap radio line. */
+#voices[data-active-category="Communication"] > .voice{grid-template-columns:minmax(0,1fr)}
+/* C8 Buildings owned (holdings_view.js): readable cards, a 44 px heal button, the cause in words when it cannot heal. */
+#holdings{margin:10px 0 0}
+#holdings ul{list-style:none;margin:6px 0;padding:0}
+#holdings li{margin:0 0 8px;padding:8px 10px;border:2px solid var(--a1d1b26);border-radius:var(--radius);background:var(--afffdf6);color:var(--a1d1b26)}
+#holdings meter{width:100%;height:12px}
+#holdings .holdings-heal{min-height:44px;width:100%;margin-top:6px;border:2px solid var(--a1d1b26);border-radius:var(--radius);background:var(--afffdf6);color:var(--a1d1b26);font-weight:700}
+#holdings .holdings-heal:disabled{opacity:.6}

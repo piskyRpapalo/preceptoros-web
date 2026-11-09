@@ -82,6 +82,9 @@ jobs:
             node --test atlas/puros/preceptor_talk_cases.mjs
             node --test atlas/puros/near_label_cases.mjs
             node --test atlas/puros/guardian_patrol_cases.mjs
+            node --test atlas/puros/click_trail_cases.mjs
+            node --test atlas/puros/open_talk_cases.mjs
+            node --test atlas/puros/holdings_wasm_cases.mjs atlas/puros/holdings_view_cases.mjs atlas/puros/holdings_live_cases.mjs
             node --test atlas/puros/settings_cases.mjs
             node --test atlas/puros/crab_stage_cases.mjs
             node --test atlas/puros/crab_body_cases.mjs

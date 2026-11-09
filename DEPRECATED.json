@@ -1,0 +1,13 @@
+{
+  "schema": "preceptoros.deprecated/1",
+  "note": "Machine-readable register of what was replaced. Each entry: what, since when, what replaces it, and whether the old thing is gone or kept. Search this file before reusing a name or a piece. Sovereign, 2026-11-08: «todo lo que sustituya, escribe [deprecated] en lenguaje máquina, para todas las AI que busquen».",
+  "entries": [
+    {"id": "ui.leaf.Welcome", "deprecated": "2026-11-08", "replaced_by": "ui.leaf.Help", "where": "public/game/terminal_panel.js", "status": "label_only", "why": "the heart leaf is the help button (decree Q-04); the internal key stays 'Welcome' so readers do not break"},
+    {"id": "ui.sheet.Town", "deprecated": "2026-11-08", "replaced_by": "ui.sheet.Node", "where": "public/game/building_sheet.js", "status": "removed", "why": "one name per concept: the sheet lists the buildings of the node you stand in (decree Q-03)"},
+    {"id": "ui.step.sign-adoption", "deprecated": "2026-11-08", "replaced_by": "a ready egg hatches by itself into the army", "where": "public/game/visitor_play.js", "status": "removed", "why": "the call is the consent (decree Q-06); the adoption is still signed by the visit key"},
+    {"id": "ui.settings.build", "deprecated": "2026-11-08", "replaced_by": "the app (only nodes build); the Conquest card shows building types", "where": "public/game/settings_sheet.js", "status": "removed", "why": "the ephemeral account only conquers (C3, #778)"},
+    {"id": "game.house.patrol-places", "deprecated": "2026-11-08", "replaced_by": "the NPC buildings on the map", "where": "public/game/visitor_battle.js", "status": "removed", "why": "fights are the grey NPC buildings (C2, #776)"},
+    {"id": "game.duel.wave_duel_scene", "deprecated": "2026-11-08", "replaced_by": "public/game/duel_face.js", "where": "public/game/wave_duel_scene.js", "status": "kept_as_fallback", "why": "D1 is the only fight face (#777)"},
+    {"id": "arch.pure-pieces-in-js", "deprecated": "2026-11-08", "replaced_by": "the Rust workspace (crates/), outputs WASM, native and an A2A crate", "where": "new pure pieces", "status": "policy", "why": "FIRMO 2026-11-08: «todo lo que pueda ser en rust desde ahora»; existing JS is ported when touched, never in cold"}
+  ]
+}
