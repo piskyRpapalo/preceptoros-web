@@ -49,7 +49,7 @@ async function main() {
   const hasta = async (e, ms) => { for (let t = 0; t < ms; t += 250) { if (await ev(e)) { return true; } await espera(250); } return false; };
   await cmd('Runtime.enable'); await cmd('Page.enable');
 
-  await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/` });
+  await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/?colony=alone` });
   ok(await hasta('!!document.getElementById("surface")', 10000), 'map loaded');
   ok(await hasta('!!document.getElementById("visitor-start")',10000),'visitor controls available');
   await ev('document.getElementById("visitor-start").click()');

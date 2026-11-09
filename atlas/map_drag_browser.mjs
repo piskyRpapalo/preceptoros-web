@@ -68,7 +68,7 @@ async function main() {
   await cmd('Runtime.enable'); await cmd('Page.enable');
   await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   await cmd('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
-  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
+  await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2500);
 
   const vista = async () => JSON.parse(await ev(`JSON.stringify((() => { const d = document.getElementById('surface').dataset, V = window.AtlasOpenworldView && AtlasOpenworldView(), w = V && V.controls && V.controls.walker ? V.controls.walker() : null;
     return { panx: Number(d.panx) || 0, pany: Number(d.pany) || 0, zoom: d.zoom, angle: d.angle || '0', tilt: d.tilt || '1', look: d.look || '', clicks: window.__clicks || 0, walker: w ? JSON.stringify([w.node, w.to, w.q, w.r]) : null, say: (document.getElementById('zoom-state') || {}).textContent || '' }; })())`));

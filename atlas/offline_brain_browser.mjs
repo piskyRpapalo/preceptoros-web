@@ -58,7 +58,7 @@ async function main() {
   await cmd('Target.setAutoAttach', { autoAttach: true, waitForDebuggerOnStart: false, flatten: true });
   await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   // 1 · Online, once: the page installs its service worker and the visitor downloads the brain by consent.
-  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2000);
+  await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2000);
   const ctl = await ev(`(async () => { await navigator.serviceWorker.ready; for (let i = 0; i < 100 && !navigator.serviceWorker.controller; i++) await new Promise((r) => setTimeout(r, 100)); return !!navigator.serviceWorker.controller; })()`);
   ok(ctl === true, 'the service worker never controlled /openworld/');
   await ev("document.querySelector('.cats [data-cat=Welcome]').click(); document.getElementById('entry-tools').click()");

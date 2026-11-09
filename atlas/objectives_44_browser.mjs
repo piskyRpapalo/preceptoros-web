@@ -49,7 +49,7 @@ async function main() {
   await cmd('Network.setBlockedURLs', { urls: ['https://*'] });
   await cmd('Emulation.setFocusEmulationEnabled', { enabled: true });
   await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });
-  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
+  await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2500);
   // The skip link only shows on focus (the welcome card takes the first Tab, so it is focused directly).
   await ev("document.querySelector('a.skip').focus(), true"); await espera(200);
   const r = JSON.parse(await ev(`JSON.stringify((() => {

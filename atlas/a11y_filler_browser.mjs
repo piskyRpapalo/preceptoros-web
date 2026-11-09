@@ -35,7 +35,7 @@ const fallos = [];
 
 // 1 · forced colours.
 await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'forced-colors', value: 'active' }] });
-await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2000);
+await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2000);
 // The terminal opens with no voice overlay; the visitor chooses Start before tabbing its actions.
 await ev("document.querySelector('.cats [data-cat=Welcome]').click()");
 const fc = JSON.parse(await ev(`JSON.stringify((() => {
@@ -58,7 +58,7 @@ if (!(fc.contraste >= 7)) { fallos.push('panel text contrast ' + fc.contraste); 
 
 // 2 · Open the map panel; Tab reaches its visible first node button and Enter enters.
 await cmd('Emulation.setEmulatedMedia', { features: [] });
-await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2000);
+await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2000);
 await ev("(() => { const b = document.querySelector('.cats [data-cat=Welcome]'); if (b.getAttribute('aria-pressed') !== 'true') b.click(); })()");
 let tabs = 0;
 for (; tabs < 80 && !(await ev("document.activeElement.matches('.map-place[data-node=\"home\"]')")); tabs++) { await tecla('Tab', 'Tab', 9); }

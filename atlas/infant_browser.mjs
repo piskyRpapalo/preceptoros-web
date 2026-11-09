@@ -51,7 +51,7 @@ async function main() {
   await cmd('Runtime.enable'); await cmd('Page.enable'); await cmd('Network.enable');
   await cmd('Network.setBlockedURLs', { urls: ['https://*'] });
   await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });
-  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(7000);
+  await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(7000);
   const r = JSON.parse(await ev(`JSON.stringify((() => {
     const vis = (el) => { const r = el.getBoundingClientRect(), s = getComputedStyle(el); return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
     const lineas = [], primera = [];
