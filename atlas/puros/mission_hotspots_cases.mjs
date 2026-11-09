@@ -38,3 +38,15 @@ test('draw on a test double: one tap target of at least 44 px per spot, no raw c
   const src = readFileSync(new URL('../../public/game/mission_hotspots.js', import.meta.url), 'utf8');
   assert.ok(!/Math\.random|Date\.now|new Date|#[0-9a-fA-F]{3,6}\b|rgba?\(/.test(src));
 });
+test('the guide answers missions from this table: every code named, placed at its one building, never swapped', () => {
+  Object.entries(M.WAIT).forEach(([id, codes]) => codes.forEach((c) => {
+    assert.ok(M.WHAT[c], c + ' has its words');
+    const a = M.answer('What is ' + c + '?');
+    assert.match(a, new RegExp('^' + c + ' is '), a);
+    Object.values(M.WAIT).flat().filter((o) => o !== c).forEach((o) => assert.ok(!new RegExp('\\b' + o + '\\b').test(a), c + ' answer names ' + o));
+  }));
+  assert.match(M.answer('What is coming to the Coliseum?'), /A1.*K6c/);
+  assert.match(M.answer('Which missions wait at Customs?'), /N1.*J7/);
+  assert.equal(M.answer('What is this map?'), null);
+  assert.equal(M.answer('How do I move?'), null);
+});

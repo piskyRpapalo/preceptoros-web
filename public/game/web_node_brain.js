@@ -23,6 +23,8 @@
     if (/\b(?:move|movement|walk|walking|controls?|directions?)\b/i.test(String(question || ''))) {
       return { text: CONTROLS_ANSWER, source: 'page-controls' };
     }
+    var mission = root.AtlasMissionHotspots && root.AtlasMissionHotspots.answer(question); // the page's own mission table
+    if (mission) { return { text: mission, source: 'page-missions' }; }
     return { text: String(candidate || ''), source: 'model' };
   }
   var state = { status: 'idle', engine: null, manifest: null, model: null, offline: false };

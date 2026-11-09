@@ -117,8 +117,8 @@
     busy = true; form.querySelector('button[type="submit"]').disabled = true;
     try {
       var answer = await root.AtlasWebNodeBrain.reply(text, context);
-      var speaker = answer.source === 'page-controls' ? 'OpenWorld guide · page controls' : answer.model + (offline ? ' · offline' : '');
-      line(speaker, answer.text); note.textContent = answer.source === 'page-controls' ? 'Controls from this page · ' + context : 'Local answer from the web node brain · ' + context;
+      var speaker = /^page-/.test(answer.source) ? 'OpenWorld guide · ' + (answer.source === 'page-controls' ? 'page controls' : 'page missions') : answer.model + (offline ? ' · offline' : '');
+      line(speaker, answer.text); note.textContent = /^page-/.test(answer.source) ? 'From this page · ' + context : 'Local answer from the web node brain · ' + context;
       doc.dispatchEvent(new CustomEvent('brain:answer', { detail: { verified: answer.verified, source: answer.source, model: answer.model, text: answer.text, sha: answer.sha } }));
     }
     catch (error) { line('Companion', 'NO_DATA · ' + (error.cause || 'model_unavailable') + ': ' + error.message); }
