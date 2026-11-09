@@ -42,6 +42,9 @@
       (s.eggs.filter(function (e) { return !e.ready; })[0] ? 'Walk ' + s.eggs.filter(function (e) { return !e.ready; })[0].remaining + ' steps to hatch.' : 'Ask the guide in the chat.');
     if (nextText && nextText.textContent !== t) { nextText.textContent = t; }
     if (playNow) { playNow.hidden = !!s; }
+    // Y7 (2026-11-09): once the first wave hatched and nothing waits, the tutorial frame folds to its minimum and rests.
+    var box = nextText && nextText.closest('#next'), fin = !!(s && s.troops && s.troops.length && t === 'Ask the guide in the chat.');
+    if (box && box.classList.contains('folded') !== fin) { box.classList.toggle('folded', fin); box.setAttribute('aria-disabled', String(fin)); }
   }
   async function start() { account = await root.AtlasVisitorAccount.create(true); game = await root.AtlasVisitorEggs.create(account); }
   if (playNow) {

@@ -14,3 +14,9 @@ test('no «news of the map» banner tops Communication', () => {
   assert.doesNotMatch(read('public/openworld/index.html'), /news of the map/);
   assert.match(read('public/assets/openworld.css'), /#voices \[data-speaker="Radio"\] > \.who \{ display: none; \}/);
 });
+test('Y7: the finished tutorial folds to its minimum and rests', () => {
+  const s = read('public/game/visitor_play.js');
+  assert.match(s, /s\.troops\.length && t === 'Ask the guide in the chat\.'/);
+  assert.match(s, /classList\.toggle\('folded', fin\)/);
+  assert.match(read('public/assets/openworld.css'), /#next\.folded\{opacity:\.6;pointer-events:none/);
+});

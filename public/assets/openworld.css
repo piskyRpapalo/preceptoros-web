@@ -293,3 +293,7 @@ body{font-size:1rem}
 @media (forced-colors:active){#gamepad > .view-joy > .view-stick.gp-acho{border:3px solid CanvasText}}
 /* Y10 (2026-11-09): no «Radio» banner at the top of Communication; the live chat leads, the guide and radio follow. */
 #voices [data-speaker="Radio"] > .who { display: none; }
+/* Y7 (2026-11-09): the finished tutorial folds to one quiet line and takes no taps. */
+#next.folded{opacity:.6;pointer-events:none;padding-block:2px}
+#next.folded p{font-size:.8rem}
+#next.folded .acts{display:none}
