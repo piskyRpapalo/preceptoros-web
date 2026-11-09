@@ -15,6 +15,24 @@
     workshop: ['S1', 'L12', 'RS1'],   // the settings that serve; the agenda board; the Rust workspace
     customs: ['N1', 'J7']             // the node refresh at the border; your place has a measure
   }, hits = [];
+  // What each code is, in the words of its source row (building_interiors.json; odd/tasks/noche-8nov-tanda.md).
+  var WHAT = { H1: 'Help as the hub', K2c: 'the voice star', A1: 'the army in three parts', K6c: 'arenas between nodes', W1: 'wave life',
+    E1: 'the online chat, waiting for its privacy law', J2: 'connect your own AI', R1: 'the radio on top', S1: 'settings that serve',
+    L12: 'the agenda board', RS1: 'the Rust workspace', N1: 'the node refresh at the border', J7: 'your place has a measure' };
+  var LABEL = { 'visitor-house': 'the Visitor house', coliseum: 'the Coliseum', doctor: 'the Doctor', agora: 'the Agora', choir: 'the Choir', workshop: 'the Workshop', customs: 'Customs' };
+  // Pure: answer(question) → the missions the page itself places, when the question asks about them; else null.
+  // The guide's model may swap two codes; this answer cannot (Sovereign, 2026-11-09: the codes are exact or absent).
+  function answer(q) {
+    q = String(q || '');
+    var id = Object.keys(WAIT).filter(function (k) { return new RegExp('\\b' + LABEL[k].replace(/^the /, ''), 'i').test(q); })[0];
+    var code = Object.keys(WHAT).filter(function (c) { return new RegExp('\\b' + c + '\\b', 'i').test(q); })[0];
+    if (code) { id = Object.keys(WAIT).filter(function (k) { return WAIT[k].indexOf(code) >= 0; })[0]; }
+    var asks = /\b(missions?|waiting|wait|coming|next|ember|embers|hot ?spots?|flame|codes?)\b/i.test(q);
+    if (code) { return code + ' is ' + WHAT[code] + '; it waits at ' + LABEL[id] + '.'; }
+    if (id && asks) { return 'At ' + LABEL[id] + ' ' + (WAIT[id].length > 1 ? 'wait ' : 'waits ') + WAIT[id].map(function (c) { return c + ', ' + WHAT[c]; }).join('; ') + '.'; }
+    if (asks) { return 'An ember with codes beside a building is a mission waiting there; tap it to open that building\'s card.'; }
+    return null;
+  }
   // Pure: spots(markList) → the node's buildings with missions waiting, one per kind, never a fogged NPC.
   function spots(list) {
     var seen = {};
@@ -58,7 +76,7 @@
       if (sh) { var p = doc.createElement('p'); p.className = 'mission-wait'; p.setAttribute('role', 'status'); p.textContent = 'Missions waiting here: ' + h.codes.join(', ') + '. Each one is built first, then signed.'; sh.appendChild(p); }
     }, true);
   }
-  var api = { WAIT: WAIT, spots: spots, draw: draw, hitAt: hitAt };
+  var api = { WAIT: WAIT, WHAT: WHAT, spots: spots, draw: draw, hitAt: hitAt, answer: answer };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasMissionHotspots = api;
   if (root.document && root.document.getElementById) {
