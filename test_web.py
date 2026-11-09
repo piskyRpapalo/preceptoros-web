@@ -1237,7 +1237,7 @@ class PWA(unittest.TestCase):
         admitidas = obligatorias | {"id", "scope", "lang", "dir", "description",
                                     "orientation", "background_color", "theme_color",
                                     # 2026-11-09: «shortcuts» is not decoration: Android reads it (a long press on the
-                                    # app icon) and the app's predefined links live there (public/game/deep_links.js).
+                                    # app icon) and the app's predefined links live there (public/game/map_links.js).
                                     "shortcuts"}
         for sc in m.get("shortcuts", []):
             self.assertTrue(sc["url"].startswith("/openworld/"), sc)

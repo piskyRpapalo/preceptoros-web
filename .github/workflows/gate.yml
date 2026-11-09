@@ -92,7 +92,7 @@ jobs:
             node --test atlas/puros/map_aura_cases.mjs
             node --test atlas/puros/mission_hotspots_cases.mjs
             node --test atlas/hexelion_receipt_cases.mjs
-            node --test atlas/puros/deep_links_cases.mjs
+            node --test atlas/puros/map_links_cases.mjs
             node --test atlas/puros/map_fog_cases.mjs
             node --test atlas/puros/npc_place_cases.mjs
             node --test atlas/puros/duel_face_cases.mjs

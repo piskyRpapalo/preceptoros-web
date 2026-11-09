@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
-const D = createRequire(import.meta.url)('../../public/game/deep_links.js');
+const D = createRequire(import.meta.url)('../../public/game/map_links.js');
 const read = (p) => readFileSync(new URL('../../public/' + p, import.meta.url), 'utf8');
 test('parse keeps only known routes and real buildings; nothing is guessed', () => {
   assert.deepEqual(D.parse('?go=chat'), { go: 'chat', id: null, ask: null });
@@ -25,6 +25,6 @@ test('every shortcut of the Android app and every first-step link is a route the
   urls.filter((u) => u.includes('?')).forEach((u) => { const r = D.parse(u.slice(u.indexOf('?'))); assert.ok(r.go || r.ask, u); });
 });
 test('a link never sends, signs or plays: no submit, no click on Play, no chance, no clock', () => {
-  const src = read('game/deep_links.js');
+  const src = read('game/map_links.js');
   assert.ok(!/requestSubmit|\.submit\(|welcome-play|play-now|Math\.random|Date\.now/.test(src));
 });

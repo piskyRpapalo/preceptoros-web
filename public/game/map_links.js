@@ -42,6 +42,6 @@
   }
   var api = { ROUTES: ROUTES, BUILDINGS: BUILDINGS, parse: parse, open: open };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
-  root.AtlasDeepLinks = api;
+  root.AtlasMapLinks = api;
   if (root.document && root.document.querySelector) { start(root.document); }
 })(globalThis);
