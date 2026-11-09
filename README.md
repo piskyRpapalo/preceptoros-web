@@ -45,7 +45,7 @@ below. Nothing here is a promise; it is what each house holds today.
 
 - **Doctrine and corpus** — [study](https://github.com/piskyRpapalo/study)
   (the public doctrine) ·
-  [PreceptorOS](https://github.com/piskyRpapalo/PreceptorOS) (the APP and its
+  [preceptoros-app](https://github.com/piskyRpapalo/preceptoros-app) (the APP and its
   doctrine)
 - **Doors** — [babel](https://github.com/piskyRpapalo/babel) (the single
   vocabulary house) ·

@@ -15,13 +15,13 @@
 | Hueco | Causa | La vara que lo mide | Misión |
 |---|---|---|---|
 | «27 benchmark sessions» del perfil | conteo no verificado contra el listing del lab | conteo del listing, comando+fecha+máquina | N1 |
-| «colonia measured live 2026-11-01» | falta el recibo de ese día | recibo del faro o contadores con su SHA | N2 |
-| tope de 16 KiB servido en texto público | ley revocada por D2: 25 MiB por bloque, 1.024 B para frames y llms | diff del texto público contra el canon | N3 |
-| residentez del cerebro en la web | saberlo exige API local que la ley no deja llamar en la página | frame proyectado con CAUSA_RESIDENTE | N4 |
-| paridad de proyección app/web | las implementaciones difieren | el mismo frame clavado por sha256 en ambas | N4 |
+| «colonia measured live 2026-11-01» | falta el recibo de ese día | recibo del faro o contadores con su SHA | N2 · SERVIDA (#738, 3a83bccf) |
+| tope de 16 KiB servido en texto público | ley revocada por D2: 25 MiB por bloque, 1.024 B para frames y llms | diff del texto público contra el canon | N3 · MEDIDA (#739, ac37a62c) |
+| residentez del cerebro en la web | saberlo exige API local que la ley no deja llamar en la página | frame proyectado con CAUSA_RESIDENTE | N4 · SERVIDA (#742, 24365369) |
+| paridad de proyección app/web | las implementaciones difieren | el mismo frame clavado por sha256 en ambas | N4 · SERVIDA (#742, 24365369) |
 | matemática no firmada que corre en el mapa | lo PROPOSED no renderiza sin FIRMO | declaración de piezas firmadas + test | N5 |
 | regresión visual invisible | sin hash sellado del conjunto de frames | guardián de hash en CI | N6 |
-| presupuesto de bytes sin número | «dentro del presupuesto» declarado en ningún contrato | techo por chunk y por vecindad EN el contrato | N7 |
+| presupuesto de bytes sin número | «dentro del presupuesto» declarado en ningún contrato | techo por chunk y por vecindad EN el contrato | N7 · SERVIDA (#737, 1f667006) |
 | jugable desde fuera sin probar | CI verde no es jugable | PRUEBA_5_MINUTOS de un humano real con recibo | N8 |
 | instalación limpia sin cronómetro | nadie la midió de punta a punta | cronómetro en flota limpia, por destino | N9 |
 | Windows y macOS sin probar | instalación medida solo en Linux | la misma vara por destino | N9 |
@@ -33,18 +33,20 @@
 | evidencia LIVE de la creación firmada | audio y tacto físicos sin medir en el rack | medición física con recibo | N12 |
 | cumplimiento legal completo | postura de diseño no es cumplimiento | firma de humano cualificado | N14 (dormida) |
 
+> **Re-medida (2026-11-09, main 8d338bd7):** N2, N3, N4 y N7 cerradas el 8-nov — PR #738 (merge 3a83bccf), #739 (ac37a62c), #742 (24365369) y #737 (1f667006); N5 y N6 pierden su prerrequisito. Filas actualizadas abajo.
+
 ## 3 · Las misiones por rango
 
 ### Rango I · El patio (sin prerrequisitos: el preceptor con tiempo hoy empieza aquí)
 - **N1 · Count the sessions**: contar el listing del lab y ajustar o reportar la cifra del perfil. El perfil es manos del Soberano: el drift se REPORTA con fichero:línea, no se edita.
-- **N2 · Show the receipt**: hallar y citar el recibo del 1 de noviembre, o declararlo ausente con causa.
-- **N3 · Retire the dead law**: proponer (jamás editar sin decreto) la línea que sustituye el tope revocado en los textos públicos.
+- **N2 · Show the receipt**: hallar y citar el recibo del 1 de noviembre, o declararlo ausente con causa. **Servida (2026-11-08, PR #738, merge 3a83bccf):** el recibo del 1-nov quedó declarado ausente con causa (counters 404 en historial; el recibo más antiguo medido es del 2026-11-02).
+- **N3 · Retire the dead law**: proponer (jamás editar sin decreto) la línea que sustituye el tope revocado en los textos públicos. **Servida (2026-11-08, PR #739, ac37a62c):** medido; no quedaba ley muerta que retirar en los textos de la web (el llms.txt del perfil, primer caso, es mano del Soberano).
 
 ### Rango II · La escalada (1 prerrequisito)
-- **N4 · Project the first frame** (desbloquea N5 y N6): el censo de cerebros proyectado a silueta Acho <1.024 B, con su NO_DATA de residentez pintado como CAUSA_RESIDENTE; verificado por el juez; la misma huella en app y web. Una pieza, dos huecos: residentez y paridad.
+- **N4 · Project the first frame** (desbloquea N5 y N6): el censo de cerebros proyectado a silueta Acho <1.024 B, con su NO_DATA de residentez pintado como CAUSA_RESIDENTE; verificado por el juez; la misma huella en app y web. Una pieza, dos huecos: residentez y paridad. **Servida (2026-11-08, PR #742, 24365369).**
 - **N5 · Declare the map mathematics** (pide N4): la lista de piezas del canon FIRMADAS que corren en el mapa; lo propuesto renderiza NO_DATA con causa «matemática propuesta, no firmada».
 - **N6 · Guard the frames in CI** (pide N4): hash sellado por conjunto de frames: una regresión visual se vuelve roja sin ojo humano.
-- **N7 · Declare the byte budget**: techo por chunk y por vecindad visible escrito EN el contrato del mapa; la fase visual hereda una ley, no una esperanza.
+- **N7 · Declare the byte budget**: techo por chunk y por vecindad visible escrito EN el contrato del mapa; la fase visual hereda una ley, no una esperanza. **Servida (2026-11-08, PR #737, 1f667006).**
 
 ### Rango III · La cadena (2 prerrequisitos)
 - **N8 · Prove the five minutes of the visitor** (pide la cuenta efímera, el tutorial, los duelos y el gacha): la partida de diez minutos que se sostiene sola, jugada por un humano real desde fuera, con recibo. Es el gate que CI no puede dar: verde en CI no es jugable fuera.
