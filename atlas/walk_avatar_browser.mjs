@@ -128,8 +128,13 @@ async function main() {
   ok(/NO_DATA: no visible node on that hex/.test(vacia), 'an empty hex says NO_DATA: ' + vacia.slice(0, 120));
   ok(await libre(true), 'the free-walk checkbox is missing');
   await cierra();
-  await clicEn(vacio.x + 200, vacio.y + 200); await espera(200);
-  const paso = await estado();
+  // A slow runner (CI, 2026-11-09) read the line before the step landed, or its first tap only closed a late panel:
+  // wait for the line to change, and tap once more if the first tap was consumed.
+  let paso = '';
+  for (let t = 0; t < 2 && !/^You walk/.test(paso); t++) {
+    await clicEn(vacio.x + 200, vacio.y + 200);
+    for (let w = 0; w < 15 && !/^You walk/.test(paso = await estado()); w++) { await espera(100); }
+  }
   ok(/^You walk (east|south-east|south-west|west|north-east|north-west) to /.test(paso), 'with free walk on, a tap off any node does not step the crab: ' + paso.slice(0, 120));
 
   console.log(JSON.stringify({ piece: 'W-3', medidas, fallos }));
