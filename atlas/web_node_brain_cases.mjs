@@ -17,7 +17,7 @@ function carga(fetch) {
 test('el manifiesto servido es válido y suma los bytes del modelo y del runtime fijados', () => {
   const B = carga(() => { throw new Error('no network'); });
   assert.ok(B.check(M));
-  assert.equal(M.chunks.reduce((a, c) => a + c.bytes, 0), 105454144);
+  assert.equal(M.chunks.reduce((a, c) => a + c.bytes, 0), 105453984); // the guide of 2026-11-09 (was 105454144, the untuned base)
   assert.ok(M.chunks.every((c) => c.bytes <= 25 * 1024 * 1024), 'cada chunk entra en Cloudflare');
 });
 
