@@ -1,6 +1,6 @@
 // The web node brain (2026-11-01): a small model that lives IN the web, served by this same origin in chunks, and runs
-// on the visitor's own CPU (WebAssembly; no WebGPU needed, so it reaches the Doogee). Model: SmolLM2-135M-Instruct
-// Q4_K_M (Apache-2.0), 105,454,144 bytes in 5 chunks under 25 MiB. Runtime: wllama 3.8.1 (MIT), vendored in
+// on the visitor's own CPU (WebAssembly; no WebGPU needed, so it reaches the Doogee). Model: SmolLM2-135M-Instruct tuned on this
+// map (LoRA, 2026-11-09), Q4_K_M (Apache-2.0), 105,453,984 bytes in 5 chunks under 25 MiB. Runtime: wllama 3.8.1 (MIT), vendored in
 // /vendor/wllama/. /models/web-node/manifest.json pins one SHA-256 for every byte that runs: the runtime script, the
 // wasm and each chunk. Nothing is fetched without an explicit consent; a byte that does not match is NO_DATA with its
 // cause, never a guess. Verified bytes are kept in CacheStorage by hash, so a second visit downloads nothing.

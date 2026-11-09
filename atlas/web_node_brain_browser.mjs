@@ -79,7 +79,7 @@ async function main() {
     for(let i=0;i<50&&!/Hexagonal building/.test(document.getElementById('chat-h').textContent);i++)await w(100);
     const inside=document.getElementById('chat-h').textContent, leave=document.getElementById('leave-building'); if(leave)leave.click();
     return JSON.stringify({inside, after:document.getElementById('chat-h').textContent}); })()`));
-  ok(speaker.inside === 'Hexagonal building · b-home' && speaker.after === 'SmolLM2-135M-Instruct-Q4_K_M', 'leaving a building did not restore the loaded model as speaker: ' + JSON.stringify(speaker));
+  ok(speaker.inside === 'Hexagonal building · b-home' && speaker.after === JSON.parse(readFileSync(new URL('../public/models/web-node/manifest.json', import.meta.url), 'utf8')).model, 'leaving a building did not restore the loaded model as speaker: ' + JSON.stringify(speaker));
   console.log(JSON.stringify({ piece: 'web-node-brain', medidas: r, speaker, peticiones_modelo: modelos.length, externas: externas.length, fallos }));
 }
 main().catch((e) => { fallos.push(String(e.message || e)); console.log(JSON.stringify({ fallos })); }).finally(() => { try { ws && ws.close(); } catch {} try { ch && ch.close && ch.close(); } catch {} try { srv && srv.close(); } catch {} process.exit(fallos.length ? 1 : 0); });

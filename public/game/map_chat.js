@@ -5,14 +5,14 @@
   // The joystick stays as the page serves it: the companion does not move or fold page controls.
   // The web node brain (web_node_brain.js): a same-origin model in 5 verified chunks, run on this device's CPU.
   var ready = false, busy = false, loading = false, offline = false;
-  var model = 'SmolLM2-135M-Instruct', context = 'The map · local visitor practice';
+  var model = 'PreceptorOS-guide-20261109', context = 'The map · local visitor practice';
   var zone = doc.createElement('div'); zone.id = 'map-brain';
   var guide = doc.querySelector('#voices [data-speaker="Models"]');
   if (guide) { guide.appendChild(zone); if (note) { guide.appendChild(note); } } else { form.before(zone); }
   // Terminal familia (TF-1): one simple sentence visible; the full disclosure (bytes, SHA-256, licences) stays, folded.
   var simple = doc.createElement('p'); simple.textContent = 'The guide runs on your device; nothing leaves it.'; zone.append(simple);
   var how = doc.createElement('details'), howSummary = doc.createElement('summary'); howSummary.textContent = 'How the guide works'; howSummary.style.cssText = 'min-height:44px;display:flex;align-items:center;cursor:pointer'; how.append(howSummary);
-  var disclosure = doc.createElement('p'); disclosure.textContent = 'Web node brain: SmolLM2 135M Instruct (Apache-2.0) · 105,454,144 weight bytes in 5 chunks plus the wllama runtime (MIT) · 9,146,582 bytes, all from this site, each checked by SHA-256. It runs on this device\'s processor; no graphics card needed. Nothing downloads until you choose; after that it stays on this device. Your chat text stays on this device. The model advises; it never signs or plays for you.'; how.append(disclosure); zone.append(how);
+  var disclosure = doc.createElement('p'); disclosure.textContent = 'Web node brain: the PreceptorOS guide, SmolLM2 135M Instruct tuned on this map (Apache-2.0) · 105,453,984 weight bytes in 5 chunks plus the wllama runtime (MIT) · 9,146,582 bytes, all from this site, each checked by SHA-256. It runs on this device\'s processor; no graphics card needed. Nothing downloads until you choose; after that it stays on this device. Your chat text stays on this device. The model advises; it never signs or plays for you.'; how.append(disclosure); zone.append(how);
   var start = doc.createElement('button'); start.type = 'button'; start.id = 'brain-load'; start.textContent = 'Download the web node brain and verify it'; start.style.minHeight = '44px'; zone.append(start);
   var selected = doc.createElement('p'); selected.id = 'brain-context'; selected.textContent = context; zone.append(selected);
   var modeLabel = doc.createElement('label'); modeLabel.htmlFor = 'chat-destination'; modeLabel.textContent = 'Who answers';
