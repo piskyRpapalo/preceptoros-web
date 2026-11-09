@@ -297,3 +297,4 @@ body{font-size:1rem}
 #next.folded{opacity:.6;pointer-events:none;padding-block:2px}
 #next.folded p{font-size:.8rem}
 #next.folded .acts{display:none}
+.bs-live{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.bs-live p{margin:0;flex-basis:100%;font-size:13px}.bs-live button{min-height:44px;min-width:44px}

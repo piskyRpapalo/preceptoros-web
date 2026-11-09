@@ -111,7 +111,7 @@
       tecnico = 'Colony: NO_DATA · ' + (colonia_error || (tutorial ? 'state.json lists no node' : 'state not loaded yet')) + '.';
     }
     if (CCT) { CCT.start(); }
-    state.textContent = linea;
+    state.textContent = linea; state.dataset.live = live === 'ok' ? nombres.join(' ') || '-' : ''; // Y7: node_live.js
     doc.getElementById('state-tech').textContent = tecnico;
     renderFrases();
   }
