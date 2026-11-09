@@ -16,6 +16,7 @@
 //! clock: the caller passes the step count (and, for wave healing, the minutes of the visit clock it declares).
 
 pub mod sha256;
+pub mod wasm;
 
 /// The four resources, in the order of the game's state vector (state_vector.js `r`).
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
