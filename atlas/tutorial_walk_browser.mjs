@@ -28,7 +28,7 @@ const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.s
 const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
 await cmd('Runtime.enable'); await cmd('Page.enable');
 await cmd('Emulation.setDeviceMetricsOverride', { width: 1000, height: 800, deviceScaleFactor: 1, mobile: false });
-await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/` }); await espera(2000);
+await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/?colony=alone` }); await espera(2000);
 const say = () => ev(`(document.querySelector('#joy .state')||{}).textContent`);
 // W-5: use the accessible Map category and the real button for the first node node.
 const clicNodo = () => ev(`(async () => { const c=document.querySelector('.cats [data-cat=Welcome]'); if(c?.getAttribute('aria-pressed')!=='true')c?.click(); for(let i=0;i<50;i++){const b=document.querySelector('#map-node-list [data-node=home]');if(b&&b.getBoundingClientRect().height>=44){b.click();return 'ok';} await new Promise(r=>setTimeout(r,100));}return 'NO_BUTTON';})()`);

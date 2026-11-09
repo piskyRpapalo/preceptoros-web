@@ -10,7 +10,7 @@
   var press = doc.querySelector('#terrain-actions');
   var state = doc.getElementById('state');
   var quieto = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var CP = raiz.AtlasColoniaPagina, colonia_ocultos = 0, colonia = null, colonia_fuente = 'NO_DATA', colonia_error = '';
+  var alone = /[?&]colony=alone\b/.test(raiz.location.search), CP = raiz.AtlasColoniaPagina, colonia_ocultos = 0, colonia = null, colonia_fuente = 'NO_DATA', colonia_error = '';
   var live = 'pending', live_fuente = 'NO_DATA'; // the heartbeat: pending, ok, or its cause
   // Synthetic fixture, opt-in with ?fixture=sintetica: it is labelled SYNTHETIC on the page, never a live colony.
   var FIXTURE = { nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'ring-e', q: 1, r: 0 }, { id: 'ring-ne', q: 1, r: -1 }, { id: 'ring-nw', q: 0, r: -1 }, { id: 'ring-w', q: -1, r: 0 }, { id: 'ring-sw', q: -1, r: 1 }, { id: 'ring-se', q: 0, r: 1 }, { id: 'doggee-a', q: 2, r: 0 }, { id: 'doggee-b', q: 2, r: -1 }], buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' }, { id: 'b-ring-nw', node: 'ring-nw' }, { id: 'b-ring-sw', node: 'ring-sw' }, { id: 'b-doggee-a', node: 'doggee-a' }, { id: 'b-doggee-b', node: 'doggee-b' }], units: [] };
@@ -21,7 +21,7 @@
   var CC = raiz.AtlasColonyControls;
   var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); }, stepped: function () { var vb = doc.getElementById('visitor-play'); if (vb) { vb.dispatchEvent(new CustomEvent('visitor:advance')); } }, walk: function () { walkLoop(); }, entered: function (node) { var W = raiz.AtlasInvocacionViva; if (W) { W.tunnel(function () { enterBuilding(node); }); } else { enterBuilding(node); } } }) : null;
   // P5a: the view hitl_walkers.js reads on every visitor:draw (the «?» and the walkers).
-  raiz.AtlasOpenworldView = function () { return { colony: colonia_error ? null : colonia, t: entrada.t, reduced: quieto, looks: colony_looks, seals: colony_seals, mana: colony_mana, pending: colony_pending, controls: CCT, state: state, redraw: function () { draw(); } }; };
+  raiz.AtlasOpenworldView = function () { return { colony: colonia_error || !alone ? null : colonia, t: entrada.t, reduced: quieto, looks: colony_looks, seals: colony_seals, mana: colony_mana, pending: colony_pending, controls: CCT, state: state, redraw: function () { draw(); } }; };
   // Zoom and orbit use the canvas state; the map picture alone changes (law P5).
   var viewSeen = '', ZOOM = raiz.AtlasMapZoom && surface ? raiz.AtlasMapZoom.create(surface, { changed: function () { onZoom(); } }) : null;
   function onZoom() {
@@ -64,7 +64,7 @@
     var width = surface.clientWidth || 320, height = surface.clientHeight || 200;
     var dpr = Math.min(2, raiz.devicePixelRatio || 1);
     surface.width = Math.round(width * dpr); surface.height = Math.round(height * dpr);
-    if (colonia && CP) {
+    if (colonia && CP && alone) { // 2026-11-09: the world is the map; a LIVE colony never hides the crab
       try { CP.draw(surface, colonia, entrada.t, quieto, colony_looks, colony_seals, CCT ? CCT.walker() : null, colony_mana, true); visitorLayer(); return; }
       catch (e) { colonia_error = e.message || 'the colony is refused'; }
     }

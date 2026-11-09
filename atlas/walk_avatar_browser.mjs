@@ -75,7 +75,7 @@ async function main() {
   const anclaDe = (nodo) => ev(`(() => { const s = document.getElementById('surface'); const est = AtlasOpenworldState.leer(${JSON.stringify(ESTADO)}); const a = AtlasColoniaPagina.anchorOf(s, est.colonia, 0, est.looks || {}, est.seals || {}, ${JSON.stringify(nodo)}); return a; })()`);
   await cmd('Runtime.enable'); await cmd('Page.enable');
 
-  await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/` });
+  await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/?colony=alone` });
   ok(await hasta('!!document.getElementById("surface")', 15000), 'map loaded');
   ok(await hasta(`(document.querySelector('#joy .state') || {}).textContent && document.querySelector('#joy .state').textContent.includes('terminal') || document.getElementById('state-tech').textContent.includes('Colony:')`, 15000), 'colony drawn from the state');
   await espera(300);
