@@ -78,3 +78,5 @@ PROPOSED · INTANGIBLE, not applied to standing doctrine: keep classifier result
 ## Next step
 
 Desk review and exact-head ODD FIRMO are the remaining document-PR gates. Code implementation must be commissioned in lote `2026-10-28-g`, use the #379 integration seam selected by the Desk, and stay weight-free until an eligible non-synthetic model is accepted. If a later code head is merged and deployed through the authorized path, perform live smoke then; do not treat the local fixture as production evidence.
+
+> Enriched 2026-11-09 by the Sovereign's chat (odd/tasks/chat-9nov-tanda.md): Y11 (the app's Lab may download the day's chat once a day and analyse it, behind the user's own switch; gated by Q-L1).

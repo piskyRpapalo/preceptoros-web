@@ -1,25 +1,32 @@
 // The mission map on the map (Sovereign, 2026-11-09: «puntos calientes esperando»). Each of the node's own buildings
 // where a mission waits wears an ember with the mission codes; a tap opens that building's card (building_sheet.js).
 // The places are exact, not invented: the gaps the buildings already declare (/game/building_interiors.json: J7, L12,
-// K6c, J2, K2c) plus the night tanda (odd/tasks/noche-8nov-tanda.md), each set where its interactive will live.
+// K6c, J2, K2c), the night tanda (odd/tasks/noche-8nov-tanda.md) and the chat of 2026-11-09 (odd/tasks/chat-9nov-tanda.md),
+// each set where its interactive will live.
 // One map, no duplicate: the gap board (gap_board.js) says the same gaps in words; this only points at them.
 // Picture plus a tap target; no clock, no chance, no request; the rectangles live only in page memory.
 (function (root) {
   'use strict';
   var WAIT = {
-    'visitor-house': ['H1', 'K2c'],   // Help is the hub: the visitor's own house answers who, what and of what
-    coliseum: ['A1', 'K6c'],          // the army in three parts; arenas between nodes
+    'visitor-house': ['H1', 'K2c', 'Y4', 'Y7'],   // Help is the hub: the visitor's own house answers who, what and of what
+    coliseum: ['A1', 'K6c', 'Y1', 'Y2'],          // the army in three parts; arenas between nodes
     doctor: ['W1'],                   // wave life: the doctor heals a wave back to full
-    agora: ['E1', 'J2'],              // the online chat (gated by Q-L1); connect your own AI
-    choir: ['R1'],                    // the radio on top: sound and voice commands
-    workshop: ['S1', 'L12', 'RS1'],   // the settings that serve; the agenda board; the Rust workspace
-    customs: ['N1', 'J7']             // the node refresh at the border; your place has a measure
+    agora: ['E1', 'J2', 'Y3', 'Y12'],              // the online chat (gated by Q-L1); connect your own AI
+    choir: ['R1', 'Y10'],                    // the radio on top: sound and voice commands
+    workshop: ['S1', 'L12', 'RS1', 'Y11'],   // the settings that serve; the agenda board; the Rust workspace
+    customs: ['N1', 'J7', 'Y6', 'Y8', 'Y9'],
+    hostel: ['Y5']             // the node refresh at the border; your place has a measure
   }, hits = [];
   // What each code is, in the words of its source row (building_interiors.json; odd/tasks/noche-8nov-tanda.md).
   var WHAT = { H1: 'Help as the hub', K2c: 'the voice star', A1: 'the army in three parts', K6c: 'arenas between nodes', W1: 'wave life',
     E1: 'the online chat, waiting for its privacy law', J2: 'connect your own AI', R1: 'the radio on top', S1: 'settings that serve',
-    L12: 'the agenda board', RS1: 'the Rust workspace', N1: 'the node refresh at the border', J7: 'your place has a measure' };
-  var LABEL = { 'visitor-house': 'the Visitor house', coliseum: 'the Coliseum', doctor: 'the Doctor', agora: 'the Agora', choir: 'the Choir', workshop: 'the Workshop', customs: 'Customs' };
+    L12: 'the agenda board', RS1: 'the Rust workspace', N1: 'the node refresh at the border', J7: 'your place has a measure',
+    // The chat of 2026-11-09 (odd/tasks/chat-9nov-tanda.md).
+    Y1: 'a life bar over each wave in a fight', Y2: 'faster fights where waves seek their enemies', Y3: 'a signed chat message',
+    Y4: 'a tutorial that walks you to your first wave', Y5: 'the crabs of other live accounts on the map', Y6: 'what each building type lets you conquer',
+    Y7: 'the tutorial folds and Nodes shows the live nodes', Y8: 'a main building at the centre of each node', Y9: 'go to a node and walk there',
+    Y10: 'Chat live takes the whole Communication panel', Y11: 'the Lab reads the day\'s chat once a day, if you allow it', Y12: 'the rack answers when you name the Preceptor' };
+  var LABEL = { hostel: 'the Hostel', 'visitor-house': 'the Visitor house', coliseum: 'the Coliseum', doctor: 'the Doctor', agora: 'the Agora', choir: 'the Choir', workshop: 'the Workshop', customs: 'Customs' };
   // Pure: answer(question) → the missions the page itself places, when the question asks about them; else null.
   // The guide's model may swap two codes; this answer cannot (Sovereign, 2026-11-09: the codes are exact or absent).
   function answer(q) {

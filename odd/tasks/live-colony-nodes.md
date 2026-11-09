@@ -88,3 +88,5 @@ The canon line "a live rack heartbeat ... remains NO_DATA" and the decree "only 
 ## Next step
 
 IC7-S3: bots with faces on the live nodes' hexes, drawn from the `colonia` that `openworld_state.js` returns for schema v2.
+
+> Enriched 2026-11-09 by the Sovereign's chat (odd/tasks/chat-9nov-tanda.md): Y5 (live crabs between machines), Y8 (a larger main building at the centre of each node's territory), Y9 («Go to node 1»: the crab walks there and Node shows that node's buildings).

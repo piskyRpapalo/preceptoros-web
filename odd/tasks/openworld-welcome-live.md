@@ -25,3 +25,5 @@ current visit flow. One piece, one draft PR. Mesa assigns the cache seal.
 - Which count of map walkers is authoritative? Until evidenced, NO_DATA.
 - The Welcome/profile reorganization depends on the parallel terminal player;
   this piece supplies Welcome data only and preserves current controls.
+
+> Enriched 2026-11-09 by the Sovereign's chat (odd/tasks/chat-9nov-tanda.md): Y7 (the finished tutorial folds to its minimum; Nodes then shows which nodes are live).

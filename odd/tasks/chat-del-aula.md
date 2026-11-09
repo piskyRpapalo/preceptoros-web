@@ -152,3 +152,5 @@ web ──CIEF ≤1 KiB──▶ aduana ──POST /api/chat/completions · Bear
 G1 (vitrina de chatbots por nodo) · P1 (el RAG del aula, codex) · persistir nada del visitante en servidor ·
 las 10 rojas heredadas de `wllama.js` (`test_cero_rutas_absolutas_ni_ips`), que se declaran en el plano del
 embellecimiento.
+
+> Enriched 2026-11-09 by the Sovereign's chat (odd/tasks/chat-9nov-tanda.md): Y3 (a chat message carries HITL: the machine's signature and the visitor's account) and Y12 (the rack answers when someone names the Preceptor); both gated by Q-L1.
