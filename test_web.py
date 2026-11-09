@@ -1235,7 +1235,12 @@ class PWA(unittest.TestCase):
         self.assertTrue(obligatorias <= set(m),
                         f"faltan claves de instalacion: {obligatorias - set(m)}")
         admitidas = obligatorias | {"id", "scope", "lang", "dir", "description",
-                                    "orientation", "background_color", "theme_color"}
+                                    "orientation", "background_color", "theme_color",
+                                    # 2026-11-09: «shortcuts» is not decoration: Android reads it (a long press on the
+                                    # app icon) and the app's predefined links live there (public/game/deep_links.js).
+                                    "shortcuts"}
+        for sc in m.get("shortcuts", []):
+            self.assertTrue(sc["url"].startswith("/openworld/"), sc)
         sobran = set(m) - admitidas
         self.assertFalse(sobran, f"claves decorativas en el manifiesto: {sobran}")
         # Los iconos son PNG de 192 y 512: un webp de 128 px no instala en
