@@ -72,7 +72,7 @@ async function main() {
   ok(enLanding.length === 0, '/ has targets under 44x44: ' + enLanding.join(' | '));
 
   // /openworld/: touch targets, then the one-map-one-panel order, then «Check live nodes».
-  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1800);
+  await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(1800);
   const enMapa = JSON.parse(await ev(PEQUENOS));
   ok(enMapa.length === 0, '/openworld/ has targets under 44x44: ' + enMapa.join(' | '));
   // One full-map showcase; content leaves and communication stay closed until requested.

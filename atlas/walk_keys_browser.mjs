@@ -72,7 +72,7 @@ async function main() {
   const tecla = (key, enCampo) => ev(`(() => { const t = ${enCampo ? "document.getElementById('question')" : 'document.body'}; if (${enCampo ? 'true' : 'false'}) { t.focus(); } t.dispatchEvent(new KeyboardEvent('keydown', { key: ${JSON.stringify(key)}, bubbles: true, cancelable: true })); return true; })()`);
   await cmd('Runtime.enable'); await cmd('Page.enable');
 
-  await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/` });
+  await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/?colony=alone` });
   ok(await hasta('!!document.getElementById("surface")', 15000), 'map loaded');
   ok(await hasta(`document.getElementById('state-tech').textContent.includes('Colony:')`, 15000), 'colony drawn from the state');
   await espera(300);

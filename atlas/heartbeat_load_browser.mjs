@@ -68,7 +68,7 @@ async function main() {
 
   // A · the heartbeat answers: on load, no click.
   modo = 'vivo'; pedidos = 0;
-  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(800);
+  await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(800);
   const vivo = await lee('#state', '/Nodes online: 2/');
   ok(pedidos > 0, '/openworld/ did not read /api/world-state on load');
   ok(/Nodes online: 2\b/.test(vivo) && /primer-ancla LIVE/.test(vivo) && /onexstation LIVE/.test(vivo), '/openworld/ does not show the two LIVE nodes on load: ' + vivo);
@@ -79,7 +79,7 @@ async function main() {
 
   // B · the worker has no publisher: NO_DATA with its cause, never a «0» nobody measured.
   modo = 'sin-publicador';
-  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(800);
+  await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(800);
   const sin = await lee('#state', '/world_publisher_unavailable/');
   ok(!/Nodes online: 0\b/.test(sin) && /NO_DATA/.test(sin) && /world_publisher_unavailable/.test(sin), '/openworld/ without a publisher does not say NO_DATA with its cause: ' + sin);
   ok(excepciones.length === 0, 'exceptions: ' + excepciones.join(' | '));

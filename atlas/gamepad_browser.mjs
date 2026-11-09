@@ -81,7 +81,7 @@ async function main() {
   for (const [W, H, n] of [[420, 642, '420'], [360, 740, '360']]) {
     await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });
     await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
-    await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
+    await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2500);
     const m = JSON.parse(await ev(MEDIR)); medidas[n] = m;
     ok(m.pad, n + ': the gamepad is not on the page');
     if (!m.pad) { continue; }

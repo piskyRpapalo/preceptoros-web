@@ -73,7 +73,7 @@ async function main() {
   await cmd('Runtime.enable'); await cmd('Page.enable'); await cmd('Network.enable');
   await cmd('Fetch.enable', { patterns: [{ urlPattern: STUDY + '*', requestStage: 'Request' }] });
   await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });
-  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
+  await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2500);
 
   // 1 · load: no request leaves the origin; communication opens only when requested.
   medidas.externas_en_carga = pedidas.length;

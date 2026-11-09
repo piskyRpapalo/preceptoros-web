@@ -11,12 +11,15 @@ const PAGINA = leer('public/get-the-app/index.html');
 function juez(t, r) {
   const fallos = [], sha = Object.fromEntries(r.assets.map((a) => [a.nombre, a.sha256]));
   const base = `https://github.com/${r.repo}/releases/download/${r.version}/`;
+  // 2026-11-09: the Android app is its own release on the same card (r.android); its download and fingerprint are judged the same way.
+  const and = r.android || { version: '', assets: [] }, baseA = `https://github.com/${r.repo}/releases/download/${and.version}/`;
+  const shaA = Object.fromEntries(and.assets.map((a) => [a.nombre, a.sha256]));
   const bajas = [...t.matchAll(/href="(https:\/\/github\.com\/[^"]+\/releases\/download\/[^"]+)"/g)].map((m) => m[1]);
   if (bajas.length < 3) { fallos.push('fewer than 3 downloads: ' + bajas.length); }
-  bajas.forEach((u) => { if (!u.startsWith(base) || !(u.slice(base.length) in sha)) { fallos.push('download not in the card: ' + u); } });
+  bajas.forEach((u) => { if (!(u.startsWith(base) && u.slice(base.length) in sha) && !(and.version && u.startsWith(baseA) && u.slice(baseA.length) in shaA)) { fallos.push('download not in the card: ' + u); } });
   const huellas = [...t.matchAll(/<code class="sha" data-asset="([^"]+)">([0-9a-f]{64})<\/code>/g)];
   if (huellas.length < 2) { fallos.push('fewer than 2 fingerprints'); }
-  huellas.forEach((m) => { if (sha[m[1]] !== m[2]) { fallos.push('fingerprint differs from the card: ' + m[1]); } });
+  huellas.forEach((m) => { if ((sha[m[1]] || shaA[m[1]]) !== m[2]) { fallos.push('fingerprint differs from the card: ' + m[1]); } });
   if (!t.includes(r.sha256_manifiesto)) { fallos.push('manifest sha missing'); }
   const filas = [...t.matchAll(/<tr data-asset="([^"]+)" data-estado="([^"]+)">/g)].map((m) => m[1] + ':' + m[2]);
   const carta = r.pruebas.map((p) => p.asset + ':' + p.estado);

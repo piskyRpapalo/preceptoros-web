@@ -63,9 +63,9 @@ async function main() {
       saved: (() => { try { return localStorage.getItem('preceptoros.letters'); } catch (e) { return 'NO_DATA'; } })(), state: (document.getElementById('state') || {}).textContent || '', said: (document.querySelector('#settings-sheet .bs-line') || {}).textContent || '' }; })())`;
   for (const [W, H, n] of [[420, 642, '420'], [360, 740, '360']]) {
     await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });
-    await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
+    await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2500);
     await ev(`(() => { try { localStorage.removeItem('preceptoros.letters'); } catch (e) {} })()`);
-    await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
+    await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2500);
     await ev(`(() => { const c = document.querySelector('#gamepad .cats [data-cat=Welcome]') || document.querySelector('[data-cat=Welcome]'); c && c.click(); })()`); await espera(400);
     const a = JSON.parse(await ev(LEER) || 'null'); medidas['antes' + n] = a;
     ok(a, n + ': no settings wheel in the gamepad');
@@ -83,7 +83,7 @@ async function main() {
     ok(/Letters 115%/.test(pasos[0].said), n + ': the step is not said in the settings line: ' + pasos[0].said);
     // The step stays for the next visit.
     await ev(`document.getElementById('set-letters').click()`); await espera(250);
-    await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
+    await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2500);
     const v = JSON.parse(await ev(LEER)); medidas['vuelta' + n] = v;
     ok(v.label === 'Settings' && v.step === '1.15' && v.saved === '1.15', n + ': the step is not remembered: ' + JSON.stringify(v));
     const s = await ev(`JSON.stringify({ scroll: document.documentElement.scrollWidth, w: innerWidth })`); const sc = JSON.parse(s);

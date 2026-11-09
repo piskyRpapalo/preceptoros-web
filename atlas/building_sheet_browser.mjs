@@ -75,7 +75,7 @@ async function main() {
   for (const [W, H, n] of [[420, 642, '420'], [360, 740, '360']]) {
     await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });
     await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
-    await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
+    await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2500);
     const town = await ev(`(() => { const b = document.getElementById('gp-town'); if (!b) return null; const r = b.getBoundingClientRect();
       return JSON.stringify({ w: r.width, h: r.height, inMid: !!b.closest('#gamepad .gp-mid'), acho: b.classList.contains('gp-acho'), label: b.getAttribute('aria-label') }); })()`);
     ok(town, n + ': no Node button in the gamepad');

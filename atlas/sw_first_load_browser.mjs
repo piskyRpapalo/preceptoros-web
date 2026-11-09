@@ -71,18 +71,18 @@ async function main() {
 
   // A · first visit ever: network code, the worker takes control, no reload.
   fase = 'A'; navegaciones = 0;
-  await cmd('Page.navigate', { url: origen + '/openworld/' });
+  await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' });
   ok(await hasta(controlada + ' && self.__marca === "A"', 15000), 'A: the first visit never ran under the worker with code A');
   await espera(1500);
   ok(navegaciones === 1, 'A: a first-ever visit was reloaded (' + navegaciones + ' navigations)');
   // A returning visit under worker A: now its statics live in cache A (the Doogee's visitor had come before).
-  await cmd('Page.navigate', { url: origen + '/openworld/' });
+  await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' });
   ok(await hasta('self.__marca === "A"', 10000) && await ev("(async () => !!(await caches.match('/game/world_feed.js')))()"), 'A: the return visit did not cache world_feed.js');
 
   // B · deploy B: the returning visit starts on A (cache) and ends on B by itself, with exactly one reload. The new
   // worker arrives late (as on the Doogee, where the page finished on old code before the update installed).
   fase = 'B'; navegaciones = 0; retrasoSw = 2500;
-  await cmd('Page.navigate', { url: origen + '/openworld/' });
+  await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' });
   const llegoB = await hasta('self.__marca === "B"', 20000);
   await espera(1500);
   ok(llegoB, 'B: after deploy B the returning visit still runs the old code (marca ' + await ev('self.__marca') + ')');
@@ -91,7 +91,7 @@ async function main() {
 
   // C · deploy C lands after the visitor touched the page: no reload, the new worker still takes over for next time.
   fase = 'C'; navegaciones = 0; retrasoSw = 2500;
-  await cmd('Page.navigate', { url: origen + '/openworld/' });
+  await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' });
   await hasta('document.readyState === "complete"', 5000);
   // The 30 s guard from B's reload must not be what holds C: only the touch may.
   await ev("sessionStorage.removeItem('sw-recarga'), true");

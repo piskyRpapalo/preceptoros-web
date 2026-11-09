@@ -61,7 +61,7 @@ async function main() {
   const estado = () => ev(`(document.querySelector('#joy .state') || {}).textContent || ''`);
   await cmd('Runtime.enable'); await cmd('Page.enable');
 
-  await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/` });
+  await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/?colony=alone` });
   ok(await hasta('!!document.getElementById("surface") && !!document.getElementById("joy")', 15000), 'map and joystick loaded');
 
   // 1 · the first-node key: the walker stands on the first node at start; entering it plays the key.

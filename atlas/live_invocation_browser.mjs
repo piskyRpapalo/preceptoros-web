@@ -71,7 +71,7 @@ async function main() {
   await cmd('Runtime.enable'); await cmd('Page.enable'); await cmd('Network.enable');
   await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   // 1 · movimiento normal: la ráfaga anima y el túnel corre antes del chat.
-  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1800);
+  await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(1800);
   const v = JSON.parse(await ev(VISITA) || '{}');
   // Captura a mitad de ráfaga con la hoja cerrada: solo se vuelve a dibujar el mismo recibo (render, nunca decide).
   if (CAPTURA) { await ev("document.getElementById('tab-map').click(); AtlasInvocacionViva.burst({ type: 'summon', tc: 'tc1', copper: 50, seq: 1, step: 0 })"); await espera(300); const g = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'invocacion-390.png'), Buffer.from(g.result.data, 'base64')); }
@@ -85,7 +85,7 @@ async function main() {
   ok(e.despues > e.antes && e.fin === 'done', 'the building chat does not open after the tunnel: ' + JSON.stringify(e));
   // 2 · movimiento reducido: un anillo quieto, el texto igual, el chat al instante.
   await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
-  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1800);
+  await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(1800);
   const q = JSON.parse(await ev(VISITA) || '{}');
   ok(/^Summoned · reef egg/.test(q.state || '') && q.burst === 'ring', 'reduced motion is not a static ring with text: ' + JSON.stringify(q));
   const eq = JSON.parse(await ev(ENTRA) || '{}');

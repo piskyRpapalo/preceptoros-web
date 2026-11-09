@@ -26,7 +26,7 @@ const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.s
 const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
 await cmd('Runtime.enable'); await cmd('Page.enable'); await cmd('Accessibility.enable'); await cmd('DOM.enable');
 await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
-await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2000);
+await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2000);
 
 // 1-2 · what a screen reader gets: the accessible text of each voice and of each log line (Chromium AX tree, ::before included).
 const ax = (await cmd('Accessibility.getFullAXTree')).result.nodes;
@@ -56,11 +56,11 @@ for (let i = 0; i < 40 && (await ev("document.activeElement.id")) !== 'play-now'
 m.foco = await ev("(() => { const e = document.activeElement, s = getComputedStyle(e); return e.id + ' ' + s.outlineStyle + ' ' + s.outlineWidth; })()");
 // 3 · reduced motion: the palette cycle stops (t does not advance) and the surface has no transition.
 await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
-await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
+await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(1500);
 const quieto = JSON.parse(await ev(`(async () => { const a = AtlasOpenworldView().t; await new Promise((r) => setTimeout(r, 2200)); return JSON.stringify({ a, b: AtlasOpenworldView().t, tr: getComputedStyle(document.getElementById('surface')).transitionDuration }); })()`));
 // 4 · forced colours (Windows high contrast): does any Acho rule answer to it?
 await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'forced-colors', value: 'active' }] });
-await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
+await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(1500);
 const forzado = JSON.parse(await ev(`JSON.stringify({ reglas: [...document.styleSheets].flatMap((s) => { try { return [...s.cssRules]; } catch { return []; } }).filter((r) => /forced-colors|prefers-contrast/.test(r.conditionText || r.media?.mediaText || '')).length, aplicadas: [...document.styleSheets].flatMap((s) => { try { return [...s.cssRules]; } catch { return []; } }).filter((r) => /forced-colors|prefers-contrast/.test(r.conditionText || '') && matchMedia(r.conditionText).matches).reduce((n, r) => n + r.cssRules.length, 0), lienzo: AtlasComicAtoms.highContrast ? AtlasComicAtoms.highContrast() : 'NO_DATA' })`));
 console.log(JSON.stringify({ medida: '2026-11-02', vozAX, vivoAX, logAX, logLi, items: items.length, ...m, quieto, forzado }));
 ws.close(); ch.close && ch.close(); srv.close(); process.exit(0);

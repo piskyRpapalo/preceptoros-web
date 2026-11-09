@@ -54,7 +54,7 @@ async function main() {
   await cmd('Runtime.enable'); await cmd('Page.enable');
 
   // The visit up to one adopted troop, as the battle browser check does it.
-  await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/` });
+  await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/?colony=alone` });
   ok(await hasta('!!document.getElementById("visitor-start")', 15000), 'visitor controls available');
   await ev('document.getElementById("visitor-start").click()');
   ok(await hasta('!!document.getElementById("visitor-beacon")', 10000), 'visit started');

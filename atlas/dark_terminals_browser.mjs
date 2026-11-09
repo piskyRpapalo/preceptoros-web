@@ -72,7 +72,7 @@ async function main() {
   for (const scheme of ['light', 'dark']) {
     await cmd('Emulation.setDeviceMetricsOverride', { width: 420, height: 642, deviceScaleFactor: 1, mobile: true });
     await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: scheme }] });
-    await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
+    await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2500);
     const m = JSON.parse(await ev(MEDIR)); medidas[scheme] = m;
     const v = m['#voices'];
     ok(v && v.texts > 0, scheme + ': the Welcome terminal is not open with text: ' + JSON.stringify(v));

@@ -110,7 +110,7 @@ async function main() {
   ok(/Play the tutorial by walking to the beacon, or press Skip tutorial/.test(jugando.result), 'the tutorial choice is not said: ' + jugando.result);
   await foto('dos-clics-playing.png');
   // «Look around first» and Escape: a fresh page, the card closes and the map is there.
-  enMapa = false; await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
+  enMapa = false; await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(1500);
   await ev("document.querySelector('.cats [data-cat=Welcome]').click()");
   await ev("document.getElementById('welcome-play').focus()");
   await cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });

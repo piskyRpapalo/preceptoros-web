@@ -48,7 +48,7 @@ async function main() {
   const cmd = (method, params = {}) => new Promise((r) => { const n = ++id; pend.set(n, r); ws.send(JSON.stringify({ id: n, method, params })); });
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   await cmd('Network.enable'); await cmd('Runtime.enable'); await cmd('Page.enable');
-  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
+  await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2500);
   // Before the click: nothing of the model is asked for, and the brain module is not even loaded.
   ok(modelos.length === 0 && (await ev('typeof window.AtlasWebNodeBrain')) === 'undefined', 'the brain loaded before the click');
   // The local brain is a Models panel action; expose that visible panel before measuring or consenting.
