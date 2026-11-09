@@ -1,3 +1,4 @@
+# [deprecated 2026-11-09] retired with the landing's Tools section (DEPRECATED.json). Do not run.
 """Tools · pinta los cerebros de chat desde public/brains.json dentro de public/index.html.
 
 Decreto 1 (Soberano, 2026-10-28): todos los modelos, con todos sus campos, cada dato MEDIDO o NO_DATA.

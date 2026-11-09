@@ -41,15 +41,6 @@
       "needs": "python3 and git",
       "state": "LIVE",
       "evidence": "public/get-the-app/index.html: #steps"
-    },
-    {
-      "id": "tools.open",
-      "title": "Tools and downloads",
-      "deep_link": "/#door-tools",
-      "what": "The tools door: device installers and the models with their fingerprints.",
-      "needs": "nothing",
-      "state": "LIVE",
-      "evidence": "public/index.html: #door-tools"
     }
   ],
   "global_guards": {

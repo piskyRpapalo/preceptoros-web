@@ -2460,34 +2460,20 @@ class Puerta(unittest.TestCase):
                           "/assets/intro.js", "/assets/landing_world.js"])
 
     def test_las_puertas_se_ven(self):
-        # NORTE 7 · PR 1 (decreto 2026-10-28): la INTRO tiene tres opciones, OpenWorld · Tutorial · Tools.
-        # Corte D, decreto del Sovereign (supersede D1): la INTRO solo tiene OpenWorld y Tools. El tutorial es el camino
-        # deterministico DENTRO de OpenWorld (llave, faro, primer combate). La puerta Tutorial sale, no se redirige.
-        for href, titulo in (("/openworld/", "OpenWorld"),):
-            with self.subTest(titulo=titulo):
-                self.assertIn(f'<a class="door" href="{href}"><b>{titulo}</b><span>', self.t)
-        self.assertNotIn("<b>Tutorial</b>", self.t, "la puerta Tutorial debe salir de la INTRO (decreto corte D)")
-        self.assertNotIn('href="/play/"', self.t, "la INTRO no enlaza al juego retirado")
-        # Tools es un clic directo (boton), no un enlace: la PWA o el desplegable visible de abajo.
-        self.assertIn('<button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo" '
-                      'aria-expanded="false">', self.t)
-        # La intro muestra solo las puertas: el bloque de herramientas va oculto hasta pulsar Tools (sin pagina nueva).
-        self.assertIn('<section id="tools-dispositivo" aria-labelledby="tools-h" hidden>', self.t)
-        self.assertIn('id="close-tools"', self.t, "la seccion Tools debe tener su boton Cerrar")
-        self.assertIn('<details open>\n<summary>Device and download</summary>', self.t)
-        self.assertIn('<li><a href="/get-the-app/">', self.t)
-        self.assertIn('<li><a href="/creation.html">', self.t)
-        # La cabecera de la release sale de release.json; lo no leido es NO_DATA con causa.
-        self.assertIn('<section id="release" aria-labelledby="release-h">', self.t)
-        self.assertIn('data-rel="estado">NO_DATA:', self.t)
-        self.assertIn('<p class="note">One language until the MVP: English. The old translated addresses lead here.</p>', self.t)
-        self.assertLess(self.t.index('id="doors"'), self.t.index('id="tools-dispositivo"'))
-        self.assertLess(self.t.index('id="tools-dispositivo"'), self.t.index('id="release"'))
+        # 2026-11-09 (el Soberano): la portada solo conserva su parte superior: el titulo, la entradilla y la tarjeta
+        # «Welcome to OpenWorld», cuyo enlace Play (#start) revela el mapa. Las puertas OpenWorld y Tools, el bloque de
+        # herramientas, «Get the app» y la nota final se retiran (DEPRECATED.json landing.doors-tools-release).
+        self.assertIn('<h2 id="welcome-title">Welcome to OpenWorld</h2>', self.t)
+        self.assertIn('<a class="start" id="start" href="/openworld/">', self.t)
+        for viejo in ('id="doors"', 'id="door-tools"', 'id="tools-dispositivo"', 'id="release"', '<p class="note">'):
+            with self.subTest(viejo=viejo):
+                self.assertNotIn(viejo, self.t, "residuo antiguo bajo la bienvenida")
+        self.assertNotIn("<b>Tutorial</b>", self.t)
+        self.assertNotIn('href="/play/"', self.t, "la portada no enlaza al juego retirado")
 
     def test_una_lengua_hasta_mvp(self):
         self.assertIn('<html lang="en"', self.t)
         self.assertNotIn("hreflang", self.t)
-        self.assertIn("One language until the MVP: English.", self.t)
         for l in ("ar", "de", "el", "en", "es", "fr", "it", "pt", "ru"):
             with self.subTest(lengua=l):
                 self.assertFalse((PUBLICO / l).exists(), f"/{l}/ sigue en public/: debe ser un 301 del Worker")

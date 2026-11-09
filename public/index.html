@@ -16,30 +16,30 @@
 <meta name="theme-color" content="#17131F">
 <link rel="stylesheet" href="/assets/landing.css">
 <style>
-.welcome-card{display:grid;grid-template-columns:64px 1fr 64px;gap:8px;align-items:center;margin:18px 0;padding:14px 10px;background:#ffe58a;color:#1d1b26;border:3px solid #1d1b26;border-radius:calc(var(--radius) + 8px);box-shadow:0 6px 0 #d49a1c}
-.welcome-card svg{width:64px;height:64px;color:#0b5d9a}.welcome-card>div{grid-column:1/-1}.welcome-card h2{text-align:center}.welcome-card svg.r{color:#5b2fb0}
+:root{--wc-sun:#ffe58a;--wc-sun2:#fff3c4;--wc-ink:#1d1b26;--wc-paper:#fffdf6;--wc-sea:#0b5d9a;--wc-plum:#5b2fb0;--wc-go:#157a45;--wc-gold:#d49a1c}
+.welcome-card{display:grid;grid-template-columns:56px 1fr 56px;gap:8px;align-items:center;margin:18px 0;padding:18px 14px 20px;background:linear-gradient(180deg,var(--wc-sun2),var(--wc-sun));color:var(--wc-ink);border:3px solid var(--wc-ink);border-radius:28px;box-shadow:0 7px 0 var(--wc-gold)}
+.welcome-card svg{width:56px;height:56px;color:var(--wc-sea)}.welcome-card svg.r{color:var(--wc-plum)}.welcome-card>div{grid-column:1/-1}
 .welcome-card path{fill:none;stroke:currentColor;stroke-width:3.2;stroke-linejoin:round}
-.welcome-card h2{margin:0 0 6px;font-size:1.3rem}.welcome-card p{margin:6px 0}.welcome-card p a{display:inline-flex;align-items:center;min-height:44px;color:inherit;font-weight:700}
-.welcome-card ul{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:8px 0}
-.welcome-card li{border:2px solid #1d1b26;border-radius:999px;padding:2px 10px;font-size:.85rem;background:#fffdf6}
-.welcome-card .start{display:inline-block;min-height:44px;padding:10px 16px;background:#157a45;color:#fffdf6;border:3px solid #1d1b26;border-radius:calc(var(--radius) + 6px);box-shadow:0 4px 0 #1d1b26;font-weight:700;text-decoration:none}
-@media (prefers-reduced-motion:no-preference){.welcome-card svg{animation:creature 24s linear infinite}.welcome-card svg.r{animation-direction:reverse}}
+.welcome-card h2{margin:0;font-size:1.45rem;text-align:center;line-height:1.2}
+.welcome-card .hi{margin:2px 0 10px;text-align:center;font-size:1.05rem}
+.welcome-card p{margin:8px 0;line-height:1.5}.welcome-card p a{display:inline-flex;align-items:center;min-height:44px;color:inherit;font-weight:700}
+.welcome-card ol{list-style:none;counter-reset:s;padding:0;margin:12px 0;display:grid;gap:8px}
+.welcome-card ol li{counter-increment:s;display:flex;gap:10px;align-items:center;background:var(--wc-paper);border:2px solid var(--wc-ink);border-radius:16px;padding:8px 12px}
+.welcome-card ol li::before{content:counter(s);flex:0 0 32px;height:32px;display:grid;place-items:center;border-radius:50%;background:var(--wc-sea);color:var(--wc-paper);font-weight:700}
+.welcome-card ul{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:8px 0;justify-content:center}
+.welcome-card ul li{border:2px dashed var(--wc-ink);border-radius:999px;padding:2px 10px;font-size:.8rem;background:var(--wc-paper);opacity:.85}
+.welcome-card .go{text-align:center;margin:14px 0 4px}
+.welcome-card .start{display:inline-block;min-height:52px;padding:14px 28px;background:var(--wc-go);color:var(--wc-paper);border:3px solid var(--wc-ink);border-radius:999px;box-shadow:0 5px 0 var(--wc-ink);font-weight:700;font-size:1.1rem;text-decoration:none}
+.welcome-card .start:focus-visible{outline:4px solid var(--wc-sea);outline-offset:3px}
+@media (prefers-reduced-motion:no-preference){.welcome-card svg{animation:creature 24s linear infinite}.welcome-card svg.r{animation-direction:reverse}
+.welcome-card .start{transition:transform .15s,box-shadow .15s}.welcome-card .start:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--wc-ink)}.welcome-card .start:active{transform:translateY(3px);box-shadow:0 2px 0 var(--wc-ink)}}
 @keyframes creature{to{transform:rotate(360deg)}}
-@media (forced-colors:active){.welcome-card,.welcome-card li,.welcome-card .start{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}}
-button.door{width:100%;font:inherit;background:var(--bg);text-align:left;cursor:pointer}
-#tools-dispositivo{margin-top:8px}
-#tools-dispositivo h2{font-size:1.25rem;margin:24px 0 4px}
-#tools-dispositivo summary{cursor:pointer;min-height:44px;padding:10px 0}
-.dispositivos{margin:6px 0 0;padding-left:20px}
-.dispositivos li{margin:8px 0}
-.dispositivos a{color:var(--fg);min-height:44px;display:inline-block}
-#release h2{font-size:1.25rem;margin:28px 0 8px}
-#release code{overflow-wrap:anywhere}
+@media (forced-colors:active){.welcome-card,.welcome-card li,.welcome-card .start{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}.welcome-card ol li::before{background:CanvasText;color:Canvas}}
 </style>
 </head>
 <body class="landing-world">
 <iframe id="landing-world" title="OpenWorld live hex map and chat" src="/openworld/?landing=1" aria-hidden="true" tabindex="-1"></iframe>
-<a class="skip" href="#doors">Skip to the doors</a>
+<a class="skip" href="#start">Skip to Play</a>
 <main>
 <img class="mark" src="/assets/mark.svg" alt="" width="48" height="48">
 <h1>PreceptorOS</h1>
@@ -49,161 +49,22 @@ button.door{width:100%;font:inherit;background:var(--bg);text-align:left;cursor:
 <h2 id="welcome-title">Welcome to OpenWorld</h2>
 <svg class="r" viewBox="0 0 100 100" aria-hidden="true"><path d="M83 68L84 72L84 75L84 77L83 77L83 76L83 74L84 72L85 69L87 68L89 66L91 66L91 67L91 68L89 69L85 70L81 70L76 69L70 67L65 65L61 62L57 59L55 57L53 55L51 55L49 56L46 58L43 61L39 64L34 66L28 68L23 69L18 69L14 68L11 67L10 66L10 65L11 66L13 67L14 68L16 71L16 74L16 76L16 77L15 77L14 76L14 74L15 71L18 67L21 63L25 59L30 56L34 54L39 52L42 51L44 50L45 48L45 46L45 43L44 39L44 33L44 28L45 22L47 17L50 13L52 10L55 8L56 7L57 8L56 9L54 9L52 10L49 10L47 9L45 8L44 7L44 6L45 6L47 7L50 10L52 14L54 18L55 24L55 29L55 35L54 39L53 43L53 45L54 47L56 48L59 49L63 51L67 53L72 56L77 60L80 64L83 68Z"/></svg>
 <div>
-<p>A shared isometric world drawn only in waves. Every building is a door to something real: a model you can run, a chat, a workshop, a duel. Nothing here is drawn by hand; each creature is computed from its own harmonics.</p>
-<p>Create your signature on this device (the key never leaves it), then walk the map, enter buildings, talk to the guides and summon your first troop.</p>
+<p class="hi">Hello, traveller! Glad you are here.</p>
+<p>A shared world drawn only in waves. Every building is a door to something real: a model you can run, a chat, a workshop, a duel. Each creature is computed from its own harmonics.</p>
+<ol aria-label="Your first minutes">
+<li>Create your signature on this device. The key never leaves it.</li>
+<li>Walk the map with your crab and enter the buildings.</li>
+<li>Talk to the guides and summon your first wave.</li>
+</ol>
 <ul aria-label="What comes next, said honestly">
 <li>Other visitors online · NO_DATA · no shared count yet</li>
 <li>Your own building · NO_DATA · not open yet</li>
 <li>Nodes building the world · NO_DATA until measured</li>
 </ul>
-<p>Participate in our benchmarks, and learn about the project to create your companion: <a href="https://github.com/piskyRpapalo/preceptoros-companion">the companion door</a>.</p>
-<a class="start" href="/openworld/">Create your signature and play</a>
+<p class="go"><a class="start" id="start" href="/openworld/">Create your signature and play</a></p>
+<p>Want to go further? Join our benchmarks and learn how to create your companion: <a href="https://github.com/piskyRpapalo/preceptoros-companion">the companion door</a>.</p>
 </div>
 </section>
-<nav id="doors" aria-label="Doors">
-<a class="door" href="/openworld/"><b>OpenWorld</b><span>Play now: the map, your crab and the chat.</span></a>
-<button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo" aria-expanded="false"><b>Tools</b><span id="tools-estado">Install the app on this device, or pick a download below.</span></button>
-</nav>
-<section id="tools-dispositivo" aria-labelledby="tools-h" hidden>
-<h2 id="tools-h" tabindex="-1">Tools</h2>
-<button type="button" id="close-tools" class="close-tools" aria-controls="tools-dispositivo" style="min-height:44px;min-width:44px">Close tools</button>
-<details open>
-<summary>Device and download</summary>
-<ul class="dispositivos">
-<li><a href="/get-the-app/">Linux and macOS: the installer and its fingerprint</a></li>
-<li><a href="/get-the-app/">Windows: the PowerShell installer</a></li>
-<li><a href="/get-the-app/">Android: the Termux guide</a></li>
-<li><a href="/creation.html">Creation studio: draw a ribbon and sign it</a></li>
-</ul>
-<h3>Orquestador mini</h3>
-<p>The mini brain runs on this device. Install the app above, then download its model with Ollama:</p>
-<pre><code>ollama pull qwen3:1.7b</code></pre>
-<h3>Chat brains</h3>
-<!-- cerebros:inicio -->
-<div class="cerebros">
-<p class="note">Chat brains the web can ask the rack for. Speeds, load time and size are measured on the node (context 32768, backend Vulkan · Radeon 780M, 1 sample). Source: public/brains.json.</p>
-<article class="cerebro" id="cerebro-mini">
-<h4>mini · <code>qwen3:1.7b</code></h4>
-<dl>
-<dt>Recommended</dt><dd>yes <span class="muted">[DATO]</span></dd>
-<dt>On the portal</dt><dd>yes <span class="muted">[DATO]</span></dd>
-<dt>Prompt speed (tok/s)</dt><dd>1017.39 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Generation speed (tok/s)</dt><dd>55.15 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Load time (s)</dt><dd>0.94 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Size on disk (GiB)</dt><dd>1.27 <span class="muted">[MEDIDO 2026-09-23]</span></dd>
-<dt>Languages</dt><dd>es, en <span class="muted">[DATO]</span></dd>
-<dt>Shortcuts</dt><dd>simple, sin_cifras, falta <span class="muted">[DATO]</span></dd>
-<dt>Origin</dt><dd>cn <span class="muted">[DATO]</span></dd>
-<dt>Signed</dt><dd>no <span class="muted">[DATO]</span></dd>
-</dl>
-<pre><code>ollama pull qwen3:1.7b</code></pre>
-</article>
-<article class="cerebro" id="cerebro-charla-web">
-<h4>charla-web · <code>preceptor-charla-web:v1</code></h4>
-<dl>
-<dt>Recommended</dt><dd>no <span class="muted">[DATO]</span></dd>
-<dt>On the portal</dt><dd>no <span class="muted">[DATO]</span></dd>
-<dt>Prompt speed (tok/s)</dt><dd>228.75 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Generation speed (tok/s)</dt><dd>16.79 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Load time (s)</dt><dd>4.9 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Size on disk (GiB)</dt><dd>4.07 <span class="muted">[MEDIDO 2026-09-23]</span></dd>
-<dt>Languages</dt><dd>es, en <span class="muted">[DATO]</span></dd>
-<dt>Shortcuts</dt><dd>simple, pasos, falta, comprobar <span class="muted">[DATO]</span></dd>
-<dt>Origin</dt><dd>fr <span class="muted">[DATO]</span></dd>
-<dt>Signed</dt><dd>no <span class="muted">[DATO]</span></dd>
-</dl>
-<pre><code>ollama pull preceptor-charla-web:v1</code></pre>
-</article>
-<article class="cerebro" id="cerebro-charla-multi">
-<h4>charla-multi · <code>preceptor-charla-multi:v1</code></h4>
-<dl>
-<dt>Recommended</dt><dd>no <span class="muted">[DATO]</span></dd>
-<dt>On the portal</dt><dd>no <span class="muted">[DATO]</span></dd>
-<dt>Prompt speed (tok/s)</dt><dd>248.99 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Generation speed (tok/s)</dt><dd>16.36 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Load time (s)</dt><dd>2.5 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Size on disk (GiB)</dt><dd>4.10 <span class="muted">[MEDIDO 2026-09-23]</span></dd>
-<dt>Languages</dt><dd>es, en <span class="muted">[DATO]</span></dd>
-<dt>Shortcuts</dt><dd>mi_lengua, simple, falta <span class="muted">[DATO]</span></dd>
-<dt>Origin</dt><dd>fr <span class="muted">[DATO]</span></dd>
-<dt>Signed</dt><dd>no <span class="muted">[DATO]</span></dd>
-</dl>
-<pre><code>ollama pull preceptor-charla-multi:v1</code></pre>
-</article>
-<article class="cerebro" id="cerebro-v7">
-<h4>v7 · <code>preceptor-v7:llama3.2-1.0</code></h4>
-<dl>
-<dt>Recommended</dt><dd>no <span class="muted">[DATO]</span></dd>
-<dt>On the portal</dt><dd>no <span class="muted">[DATO]</span></dd>
-<dt>Prompt speed (tok/s)</dt><dd>355.67 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Generation speed (tok/s)</dt><dd>33.29 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Load time (s)</dt><dd>2.8 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Size on disk (GiB)</dt><dd>1.90 <span class="muted">[MEDIDO 2026-09-23]</span></dd>
-<dt>Languages</dt><dd>es, en <span class="muted">[DATO]</span></dd>
-<dt>Shortcuts</dt><dd>no_data, corto <span class="muted">[DATO]</span></dd>
-<dt>Origin</dt><dd>us <span class="muted">[DATO]</span></dd>
-<dt>Signed</dt><dd>no <span class="muted">[DATO]</span></dd>
-</dl>
-<pre><code>ollama pull preceptor-v7:llama3.2-1.0</code></pre>
-</article>
-<article class="cerebro" id="cerebro-qwen-coder">
-<h4>qwen-coder · <code>qwen3-coder:30b</code></h4>
-<dl>
-<dt>Recommended</dt><dd>no <span class="muted">[DATO]</span></dd>
-<dt>On the portal</dt><dd>no <span class="muted">[DATO]</span></dd>
-<dt>Prompt speed (tok/s)</dt><dd>72.27 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Generation speed (tok/s)</dt><dd>31.78 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Load time (s)</dt><dd>16.1 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Size on disk (GiB)</dt><dd>17.28 <span class="muted">[MEDIDO 2026-09-23]</span></dd>
-<dt>Languages</dt><dd>es, en <span class="muted">[DATO]</span></dd>
-<dt>Shortcuts</dt><dd>codigo, que_falla <span class="muted">[DATO]</span></dd>
-<dt>Origin</dt><dd>cn <span class="muted">[DATO]</span></dd>
-<dt>Signed</dt><dd>no <span class="muted">[DATO]</span></dd>
-</dl>
-<pre><code>ollama pull qwen3-coder:30b</code></pre>
-</article>
-<article class="cerebro" id="cerebro-mistral-base">
-<h4>mistral-base · <code>mistral:7b-instruct-v0.3-q4_K_M</code></h4>
-<dl>
-<dt>Recommended</dt><dd>no <span class="muted">[DATO]</span></dd>
-<dt>On the portal</dt><dd>no <span class="muted">[DATO]</span></dd>
-<dt>Prompt speed (tok/s)</dt><dd>110.65 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Generation speed (tok/s)</dt><dd>16.75 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Load time (s)</dt><dd>3.8 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Size on disk (GiB)</dt><dd>4.07 <span class="muted">[MEDIDO 2026-09-23]</span></dd>
-<dt>Languages</dt><dd>es, en <span class="muted">[DATO]</span></dd>
-<dt>Shortcuts</dt><dd>sin_adornos, falta <span class="muted">[DATO]</span></dd>
-<dt>Origin</dt><dd>fr <span class="muted">[DATO]</span></dd>
-<dt>Signed</dt><dd>no <span class="muted">[DATO]</span></dd>
-</dl>
-<pre><code>ollama pull mistral:7b-instruct-v0.3-q4_K_M</code></pre>
-</article>
-<article class="cerebro" id="cerebro-superviviente">
-<h4>superviviente · <code>phi3:3.8b</code></h4>
-<dl>
-<dt>Recommended</dt><dd>no <span class="muted">[DATO]</span></dd>
-<dt>On the portal</dt><dd>no <span class="muted">[DATO]</span></dd>
-<dt>Prompt speed (tok/s)</dt><dd>440.39 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Generation speed (tok/s)</dt><dd>28.53 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Load time (s)</dt><dd>2.98 <span class="muted">[MEDIDO 2026-09-07]</span></dd>
-<dt>Size on disk (GiB)</dt><dd>2.03 <span class="muted">[MEDIDO 2026-09-23]</span></dd>
-<dt>Languages</dt><dd>es, en <span class="muted">[DATO]</span></dd>
-<dt>Shortcuts</dt><dd>pasos, sin_cifras, falta <span class="muted">[DATO]</span></dd>
-<dt>Origin</dt><dd>us <span class="muted">[DATO]</span></dd>
-<dt>Signed</dt><dd>no <span class="muted">[DATO]</span></dd>
-</dl>
-<pre><code>ollama pull phi3:3.8b</code></pre>
-</article>
-</div>
-<!-- cerebros:fin -->
-</details>
-</section>
-<section id="release" aria-labelledby="release-h">
-<h2 id="release-h">Get the app</h2>
-<p>Release <b data-rel="version">NO_DATA</b> (<span data-rel="fecha">NO_DATA</span>). Fingerprint of the installer: <code data-rel="sha">NO_DATA</code>.</p>
-<p class="note" data-rel="estado">NO_DATA: this page has not read the release card yet. The version above is not verified.</p>
-</section>
-<p class="note">One language until the MVP: English. The old translated addresses lead here.</p>
 </main>
 <script src="/game/semantic_table.js"></script>
 <script src="/game/comic_tokens.js"></script>
