@@ -11,6 +11,8 @@
   var JEWELS = 'https://raw.githubusercontent.com/piskyRpapalo/preceptoros-web/main/odd/JOYAS.md';
   var SCHEMA = 'preceptoros.ai-index/1', MAX_IDEAS = 32, MAX_LINE = 300, TIMEOUT = 8000, STEP = 400;
 
+  function validPath(p) { return typeof p === 'string' && p.length <= 160 && /^[A-Za-z0-9._/-]+\.md$/.test(p) && !p.startsWith('/') && !p.includes('//') && !/(^|\/)\.{1,2}(\/|$)/.test(p); }
+  function cutIdea(s) { s = cut(s); return s.length > 220 ? s.slice(0, 219) + '…' : s; }
   function cut(s) { s = String(s || '').replace(/\s+/g, ' ').trim(); return s.length > MAX_LINE ? s.slice(0, MAX_LINE - 1) + '…' : s; }
   function nd(cause, plain) { return { ok: false, causa: 'NO_DATA · ' + cause + ': ' + plain }; }
 
@@ -22,8 +24,8 @@
     if (!Array.isArray(d.entries)) { return nd('no_entries', 'the rack index lists no ideas.'); }
     var ideas = [];
     d.entries.forEach(function (e) {
-      if (!e || typeof e.path !== 'string' || typeof e.one_liner !== 'string' || !/^[0-9a-f]{64}$/.test(e.sha256 || '')) { return; }
-      if (ideas.length < MAX_IDEAS) { ideas.push({ path: e.path, line: cut(e.one_liner), sha256: e.sha256 }); }
+      if (!e || !validPath(e.path) || typeof e.one_liner !== 'string' || !/^[0-9a-f]{64}$/.test(e.sha256 || '')) { return; }
+      if (ideas.length < MAX_IDEAS) { ideas.push({ path: e.path, line: cutIdea(e.one_liner), sha256: e.sha256 }); }
     });
     if (!ideas.length) { return nd('no_ideas', 'the rack index has no well-formed idea.'); }
     return { ok: true, generated: cut(d.generated_utc) || 'NO_DATA', ideas: ideas };
