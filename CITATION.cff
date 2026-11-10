@@ -8,7 +8,7 @@ authors:
 type: software
 repository-code: "https://github.com/piskyRpapalo/preceptoros-web"
 url: "https://github.com/piskyRpapalo/preceptoros-web"
-abstract: "The WEB part of PreceptorOS: a public gateway and a game that runs in the browser, in nine languages, with zero external requests on load. Local-first; no telemetry."
+abstract: "The WEB part of PreceptorOS: a public gateway and an open world that run in the browser, in English, with zero external requests on load. Local-first; no telemetry."
 keywords:
   - local-first
   - privacy
