@@ -69,6 +69,7 @@ jobs:
             node --test atlas/puros/byte_budget_cases.mjs
             node --test atlas/puros/building_interiors_cases.mjs
             node --test atlas/puros/gap_board_cases.mjs
+            node --test atlas/delta_ranked_tray_cases.mjs
             node --test atlas/puros/audio_only_cases.mjs
             node --test atlas/puros/typo_report_cases.mjs
             node --test atlas/puros/town_actions_cases.mjs
