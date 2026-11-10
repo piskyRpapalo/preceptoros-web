@@ -107,11 +107,11 @@ Fuente: familias C, D, E, I (sección 9), J y cosecha K (campaña, fusionada), K
 | L9 · El acreditador de Lúmenes | 4 | eco real cruzado: paquete visible, hash, firma y rate; la aduana acuña | escalera (fusionado) |
 | L12 · La agenda geopolítica | 2 | las 24 mejoras con triaje: ya vive / misión con dueño / sentencia con cita | escalera (fusionado); fuente medida: GEOPOLITICA_A2A de la biblia (las 24, FIRMO) |
 | L13 · Los huecos de lore | 3 | cada hueco de la biblia del juego con causa y dependencia | escalera (fusionado); fuente medida: VERIFICACION de la biblia (FIRMO 2026-10-11; los huecos ya inventariados) |
-| N2 · Show the receipt | 1 | el recibo del faro o contadores del 1 de noviembre con su SHA | tablero (fusionado); NO_DATA medido: counters del 1-nov 404 en historial, el recibo más antiguo es el 2026-11-02 |
-| N4 · Project the first frame | 4 | silueta Acho <1.024 B con CAUSA_RESIDENTE; misma huella en app y web | tablero (fusionado) |
+| N2 · Show the receipt | 1 | el recibo del faro o contadores del 1 de noviembre con su SHA | servida (PR #738, 3a83bccf); NO_DATA medido: counters del 1-nov 404 en historial, el recibo más antiguo es el 2026-11-02 |
+| N4 · Project the first frame | 4 | silueta Acho <1.024 B con CAUSA_RESIDENTE; misma huella en app y web | servida (PR #742, 24365369) |
 | N5 · Declare the map mathematics | 4 | la lista de piezas FIRMADAS que corren; lo PROPOSED renderiza NO_DATA | tablero (fusionado) |
 | N6 · Guard the frames in CI | 4 | hash sellado por conjunto de frames; la regresión visual se vuelve roja | tablero (fusionado) |
-| N7 · Declare the byte budget | 4 | techo por chunk y por vecindad visible EN el contrato del mapa | tablero (fusionado) |
+| N7 · Declare the byte budget | 4 | techo por chunk y por vecindad visible EN el contrato del mapa | servida (PR #737, 1f667006) |
 | N8 · Prove the five minutes of the visitor | 3 | un humano real juega la partida desde fuera, con recibo | tablero (fusionado) |
 | N13 · Paint the provenance sky | 3 | cada recibo una estrella; la constelación ES la crónica | tablero (fusionado) |
 
@@ -195,7 +195,7 @@ Fuente: familias G y H (sección 9), A3 (sección 9), N3/N14 (tablero), L15/L16 
 | H3 · Audit the mission map against the code | 3 | cada «Estado» comprobado con fichero:línea en los main | corriendo (55 misiones A-G verificadas) |
 | H4 · Threat-model the first write door | 4 | revisión adversarial del puente aduana→estado del mapa | propuesta |
 | H5 · Review the swarm | 3 | cada rebanada: VERDE repetido + citas comprobadas antes de su PR | medido (primera prueba: #700) |
-| N3 · Retire the dead law | 2 | diff del texto público contra el canon D2; el texto se propone, no se edita | tablero (fusionado); primer caso medido: el llms.txt del perfil contra D2 (texto de cura propuesto; el perfil es mano del Soberano) |
+| N3 · Retire the dead law | 2 | diff del texto público contra el canon D2; el texto se propone, no se edita | servida (PR #739, ac37a62c): nada por retirar en la web; primer caso medido: el llms.txt del perfil contra D2 (texto de cura propuesto; el perfil es mano del Soberano) |
 | N14 · The qualified review (= L15) | 4 | firma de humano cualificado; postura de diseño ≠ cumplimiento | DORMIDA (la vara es externa) |
 | L15 · El dossier de conformidad | 4 | la lista de sign-offs pendientes con dueño y evidencia por fila (GDPR Art. 25 y AI Act Art. 14 como postura de ingeniería) | propuesta (= N14; la firma es externa) |
 | L16 · El Mac ausente | 2 | el nodo iOS se prueba manual o queda NO_DATA con causa | escalera (fusionado) |
