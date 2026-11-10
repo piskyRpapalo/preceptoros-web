@@ -13,9 +13,9 @@
 This is the collaboration contract of **PreceptorOS**, a local-first
 AI-sovereignty ecosystem in four public parts: **WEB** (this repo — the
 gateway and the living world), **APP**
-([PreceptorOS](https://github.com/piskyRpapalo/PreceptorOS) — the companion
+([preceptoros-app](https://github.com/piskyRpapalo/preceptoros-app) — the companion
 application; its per-device contract is
-[PRECEPTOR.md](https://github.com/piskyRpapalo/PreceptorOS/blob/main/PRECEPTOR.md)),
+[PRECEPTOR.md](https://github.com/piskyRpapalo/preceptoros-app/blob/main/PRECEPTOR.md)),
 **LAB** ([lab](https://github.com/piskyRpapalo/lab) — measured benchmarks),
 and **STUDY** ([study](https://github.com/piskyRpapalo/study) — the doctrine
 and the corpus).
