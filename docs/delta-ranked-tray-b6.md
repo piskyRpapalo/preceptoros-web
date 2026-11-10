@@ -51,3 +51,28 @@ Read-only GitHub input adapter with exact source references; a red test for unve
 Agent: Codex
 Model: GPT-6
 Run: NO_DATA (live GitHub adapter)
+
+
+## Source-normalizer slice (B6b · stacked draft)
+
+The new `atlas/puros/delta_catalog_adapter.js` is an **offline** normalizer.
+It reads the exact body supplied by the approved GitHub reader. It inventories
+mission codes in section 9 of the canonical map. It checks the given SHA-256
+against the given body, and requires a commit-pinned source URL.
+
+For a distance result, each mission needs an introduction event with its stable
+id, conceptual position, affected contracts and observed commit. Delivered
+builds also need exact, matching identifiers and commit evidence. Events must
+be supplied in causal order. A code such as `B6` is **not** converted into a
+fabricated number such as `778.5`. Missing introductions or receipts return
+`NO_DATA` with a specific cause.
+
+Both the document and event provenance are still
+`DECLARED_NOT_VERIFIED`; the local hash check protects supplied bytes but does
+not verify GitHub identity or event chronology. The existing A7/approved
+read-only broker must authenticate those sources in a later slice.
+No live watcher, archive action, priority change or automatic PR merge exists.
+
+Test: `node --test atlas/delta_catalog_adapter_cases.mjs`. The tested
+isolated adapter has seven passing cases including a local read of the
+canonical document, stale/broken data and retroactive construction.
