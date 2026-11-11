@@ -1,5 +1,5 @@
 // Building interiors, piece 2 (mission «Los nueve edificios por dentro», Mesa reparto §2), proved in a real browser on
-// /openworld/ at the mini app window (420×642) and at a phone (360×740). Laws:
+// /openworld/ at 320×568, 360×740, 420×642 and 1024×768. Laws:
 // - one «Town» button in the gamepad middle, 44 px, with its Acho spectrum, opens one sheet;
 // - the sheet shows the nine buildings of public/game/building_interiors.json, in order; focus moves into it;
 // - each building shows exactly its contract options; each option says LIVE with its piece or NO_DATA with its cause;
@@ -72,7 +72,7 @@ async function main() {
   })())`;
   const espera_hoja = async (fn) => { for (let i = 0; i < 30; i++) { const m = JSON.parse(await ev(MEDIR)); if (fn(m)) { return m; } await espera(100); } return JSON.parse(await ev(MEDIR)); };
   const contrato = JSON.parse(readFileSync(join(PUBLIC, 'game/building_interiors.json'), 'utf8'));
-  for (const [W, H, n] of [[420, 642, '420'], [360, 740, '360']]) {
+  for (const [W, H, n] of [[320, 568, '320'], [360, 740, '360'], [420, 642, '420'], [1024, 768, '1024']]) {
     await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });
     await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
     await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2500);
@@ -118,6 +118,25 @@ async function main() {
     await ev(esc); const atras = await espera_hoja((m) => m.cards.length === 9);
     await ev(esc); const fin = JSON.parse(await ev(MEDIR));
     ok(atras.cards.length === 9 && !fin.open && fin.expanded === 'false' && /gp-b/.test(fin.focus || ''), n + ': Escape does not go back then close: ' + JSON.stringify([atras.cards.length, fin.open, fin.focus]));
+    // Repeated panel travel: no route stacks, stranded focus or horizontal overflow.
+    // Focus is verified on the real active element, not inferred from aria-expanded alone.
+    let stable = 0;
+    for (let turn = 0; turn < 10; turn++) {
+      await ev(`document.getElementById('gp-town').click()`);
+      const opened = await espera_hoja((m) => m.open && m.expanded === 'true' && m.cards.length === 9);
+      const openedOk = opened.open && opened.expanded === 'true' && opened.cards.length === 9 &&
+        /bs-card/.test(opened.focus || '') && opened.scroll <= opened.ancho && opened.small.length === 0;
+      await ev(esc);
+      const closed = await espera_hoja((m) => !m.open && m.expanded === 'false');
+      const closedOk = !closed.open && closed.expanded === 'false' && /gp-b/.test(closed.focus || '') &&
+        closed.scroll <= closed.ancho;
+      if (openedOk && closedOk) { stable++; }
+      else { fallos.push(n + ': cycle ' + (turn + 1) + ' broke focus or panel continuity: ' +
+        JSON.stringify({ opened: [opened.open, opened.expanded, opened.focus, opened.scroll, opened.ancho],
+          closed: [closed.open, closed.expanded, closed.focus, closed.scroll, closed.ancho] })); break; }
+    }
+    medidas['cycles' + n] = { stable, total: 10 };
+    ok(stable === 10, n + ': panel cycles incomplete');
   }
   // Reduced motion: a card stays still.
   await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
