@@ -68,6 +68,7 @@ jobs:
             node --test atlas/puros/caravan_cases.mjs
             node --test atlas/puros/building_doors_cases.mjs
             node --test atlas/puros/acho_claim_cases.mjs
+            node --test atlas/puros/sound_first_cases.mjs
             node --test atlas/puros/byte_budget_cases.mjs
             node --test atlas/puros/building_interiors_cases.mjs
             node --test atlas/puros/gap_board_cases.mjs
@@ -125,6 +126,7 @@ jobs:
             node --test atlas/puros/room_log_cases.mjs
             node --test atlas/sweep_web_cases.mjs
             node --test atlas/map_chart_cases.mjs
+            node --test atlas/puros/radio_frame_cases.mjs
             node --test atlas/map_chunks_cases.mjs
             node --test atlas/puros/gacha_exact_odds_cases.mjs
             node --test atlas/web_node_brain_cases.mjs
@@ -191,6 +193,7 @@ jobs:
             node atlas/building_sheet_browser.mjs
             node atlas/first_joy_browser.mjs
             node atlas/acho_claim_browser.mjs
+            node atlas/sound_first_browser.mjs
             node atlas/type_scale_browser.mjs
             node atlas/dark_terminals_browser.mjs
             node atlas/classroom_chat_browser.mjs
@@ -204,6 +207,7 @@ jobs:
             node atlas/infant_browser.mjs
             node atlas/walk_avatar_browser.mjs
             node atlas/walk_keys_browser.mjs
+            node atlas/a11y_four_readings_browser.mjs
             node atlas/visitor_account_browser.mjs
             node atlas/visitor_eggs_browser.mjs
             node --test atlas/voice_star_cases.mjs

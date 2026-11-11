@@ -2457,7 +2457,8 @@ class Puerta(unittest.TestCase):
         self.assertEqual(re.findall(r'<script src="([^"]+)"', self.t),
                          ["/game/semantic_table.js", "/game/comic_tokens.js", "/game/comic_accents.js", "/game/comic_atoms.js",
                           "/game/acho_language.js", "/game/acho_letters.js", "/assets/landing_doors.js", "/assets/pwa.js",
-                          "/assets/intro.js", "/assets/landing_world.js"])
+                          "/assets/intro.js", "/assets/landing_world.js",
+                      "/game/sound_first.js"])  # 2026-11-11: the sound switch (D10), not a graphic
 
     def test_las_puertas_se_ven(self):
         # 2026-11-09 (el Soberano): la portada solo conserva su parte superior: el titulo, la entradilla y la tarjeta
