@@ -129,7 +129,7 @@
   });
   drawing = window.AtlasAchoPaint.mount(document.getElementById('paint'), {
     band: 'cyan', stroke: 'ink', feedback: sound,
-    onChange: function (frame) { drawing.frameValue = frame; invalidate(frame ? 'Drawing changed. Sign the creation again.' : 'NO_DATA · drawing is invalid.');
+    onChange: function (frame) { document.dispatchEvent(new CustomEvent('acho:frame', { detail: frame })); invalidate(frame ? 'Drawing changed. Sign the creation again.' : 'NO_DATA · drawing is invalid.');
       sign.disabled = !frame || !catalog || !declaration; }
   });
   sign.disabled = true;
