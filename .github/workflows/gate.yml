@@ -204,6 +204,7 @@ jobs:
             node atlas/infant_browser.mjs
             node atlas/walk_avatar_browser.mjs
             node atlas/walk_keys_browser.mjs
+            node atlas/a11y_four_readings_browser.mjs
             node atlas/visitor_account_browser.mjs
             node atlas/visitor_eggs_browser.mjs
             node --test atlas/voice_star_cases.mjs
