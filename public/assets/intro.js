@@ -72,7 +72,8 @@
     }
   }
 
-  if (!raiz.fetch) {
+  // 2026-11-09: the landing no longer carries the release line; with nothing to fill, nothing is fetched.
+  if (!raiz.fetch || !doc.querySelector('[data-rel]')) {
     return;
   }
   raiz.fetch('/release.json', { cache: 'no-cache' })

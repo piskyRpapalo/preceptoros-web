@@ -65,6 +65,30 @@
       "where": "sw_harness.mjs «precachea las portadas»",
       "status": "retired",
       "why": "the Sovereign, 2026-11-09: «retira la ley sobreprotectiva»; a pinned 156 broke on every new module without guarding anything the doc check does not"
+    },
+    {
+      "id": "landing.doors-tools-release",
+      "deprecated": "2026-11-09",
+      "replaced_by": "the landing's top only: title, lead and the «Welcome to OpenWorld» card; its Play link (#start) reveals the map",
+      "where": "public/index.html (nav#doors, section#tools-dispositivo, section#release, main > .note)",
+      "status": "retired",
+      "why": "the Sovereign, 2026-11-09: «residuos antiguos de texto… elimínalos por completo; solo dejar la parte superior»"
+    },
+    {
+      "id": "landing.brain-tools-block",
+      "deprecated": "2026-11-09",
+      "replaced_by": "public/brains.json stays the source; the landing no longer paints it",
+      "where": "atlas/generate_brain_tools.py, atlas/test_brain_tools.py (out of gate.yml)",
+      "status": "retired",
+      "why": "its block lived inside the retired Tools section of the landing"
+    },
+    {
+      "id": "landing.local-first-surface-build",
+      "deprecated": "2026-11-09",
+      "replaced_by": "public/index.html edited by hand under its browser guard (atlas/landing_doors_browser.mjs)",
+      "where": "local_first_surface_build.py",
+      "status": "retired",
+      "why": "it rewrites the landing with the retired doors and Tools; running it would bring them back"
     }
   ]
 }
