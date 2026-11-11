@@ -1,101 +1,146 @@
 #!/usr/bin/env python3
-"""icons_from_emblem.py · favicon, iconos PWA y tarjeta social, generados desde el emblema.
+"""icons_from_emblem.py · favicon, PWA icons and social card, generated from the emblem.
 
-    python3 bin/icons_from_emblem.py              # dice que cambiaria, no toca nada
-    python3 bin/icons_from_emblem.py --escribir   # escribe los ficheros
-    python3 bin/icons_from_emblem.py --comprobar  # sale 1 si lo publicado no es lo que genera
+    python3 bin/icons_from_emblem.py              # says what would change, touches nothing
+    python3 bin/icons_from_emblem.py --escribir   # writes the files
+    python3 bin/icons_from_emblem.py --comprobar  # exits 1 if what is published is not what this generates
 
-POR QUE (firma F2-8 del Soberano, 2026-10-10). La identidad es «ondas sobre fondo oscuro,
-ninguna imagen». Un navegador sigue necesitando favicon, iconos para instalar y una tarjeta
-para los chats: siguen existiendo, pero CAMBIA SU ORIGEN. Ya no son arte pintado: son la onda
-del emblema del sitio (la tropa de sha256('atlas.emblema/1:preceptoros.org') en tc3), la misma
-que dibuja el retrato del guia en atlas-dialogo.js. Una fuente, todas las caras.
+WHY. Signature F2-8 (Sovereign, 2026-10-10) set the rule that still holds: these files are never
+painted by hand, one generator makes all of them from one source, and what is published must be
+exactly what the generator produces. Until 2026-11-11 the source was the wave of the site emblem.
 
-El espectro se pide al motor (public/game/gacha.js), no se copia: si el motor cambia, el icono
-cambia con el. Determinista: misma version de Pillow, mismos bytes.
-
-RECENCIA (decreto del Soberano, 2026-10-25): la superficie servida solo muestra lo construido en
-los ultimos dias. Los ficheros nacen hoy con nombre nuevo y la paleta del hub reciente; el
-origen sigue siendo el de F2-8, la onda del emblema.
+Order of the Sovereign, 2026-11-11: the emblem is the face of the preceptor, in dots. The source
+is now atlas/emblem/preceptor_face.txt, an ASCII drawing with ten levels of ink (" .:-=+*#%@").
+Each character becomes one dot whose size is its level; the lit eye takes the violet of the house (the canon bust has a violet eye).
+No font is used, so the result does not depend on the machine: same Pillow, same bytes.
 """
 import argparse
 import hashlib
 import io
-import math
 import pathlib
-import subprocess
 import sys
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 A = RAIZ / "public" / "assets"
-SEMILLA = "atlas.emblema/1:preceptoros.org"
-FONDO = (0x1E, 0x18, 0x26)          # theme_color del manifiesto; el papel del hub /face/ (2026-10-25)
-TONO = (0xF2, 0xF5, 0xF7)            # la tinta del hub: la misma onda del emblema, en la paleta reciente
+FUENTE = RAIZ / "atlas" / "emblem" / "preceptor_face.txt"
+RAMPA = " .:-=+*#%@"
+FONDO = (0x1E, 0x18, 0x26)          # background_color of the manifest
+TONO = (0xF2, 0xF5, 0xF7)            # the ink of the hub
+OJO = (0xB5, 0x81, 0xE9)             # the lit eye: violet, the bright band of FIRMADO (hue 270) in semantic_table.js
+CARA = (15, 1, 67, 39)               # columns and rows of the head alone, for the small mark
 
 
-def espectro():
-    js = ("const c=require('crypto'),G=require('./public/game/gacha.js');"
-          "const s=c.createHash('sha256').update(%r).digest('hex');"
-          "process.stdout.write(JSON.stringify(G.tirada(s,'tc3').armonicos))" % SEMILLA)
-    r = subprocess.run(["node", "-e", js], cwd=RAIZ, capture_output=True, text=True, check=True)
-    import json
-    return json.loads(r.stdout)
+def rejilla():
+    """The drawing as rows of ink levels 0..1. A character outside the ramp is an error, not a guess."""
+    filas = FUENTE.read_text(encoding="ascii").split("\n")
+    while filas and not filas[-1]:
+        filas.pop()
+    ancho = max(len(f) for f in filas)
+    for f in filas:
+        raros = set(f) - set(RAMPA)
+        if raros:
+            raise ValueError("character outside the ramp: %r" % sorted(raros))
+    return [[RAMPA.index(c) / 9 for c in f.ljust(ancho)] for f in filas]
 
 
-def puntos(arm, n=240):
-    out = []
-    for i in range(n + 1):
-        u = i / n * 2 * math.pi
-        x = y = 0.0
-        for k, ax, ay, f in arm:
-            g = k * u + f * math.pi / 32
-            x += ax * math.cos(g)
-            y += ay * math.sin(g)
-        out.append((x, y))
-    return out
+def ojo(g):
+    """The lit eye: the brightest 5x3 window in the upper right quarter of the face."""
+    mejor, donde = -1.0, (0, 0)
+    for y in range(len(g) // 5, len(g) // 2):
+        for x in range(len(g[0]) // 2, len(g[0]) * 3 // 4):
+            s = sum(g[y + j][x + i] for j in range(3) for i in range(5))
+            if s > mejor:
+                mejor, donde = s, (x + 2, y + 1)
+    return donde
 
 
-def radio(pts):
-    return max(math.hypot(x, y) for x, y in pts)
-
-
-def svg(arm):
-    p = puntos(arm, 120)
-    e = 13.0 / radio(p)
-    d = "M" + " L".join("%.2f %.2f" % (16 + x * e, 16 + y * e) for x, y in p) + "Z"
-    return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="PreceptorOS">\n'
-            "<title>PreceptorOS</title>\n"
-            "<!-- Generado por bin/icons_from_emblem.py: la onda del emblema del sitio. No se edita a mano. -->\n"
-            '<rect width="32" height="32" rx="7" fill="#1e1826"/>\n'
-            '<path d="%s" fill="none" stroke="#f2f5f7" stroke-width="1.6" stroke-linejoin="round"/>\n'
-            "</svg>\n" % d)
-
-
-def png(arm, ancho, alto, frac, grosor):
-    """Dibuja a 4x y reduce: borde suave sin depender del antialias de la libreria."""
+def lienzo(g, ancho, alto, frac, recorte=None):
+    """Draws at 4x and reduces. A character cell is twice as tall as wide, as in a terminal."""
     from PIL import Image, ImageDraw
-    s = 4
+    ex, ey = ojo(g)
+    if recorte:
+        x0, y0, x1, y1 = recorte
+        g = [f[x0:x1] for f in g[y0:y1]]
+        ex, ey = ex - x0, ey - y0
+    cols, filas, s = len(g[0]), len(g), 4
+    cw = min(ancho * frac / cols, alto * frac / (filas * 2))
+    ch = cw * 2
+    ox, oy = (ancho - cols * cw) / 2, (alto - filas * ch) / 2
     im = Image.new("RGB", (ancho * s, alto * s), FONDO)
-    g = ImageDraw.Draw(im)
-    p = puntos(arm)
-    e = frac * min(ancho, alto) * s / radio(p)
-    cx, cy = ancho * s / 2, alto * s / 2
-    g.line([(cx + x * e, cy + y * e) for x, y in p], fill=TONO, width=max(1, int(grosor * s)), joint="curve")
-    im = im.resize((ancho, alto), Image.LANCZOS)
+    d = ImageDraw.Draw(im)
+    for y, fila in enumerate(g):
+        for x, v in enumerate(fila):
+            if not v:
+                continue
+            cerca = ((x - ex) ** 2 + ((y - ey) * 2) ** 2) ** 0.5 <= 3.2
+            r = cw * 0.5 * (0.35 + 0.75 * v) * s
+            cx, cy = (ox + (x + 0.5) * cw) * s, (oy + (y + 0.5) * ch) * s
+            d.ellipse([cx - r, cy - r * 1.6, cx + r, cy + r * 1.6], fill=OJO if cerca else TONO)
+    return im.resize((ancho, alto), Image.LANCZOS)
+
+
+def paleta():
+    """Sixteen fixed colours: twelve steps from background to ink, four from background to the eye."""
+    from PIL import Image
+    def paso(a, b, t):
+        return [round(a[i] + (b[i] - a[i]) * t) for i in range(3)]
+    colores = [paso(FONDO, TONO, i / 11) for i in range(12)] + [paso(FONDO, OJO, i / 4) for i in range(1, 5)]
+    pal = Image.new("P", (1, 1))
+    pal.putpalette(sum(colores, []) + colores[0] * (256 - len(colores)))
+    return pal
+
+
+def png(g, ancho, alto, frac):
+    from PIL import Image
     b = io.BytesIO()
-    im.save(b, "PNG", optimize=True)
+    # A fixed palette without dither keeps the eye violet and makes the file a fifth of its true-colour size.
+    lienzo(g, ancho, alto, frac).quantize(palette=paleta(), dither=Image.Dither.NONE).save(b, "PNG", optimize=True)
     return b.getvalue()
 
 
+def nivel_de(c):
+    """Ink level 0..4 of a pixel, lifted (power 0.6) so the face reads at 16 px."""
+    v = max(0.0, (max(c) - 0x26) / (255 - 0x26))
+    return round(v ** 0.6 * 4)
+
+
+def svg(g):
+    """The small mark: the head alone on a 28x28 grid of squares, four levels of ink, runs joined."""
+    n = 28
+    im = lienzo(g, n * 8, n * 8, 1.0, CARA).resize((n, n))
+    px = im.load()
+    out = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="PreceptorOS">',
+           "<title>PreceptorOS</title>",
+           "<!-- Generated by bin/icons_from_emblem.py from atlas/emblem/preceptor_face.txt. Not edited by hand. -->",
+           '<rect width="32" height="32" rx="7" fill="#1e1826"/>']
+    for y in range(n):
+        x = 0
+        while x < n:
+            c = px[x, y]
+            violeta = c[2] - c[1] > 40
+            nivel = nivel_de(c)
+            x1 = x + 1
+            while x1 < n:
+                c2 = px[x1, y]
+                if (c2[2] - c2[1] > 40) != violeta or nivel_de(c2) != nivel:
+                    break
+                x1 += 1
+            if nivel > 0:
+                out.append('<rect x="%d" y="%d" width="%d" height="1" fill="%s" fill-opacity="%s"/>' % (
+                    2 + x, 2 + y, x1 - x, "#b581e9" if violeta else "#f2f5f7", ("%.2f" % (nivel / 4)).rstrip("0").rstrip(".")))
+            x = x1
+    return "\n".join(out) + "\n</svg>\n"
+
+
 def ficheros():
-    arm = espectro()
+    g = rejilla()
     return {
-        "mark.svg": svg(arm).encode("utf-8"),
-        "icon-192.png": png(arm, 192, 192, 0.40, 6),
-        "icon-512.png": png(arm, 512, 512, 0.40, 14),
-        # maskable: Android recorta a un circulo de radio 0,40*lado; el dibujo va a 0,30 (con su trazo).
-        "icon-512-maskable.png": png(arm, 512, 512, 0.30, 12),
-        "og-card.png": png(arm, 1200, 630, 0.40, 10),
+        "mark.svg": svg(g).encode("utf-8"),
+        "icon-192.png": png(g, 192, 192, 0.86),
+        "icon-512.png": png(g, 512, 512, 0.86),
+        # maskable: Android crops to a circle of radius 0.40 * side; the drawing stays inside it.
+        "icon-512-maskable.png": png(g, 512, 512, 0.62),
+        "og-card.png": png(g, 1200, 630, 0.90),
     }
 
 
