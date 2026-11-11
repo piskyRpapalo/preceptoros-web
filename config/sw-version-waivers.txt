@@ -3,12 +3,9 @@
 # One line per exact path. Use it rarely: bumping VERSION (bin/seal.py --sellar) is cheap.
 #   public/<exact path> | YYYY-MM-DD | why a stale cached copy is harmless
 public/game/judge_corpus.js | 2026-11-07 | new file, loaded by no page yet: no visitor holds a stale copy
-<<<<<<< HEAD
+public/game/radio_frame.js | 2026-11-11 | new file, loaded by no page yet: no visitor holds a stale copy
 public/assets/mark.svg | 2026-11-11 | cosmetic only: a visitor holding the old icon sees the old icon until the next VERSION bump, nothing breaks
 public/assets/icon-192.png | 2026-11-11 | cosmetic only: a visitor holding the old icon sees the old icon until the next VERSION bump, nothing breaks
 public/assets/icon-512.png | 2026-11-11 | cosmetic only: a visitor holding the old icon sees the old icon until the next VERSION bump, nothing breaks
 public/assets/icon-512-maskable.png | 2026-11-11 | cosmetic only: a visitor holding the old icon sees the old icon until the next VERSION bump, nothing breaks
 public/assets/og-card.png | 2026-11-11 | cosmetic only: a visitor holding the old card sees the old card until the next VERSION bump, nothing breaks
-=======
-public/game/radio_frame.js | 2026-11-11 | new file, loaded by no page yet: no visitor holds a stale copy
->>>>>>> origin/main
