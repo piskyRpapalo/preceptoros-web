@@ -95,9 +95,14 @@ async function main() {
     // Every building: its options are the contract's, each one says LIVE with its piece or NO_DATA with its cause.
     const fallas = [];
     for (const b of contrato.buildings) {
-      await ev(`(() => { const s = document.getElementById('building-sheet'); const bk = s.querySelector('.bs-tool'); if (!bk.hidden) { bk.click(); }
+      // A door (building_doors.js) may have closed the sheet onto its panel: the visitor closes that panel, Node opens the sheet again.
+      await ev(`(() => { const s = document.getElementById('building-sheet'), p = document.querySelector('.cats button[aria-pressed="true"]'); if (p) { p.click(); }
+        if (s.hidden) { document.getElementById('gp-town').click(); } const bk = s.querySelector('.bs-tool'); if (!bk.hidden) { bk.click(); }
         const c = [...s.querySelectorAll('.bs-card')].find((x) => x.firstChild.textContent.startsWith(${JSON.stringify(b.name + ' · ')})); c && c.click(); })()`);
-      const m = await espera_hoja((x) => x.cards.length === b.options.length && x.h.startsWith(b.name));
+      await espera_hoja((x) => x.cards.length === b.options.length && x.h.startsWith(b.name));
+      // Measure at rest: a press gesture still running translates its button by fractions of a pixel (43.99998 px is not a small button).
+      await ev(`Promise.all(document.getElementById('building-sheet').getAnimations({ subtree: true }).map((a) => a.finished.catch(() => 0))).then(() => 1)`);
+      const m = JSON.parse(await ev(MEDIR));
       if (!m.open || m.boxH < 140 || m.cards.length !== b.options.length || m.cards.some((c, i) => c.t !== b.options[i].label || c.seal !== (b.options[i].piece ? 'LIVE' : 'NO_DATA'))) { fallas.push(b.id + ':cards'); continue; }
       if (m.small.length || m.sinEspectro.length) { fallas.push(b.id + ':a11y'); }
       for (let i = 0; i < b.options.length; i++) {

@@ -48,7 +48,7 @@
       b.dataset.seal = it.live ? 'LIVE' : 'NO_DATA';
       var seal = doc.createElement('span'); seal.className = 'bs-seal'; seal.textContent = it.live ? 'LIVE' : 'NO_DATA'; b.appendChild(seal);
       b.addEventListener('click', id == null ? function () { draw(it.id); say('Inside ' + it.name + ' · Escape goes back'); focusFirst(); }
-        : function () { say(it.say); if (it.action) { act(it.action, it.say); } });
+        : function () { say(it.say); if (it.action) { act(it.action, it.say); } else if (it.live) { door(it); } });
       li.appendChild(b); list.appendChild(li);
     });
   }
@@ -68,6 +68,7 @@
       TA.run(name, { win: win, doc: sheet.ownerDocument, data: data, load: load }, function (text) { say(head + ' · ' + text); });
     });
   }
+  function door(it) { load('/game/building_doors.js', 'AtlasBuildingDoors', function (D) { if (D) { D.go(it, sheet, say); } }); }
   function focusFirst() { var f = list.querySelector('button'); if (f) { f.focus(); } }
   function close() { sheet.hidden = true; btn.setAttribute('aria-expanded', 'false'); btn.focus(); }
   function openSheet() {

@@ -66,6 +66,7 @@ jobs:
             node --test atlas/puros/wave_duel_cases.mjs
             node --test atlas/wave_duel_stall_cases.mjs
             node --test atlas/puros/caravan_cases.mjs
+            node --test atlas/puros/building_doors_cases.mjs
             node --test atlas/puros/byte_budget_cases.mjs
             node --test atlas/puros/building_interiors_cases.mjs
             node --test atlas/puros/gap_board_cases.mjs
@@ -186,6 +187,7 @@ jobs:
             node atlas/map_wide_browser.mjs
             node atlas/gamepad_browser.mjs
             node atlas/building_sheet_browser.mjs
+            node atlas/first_joy_browser.mjs
             node atlas/type_scale_browser.mjs
             node atlas/dark_terminals_browser.mjs
             node atlas/classroom_chat_browser.mjs
