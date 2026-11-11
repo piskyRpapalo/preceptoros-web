@@ -4,7 +4,9 @@
 // - on the landing, one switch before the door turns the spoken world on; the press itself is the gesture a browser
 //   asks for, so the welcome is heard at once;
 // - on /openworld/, a kept choice is restored on arrival, and the place heading is spoken each time it changes
-//   (arriving, walking), once a gesture has happened. It says only what the heading already shows.
+//   (arriving, walking), once a gesture has happened. It says only what the heading already shows;
+// - with the spoken world on, the focused control says its name and each visible message is said when it changes,
+//   so Tab and Enter are enough to play by ear. Hidden and technical panels stay silent.
 // The choice is the same key audio_only.js keeps. No voice in this browser is said as NO_DATA, never faked.
 // No clock, no random numbers, no network.
 (function (root) {
@@ -25,11 +27,20 @@
     var t = String(text || '').replace(/^Visitor-[0-9a-f]{8} · /, '').replace(/\s+/g, ' ').trim();
     return t.length > 120 ? t.slice(0, 117) + '...' : t;
   }
-  // speak(win, text) → true when handed to the system voice. The newest line replaces the one being said.
-  function speak(win, text) {
+  // speak(win, text, wait) → true when handed to the system voice. A new line replaces the one being said, unless
+  // wait is true: then it queues behind it (a message that follows a press must not cut the press's own name).
+  function speak(win, text, wait) {
     var S = win && win.speechSynthesis, U = win && win.SpeechSynthesisUtterance;
     if (!S || !U || !text) { return false; }
-    try { S.cancel(); S.speak(new U(text)); return true; } catch (e) { return false; }
+    try { if (!wait) { S.cancel(); } S.speak(new U(text)); return true; } catch (e) { return false; }
+  }
+  // Pure: name(el) → what a control is called: its aria-label, else its text; '' when it is not a control.
+  function name(el) {
+    if (!el || !el.tagName || !/^(BUTTON|A|INPUT|TEXTAREA|SELECT|SUMMARY)$/.test(el.tagName)) { return ''; }
+    var parts = el.childNodes ? Array.prototype.map.call(el.childNodes, function (n) { return String(n.textContent || '').trim(); }).filter(Boolean).join(' · ') : el.textContent;
+    var label = el.getAttribute('aria-label') || parts || el.getAttribute('placeholder') || '';
+    var state = el.getAttribute('aria-pressed') === 'true' ? ' · on' : el.disabled ? ' · unavailable' : '';
+    return said(label) + (said(label) ? state : '');
   }
 
   function landing(doc, win, btn) {
@@ -54,9 +65,29 @@
     }
     ['pointerdown', 'keydown'].forEach(function (ev) { doc.addEventListener(ev, function () { if (!woke) { woke = true; win.setTimeout(say, 0); } }, true); });
     if (win.MutationObserver) { new win.MutationObserver(say).observe(head, { childList: true, characterData: true, subtree: true }); }
+    // Playing by ear: the focused control says its name, and every message the eye can see change is said after it.
+    // A message is a visible status or live region outside the veiled technical panels; hidden ones stay silent.
+    var on = function () { return woke && doc.documentElement.dataset.audioOnly === 'on'; }, heard = new win.WeakMap();
+    doc.addEventListener('focusin', function (e) { var t = name(e.target); if (on() && t) { speak(win, t); } });
+    function region(node) {
+      var el = node && node.nodeType === 1 ? node : node && node.parentNode;
+      var r = el && el.closest ? el.closest('[role="status"], [aria-live="polite"], [aria-live="assertive"]') : null;
+      if (!r || r === head || r.closest('[data-depth="tech"], .sr, #log') || !r.getClientRects().length) { return null; }
+      return r;
+    }
+    if (win.MutationObserver) {
+      new win.MutationObserver(function (list) {
+        if (!on()) { return; }
+        list.forEach(function (m) {
+          var r = region(m.target), t = r ? said(r.textContent) : '';
+          if (!t || heard.get(r) === t) { return; }
+          heard.set(r, t); speak(win, t, true);
+        });
+      }).observe(doc.body, { childList: true, characterData: true, subtree: true });
+    }
   }
 
-  var api = { KEY: KEY, WELCOME: WELCOME, label: label, said: said, speak: speak };
+  var api = { KEY: KEY, WELCOME: WELCOME, label: label, said: said, name: name, speak: speak };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AtlasSoundFirst = api;
   var doc = root.document, btn = doc && doc.getElementById('sound-first'), head = doc && doc.getElementById('map-h');

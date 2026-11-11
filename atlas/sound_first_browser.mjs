@@ -4,7 +4,8 @@
 //   speaks the welcome at once; a second press turns it off and keeps that;
 // - /openworld/: a kept choice is restored on arrival (the root says audio only); nothing is spoken before a gesture;
 //   after the first press the place is spoken, and after a walk the new place is spoken: exactly the heading,
-//   without the visitor id;
+//   without the visitor id; the focused control says its name and the visible message after a press is spoken,
+//   while veiled technical panels stay silent;
 // - with the choice off, the world stays silent; a browser with no voice shows NO_DATA on a disabled switch.
 // Sabotage: SABOTAJE=mudo serves sound_first.js without the restore ⇒ red.
 // Uso: node atlas/sound_first_browser.mjs [carpeta-captura]
@@ -92,8 +93,22 @@ async function main() {
   ok(oye.said.every((t) => !/Visitor-/.test(t)), 'the visitor id is spoken');
   let paso = oye;
   for (const [x, y] of [[250, 330], [110, 330], [180, 200]]) { if (lugar(paso.h1) !== lugar(oye.h1)) { break; } await raton(x, y); paso = await hasta((m) => lugar(m.h1) !== lugar(oye.h1), 3000); }
-  paso = await hasta((m) => m.said[m.said.length - 1] === lugar(m.h1), 2000); medidas.walk = { h1: paso.h1, last: paso.said[paso.said.length - 1], lines: paso.said.length };
-  ok(lugar(paso.h1) !== lugar(oye.h1) && medidas.walk.last === lugar(paso.h1), 'openworld: a walk does not speak the new place: ' + JSON.stringify(medidas.walk));
+  paso = await hasta((m) => m.said.slice(oye.said.length).includes(lugar(m.h1)), 2000); medidas.walk = { h1: paso.h1, after: paso.said.slice(oye.said.length) };
+  ok(lugar(paso.h1) !== lugar(oye.h1) && medidas.walk.after.includes(lugar(paso.h1)), 'openworld: a walk does not speak the new place: ' + JSON.stringify(medidas.walk));
+  ok(medidas.walk.after.some((t) => /^Well walked!/.test(t)), 'by ear: the guide\'s visible line after a walk is not spoken: ' + JSON.stringify(medidas.walk.after));
+
+  // Playing by ear: focus says the control's name; a press says the visible message that follows, after the name.
+  await ev(`document.getElementById('gp-town').focus()`);
+  const foco = await hasta((m) => m.said[m.said.length - 1] === 'Node: the buildings of this node', 1500); medidas.focus = foco.said[foco.said.length - 1];
+  ok(medidas.focus === 'Node: the buildings of this node', 'by ear: the focused control does not say its name: ' + medidas.focus);
+  await ev(`document.getElementById('gp-town').click()`);
+  const hoja = await hasta((m) => m.said.some((t) => /^Node · choose a building$/.test(t)), 3000);
+  const cartas = hoja.said.slice(foco.said.length); medidas.sheet = cartas;
+  ok(cartas.includes('Node · choose a building'), 'by ear: the sheet message is not spoken: ' + JSON.stringify(cartas));
+  ok(cartas.some((t) => / live · LIVE$/.test(t)), 'by ear: focus inside the sheet does not name the first building: ' + JSON.stringify(cartas));
+  const tecnico = hoja.said.filter((t) => /zoom|Map view|Nodes online|Loading the map/.test(t)); medidas.tech = tecnico;
+  ok(tecnico.length === 0, 'by ear: a veiled technical panel is spoken: ' + JSON.stringify(tecnico));
+  await ev(`document.getElementById('building-sheet').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))`); await espera(300);
 
   // Off again: kept, and the world stays silent.
   await ir('/'); await ev(`document.getElementById('sound-first').scrollIntoView({ block: 'center' })`); await espera(200);

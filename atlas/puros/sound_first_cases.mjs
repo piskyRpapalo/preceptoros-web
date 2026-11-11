@@ -35,6 +35,24 @@ test('speak hands the newest line to the system voice, or says it could not', ()
   assert.equal(S.speak({ speechSynthesis: { cancel() { throw new Error('x'); } }, SpeechSynthesisUtterance: function () {} }, 'x'), false);
 });
 
+test('a control is called by its label, else its text, with its state; other elements have no name', () => {
+  const el = (tag, attrs, text) => ({ tagName: tag, textContent: text || '', disabled: !!attrs.disabled, getAttribute: (k) => (k in attrs ? attrs[k] : null) });
+  assert.equal(S.name(el('BUTTON', { 'aria-label': 'Node: the buildings of this node' }, '⌂')), 'Node: the buildings of this node');
+  assert.equal(S.name(el('BUTTON', {}, 'Roll')), 'Roll');
+  assert.equal(S.name(el('BUTTON', { 'aria-pressed': 'true' }, 'Help')), 'Help · on');
+  assert.equal(S.name(el('BUTTON', { disabled: true }, 'Summon at the Reef')), 'Summon at the Reef · unavailable');
+  assert.equal(S.name(el('DIV', {}, 'not a control')), '');
+  assert.equal(S.name(el('BUTTON', {}, '')), '');
+  assert.equal(S.name(null), '');
+});
+
+test('a queued line does not cancel the one being said', () => {
+  const log = [];
+  const win = { speechSynthesis: { cancel: () => log.push('cancel'), speak: (u) => log.push(u.text) }, SpeechSynthesisUtterance: function (t) { this.text = t; } };
+  S.speak(win, 'Roll'); S.speak(win, 'opened · Profile', true);
+  assert.deepEqual(log, ['cancel', 'Roll', 'opened · Profile']);
+});
+
 test('the landing: the switch is a 1-press control placed before the single door', () => {
   const html = page('index.html');
   assert.ok(html.indexOf('id="sound-first"') > 0 && html.indexOf('id="sound-first"') < html.indexOf('id="start"'));
@@ -44,5 +62,5 @@ test('the landing: the switch is a 1-press control placed before the single door
 });
 
 test('the piece stays small', () => {
-  assert.ok(statSync(new URL('../../public/game/sound_first.js', import.meta.url)).size <= 4608);
+  assert.ok(statSync(new URL('../../public/game/sound_first.js', import.meta.url)).size <= 7168);
 });
