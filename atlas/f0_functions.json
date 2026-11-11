@@ -570,6 +570,21 @@
      "text": "the House board does not dress the panel"
     }
    ]
+  },
+  {
+   "id": "sound-first",
+   "scripts": [
+    "/game/sound_first.js"
+   ],
+   "globals": [
+    "AtlasSoundFirst"
+   ],
+   "guards": [
+    {
+     "file": "atlas/sound_first_browser.mjs",
+     "text": "openworld: a walk does not speak the new place"
+    }
+   ]
   }
  ],
  "retiradas": [
