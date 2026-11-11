@@ -1,4 +1,4 @@
-// P3 [1d] in a real browser: the landing's three doors are drawn in the house Acho language, with
+// The landing in a real browser (2026-11-09: only its top remains; the doors of P3 [1d] are retired), with
 // the same three links, the same footer, the titles still readable by screen readers, no exception
 // and no external request. Uso: node atlas/landing_doors_browser.mjs [carpeta-captura]
 import { createServer } from 'node:http';
@@ -50,43 +50,31 @@ async function main() {
   await cmd('Runtime.enable'); await cmd('Page.enable'); await cmd('Network.enable');
   await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
   await cmd('Page.navigate', { url: origen + '/' });
-  for (let t = 0; t < 15000 && !(await ev("document.documentElement.classList.contains('con-burbujas')")); t += 250) { await espera(250); }
-  medida = JSON.parse(await ev(`JSON.stringify((() => {
-    const puertas = [...document.querySelectorAll('#doors .door')];
-    const tinta = (c) => { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) { if (d[i] > 0) { n++; } } return n; };
-    return { burbujas: document.documentElement.classList.contains('con-burbujas'), puertas: puertas.length,
-      enlaces: puertas.map((a) => a.getAttribute('href')), titulos: puertas.map((a) => (a.querySelector('b') || {}).textContent),
-      dibujos: puertas.map((a) => { const c = a.querySelector('canvas.door-art'); return c ? tinta(c) : 0; }),
-      pie: (document.querySelector('main > .note') || {}).textContent, texto: document.body.innerText,
-      // [2]: the web and the app, two bubbles facing each other; the tail is the ink nearest the bottom corners.
-      lados: [...document.querySelectorAll('#web-app .side')].map((p) => { const c = p.querySelector('canvas.door-art'); if (!c) { return null; }
-        const g = c.getContext('2d'), d = g.getImageData(0, 0, c.width, c.height).data, w = c.width, h = c.height, y = Math.floor(h * 0.95);
-        let izq = 0, der = 0; for (let x = 0; x < w; x++) { if (d[(y * w + x) * 4 + 3] > 0) { if (x < w / 2) { izq++; } else { der++; } } }
-        return { lado: p.dataset.lado, tinta: tinta(c), cola: izq > der ? 'left' : der > izq ? 'right' : 'none', titulo: (p.querySelector('b') || {}).textContent }; }),
-      plegado: !(document.querySelector('#web-app details.tech') || {}).open };
-  })())`));
-  ok(medida.burbujas && medida.puertas === 2, 'the two doors (decreto corte D: sin Tutorial) were not all drawn in Acho language');
-  ok(JSON.stringify(medida.enlaces) === JSON.stringify(['/openworld/', null]), 'links changed: ' + medida.enlaces);
-  ok(JSON.stringify(medida.titulos) === JSON.stringify(['OpenWorld', 'Tools']), 'titles changed or gone: ' + medida.titulos);
-  ok(medida.dibujos.every((n) => n > 2000), 'a bubble is blank: ' + medida.dibujos);
-  ok(medida.pie === 'One language until the MVP: English. The old translated addresses lead here.', 'footer changed');
+  for (let t = 0; t < 15000 && !(await ev("!!document.getElementById('start')")); t += 250) { await espera(250); }
+  // 2026-11-09 (the Sovereign): the landing keeps only its top: the title, the lead and the «Welcome to OpenWorld» card.
+  // The old doors (OpenWorld, Tools), the Tools device list, «Get the app» and the closing note are gone for good.
+  medida = JSON.parse(await ev(`JSON.stringify({ h1: (document.querySelector('h1') || {}).textContent,
+    welcome: (document.getElementById('welcome-title') || {}).textContent, start: (document.getElementById('start') || {}).getAttribute && document.getElementById('start').getAttribute('href'),
+    restos: ['#doors', '#door-tools', '#tools-dispositivo', '#release', 'main > .note', '#web-app'].filter((q) => document.querySelector(q)),
+    tras: (() => { const c = document.querySelector('.welcome-card'); let n = 0; for (let e = c && c.nextElementSibling; e; e = e.nextElementSibling) { n++; } return n; })(),
+    texto: document.body.innerText })`));
+  ok(medida.h1 === 'PreceptorOS' && medida.welcome === 'Welcome to OpenWorld' && medida.start === '/openworld/', 'the landing top changed: ' + JSON.stringify([medida.h1, medida.welcome, medida.start]));
+  ok(medida.restos.length === 0 && medida.tras === 0, 'old landing text is back under the welcome card: ' + JSON.stringify(medida.restos) + ' · after the card: ' + medida.tras);
   ok(!/\bundefined\b|\bNaN\b/.test(medida.texto), 'missing value shown on the landing');
-  ok(medida.lados.length === 0, 'NORTE 7 PR 1: the web/app pair is still on the landing: ' + JSON.stringify(medida.lados));
   const world = JSON.parse(await ev(`(async()=>{const f=document.getElementById('landing-world');
     for(let t=0;t<80;t++){const c=f.contentDocument?.querySelector('#surface');let n=0;if(c?.width&&c?.height){const x=c.getContext('2d').getImageData(0,0,c.width,c.height).data;for(let i=3;i<x.length;i+=4)if(x[i])n++;}if(n>2000)break;await new Promise(r=>setTimeout(r,100));}
     const d=f.contentDocument, canvas=d?.querySelector('#surface'), before=d?.defaultView?.performance?.timeOrigin;
     const ink=canvas?(()=>{const x=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;let n=0;for(let i=3;i<x.length;i+=4)if(x[i])n++;return n;})():0;
-    document.querySelector('#doors a[href="/openworld/"]').click(); await new Promise(r=>setTimeout(r,250));
+    document.getElementById('start').click(); await new Promise(r=>setTimeout(r,250));
     const entered=document.body.classList.contains('world-active') && getComputedStyle(document.querySelector('main')).display==='none' && f.getAttribute('aria-hidden')==='false';
     const same=d===f.contentDocument && before===d?.defaultView?.performance?.timeOrigin && d?.querySelectorAll('canvas').length===1;
     history.back(); await new Promise(r=>setTimeout(r,150));
     return JSON.stringify({loaded:!!canvas,canvases:d?.querySelectorAll('canvas').length||0,ink,entered,same,restored:!document.body.classList.contains('world-active')});})()`));
   ok(world.loaded && world.canvases === 1 && world.ink > 2000, 'the intro has no painted shared map behind it: ' + JSON.stringify(world));
   ok(world.entered && world.same && world.restored, 'OpenWorld did not reveal and preserve the same single map instance: ' + JSON.stringify(world));
-  ok(await ev("!!document.querySelector('#tools-dispositivo details[open]')"), 'NORTE 7 PR 1: the Tools device list is folded; it must be visible');
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
   // North D1: the install guide, at phone width: nothing external, no sideways scroll, no missing value, the landing links it.
-  ok(await ev("!!document.querySelector('#tools-dispositivo a[href=\"/get-the-app/\"]')"), 'the landing does not link /get-the-app/ inside Tools');
+  // /get-the-app/ is reached from the map's Help and Settings now (settings_sheet.js, map_links.js), not from the landing.
   await cmd('Page.navigate', { url: origen + '/get-the-app/' }); await espera(1500);
   medida.guia = JSON.parse(await ev("JSON.stringify({ h1: (document.querySelector('h1') || {}).textContent, ancho: document.documentElement.scrollWidth, vista: innerWidth, bajas: document.querySelectorAll('a[href*=\"/releases/download/\"]').length, huellas: document.querySelectorAll('code.sha[data-asset]').length, filas: document.querySelectorAll('.pruebas tbody tr').length, texto: document.body.innerText })"));
   ok(medida.guia.h1 === 'Get the app', '/get-the-app/ did not load');

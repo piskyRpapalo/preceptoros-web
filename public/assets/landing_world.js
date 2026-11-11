@@ -1,8 +1,8 @@
-// The landing's OpenWorld door reveals the one embedded map instance instead of navigating to a second renderer.
+// The landing's Play link (#start; the old OpenWorld door is retired, 2026-11-09) reveals the one embedded map instance instead of navigating to a second renderer.
 (function (win) {
   'use strict';
   var doc = win.document, frame = doc.getElementById('landing-world'), intro = doc.querySelector('body.landing-world > main');
-  var door = doc.querySelector('#doors a[href="/openworld/"]'), active = false;
+  var door = doc.getElementById('start'), active = false;
   if (!frame || !intro || !door) { return; }
 
   function tellMap() {

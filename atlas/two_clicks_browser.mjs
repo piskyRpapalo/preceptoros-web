@@ -57,9 +57,10 @@ async function main() {
   await cmd('Runtime.enable'); await cmd('Page.enable'); await cmd('Network.enable');
   await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   await cmd('Page.navigate', { url: origen + '/' }); await espera(1200);
-  const puerta = await ev("(() => { const a = [...document.querySelectorAll('a.door')].find((x) => /OpenWorld/.test(x.textContent)); return a ? a.textContent : null; })()");
-  ok(/Play now: the map, your crab and the chat\./.test(puerta || ''), 'the OpenWorld door does not say «Play now»: ' + puerta);
-  await clic('a.door[href="/openworld/"]'); enMapa = true; await espera(2000);
+  const puerta = await ev("(() => { const a = document.querySelector('a.start[href=\"/openworld/\"]'); return a ? a.textContent : null; })()");
+  // [deprecated 2026-11-11] the «a.door» card «Play now: the map, your crab and the chat.» left the landing with the welcome-only page; the one door is «a.start».
+  ok(/^Create your signature and play$/.test((puerta || '').trim()), 'the landing door does not say «Create your signature and play»: ' + puerta);
+  await clic('a.start[href="/openworld/"]'); enMapa = true; await espera(2000);
   const llegada = JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('sheet-welcome'), b = document.getElementById('welcome-play'), r = b ? b.getBoundingClientRect() : {};
     return { path: location.pathname, shown: !!c && !c.hidden, role: c && c.getAttribute('role'), modal: c && c.getAttribute('aria-modal'), title: (document.getElementById('welcome-h') || {}).textContent,
       focus: document.activeElement && document.activeElement.id, h: r.height, w: r.width, top: r.top, bottom: r.bottom, look: !!document.getElementById('welcome-look'), ancho: document.documentElement.scrollWidth,
