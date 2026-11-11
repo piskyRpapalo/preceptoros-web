@@ -12,7 +12,7 @@ const S = require('../../public/game/semantic_table.js');
 const SOURCE = new URL('../../public/game/radio_frame.js', import.meta.url);
 const SEALS = ['LIVE', 'PROPUESTA', 'FIRMADO', 'ERROR', 'NO_DATA', 'SIMULATED', 'STALE'];
 const sha = (f32) => createHash('sha256').update(Buffer.from(f32.buffer, f32.byteOffset, f32.byteLength)).digest('hex');
-const line = (sello, extra) => Object.assign({ quien: 'Map', sello, fuente: 'mapa', ciclo: 7, texto: 'The reef is calm.' }, extra);
+const line = (sello, extra) => Object.assign({ who: 'Map', seal: sello, source: 'map', cycle: 7, text: 'The reef is calm.' }, extra);
 
 test('the frame of a seal carries exactly the terms its visual form is drawn from', () => {
   for (const s of SEALS) {
@@ -68,11 +68,11 @@ test('a short cue is a prefix of the full tone, cut on a note boundary', () => {
 test('the id changes with the words, the seal, the source and the cycle, and with nothing else', () => {
   const base = F.eventId(line('LIVE'));
   assert.match(base, /^radio\.[0-9a-f]{8}$/);
-  assert.equal(F.eventId(line('LIVE', { quien: 'Someone else' })), base);
-  for (const other of [{ texto: 'The reef is loud.' }, { fuente: 'chat' }, { ciclo: 8 }, { sello: 'STALE' }]) {
+  assert.equal(F.eventId(line('LIVE', { who: 'Someone else' })), base);
+  for (const other of [{ text: 'The reef is loud.' }, { source: 'chat' }, { cycle: 8 }, { seal: 'STALE' }]) {
     assert.notEqual(F.eventId(line('LIVE', other)), base, JSON.stringify(other));
   }
-  assert.equal(F.eventId(line('LIVE', { ciclo: null })), F.eventId(line('LIVE', { ciclo: -3 })));
+  assert.equal(F.eventId(line('LIVE', { cycle: null })), F.eventId(line('LIVE', { cycle: -3 })));
 });
 
 test('the four readings share one id and one seal, and agree with the static twin', () => {
@@ -82,7 +82,7 @@ test('the four readings share one id and one seal, and agree with the static twi
     assert.equal(r.seal, s); assert.equal(r.machine.seal, s);
     assert.deepEqual(r.eye, { text: twin.texto, shape: twin.forma, motion: twin.movimiento }, s);
     assert.equal(r.reader, twin.texto + ' · The reef is calm.', s);
-    assert.deepEqual(r.machine, { seal: s, source: 'mapa', cycle: 7 }, s);
+    assert.deepEqual(r.machine, { seal: s, source: 'map', cycle: 7 }, s);
     if (s === 'NO_DATA') { assert.match(r.ear.cause, /^NO_DATA: /); } else { assert.ok(r.ear.samples > 0 && r.ear.ms > 0, s); }
   }
 });
@@ -90,8 +90,8 @@ test('the four readings share one id and one seal, and agree with the static twi
 test('a missing reading carries its cause instead of an empty value', () => {
   const unknown = F.readings(line('EMULADO'));
   assert.match(unknown.eye.cause, /^NO_DATA: /); assert.match(unknown.reader.cause, /^NO_DATA: /); assert.match(unknown.ear.cause, /^NO_DATA: /);
-  assert.match(F.readings(line('LIVE', { texto: '  ' })).reader.cause, /no words/);
-  assert.equal(F.readings(line('LIVE', { ciclo: undefined })).machine.cycle, 'NO_DATA');
+  assert.match(F.readings(line('LIVE', { text: '  ' })).reader.cause, /no words/);
+  assert.equal(F.readings(line('LIVE', { cycle: undefined })).machine.cycle, 'NO_DATA');
 });
 
 function fakeContext(log) {

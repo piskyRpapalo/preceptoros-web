@@ -5,6 +5,7 @@
 //   reader  the sentence a screen reader gets
 //   ear     PCM made by AtlasBBRadio.pcm from the seal's own harmonic terms, or NO_DATA with its cause
 //   machine seal, source and game cycle
+// A line is { seal, source, cycle, text }; the page that mounts this maps its own log entries to that shape.
 // Not loaded by any page yet: mounting it on /openworld/ is a later one-line slice (the page is in another open PR).
 // Layer 3 (a global radio with fresh news) is not here and has no source. No clock, no random numbers, no network.
 (function (root) {
@@ -19,10 +20,10 @@
     for (var i = 0; i < text.length; i++) { h ^= text.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
     return ('0000000' + h.toString(16)).slice(-8);
   }
-  function cycleOf(line) { return Number.isSafeInteger(line.ciclo) && line.ciclo >= 0 ? line.ciclo : null; }
+  function cycleOf(line) { return Number.isSafeInteger(line.cycle) && line.cycle >= 0 ? line.cycle : null; }
   function eventId(line) {
     var c = cycleOf(line);
-    return 'radio.' + hex([line.fuente || '', line.sello || '', c === null ? 'NO_DATA' : c, line.texto || ''].join('|'));
+    return 'radio.' + hex([line.source || '', line.seal || '', c === null ? 'NO_DATA' : c, line.text || ''].join('|'));
   }
 
   // frameOf(seal) → { sello, terminos } with the terms the seal's visual form is drawn from; null for an unknown seal.
@@ -36,7 +37,7 @@
   // same tone, so a short cue is a prefix of the full one, never a different sound. An empty `samples` always has a
   // cause: silence is never passed off as a tone.
   function sound(line, notes) {
-    var seal = String(line && line.sello || ''), id = eventId(line || {}), frame = frameOf(seal), cause = '';
+    var seal = String(line && line.seal || ''), id = eventId(line || {}), frame = frameOf(seal), cause = '';
     var samples = new Float32Array(0);
     if (!frame) { cause = 'NO_DATA: seal ' + (seal || '(none)') + ' is not in the semantic table; no tone is invented'; }
     else if (seal === 'NO_DATA') { cause = 'NO_DATA: this line is not measured, so it has no tone; its words say why'; }
@@ -68,7 +69,7 @@
   // readings(line, notes) → the four readings of one line under one id. A harness compares them; none may disagree
   // on the seal, and a missing reading carries its cause.
   function readings(line, notes) {
-    var s = sound(line, notes), twin = RADIO.gemelo(s.seal), text = String(line && line.texto || '').trim();
+    var s = sound(line, notes), twin = RADIO.gemelo(s.seal), text = String(line && line.text || '').trim();
     var c = cycleOf(line || {});
     return {
       id: s.id,
@@ -76,7 +77,7 @@
       eye: twin ? { text: twin.texto, shape: twin.forma, motion: twin.movimiento } : { cause: s.cause },
       reader: twin && text ? twin.texto + ' · ' + text : { cause: twin ? 'NO_DATA: the line has no words' : s.cause },
       ear: s.samples.length ? { samples: s.samples.length, sr: s.sr, ms: s.ms } : { cause: s.cause },
-      machine: { seal: s.seal, source: String(line && line.fuente || ''), cycle: c === null ? 'NO_DATA' : c }
+      machine: { seal: s.seal, source: String(line && line.source || ''), cycle: c === null ? 'NO_DATA' : c }
     };
   }
 
