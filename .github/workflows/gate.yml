@@ -126,6 +126,7 @@ jobs:
             node --test atlas/sweep_web_cases.mjs
             node --test atlas/map_chart_cases.mjs
             node --test atlas/map_chunks_cases.mjs
+            node --test atlas/puros/gacha_exact_odds_cases.mjs
             node --test atlas/web_node_brain_cases.mjs
             node --test atlas/map_painter_cases.mjs
             node --test atlas/visitor_walk_cases.mjs
