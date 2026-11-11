@@ -31,10 +31,14 @@
 .welcome-card .go{text-align:center;margin:14px 0 4px}
 .welcome-card .start{display:inline-block;min-height:52px;padding:14px 28px;background:var(--wc-go);color:var(--wc-paper);border:3px solid var(--wc-ink);border-radius:999px;box-shadow:0 5px 0 var(--wc-ink);font-weight:700;font-size:1.1rem;text-decoration:none}
 .welcome-card .start:focus-visible{outline:4px solid var(--wc-sea);outline-offset:3px}
+.welcome-card .sound-first{min-height:48px;padding:10px 20px;background:var(--wc-paper);color:var(--wc-ink);border:3px solid var(--wc-ink);border-radius:999px;font:inherit;font-weight:700;cursor:pointer}
+.welcome-card .sound-first[aria-pressed="true"]{background:var(--wc-sea);box-shadow:0 4px 0 var(--wc-ink)}
+.welcome-card .sound-first:focus-visible{outline:4px solid var(--wc-sea);outline-offset:3px}
+.welcome-card .sound-first:disabled{opacity:1;border-style:dashed;cursor:default}
 @media (prefers-reduced-motion:no-preference){.welcome-card svg{animation:creature 24s linear infinite}.welcome-card svg.r{animation-direction:reverse}
 .welcome-card .start{transition:transform .15s,box-shadow .15s}.welcome-card .start:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--wc-ink)}.welcome-card .start:active{transform:translateY(3px);box-shadow:0 2px 0 var(--wc-ink)}}
 @keyframes creature{to{transform:rotate(360deg)}}
-@media (forced-colors:active){.welcome-card,.welcome-card li,.welcome-card .start{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}.welcome-card ol li::before{background:CanvasText;color:Canvas}}
+@media (forced-colors:active){.welcome-card,.welcome-card li,.welcome-card .start,.welcome-card .sound-first{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}.welcome-card ol li::before{background:CanvasText;color:Canvas}}
 </style>
 </head>
 <body class="landing-world">
@@ -61,6 +65,7 @@
 <li>Your own building · NO_DATA · not open yet</li>
 <li>Nodes building the world · NO_DATA until measured</li>
 </ul>
+<p class="go"><button type="button" id="sound-first" class="sound-first" aria-pressed="false">Sound off · press to hear the world</button></p>
 <p class="go"><a class="start" id="start" href="/openworld/">Create your signature and play</a></p>
 <p>Want to go further? Join our benchmarks and learn how to create your companion: <a href="https://github.com/piskyRpapalo/preceptoros-companion">the companion door</a>.</p>
 </div>
@@ -76,5 +81,6 @@
 <script src="/assets/pwa.js"></script>
 <script src="/assets/intro.js"></script>
 <script src="/assets/landing_world.js"></script>
+<script src="/game/sound_first.js"></script>
 </body>
 </html>
