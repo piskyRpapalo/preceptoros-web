@@ -113,3 +113,21 @@ test('jewels are asked by whole word, in English or Spanish', () => {
   for (const s of ['jewels', 'show me a joya', 'Joyas!']) { assert.ok(C.wantsJewels(s), s); }
   for (const s of ['jewelry', 'joyería', 'ideas']) { assert.ok(!C.wantsJewels(s), s); }
 });
+
+test('untrusted index path and long Unicode summary cannot escape output budget', () => {
+  const base = JSON.parse(MUESTRA), good = base.entries[0];
+  const bad = [
+    { ...good, path: 'x'.repeat(2048) + '.md' },
+    { ...good, path: '../outside.md' },
+    { ...good, path: '/absolute.md' },
+    { ...good, path: 'a//b.md' },
+    { ...good, path: 'a\\\\b.md' }
+  ];
+  for (const e of bad) {
+    const out = R.parse(JSON.stringify({ ...base, entries: [e] }));
+    assert.equal(out.ok, false, 'bad path accepted: ' + e.path.slice(0, 30));
+  }
+  const unicode = R.parse(JSON.stringify({ ...base, entries: [{ ...good, one_liner: '界'.repeat(5000) }] }));
+  assert.equal(unicode.ok, true);
+  assert.ok(bytes(R.lineOf(unicode.ideas[0], 0, 1)) < 1024, 'Unicode over 1KiB');
+});

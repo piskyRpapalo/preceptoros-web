@@ -14,7 +14,7 @@
 <meta property="og:image" content="https://preceptoros.org/assets/og-card.png">
 <title>Creation studio · PreceptorOS</title>
 <style>
-body{font:1rem/1.5 system-ui,sans-serif;max-width:56rem;margin:auto;padding:1rem;background:#121419;color:#f4f2ec}main,section{display:grid;gap:.75rem}button,input,textarea{font:inherit;min-height:44px;max-width:100%}button,a{padding:.5rem 1rem}a{color:#9de3ef}fieldset{border:1px solid #aaa}#paint{min-height:18rem}svg{max-width:100%;height:18rem;border:1px solid currentColor;touch-action:none}output,pre{overflow-wrap:anywhere}audio{width:100%}.row{display:flex;gap:.5rem;flex-wrap:wrap}#identity{min-height:44px}
+body{font:1rem/1.5 system-ui,sans-serif;max-width:56rem;margin:auto;padding:1rem;background:#121419;color:#f4f2ec}main,section{display:grid;gap:.75rem;min-width:0}section>*{min-width:0}textarea{width:100%;box-sizing:border-box}#claim-art svg{height:auto;max-height:22rem}#claim-rows{padding-left:1.5rem;overflow-wrap:anywhere}button,input,textarea{font:inherit;min-height:44px;max-width:100%}button,a{padding:.5rem 1rem}a{color:#9de3ef}fieldset{border:1px solid #aaa}#paint{min-height:18rem}svg{max-width:100%;height:18rem;border:1px solid currentColor;touch-action:none}output,pre{overflow-wrap:anywhere}audio{width:100%}.row{display:flex;gap:.5rem;flex-wrap:wrap}#identity{min-height:44px}
 </style>
 </head>
 <body>
@@ -35,6 +35,14 @@ body{font:1rem/1.5 system-ui,sans-serif;max-width:56rem;margin:auto;padding:1rem
 <button id="download-creation" type="button">Download creation</button>
 <p id="creation-status" role="status" aria-live="polite">Nothing signed.</p>
 </section>
+<section id="claim-panel" aria-labelledby="claim-title">
+<h2 id="claim-title">Three readings of one drawing</h2>
+<p>A drawing here is one statement. Look, listen and inspect read the same things under the same ids.</p>
+<div class="row" role="group" aria-label="Which drawing"><button id="claim-mine" type="button">Read your drawing</button><button id="claim-example" type="button">Read the example: low tide</button></div>
+<div class="row" role="group" aria-label="Readings"><button id="claim-look" type="button">Look</button><button id="claim-listen" type="button">Listen</button><button id="claim-inspect" type="button">Inspect</button></div>
+<p id="claim-status" role="status" aria-live="polite">NO_DATA · no drawing read yet.</p>
+<div id="claim-art"></div><ol id="claim-rows"></ol><pre id="claim-machine" tabindex="0" aria-label="The drawing as a machine reads it" hidden></pre>
+</section>
 <section id="reader-panel" aria-labelledby="reader-title" hidden>
 <h2 id="reader-title">Verified creation</h2>
 <p id="reader-status" role="status" aria-live="polite">Choose a creation file to verify.</p>
@@ -53,6 +61,11 @@ body{font:1rem/1.5 system-ui,sans-serif;max-width:56rem;margin:auto;padding:1rem
 <script src="/game/creation_package.js"></script>
 <script src="/game/creation_feedback.js"></script>
 <script src="/game/acho_paint.js"></script>
+<script src="/game/values.js"></script>
+<script src="/game/gacha.js"></script>
+<script src="/game/acho_light.js"></script>
+<script src="/game/acho_sonify.js"></script>
+<script src="/game/acho_claim.js"></script>
 <script src="/game/creation_flow.js"></script>
 <script src="/assets/pwa.js"></script>
 </body>
