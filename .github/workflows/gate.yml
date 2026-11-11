@@ -125,6 +125,7 @@ jobs:
             node --test atlas/puros/room_log_cases.mjs
             node --test atlas/sweep_web_cases.mjs
             node --test atlas/map_chart_cases.mjs
+            node --test atlas/puros/radio_frame_cases.mjs
             node --test atlas/map_chunks_cases.mjs
             node --test atlas/web_node_brain_cases.mjs
             node --test atlas/map_painter_cases.mjs
