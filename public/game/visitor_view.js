@@ -15,8 +15,8 @@
     return { count: veiled };
   }
 
-  // Tools · the app on this phone (2026-11-08). No APK is published (INSTALL_ANDROID.md §4), so the honest Android
-  // format is the installed web app: the browser's own install offer, kept by /assets/pwa.js, made in one press.
+  // Tools · the web app install prompt is distinct from the published Android TWA APK.
+  // Its download/update and exact release identity are exposed on /get-the-app/; this panel does not infer installed native versions.
   function install(pwa) {
     if (pwa && pwa.instalada && pwa.instalada()) { return { mode: 'installed', text: 'The app is installed on this phone.' }; }
     if (pwa && pwa.instalable && pwa.instalable()) { return { mode: 'offer', text: 'Install the app on this phone' }; }
@@ -25,7 +25,7 @@
   function installCard(doc, list, win) {
     var li = doc.createElement('li'), p = doc.createElement('p'), btn = doc.createElement('button'), a = doc.createElement('a');
     li.className = 'voice'; li.setAttribute('data-speaker', 'App'); li.setAttribute('data-cat', 'Tools');
-    btn.type = 'button'; btn.id = 'app-install'; a.href = '/get-the-app/'; a.textContent = 'Other systems and the Termux path';
+    btn.type = 'button'; btn.id = 'app-install'; a.href = '/get-the-app/'; a.textContent = 'Download or update Android APK · other systems and Termux';
     li.appendChild(btn); li.appendChild(p); li.appendChild(a); list.appendChild(li);
     function draw() {
       var r = install(win && win.PreceptorPwa);
