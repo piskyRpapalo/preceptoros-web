@@ -12,6 +12,11 @@
       return i && cicloValido(i.ciclo) ? i.ciclo : null;
     } catch (e) { return null; }
   }
+  // Radio layer 2 (C6 · H9): the frame (radio_frame.js) gives every line one id and, only when the visitor turns the
+  // tone on, a short cue made from its seal's own terms. Off by default; a missing or refused tone says its cause.
+  var oido = { on: false, ac: null };
+  function marco() { return raiz.AtlasRadioFrame || null; }
+  function linea(m) { return { seal: sello(m), source: m.fuente, cycle: cicloValido(m.ciclo) ? m.ciclo : null, text: m.texto }; }
   function selloDe(texto, pedido) {
     if (pedido) { return pedido; }
     if (/^\s*NO_DATA/.test(texto)) { return 'NO_DATA'; }
@@ -30,6 +35,7 @@
   function burbuja(m) {
     var li = el('li', 'radio-msg'), s = sello(m), cab = el('p', 'radio-msg-cab');
     li.dataset.quien = m.quien; li.dataset.sello = s; li.dataset.fuente = m.fuente; li.dataset.ciclo = cicloValido(m.ciclo) ? String(m.ciclo) : 'NO_DATA';
+    li.dataset.evento = marco() ? marco().eventId(linea(m)) : 'NO_DATA';
     cab.appendChild(el('b', null, m.quien));
     var edadN = edad(m), causa = 'Δ ' + (edadN === null ? 'NO_DATA (game cycle unavailable or reset)' : String(edadN)) + ' cycles';
     if (!reloj()) {
@@ -63,6 +69,7 @@
     var e = { quien: m.quien || 'Radio', sello: selloDe(texto, m.sello), fuente: m.fuente || 'web', ciclo: ciclo(), texto: texto };
     lista.push(e); if (lista.length > TOPE) { lista.shift(); }
     pinta();
+    suena(e);
     if (R.canal === 'echoes') { canal('echoes'); }
     return e;
   }
@@ -94,6 +101,20 @@
         if (s) { mira(s); }
       });
     }).observe(zona, { subtree: true, childList: true, characterData: true });
+  }
+  function suena(m) {
+    if (!oido.on || !m) { return null; }
+    var F = marco(), r = F ? F.play(oido.ac, linea(m), 2) : { played: false, cause: 'NO_DATA: the radio frame is not loaded on this page' };
+    if (R.tonoNota) { R.tonoNota.textContent = r.played ? '' : r.cause; R.tonoNota.hidden = !!r.played; }
+    return r;
+  }
+  function tono(on) {
+    oido.on = on == null ? !oido.on : !!on;
+    if (oido.on && !oido.ac) { try { var A = raiz.AudioContext || raiz.webkitAudioContext; oido.ac = A ? new A() : null; } catch (e) { oido.ac = null; } }
+    if (oido.on && oido.ac && oido.ac.state === 'suspended' && oido.ac.resume) { try { oido.ac.resume(); } catch (e) { /* the cause shows on play */ } }
+    if (R.tono) { R.tono.setAttribute('aria-pressed', String(oido.on)); R.tono.textContent = oido.on ? T('tone_on', 'Tone: on') : T('tone_off', 'Tone: off'); }
+    if (R.tonoNota && !oido.on) { R.tonoNota.textContent = ''; R.tonoNota.hidden = true; }
+    return oido.on ? suena(lista[lista.length - 1]) : null;
   }
   function alterna(abrir) {
     var a = abrir == null ? R.caja.classList.contains('plegado') : abrir;
@@ -176,7 +197,11 @@
     R.lista = el('ol', 'radio-chat-lista'); R.lista.id = 'radio-chat-lista'; R.lista.setAttribute('role', 'log'); R.lista.setAttribute('aria-live', 'polite');
     R.ecos = el('ol', 'radio-chat-lista'); R.ecos.id = 'radio-chat-ecos'; R.ecos.setAttribute('role', 'log'); R.ecos.setAttribute('aria-live', 'polite'); R.ecos.hidden = true;
     R.noData = el('p', 'radio-chat-no-data'); R.noData.id = 'radio-chat-no-data'; R.noData.setAttribute('role', 'status');
-    R.caja.appendChild(R.boton); R.caja.appendChild(R.tabs); R.caja.appendChild(R.noData); R.caja.appendChild(R.ecos); R.caja.appendChild(R.lista); canal('radio');
+    R.tono = el('button', 'radio-chat-tab radio-chat-tono', T('tone_off', 'Tone: off')); R.tono.type = 'button'; R.tono.id = 'radio-chat-tono';
+    R.tono.setAttribute('aria-pressed', 'false'); R.tono.title = T('tone_title', 'Each new radio line plays a short tone made from its seal');
+    R.tono.addEventListener('click', function () { tono(); });
+    R.tonoNota = el('p', 'radio-chat-tono-nota'); R.tonoNota.id = 'radio-chat-tono-nota'; R.tonoNota.hidden = true;
+    R.caja.appendChild(R.boton); R.caja.appendChild(R.tabs); R.caja.appendChild(R.tono); R.caja.appendChild(R.tonoNota); R.caja.appendChild(R.noData); R.caja.appendChild(R.ecos); R.caja.appendChild(R.lista); canal('radio');
     if (raiz.AtlasWorldCreator && typeof raiz.AtlasWorldCreator.onEcho === 'function') { raiz.AtlasWorldCreator.onEcho(function () { if (R.canal === 'echoes') { canal('echoes'); } }); }
     capa.appendChild(R.caja);
     document.addEventListener('keydown', function (e) { if (e.altKey && (e.key === 'r' || e.key === 'R')) { e.preventDefault(); alterna(); R.boton.focus(); } });
@@ -185,5 +210,8 @@
   }
   function registro() { return lista.map(function (m) { return { quien: m.quien, sello: sello(m), fuente: m.fuente, ciclo: m.ciclo, texto: m.texto }; }); }
 
-  raiz.AtlasRadioChat = { VIEJO: VIEJO, monta: monta, dice: dice, alterna: alterna, canal: canal, registro: registro, selloDe: selloDe };
+  // lecturas() → the four readings (eye, reader, ear, machine) of every line under its one id, for the a11y harness.
+  function lecturas() { var F = marco(); return F ? lista.map(function (m) { return F.readings(linea(m), 2); }) : []; }
+
+  raiz.AtlasRadioChat = { VIEJO: VIEJO, monta: monta, dice: dice, alterna: alterna, canal: canal, registro: registro, selloDe: selloDe, tono: tono, lecturas: lecturas };
 })(this);
