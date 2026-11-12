@@ -1251,8 +1251,9 @@ class PWA(unittest.TestCase):
 
     def test_iconos_y_tarjeta_salen_del_emblema(self):
         """Firma F2-8 del Soberano, 2026-10-10: favicon, iconos PWA y og:image siguen
-        existiendo, pero CAMBIA SU ORIGEN: los genera bin/icons_from_emblem.py con la
-        onda del emblema del sitio. Lo publicado tiene que ser exactamente lo que el
+        existiendo, pero CAMBIA SU ORIGEN: los genera bin/icons_from_emblem.py. Desde la
+        orden del Soberano del 2026-11-11 la fuente es la cara del preceptor en puntos
+        (atlas/emblem/preceptor_face.txt). Lo publicado tiene que ser exactamente lo que el
         generador produce hoy: un icono retocado a mano o un PNG pintado no pasa."""
         try:
             import PIL  # noqa: F401
