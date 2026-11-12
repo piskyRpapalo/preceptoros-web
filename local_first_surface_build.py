@@ -14,7 +14,7 @@ compartidas de septiembre. Ahora:
   - `/ar/` ... `/ru/` responden 301 a `/` desde el Worker (`worker/index.js`); sus ficheros salen de
     `public/`.
 """
-import html, json, pathlib, sys
+import html, json, pathlib, re, sys
 
 RAIZ = pathlib.Path(__file__).resolve().parent
 PUBLICO = RAIZ / "public"
@@ -122,8 +122,16 @@ def gate(r):
     c = json.loads((PUBLICO / "brains.json").read_text(encoding="utf-8"))
     cer = [{"id": x["id"], "size_gb": round(x["bytes"] / 1e9, 2), "sha256": x.get("sha256"), "maquina": c["backend"],
             "fecha": c["medido"][:10]} for x in c["cerebros"] if x.get("puerta") and isinstance(x.get("bytes"), int)]
+    android = r.get("android") or {}
+    artifacts = android.get("assets") or []
+    apk = next((a for a in artifacts if a.get("nombre", "").endswith(".apk")
+                and isinstance(a.get("bytes"), int)
+                and re.fullmatch(r"[0-9a-f]{64}", a.get("sha256", ""))), None)
     d = {"version": r["version"], "pagina": f"https://github.com/{r['repo']}/releases/tag/{r['version']}",
          "release": {"firmada": r.get("firmada", {})}, "cerebros": cer, "descargas": {}}
+    if apk:
+        d["android"] = {"version": android["version"], "url": "/get-the-app/" + apk["nombre"],
+                        "sha256": apk["sha256"], "bytes": apk["bytes"]}
     return json.dumps(d, ensure_ascii=True, separators=(",", ":")).replace("</", "<\\/")
 
 

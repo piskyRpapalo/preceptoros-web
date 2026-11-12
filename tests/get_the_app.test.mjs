@@ -3,6 +3,8 @@
 // loads with the page. The same judge runs on two sabotaged copies, which must fail.
 import { test } from 'node:test';
 import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+const GATE = createRequire(import.meta.url)('../public/game/launch_gate.js');
 
 const leer = (r) => readFileSync(new URL('../' + r, import.meta.url), 'utf8');
 const R = JSON.parse(leer('public/release.json'));
@@ -73,4 +75,53 @@ test('SABOTAGE NORTE 5 a1 · an invented signed receipt or an invented sha256 tu
   if (!juezGate(firmada, R, C).some((x) => /signed receipt/.test(x))) { throw new Error('an invented signed receipt stayed green'); }
   const sha = PAGINA.replace('"sha256":null', '"sha256":"' + 'a'.repeat(64) + '"');
   if (!juezGate(sha, R, C).some((x) => /sha256/.test(x))) { throw new Error('an invented sha256 stayed green'); }
+});
+
+
+// WEB-ANDROID-DOWNLOAD-01: the signed APK is real, the web install prompt is not the Android APK,
+// and no page may infer installed native version or report device telemetry without consent.
+test('Android release is offered as a one-click APK download and a distinct update action', () => {
+  const android = R.android;
+  const entry = android?.assets?.[0];
+  if (!entry || !/^[0-9a-f]{64}$/.test(entry.sha256) || entry.bytes <= 0) { throw new Error('no verified Android release'); }
+  const embedded = JSON.parse(PAGINA.match(/<script type="application\/json" id="gate-datos">([^<]+)<\/script>/)[1]);
+  if (embedded.android.url !== '/get-the-app/' + entry.nombre ||
+      embedded.android.sha256 !== entry.sha256 ||
+      embedded.android.version !== android.version ||
+      embedded.android.bytes !== entry.bytes) { throw new Error('embedded Android release drifted from the signed release card'); }
+  const G = awaitGate();
+  const d = { os: 'android', pwa: { instalable: false }, release: {}, android: embedded.android, cerebros: [] };
+  const app = G.vista(d).carriles.find((x) => x.id === 'app');
+  if (!app.boton.activo || app.boton.etiqueta !== 'Download Android app' || app.clics !== 1 || app.sha256 !== entry.sha256) {
+    throw new Error('Android must expose a one-click verified APK rather than a PWA');
+  }
+  const gate = leer('public/assets/get_app_gate.js');
+  if (!gate.includes('Update Android app') || !gate.includes('installed_version_not_observable_from_web') ||
+      !gate.includes("a.href = apk ? datos.android.url")) { throw new Error('missing update and honest installed-version reporting'); }
+  const view = leer('public/game/visitor_view.js');
+  if (view.includes('No APK is published')) { throw new Error('stale claim of missing APK'); }
+});
+
+function awaitGate() { return GATE; }
+
+test('SABOTAGE Android download: absent or fabricated hash keeps APK lane closed', () => {
+  for (const payload of [{}, {url: '/get-the-app/not-an-app.apk', sha256: '0'.repeat(64), bytes: 0},
+    {url: 'https://example.invalid/evil.apk', sha256: '0'.repeat(64), bytes: 1340742},
+    {url: '/get-the-app/PreceptorOS-android-1.0.1.apk', sha256: 'not-a-hash', bytes: 1340742}]) {
+    const app = GATE.vista({os:'android',pwa:{},release:{},android:payload,cerebros:[]}).carriles.find(x => x.id==='app');
+    if (app.boton.activo) { throw new Error('unverified APK was activated'); }
+  }
+});
+
+
+test('Homepage downloads the same verified APK with one click (without claiming offline AI)', () => {
+  const apk = R.android.assets[0];
+  const home = leer('public/index.html');
+  const route = '/get-the-app/' + apk.nombre;
+  const links = home.match(/<a class="android-apk-action"[^>]+>/g) || [];
+  if (links.length !== 2 || !links.every((a) => a.includes('href="' + route + '"') && a.includes(' download '))) {
+    throw new Error('homepage APK and update links do not target the published release');
+  }
+  if (!home.includes('Local offline AI: NO_DATA')) { throw new Error('home falsely presents TWA as local AI'); }
+  if (!/\.android-apk-action:focus-visible/.test(home)) { throw new Error('missing visible keyboard focus'); }
 });

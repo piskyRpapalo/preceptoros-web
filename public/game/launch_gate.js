@@ -11,7 +11,7 @@
   var ORIGEN = 'preceptoros.org';
 
   // Instalador por entorno (radiogroup preseleccionado segun el OS).
-  var INSTALADOR = { android: 'bin/instalar-android', ios: 'NO_DATA', linux: 'bin/instalar-pc', windows: 'bin/instalar-pc', mac: 'bin/instalar-pc' };
+  var INSTALADOR = { android: 'release:android', ios: 'NO_DATA', linux: 'bin/instalar-pc', windows: 'bin/instalar-pc', mac: 'bin/instalar-pc' };
 
   function nd(c) { return 'NO_DATA (' + c + ')'; }
   function boton(etiqueta, activo, causa) { return { etiqueta: etiqueta, activo: activo, causa: causa || null, tamano: TOQUE_MIN }; }
@@ -26,9 +26,18 @@
       peso: typeof pwa.peso_b === 'number' ? pwa.peso_b + ' B' : nd('size not measured')
     };
     var installer = os !== 'android' && os !== 'ios';
+    // A published Android APK is a signed web-shell (TWA), not a local model.
+    // Only offer the direct download when its same-origin URL and digest are declared in release.json.
+    var android = d.android || {}, apk = os === 'android' &&
+      /^\/get-the-app\/[A-Za-z0-9._-]+\.apk$/.test(android.url || '') &&
+      /^[0-9a-f]{64}$/.test(android.sha256 || '') &&
+      Number.isSafeInteger(android.bytes) && android.bytes > 0;
     var carril2 = {
-      id: 'app', preseleccionado: INSTALADOR[os], clics: 2,
-      boton: installer ? boton('Install the app', true) : boton('Install the app', false, nd('native installer not available for ' + os))
+      id: 'app', preseleccionado: INSTALADOR[os], clics: apk ? 1 : 2,
+      sha256: apk ? android.sha256 : undefined,
+      boton: apk ? boton('Download Android app', true) :
+        installer ? boton('Install the app', true) :
+        boton('Install the app', false, nd('verified native installer not available for ' + os))
     };
     var carril3 = (d.cerebros || []).map(function (c) {
       var medido = !!(c.sha256 && typeof c.size_gb === 'number');
