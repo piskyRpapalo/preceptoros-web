@@ -197,6 +197,7 @@ jobs:
             node atlas/type_scale_browser.mjs
             node atlas/dark_terminals_browser.mjs
             node atlas/classroom_chat_browser.mjs
+            node atlas/map_chat_draft_browser.mjs
             node atlas/sw_first_load_browser.mjs
             node atlas/live_heartbeat_cases.mjs
             node atlas/a11y_filler_browser.mjs

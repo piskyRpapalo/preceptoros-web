@@ -89,7 +89,7 @@
     try { await loadAula(); } catch (_) { busy = false; line('Hexelion', 'NO_DATA · Chat gateway module unavailable.'); return; }
     if (generation !== visitGeneration || account !== visitAccount) { busy = false; return; }
     try { seed = account.info().seed; } catch (_) { busy = false; line('Hexelion', 'NO_DATA · This visit has ended.'); return; }
-    line('You', text); input.value = ''; busy = true;
+    line('You', text); busy = true; // Keep the question until the response is accepted.
     var send = form.querySelector('button[type="submit"]'); send.disabled = true;
     try {
       var result = await root.AtlasAulaChat.turn(root.fetch.bind(root), seed, text, chain, '/openworld/');
@@ -100,9 +100,10 @@
       }
       if (generation !== visitGeneration || account !== visitAccount) return;
       chain = result.chain;
-      line('Hexelion', result.ok ? result.text + (result.cut ? ' [shortened]' : '') : root.AtlasAulaChat.plain(result.cause));
+      line('Hexelion', result.ok ? result.text + (result.cut ? ' [shortened]' : '') : root.AtlasAulaChat.plain(result.cause) + ' · Your question is still in the box.');
+      if (result.ok && input.value === text) { input.value = ''; } // Never discard a newer draft.
       if (result.ok && root.AtlasAulaChat.renderReceipt) root.AtlasAulaChat.renderReceipt(doc, log, result.receiptState);
-    } catch (_) { if (generation === visitGeneration) line('Hexelion', 'NO_DATA · The chat gateway did not answer.'); }
+    } catch (_) { if (generation === visitGeneration) line('Hexelion', 'NO_DATA · The chat gateway did not answer. Your question is still in the box.'); }
     finally { busy = false; send.disabled = false; }
   }, true);
   form.addEventListener('submit', async function (event) {
@@ -112,16 +113,17 @@
     var input = doc.getElementById('question'), text = input.value.trim();
     if (!text || busy) { event.preventDefault(); return; }
     if (new TextEncoder().encode(text).length > 600) { note.textContent = 'NO_DATA: message exceeds 600 UTF-8 bytes.'; return; }
-    line('You', text); input.value = '';
+    line('You', text); // Keep local model input until it has returned a visible answer.
     if (!ready) { line('Companion', 'NO_DATA: choose and load the web node brain first.'); return; }
     busy = true; form.querySelector('button[type="submit"]').disabled = true;
     try {
       var answer = await root.AtlasWebNodeBrain.reply(text, context);
       var speaker = /^page-/.test(answer.source) ? 'OpenWorld guide · ' + (answer.source === 'page-controls' ? 'page controls' : 'page missions') : answer.model + (offline ? ' · offline' : '');
-      line(speaker, answer.text); note.textContent = /^page-/.test(answer.source) ? 'From this page · ' + context : 'Local answer from the web node brain · ' + context;
+      line(speaker, answer.text); if (input.value === text) { input.value = ''; }
+      note.textContent = /^page-/.test(answer.source) ? 'From this page · ' + context : 'Local answer from the web node brain · ' + context;
       doc.dispatchEvent(new CustomEvent('brain:answer', { detail: { verified: answer.verified, source: answer.source, model: answer.model, text: answer.text, sha: answer.sha } }));
     }
-    catch (error) { line('Companion', 'NO_DATA · ' + (error.cause || 'model_unavailable') + ': ' + error.message); }
+    catch (error) { line('Companion', 'NO_DATA · ' + (error.cause || 'model_unavailable') + ': ' + error.message + ' · Your question is still in the box.'); }
     finally { busy = false; form.querySelector('button[type="submit"]').disabled = false; }
   });
   root.addEventListener('pagehide', function () { ready = false; log.replaceChildren(); });
