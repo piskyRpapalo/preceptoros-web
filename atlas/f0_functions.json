@@ -244,10 +244,14 @@
   {
    "id": "radio",
    "scripts": [
+    "/game/bb_radio.js",
+    "/game/radio_frame.js",
     "/assets/radio_message_log.js",
     "/game/face_terminal.js"
    ],
    "globals": [
+    "AtlasBBRadio",
+    "AtlasRadioFrame",
     "AtlasRadioChat"
    ],
    "guards": [
