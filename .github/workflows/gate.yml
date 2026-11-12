@@ -172,6 +172,7 @@ jobs:
             node atlas/npc_occupancy_cases.mjs
             node atlas/window_cases.mjs
             node atlas/radio_age_cases.mjs
+            node atlas/radio_mount_cases.mjs
             node --test atlas/echoes_tutorial_cases.mjs
             node atlas/hud_readings_cases.mjs
             node atlas/acho_language_cases.mjs
