@@ -1,3 +1,4 @@
+# [deprecated 2026-11-09] retired with the landing's Tools section (DEPRECATED.json). Do not run.
 """Tools · pruebas del bloque de cerebros (decreto 1). Uso: python3 -m unittest atlas.test_brain_tools"""
 import importlib.util
 import json

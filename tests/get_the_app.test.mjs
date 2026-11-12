@@ -34,10 +34,10 @@ test('D1 · /get-the-app/ only says what release.json says', () => {
   if (f.length) { throw new Error(f.join(' | ')); }
 });
 
-test('D1 · the landing links the guide, inside the visible Tools block (NORTE 7 PR 1)', () => {
+test('D1 · the map links the guide from Settings; the landing keeps only its top (2026-11-09)', () => {
+  if (!leer('public/game/settings_sheet.js').includes("'/get-the-app/'")) { throw new Error('Settings does not link /get-the-app/'); }
   const portada = leer('public/index.html');
-  if (!portada.includes('<li><a href="/get-the-app/">')) { throw new Error('the landing does not link /get-the-app/'); }
-  if (portada.indexOf('id="tools-dispositivo"') > portada.indexOf('<li><a href="/get-the-app/">')) { throw new Error('the link is not inside the Tools block'); }
+  if (/id="(doors|tools-dispositivo|release)"/.test(portada)) { throw new Error('old landing blocks are back'); }
 });
 
 test('SABOTAGE D1 · one changed fingerprint or another version turns the judge red', () => {

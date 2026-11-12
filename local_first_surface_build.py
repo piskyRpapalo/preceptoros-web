@@ -1,3 +1,4 @@
+# [deprecated 2026-11-09] retired with the landing's Tools section (DEPRECATED.json). Do not run.
 """Escribe las paginas de entrada de preceptoros.org desde una plantilla: la portada, el juego y /get-the-app/.
 
     python3 local_first_surface_build.py            reescribe public/index.html, public/get-the-app/index.html y public/aduana/index.html
