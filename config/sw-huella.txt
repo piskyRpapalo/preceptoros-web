@@ -1,2 +1,2 @@
-huella=a2bd4a5add260692
+huella=9886289abb182578
 version=preceptoros-2026-25-hg

@@ -10,6 +10,7 @@ HTTP 200 and 1,340,742 bytes. Downloaded APK SHA-256 matched release.json.
 
 ## Adaptation
 - Existing release card is the only Android source; embedded gate uses same-origin URL, version, SHA-256 and bytes.
+- The homepage also exposes direct one-click Android download and update links checked against the release card.
 - Android offers one-click DOWNLOAD, not false one-click installation. User must open and approve installation.
 - Update Android app downloads the same signed APK; Android's package manager verifies its signing certificate.
 - Browser PWA installation remains a separate lane. This APK is a Trusted Web Activity, not an offline AI runner.

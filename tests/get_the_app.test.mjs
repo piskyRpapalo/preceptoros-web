@@ -112,3 +112,16 @@ test('SABOTAGE Android download: absent or fabricated hash keeps APK lane closed
     if (app.boton.activo) { throw new Error('unverified APK was activated'); }
   }
 });
+
+
+test('Homepage downloads the same verified APK with one click (without claiming offline AI)', () => {
+  const apk = R.android.assets[0];
+  const home = leer('public/index.html');
+  const route = '/get-the-app/' + apk.nombre;
+  const links = home.match(/<a class="android-apk-action"[^>]+>/g) || [];
+  if (links.length !== 2 || !links.every((a) => a.includes('href="' + route + '"') && a.includes(' download '))) {
+    throw new Error('homepage APK and update links do not target the published release');
+  }
+  if (!home.includes('Local offline AI: NO_DATA')) { throw new Error('home falsely presents TWA as local AI'); }
+  if (!/\.android-apk-action:focus-visible/.test(home)) { throw new Error('missing visible keyboard focus'); }
+});
