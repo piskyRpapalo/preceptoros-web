@@ -19,8 +19,9 @@ function serve() {
       if(uri.endsWith('/')) uri+='index.html';
       const file=resolve(PUBLIC,'.'+uri);
       if(!file.startsWith(resolve(PUBLIC))) {res.writeHead(403);res.end();return;}
+      const body=readFileSync(file);
       res.writeHead(200, {'content-type':MIME[extname(file)]||'text/plain','cache-control':'no-store'});
-      res.end(readFileSync(file));
+      res.end(body);
     } catch(_) {res.writeHead(404);res.end();}
   });
   return new Promise(r=>server.listen(0,'127.0.0.1',()=>r(server)));
