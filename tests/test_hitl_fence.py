@@ -1,11 +1,14 @@
 """Sabotages of the merge fence (atlas/hitl_fence.py): every bad case stays RED with its cause.
 Preceptor contract: study/05-contracts.md · PS: propose-only + seal."""
+import os
 import sys
+import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "atlas"))
-from hitl_fence import decide  # noqa: E402
+from hitl_fence import decide, estado_revision, _resumen_pr  # noqa: E402
 
 CABEZA = "5ef999e19f3b0485adb18f1f050999e8c9a28dfc"
 OTRA = "91a5c953de2b0666006e65e1c2294dd5d281f795"
@@ -94,6 +97,40 @@ class Cerco(unittest.TestCase):
         ok, causa = decide_con([firma(f"HITL: {CABEZA} web#319 2026-10-25")], cabeza="corta")
         self.assertFalse(ok)
         self.assertTrue(causa.startswith("cabeza_invalida"), causa)
+
+    def test_pending_signature_is_not_success(self):
+        for comentarios in (
+            [],
+            [firma("no signature line yet")],
+            [firma(f"HITL: {OTRA} web#319 2026-10-25")],
+            [firma(f"HITL: {CABEZA} web#319 2026-10-27")],
+        ):
+            with self.subTest(comentarios=comentarios):
+                ok, causa = decide_con(comentarios)
+                self.assertFalse(ok)
+                self.assertEqual(estado_revision(ok, causa), "PENDING_HUMAN_SIGNATURE")
+
+    def test_valid_signature_and_invalid_head_keep_their_verdict(self):
+        ok, causa = decide_con([firma(f"HITL: {CABEZA} web#319 2026-10-25")])
+        self.assertTrue(ok)
+        self.assertEqual(estado_revision(ok, causa), "SIGNED")
+        ok, causa = decide_con([], cabeza="invalid")
+        self.assertFalse(ok)
+        self.assertEqual(estado_revision(ok, causa), "BLOCKED")
+        self.assertEqual(estado_revision(False, "NO_DATA(missing_register_access)"), "NO_DATA")
+
+    def test_review_summary_never_signs_or_changes_decision(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "summary.md"
+            with patch.dict(os.environ, {"GITHUB_STEP_SUMMARY": str(path)}):
+                _resumen_pr("816", CABEZA, "sha_no_coincide: old head", "PENDING_HUMAN_SIGNATURE", HOY)
+            summary = path.read_text(encoding="utf-8")
+            self.assertIn(CABEZA, summary)
+            self.assertIn("PENDING_HUMAN_SIGNATURE", summary)
+            self.assertIn("unsigned template", summary)
+            self.assertIn("hitl", summary)
+            self.assertNotIn("FIRMA SOBERANO", summary.split("HITL: ", 1)[-1])
+            self.assertFalse(decide_con([])[0])
 
 
 if __name__ == "__main__":

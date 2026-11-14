@@ -44,6 +44,30 @@ The check is named `hitl`. If the workflow never ran, the check does not exist y
 - A new push changes the head SHA, so every earlier line stops matching. That is intended:
   a new head needs a new line.
 
+## Friendly review, same hard merge boundary (2026-11-14)
+
+An unsigned draft is **awaiting a human decision**, not evidence that its author or
+code failed. The independent `gate` and `phase` checks describe technical readiness.
+The required `hitl` check stays **unsuccessful** until the Sovereign's exact-head
+signature is registered. GitHub may display it in red, but no test failure or
+negative judgment about a preceptor should be inferred from that alone.
+
+The `hitl` job now writes a short Actions summary with the exact head, the
+observed cause, and a **clearly unsigned** suggested register line. This does not
+transcribe a FIRMO, mint a signature, change `decide()`, authorize an agent, or
+alter the active `cerco-hitl` ruleset. A missing register secret or failed read
+remains `NO_DATA` and blocks merging.
+
+**Review-to-merge path:** keep drafting and pushing changes normally; finish
+technical reviews and settle the final head; the Sovereign explicitly signs
+that head; the Mesa transcribes the actual decision to buzon#30; rerun the PR's
+own `hitl` job (or edit the PR body to trigger that check); merge only when
+all required checks are green and the human confirms. Any later commit needs
+its own exact-head signature. Moving from draft to ready-for-review also
+refreshes the check but can never substitute for human approval.
+
+No green-on-draft waiver, new signing registry, automatic merge or bypass.
+
 ## Lessons from the first days of use
 
 Two failures were measured by the Mesa in the register (buzon#30) once the fence was live. Both
