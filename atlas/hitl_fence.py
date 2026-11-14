@@ -74,25 +74,25 @@ def _resumen_pr(pr, head, causa, estado, hoy):
         "## HITL · review status",
         "",
         f"- **PR:** #{pr}",
-        f"- **Exact head:** \`{head}\`",
-        f"- **State:** \`{estado}\`",
-        f"- **Evidence:** \`{causa.replace(chr(96), '')[:180]}\`",
+        f"- **Exact head:** `{head}`",
+        f"- **State:** `{estado}`",
+        f"- **Evidence:** `{causa.replace(chr(96), '')[:180]}`",
         "",
     ]
     if estado == "PENDING_HUMAN_SIGNATURE":
         lineas += [
             "This is **pending human review**, not a failed code test.",
-            "Technical results are reported independently by \`gate\` and \`phase\`.",
-            "The required \`hitl\` check deliberately remains unsuccessful until an exact-head decision.",
+            "Technical results are reported independently by `gate` and `phase`.",
+            "The required `hitl` check deliberately remains unsuccessful until an exact-head decision.",
             "",
             "After the Sovereign explicitly signs this exact commit, the Mesa may copy",
             "the following **unsigned template** into the existing buzon#30 register",
             "(with the required sign-off header and the Sovereign's actual decision):",
             "",
-            f"\`HITL: {head} web-pr-{pr} {hoy}\`",
+            f"`HITL: {head} web-pr-{pr} {hoy}`",
             "",
             "**This template is not a signature.** No AI may post it as FIRMO on its own.",
-            "Rerun this PR's own \`hitl\` job after the signed line is registered;",
+            "Rerun this PR's own `hitl` job after the signed line is registered;",
             "do not push another commit after signing, because the SHA would change.",
         ]
     elif estado == "SIGNED":
