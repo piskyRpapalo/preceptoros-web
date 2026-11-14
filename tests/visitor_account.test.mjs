@@ -27,3 +27,21 @@ test('Chromium visit signature verifies independently through OpenSSL', async ()
  catch (error) { throw new Error('browser check failed: ' + ((error.stdout || '').trim() || error.message)); }
  assert.equal(JSON.parse(stdout.trim()).medidas.openssl,true);
 });
+test('a step is signed only in its closed shape: one of six directions, on the chain, with the visit key', async () => {
+ const A = api(), a = await A.create(true), i = a.info();
+ const r = { esquema:'atlas.paso/1', dir:'north-west', seq:1, prev:'genesis', clave_publica:i.publicKey };
+ const sig = await a.sign(r,true);
+ const key = await webcrypto.subtle.importKey('raw',Buffer.from(i.publicKey,'hex'),'Ed25519',false,['verify']);
+ assert.equal(await webcrypto.subtle.verify('Ed25519',key,Buffer.from(sig.slice(8),'hex'),new TextEncoder().encode(JSON.stringify(r))),true);
+ await assert.rejects(a.sign({...r, dir:'up'},true)); await assert.rejects(a.sign({...r, q:3},true));
+ await assert.rejects(a.sign({...r, seq:0},true)); await assert.rejects(a.sign({...r, prev:'x'},true));
+ await assert.rejects(a.sign({...r, clave_publica:'0'.repeat(64)},true)); await assert.rejects(a.sign(r,false));
+ const beat = { esquema:'atlas.presente/1', seq:2, prev:'a'.repeat(64), clave_publica:i.publicKey };
+ assert.match(await a.sign(beat,true), /^ed25519:[0-9a-f]{128}$/);
+ await assert.rejects(a.sign({...beat, dir:'east'},true)); await assert.rejects(a.sign({...beat, seq:0},true));
+ const ask = { esquema:'atlas.coop/1', accion:'faro', con:'crab-0123abcd', seq:3, prev:'a'.repeat(64), clave_publica:i.publicKey };
+ const yes = { esquema:'atlas.coop_si/1', peticion:'ask-0123abcd', seq:3, prev:'a'.repeat(64), clave_publica:i.publicKey };
+ assert.match(await a.sign(ask,true), /^ed25519:[0-9a-f]{128}$/); assert.match(await a.sign(yes,true), /^ed25519:[0-9a-f]{128}$/);
+ await assert.rejects(a.sign({...ask, accion:'claim_land'},true)); await assert.rejects(a.sign({...ask, con:'everyone'},true));
+ await assert.rejects(a.sign({...ask, copper:100},true)); await assert.rejects(a.sign({...yes, peticion:'yes'},true)); await assert.rejects(a.sign(yes,false));
+});

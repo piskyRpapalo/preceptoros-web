@@ -31,3 +31,13 @@ test('the bubble rests minimized: its name is a 44 px toggle, the line stays for
   assert.doesNotMatch(css, /\.pt-min \.pt-line[^{]*\{[^}]*display:none/, 'the minimized line is removed from screen readers');
   assert.match(css, /\.pt-who\{[^}]*min-height:44px;min-width:44px/, 'the toggle is smaller than 44 px');
 });
+
+test('nothing rests on the map: the bubble shows only while it carries a result, and OK puts it away (Sovereign, 2026-11-14)', async () => {
+  const { readFileSync } = await import('node:fs');
+  const assert = (await import('node:assert/strict')).default;
+  const js = readFileSync(new URL('../../public/game/preceptor_talk.js', import.meta.url), 'utf8');
+  const css = readFileSync(new URL('../../public/game/talk.css', import.meta.url), 'utf8');
+  assert.match(css, /#stage>#preceptor-talk\.pt-bubble:not\(\.pt-news\)\{display:none\}/, 'the resting bubble is still drawn over the map');
+  assert.match(js, /box\.classList\.add\('pt-news'\)/, 'a result does not show the bubble');
+  assert.match(js, /box\.classList\.remove\('pt-news'\)/, 'OK does not put the bubble away');
+});
