@@ -37,7 +37,7 @@ async function evaluate(expression) {
   return r.result && r.result.result ? r.result.result.value : null;
 }
 // The function is stringified, then run IN CHROME, not in this Node process.
-function probe() {
+async function probe() {
   const q=x=>document.querySelector(x);
   const rect=e=>{const r=e.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom};};
   const c=q('#ow-controls'),d=q('#ow-directions'),stage=q('#stage'),brief=q('#ow-brief');
@@ -57,8 +57,19 @@ function probe() {
   }
   const coord=q('#ow-coords').textContent, message=brief.textContent;
   d.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
-  return{on,box,st,small,count:buttons.length,moved,coord,message,gone:d.hidden,
-    pop:!!q('#preceptor-talk'),scroll:document.documentElement.scrollWidth,width:innerWidth};
+  const gone=d.hidden;
+  const play=q('#gp-play'); if(play&&!play.hidden)play.click();
+  for(let i=0;i<45 && play && !play.hidden;i++) {
+    await new Promise(r=>setTimeout(r,100));
+  }
+  const talk=q('#preceptor-talk'), line=talk&&talk.querySelector('.pt-line');
+  const talkBox=talk?rect(talk):null;
+  const talkStyle=talk&&getComputedStyle(talk);
+  const pop=!!talk && !!line && line.textContent.includes('Visit started') &&
+    talkStyle.visibility!=='hidden' && talkStyle.display!=='none';
+  return{on,box,st,small,count:buttons.length,moved,coord,message,gone,
+    pop,talkBox,talkText:line&&line.textContent.slice(0,125),
+    scroll:document.documentElement.scrollWidth,width:innerWidth};
 }
 try {
   server=await serve();
@@ -92,7 +103,9 @@ try {
     check(v.box.y>=v.st.y-1&&v.box.bottom<=v.st.bottom+1,w+': controls overflow vertically');
     check(v.moved&&v.message.includes('Moved')&&v.coord.includes('Hex'),
       w+': no verified movement with position feedback');
-    check(v.pop,w+': on-map preceptor bubble missing');
+    check(v.pop,w+': play did not show a verified resource state in the preceptor popup');
+    check(!v.talkBox || (v.talkBox.x>=v.st.x-1 && v.talkBox.right<=v.st.right+1 &&
+      v.talkBox.y>=v.st.y-1 && v.talkBox.bottom<=v.st.bottom+1),w+': bubble leaves the scene');
     check(v.scroll<=v.width,w+': horizontal page overflow');
   }
 }catch(e){failures.push(String(e&&e.stack||e));}
