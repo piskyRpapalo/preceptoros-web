@@ -23,10 +23,11 @@ test('every door leads to a category that has its own button on the page', () =>
   Object.values(D.DOORS).forEach((cat) => assert.ok(cats.includes(cat), cat));
 });
 
-test('measured: LIVE options that do something when pressed go from 8 to 15 of 31', () => {
+test('measured: LIVE options that do something when pressed are 16 of 31 pieces (9 actions, 7 doors)', () => {
   const live = options.filter((o) => o.piece);
   const acts = live.filter((o) => o.action).length, doors = live.filter((o) => !o.action && D.DOORS[o.id]).length;
-  assert.deepEqual([live.length, acts, acts + doors], [31, 8, 15]);
+  assert.deepEqual([live.length, acts, acts + doors], [31, 9, 16]);
+  assert.equal(options.filter(D.live).length, 16);
 });
 
 test('verdict: no door, absent panel, no visit, open', () => {

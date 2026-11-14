@@ -47,6 +47,33 @@ test('typo without a selection asks the person to select first; nothing is saved
   assert.equal(saved.length, 0);
 });
 
+test('odds says the table of the same engine the roll uses; another table changes the line', () => {
+  const G = require('../../public/game/gacha.js');
+  let said = null;
+  TA.run('odds', { load: (s, n, then) => then(G) }, (t) => { said = t; });
+  Object.keys(G.TCS).forEach((tc) => {
+    assert.equal(G.odds(tc).reduce((a, b) => a + b, 0), 1000);
+    assert.ok(said.includes(tc + ' ' + G.odds(tc).join('/')), tc);
+  });
+  const fake = { RAREZAS: ['a'], TCS: { tcX: {} }, odds: () => [1, 2, 3, 994] };
+  TA.run('odds', { load: (s, n, then) => then(fake) }, (t) => { said = t; });
+  assert.match(said, /tcX 1\/2\/3\/994/);
+});
+
+test('the odds line is one Acho frame: one id for eye, reader and machine; the ear says why it is silent', () => {
+  const G = require('../../public/game/gacha.js'), F = require('../../public/game/state_frames.js'), C = require('../../public/game/acho_claim.js');
+  let said = null;
+  TA.run('odds', { load: (s, n, then) => then(G) }, (t) => { said = t; });
+  const frame = F.stateFrame({ id: 'lottery/odds', sentence: 'Honest lottery · See the odds before you roll · LIVE · ' + said });
+  assert.deepEqual(F.valida(frame), []); // under 1,024 B, a sentence on its atom, a declared sound
+  const c = C.claim(frame);
+  assert.equal(c.ok, true);
+  assert.match(c.id, /^acho:[0-9a-f]{8}$/);
+  assert.equal(c.rows[0].inspect, frame.atoms[0].i[0]);
+  assert.match(frame.sound, /^NO_DATA/); // no harmonics declared: silence with its cause, never an invented tone
+  assert.equal(C.claim(F.stateFrame({ id: 'lottery/odds', sentence: 'another table' })).id === c.id, false);
+});
+
 test('the actions piece stays small', () => {
   assert.ok(statSync(new URL('../../public/game/town_actions.js', import.meta.url)).size <= 4096);
 });

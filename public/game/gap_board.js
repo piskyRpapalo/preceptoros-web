@@ -7,13 +7,14 @@
 
   // board(doc) → { ok, total, live, gaps: [{building, option, label, missions, cause}], line }
   function board(doc) {
+    var D = root.AtlasBuildingDoors, live = D && D.live ? D.live : function (o) { return !!o.piece; };
     if (!doc || !Array.isArray(doc.buildings)) { return { ok: false, line: 'NO_DATA · interiors_not_loaded', gaps: [] }; }
     var gaps = [], total = 0;
     doc.buildings.forEach(function (b) {
       (b.options || []).forEach(function (o) {
         total++;
-        if (!o.piece) {
-          gaps.push({ building: b.name, option: o.id, label: o.label, missions: (o.missions || []).slice(), cause: o.cause || 'cause_not_declared' });
+        if (!live(o)) { // a piece with nothing to press is a gap too: its cause is that no interaction exists yet
+          gaps.push({ building: b.name, option: o.id, label: o.label, missions: (o.missions || []).slice(), cause: o.cause || (o.piece ? 'no_interaction_yet' : 'cause_not_declared') });
         }
       });
     });

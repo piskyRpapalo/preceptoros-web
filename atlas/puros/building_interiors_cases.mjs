@@ -31,7 +31,6 @@ test('a piece that does not exist is caught; NO_DATA needs its cause', () => {
 test('counts are measured, not declared', () => {
   const c = B.cuenta(doc);
   assert.equal(c.live + c.no_data, doc.buildings.reduce((s, b) => s + b.options.length, 0));
-  assert.ok(c.live > c.no_data);
 });
 test('pure: no clock, no randomness, no network', () => {
   const src = readFileSync(new URL('atlas/puros/building_interiors.js', raiz), 'utf8');
@@ -40,9 +39,27 @@ test('pure: no clock, no randomness, no network', () => {
 
 test('an action is declared in the contract and needs its real piece', () => {
   const acts = doc.buildings.flatMap((b) => b.options.filter((o) => o.action).map((o) => [b.id, o.id, o.action, o.piece]));
-  assert.deepEqual(acts.map((a) => a[2]).sort(), ['audio', 'gaps', 'inhabitants', 'letters', 'notebook', 'pulse', 'tower', 'typo']);
+  assert.deepEqual(acts.map((a) => a[2]).sort(), ['audio', 'gaps', 'inhabitants', 'letters', 'notebook', 'odds', 'pulse', 'tower', 'typo']);
   assert.ok(acts.every((a) => a[3] && doc.actions[a[2]]));
   const bad = JSON.parse(JSON.stringify(doc)); bad.buildings[0].options[0].action = 'teleport';
   assert.ok(B.valida(bad, existe).some((f) => f.startsWith('action_unknown:')));
-  assert.deepEqual(B.cuenta(doc), { live: 31, no_data: 5 });
+});
+
+// Honest doors (Mesa #34, 2026-11-14): LIVE is an operation, never a file. A piece with no action and no door is a
+// source that exists, not something the visitor can do.
+const D = createRequire(import.meta.url)('../../public/game/building_doors.js');
+const all = doc.buildings.flatMap((b) => b.options.map((o) => [b.id + '/' + o.id, o]));
+test('an option is LIVE only with an action or a door; a piece alone is NO_DATA', () => {
+  const can = all.filter(([, o]) => o.action || D.DOORS[o.id]);
+  assert.deepEqual(B.cuenta(doc, D.live), { live: can.length, no_data: all.length - can.length });
+  assert.equal(all.filter(([, o]) => D.live(o) && !o.action && !D.DOORS[o.id]).length, 0, 'false LIVE');
+  assert.equal(can.length, 16); // 9 actions + 7 doors, measured 2026-11-14
+});
+test('sabotage: a piece with no operation can never count as LIVE', () => {
+  assert.equal(D.live({ id: 'ghost', piece: 'public/game/gacha.js' }), false);
+  assert.equal(D.live({ id: 'ghost', piece: null, action: 'odds' }), false); // an action still needs its piece
+  assert.equal(D.live({ id: 'roll', piece: 'public/game/gacha.js' }), true);
+});
+test('every door of the table is an option of the contract that has its piece', () => {
+  Object.keys(D.DOORS).forEach((id) => assert.ok(all.some(([, o]) => o.id === id && o.piece), id));
 });

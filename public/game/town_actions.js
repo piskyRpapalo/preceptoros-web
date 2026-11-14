@@ -1,11 +1,11 @@
 // The Town actions (building_interiors.json → actions), loaded by building_sheet.js on the first press.
-// Entry: [piece path, its global, glue(M, doc, done, c)]; c = { win, doc, data, load, get, store }.
-// An unknown action or a piece that does not load says NO_DATA with its cause; nothing is invented.
+// Entry: [piece, its global, glue(M, doc, done, c)]; c = { win, doc, data, load, get, store }.
+// An unknown action or a piece that does not load says NO_DATA with its cause.
 (function (root) {
   'use strict';
   var ACTIONS = {
     letters: ['/game/type_scale.js', 'AtlasTypeScale', function (T, doc, done, c) {
-      var r = T.cycle(doc, c.win); // the gear keeps its own name «Settings»
+      var r = T.cycle(doc, c.win);
       done(r.label || ('NO_DATA · ' + r.causa));
     }],
     pulse: ['/game/pulse.js', 'AtlasPulse', function (P, doc, done, c) { done('measuring…'); P.start(c.win, 'weak', done); }],
@@ -13,7 +13,7 @@
     audio: ['/game/audio_only.js', 'AtlasAudioOnly', function (A, doc, done, c) {
       var r = A.toggle(doc, c.win), h = doc.getElementById('map-h'), m = /^(.+?) · (-?\d+), (-?\d+)$/.exec(h ? h.textContent : '');
       if (!r.on) { done(r.line); return; }
-      var bs = (c.data && c.data.buildings || []).map(function (b) { return { name: b.name, total: b.options.length, live: b.options.filter(function (o) { return o.piece; }).length }; });
+      var bs = (c.data && c.data.buildings || []).map(function (b) { return { name: b.name, total: b.options.length, live: b.options.filter(root.AtlasBuildingDoors.live).length }; });
       var gaps = bs.reduce(function (n, b) { return n + b.total - b.live; }, 0);
       var lines = A.describe({ place: m && m[1], x: m && +m[2], y: m && +m[3], buildings: bs, gaps: gaps });
       A.speak(c.win, lines, function (t) { done(r.line + ' · ' + t); });
@@ -34,6 +34,9 @@
           function () { done('NO_DATA · world_state_unreachable'); });
       });
     }],
+    odds: ['/game/gacha.js', 'AtlasGacha', function (G, doc, done) {
+      done('per thousand ' + G.RAREZAS.join('/') + ' · ' + Object.keys(G.TCS).map(function (t) { return t + ' ' + G.odds(t).join('/'); }).join(' · '));
+    }],
     notebook: ['/game/notebook_export.js', 'AtlasNotebook', function (N, doc, done, c) {
       var nb = N.build(c.store(), new Date().toISOString());
       done(N.line(nb) + (N.download(c.win, nb) ? ' · saved' : ' · NO_DATA · notebook_download_failed'));
@@ -43,7 +46,7 @@
   function run(name, c, done) {
     var a = ACTIONS[name], w = c.win || {};
     if (!a) { done('NO_DATA · action_unknown'); return; }
-    // Shared helpers: one way to read the network (no cookies) and one way to reach this device's storage.
+    // One way to read the network (no cookies), one way to reach this device's storage.
     c.get = function (u, j) {
       if (!w.fetch) { return Promise.reject(new Error('fetch_unavailable')); }
       return w.fetch(u, { cache: 'no-store', credentials: 'omit' }).then(function (r) { return r.ok ? (j ? r.json() : r.text()) : null; });

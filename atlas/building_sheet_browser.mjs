@@ -5,13 +5,33 @@
 // - each building shows exactly its contract options; each option says LIVE with its piece or NO_DATA with its cause;
 // - every control is at least 44 px and Acho-painted; no horizontal overflow;
 // - Escape goes back to the doors, then closes and returns focus to Town; reduced motion keeps cards still.
-// Sabotage: SABOTAJE=sin-hoja (gamepad does not load the sheet) or SABOTAJE=sin-contrato (404 on the contract) ⇒ red.
+// - honest doors (Mesa #34, 2026-11-14): LIVE is a press that does something. Every LIVE card is pressed and its
+//   EFFECT is measured (an event, a changed page, the result of the real piece), never the words of its seal; a piece
+//   with no action and no door says NO_DATA · no_interaction_yet and does nothing. With a visit, the seven doors open.
+// Sabotage: SABOTAJE=sin-hoja (gamepad does not load the sheet) or SABOTAJE=sin-contrato (404 on the contract) ⇒ red;
+// SABOTAJE=falso-live (a piece alone counts as LIVE again) or SABOTAJE=efecto-mudo (actions only write words) ⇒ red.
 // Uso: node atlas/building_sheet_browser.mjs [carpeta-captura]
 import { createServer } from 'node:http';
 import { readFileSync, writeFileSync, statSync } from 'node:fs';
 import { resolve, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import { launchChrome } from './chrome_launch.mjs';
+const DOORS = createRequire(import.meta.url)('../public/game/building_doors.js');
+const GACHA = createRequire(import.meta.url)('../public/game/gacha.js');
+// What each action must leave behind: page(before) reads the page; line is the result the real piece said.
+const pedidos = new Set(), res = (t) => (t.split(' · missions ')[1] || '').split(' · ').slice(1).join(' · '); // the result after the verdict
+const EFFECT = {
+  letters: { page: `document.documentElement.getAttribute('data-type-step') || document.documentElement.style.cssText`, changes: true },
+  audio: { page: `document.documentElement.dataset.audioOnly || 'off'`, changes: true, twice: true },
+  odds: { line: (t) => Object.keys(GACHA.TCS).every((tc) => t.includes(tc + ' ' + GACHA.odds(tc).join('/'))) },
+  gaps: { line: (t, doc) => t.includes(doc.buildings.flatMap((b) => b.options).filter((o) => !DOORS.live(o)).length + ' of 36 options are NO_DATA') },
+  pulse: { line: (t) => /^Pulse · .*(MEASURED|NO_DATA)/.test(res(t)) },
+  notebook: { line: (t) => /saved$|notebook_download_failed$/.test(t) },
+  typo: { line: (t) => /nothing_selected/.test(t) },
+  tower: { line: (t) => /\d/.test(res(t)) && pedidos.has('/game/tower_floors.json') },
+  inhabitants: { line: (t) => /^(NO_DATA · world_state_\w+|\d+ inhabitants · )/.test(res(t)) && pedidos.has('/api/world-state') }, // this harness has no publisher: the piece says so
+};
 
 const RAIZ = fileURLToPath(new URL('../', import.meta.url));
 const PUBLIC = join(RAIZ, 'public/');
@@ -23,16 +43,19 @@ function sirve(raiz) {
   const s = createServer((req, res) => {
     try {
       let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
+      pedidos.add(ruta);
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
       let cuerpo = readFileSync(f);
       if (ruta === '/game/gamepad.js' && SAB === 'sin-hoja') { cuerpo = Buffer.from(String(cuerpo).replace("town.src = '/game/building_sheet.js'; doc.head.appendChild(town);", '')); }
       if (ruta === '/game/building_interiors.json' && SAB === 'sin-contrato') { res.writeHead(404); res.end(); return; }
+      if (ruta === '/game/building_doors.js' && SAB === 'falso-live') { cuerpo = Buffer.from(String(cuerpo).replace('o.piece && (o.action || DOORS[o.id])', 'o.piece')); }
+      if (ruta === '/game/town_actions.js' && SAB === 'efecto-mudo') { cuerpo = Buffer.from(String(cuerpo).replace("c.load(a[0], a[1], function (M) {", "done('LIVE · done'); return; c.load(a[0], a[1], function (M) {")); }
       res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
   });
   return new Promise((r) => s.listen(0, '127.0.0.1', () => r(s)));
 }
-const fallos = [], medidas = {};
+const fallos = [], medidas = {}, efectos = { con: new Set(), sin: [], lineas: {} };
 const ok = (cond, que) => { if (!cond) { fallos.push(que); } };
 let ws = null, ch = null, srv = null, id = 0;
 const pend = new Map();
@@ -76,6 +99,7 @@ async function main() {
     await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });
     await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
     await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2500);
+    await ev(`(() => { window.__acts = []; document.addEventListener('building:act', (e) => window.__acts.push(e.detail && e.detail.name)); })()`);
     const town = await ev(`(() => { const b = document.getElementById('gp-town'); if (!b) return null; const r = b.getBoundingClientRect();
       return JSON.stringify({ w: r.width, h: r.height, inMid: !!b.closest('#gamepad .gp-mid'), acho: b.classList.contains('gp-acho'), label: b.getAttribute('aria-label') }); })()`);
     ok(town, n + ': no Node button in the gamepad');
@@ -103,16 +127,59 @@ async function main() {
       // Measure at rest: a press gesture still running translates its button by fractions of a pixel (43.99998 px is not a small button).
       await ev(`Promise.all(document.getElementById('building-sheet').getAnimations({ subtree: true }).map((a) => a.finished.catch(() => 0))).then(() => 1)`);
       const m = JSON.parse(await ev(MEDIR));
-      if (!m.open || m.boxH < 140 || m.cards.length !== b.options.length || m.cards.some((c, i) => c.t !== b.options[i].label || c.seal !== (b.options[i].piece ? 'LIVE' : 'NO_DATA'))) { fallas.push(b.id + ':cards'); continue; }
+      if (!m.open || m.boxH < 140 || m.cards.length !== b.options.length || m.cards.some((c, i) => c.t !== b.options[i].label)) { fallas.push(b.id + ':cards'); continue; }
+      m.cards.forEach((c, i) => { if (c.seal !== (DOORS.live(b.options[i]) ? 'LIVE' : 'NO_DATA')) { fallas.push(b.id + '/' + b.options[i].id + ':seal_not_the_contract'); } });
       if (m.small.length || m.sinEspectro.length) { fallas.push(b.id + ':a11y'); }
       for (let i = 0; i < b.options.length; i++) {
-        const said = await ev(`(() => { const c = document.querySelectorAll('#building-sheet .bs-card')[${i}]; c.click(); return document.querySelector('#building-sheet .bs-line').textContent; })()`);
-        const o = b.options[i], want = o.piece ? 'LIVE · piece ' + o.piece.split('/').pop() : 'NO_DATA · ' + o.cause;
-        if (!said.includes(want)) { fallas.push(b.id + '/' + o.id); }
+        const o = b.options[i], k = b.id + '/' + o.id, E = o.action ? EFFECT[o.action] : null;
+        const LINE = `document.querySelector('#building-sheet .bs-line').textContent`, ACTS = `JSON.stringify(window.__acts || [])`;
+        const antes = E && E.page ? await ev(E.page) : null, acts0 = JSON.parse(await ev(ACTS)).length;
+        // The card on screen decides: whatever is painted LIVE must do something, whatever the contract says.
+        const card = JSON.parse(await ev(`(() => { const c = document.querySelectorAll('#building-sheet .bs-card')[${i}]; const seal = c.dataset.seal; c.click(); return JSON.stringify({ seal, said: ${LINE} }); })()`));
+        if (card.seal !== 'LIVE') {
+          if (!card.said.includes('NO_DATA · ' + (o.cause || 'no_interaction_yet'))) { fallas.push(k + ':cause'); }
+          continue;
+        }
+        if (!card.said.includes('LIVE · piece ' + String(o.piece).split('/').pop())) { fallas.push(k + ':seal'); }
+        let hecho = false, linea = card.said;
+        for (let t = 0; t < 60 && !hecho; t++) {
+          linea = await ev(LINE); const acts = JSON.parse(await ev(ACTS)).slice(acts0);
+          if (!o.action) { hecho = DOORS.DOORS[o.id] && (linea.includes('NO_DATA · no_visit_yet') || acts.includes('door:' + o.id)); if (!DOORS.DOORS[o.id]) { break; } } // a door without a visit says why and opens nothing
+          else if (E) { hecho = acts.includes(o.action) && (E.page ? (await ev(E.page)) !== antes : E.line(linea, contrato)); }
+          if (!hecho) { await espera(100); }
+        }
+        if (o.action) { efectos.lineas[o.action] = res(linea).slice(0, 80); }
+        if (!hecho) { fallas.push(k + ':no_effect'); efectos.sin.push(k + ' → ' + linea.slice(-60)); } else { efectos.con.add(k); }
+        if (hecho && E && E.twice) { await ev(`document.querySelectorAll('#building-sheet .bs-card')[${i}].click()`); await espera(150); } // leave the page as it was
       }
     }
-    ok(fallas.length === 0, n + ': options that do not say their seal honestly: ' + JSON.stringify(fallas));
+    ok(fallas.length === 0, n + ': options that do not say their seal honestly, or LIVE with no effect: ' + JSON.stringify(fallas));
     await foto('building-sheet-' + n + '.png');
+    // With a visit, the seven doors really open: the panel is pressed, the sheet closes, focus lands in the panel.
+    if (n === '360') {
+      await ev(`document.getElementById('play-now') && document.getElementById('play-now').click()`);
+      const abiertas = [], cerradas = [];
+      for (const b of contrato.buildings) { for (const o of b.options.filter((x) => DOORS.DOORS[x.id] && DOORS.live(x))) {
+        const cat = DOORS.DOORS[o.id]; let r = null;
+        await ev(`window.__acts.length = 0`); // an earlier press of this door (some panels need no visit) does not count
+        for (let t = 0; t < 80 && !(r && r.ok); t++) {
+          r = JSON.parse(await ev(`(() => { const s = document.getElementById('building-sheet'), c = document.querySelector('.cats [data-cat="${cat}"]');
+            if (!c || c.hidden) { return JSON.stringify({ ok: false, why: 'no_visit_yet' }); }
+            if (window.__acts.includes('door:${o.id}')) { const a = document.activeElement; return JSON.stringify({ ok: c.getAttribute('aria-pressed') === 'true' && s.hidden && !!a && a !== document.body, why: 'opened' }); }
+            const p = document.querySelector('.cats button[aria-pressed="true"]'); if (p) { p.click(); }
+            if (s.hidden) { document.getElementById('gp-town').click(); return JSON.stringify({ ok: false, why: 'opening' }); }
+            const bk = s.querySelector('.bs-tool'); if (!bk.hidden) { bk.click(); }
+            const d = [...s.querySelectorAll('.bs-card')].find((x) => x.firstChild.textContent.startsWith(${JSON.stringify(b.name + ' · ')})); if (!d) { return JSON.stringify({ ok: false, why: 'no_building' }); } d.click();
+            const card = [...s.querySelectorAll('.bs-card')].find((x) => x.firstChild.textContent === ${JSON.stringify(o.label)}); if (!card) { return JSON.stringify({ ok: false, why: 'no_card' }); } card.click();
+            return JSON.stringify({ ok: false, why: 'pressed' }); })()`));
+          if (!r.ok) { await espera(150); }
+        }
+        (r && r.ok ? abiertas : cerradas).push(b.id + '/' + o.id + (r && !r.ok ? ':' + r.why : ''));
+      } }
+      medidas.puertas = { abiertas: abiertas.length, cerradas };
+      ok(abiertas.length === Object.keys(DOORS.DOORS).length && cerradas.length === 0, n + ': with a visit, doors that do not open their panel: ' + JSON.stringify(cerradas));
+      await ev(`(() => { const p = document.querySelector('.cats button[aria-pressed="true"]'); if (p) { p.click(); } const e = document.getElementById('visitor-end'); if (e) { e.click(); } })()`);
+    }
     // Escape: back to the doors, then closed with focus on Town.
     const esc = `document.getElementById('building-sheet').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))`;
     await ev(esc); const atras = await espera_hoja((m) => m.cards.length === 9);
@@ -138,6 +205,7 @@ async function main() {
     medidas['cycles' + n] = { stable, total: 10 };
     ok(stable === 10, n + ': panel cycles incomplete');
   }
+  medidas.efectos = { live_con_efecto: efectos.con.size, sin_efecto: efectos.sin, lineas: efectos.lineas };
   // Reduced motion: a card stays still.
   await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
   medidas.quieto = await ev(`(() => { document.getElementById('gp-town').click(); return new Promise((r) => setTimeout(() => { const c = document.querySelector('#building-sheet .bs-card'); if (!c) return r(-1); c.click(); r(c.getAnimations().length); }, 400)); })()`);
