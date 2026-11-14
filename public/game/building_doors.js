@@ -37,7 +37,10 @@
     return true;
   }
 
-  var api = { DOORS: DOORS, verdict: verdict, go: go };
+  // Pure: LIVE is a press that does something (an action or a door here); a piece alone is only a source.
+  function live(o) { return !!(o && o.piece && (o.action || DOORS[o.id])); }
+
+  var api = { DOORS: DOORS, verdict: verdict, go: go, live: live };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasBuildingDoors = api;
 })(typeof window !== 'undefined' ? window : globalThis);

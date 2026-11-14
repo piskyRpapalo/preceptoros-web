@@ -27,9 +27,11 @@
     if ((doc.buildings || []).length !== 9) f.push('nine_buildings');
     return f;
   }
-  function cuenta(doc) {
-    var vivas = 0, nd = 0;
-    (doc.buildings || []).forEach(function (b) { (b.options || []).forEach(function (o) { if (o.piece) vivas++; else nd++; }); });
+  // cuenta(doc, live) → live is the one predicate (building_doors.js live). Without it this counts sources (pieces),
+  // which is not what a visitor can do.
+  function cuenta(doc, live) {
+    var vivas = 0, nd = 0, es = live || function (o) { return !!o.piece; };
+    (doc.buildings || []).forEach(function (b) { (b.options || []).forEach(function (o) { if (es(o)) vivas++; else nd++; }); });
     return { live: vivas, no_data: nd };
   }
   var API = { valida: valida, cuenta: cuenta };

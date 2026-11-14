@@ -178,7 +178,8 @@
      "missions": [
       "D4"
      ],
-     "piece": "public/game/gacha.js"
+     "piece": "public/game/gacha.js",
+     "action": "odds"
     },
     {
      "id": "roll",
@@ -375,12 +376,13 @@
  ],
  "actions": {
   "letters": "type_scale.js cycles the letter step",
-  "pulse": "pulse.js measures this device and says its verdict",
-  "notebook": "notebook_export.js saves this device's notebook as one file",
-  "gaps": "gap_board.js says which options are still NO_DATA, their missions and causes",
+  "pulse": "pulse.js measures this device",
+  "notebook": "notebook_export.js saves the notebook as one file",
+  "gaps": "gap_board.js says which options are NO_DATA, with mission and cause",
   "audio": "audio_only.js turns audio only on or off and says the map out loud",
-  "typo": "typo_report.js keeps the selected misspelt words in the notebook for the Mesa",
-  "tower": "tower.js says how many measured seals the tower has, from tower_floors.json",
-  "inhabitants": "inhabitants.js says each inhabitant's state from node heartbeats"
+  "typo": "typo_report.js keeps the selected misspelt words in the notebook",
+  "tower": "tower.js counts the measured seals in tower_floors.json",
+  "inhabitants": "inhabitants.js says each inhabitant's state from node heartbeats",
+  "odds": "gacha.js says the odds per thousand of each tier"
  }
 }

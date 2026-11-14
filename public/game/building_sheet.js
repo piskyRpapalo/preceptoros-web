@@ -1,32 +1,30 @@
-// Building interiors, piece 2: the Acho sheet. The map is the web menu and the nine buildings are its panels
-// (docs/reparto-paneles-20261108.md §2). One «Town» button in the gamepad opens one sheet: first the nine buildings,
-// then the options of the chosen one, from /game/building_interiors.json (the contract that
-// atlas/puros/building_interiors.js checks). An option with a piece says LIVE and names its piece; an option without
-// one says NO_DATA and its cause. Nothing is invented. One mould for all nine: 44 px targets, an aria-live line,
-// Escape goes back, reduced motion stays still (gamepad.js gesture), forced-colors draws plain borders.
+// Building interiors, piece 2: the Acho sheet (docs/reparto-paneles-20261108.md §2). One «Town» button opens one
+// sheet: the nine buildings, then the options of the chosen one, from /game/building_interiors.json. LIVE is a press
+// that does something (building_doors.js live: an action or a door); a piece alone, or none, says NO_DATA and its
+// cause. One mould: 44 px targets, an aria-live line, Escape goes back, reduced motion stays still.
 (function (root) {
   'use strict';
   var URL_DOC = '/game/building_interiors.json';
 
+  function ok(o) { var D = root.AtlasBuildingDoors; return !!(D && D.live(o)); }
   // Pure: the text that the live line says for one option.
   function verdict(building, option) {
-    var head = building.name + ' · ' + option.label + ' · ';
-    var m = ' · missions ' + option.missions.join(', ');
-    return option.piece ? head + 'LIVE · piece ' + option.piece.split('/').pop() + m : head + 'NO_DATA · ' + option.cause + m;
+    var head = building.name + ' · ' + option.label + ' · ', p = option.piece ? ' · piece ' + option.piece.split('/').pop() : '';
+    return head + (ok(option) ? 'LIVE' : 'NO_DATA · ' + (option.cause || 'no_interaction_yet')) + p + ' · missions ' + option.missions.join(', ');
   }
   // Pure: the sheet model. id null → the nine doors; id of a building → its options.
   function model(doc, id) {
     if (!doc || !Array.isArray(doc.buildings)) { return { title: 'Node', cause: 'interiors_not_loaded', items: [] }; }
     if (id == null) {
       return { title: 'Node · its buildings', items: doc.buildings.map(function (b) {
-        var live = b.options.filter(function (o) { return o.piece; }).length;
+        var live = b.options.filter(ok).length;
         return { id: b.id, name: b.name, label: b.name + ' · ' + b.role + ' · ' + live + ' of ' + b.options.length + ' live', live: live > 0 };
       }) };
     }
     var b = doc.buildings.filter(function (x) { return x.id === id; })[0];
     if (!b) { return { title: 'Node', cause: 'building_unknown', items: [] }; }
     return { title: b.name + ' · ' + b.role, building: b, items: b.options.map(function (o) {
-      return { id: o.id, name: b.name + ' ' + o.id, label: o.label, live: !!o.piece, say: verdict(b, o), action: o.action || null };
+      return { id: o.id, name: b.name + ' ' + o.id, label: o.label, live: ok(o), say: verdict(b, o), action: o.action || null };
     }) };
   }
 
@@ -75,10 +73,11 @@
     sheet.hidden = false; btn.setAttribute('aria-expanded', 'true');
     if (data) { draw(want); want = null; focusFirst(); return; }
     say('Loading the nine buildings…');
+    load('/game/building_doors.js', 'AtlasBuildingDoors', function () { // the seals need the doors before the first draw
     var f = win.fetch ? win.fetch(URL_DOC, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }) : Promise.resolve(null);
     f.catch(function () { return null; }).then(function (d) {
       data = d; draw(want); if (d) { say(want ? head.textContent : 'Node · choose a building'); focusFirst(); } want = null;
-    });
+    }); });
   }
 
   // mount(doc, w) → the Town button in the gamepad middle and its hidden sheet; null when the gamepad is not there.
