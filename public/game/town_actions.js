@@ -34,9 +34,7 @@
           function () { done('NO_DATA · world_state_unreachable'); });
       });
     }],
-    odds: ['/game/gacha.js', 'AtlasGacha', function (G, doc, done) {
-      done('per thousand ' + G.RAREZAS.join('/') + ' · ' + Object.keys(G.TCS).map(function (t) { return t + ' ' + G.odds(t).join('/'); }).join(' · '));
-    }],
+    odds: ['/game/odds_voice.js', 'AtlasOddsVoice', function (V, doc, done, c) { V.run(doc, done, c); }],
     notebook: ['/game/notebook_export.js', 'AtlasNotebook', function (N, doc, done, c) {
       var nb = N.build(c.store(), new Date().toISOString());
       done(N.line(nb) + (N.download(c.win, nb) ? ' · saved' : ' · NO_DATA · notebook_download_failed'));

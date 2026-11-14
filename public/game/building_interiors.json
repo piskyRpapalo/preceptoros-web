@@ -383,6 +383,6 @@
   "typo": "typo_report.js keeps the selected misspelt words in the notebook",
   "tower": "tower.js counts the measured seals in tower_floors.json",
   "inhabitants": "inhabitants.js says each inhabitant's state from node heartbeats",
-  "odds": "gacha.js says the odds per thousand of each tier"
+  "odds": "odds_voice.js says and sounds each tier's odds"
  }
 }
