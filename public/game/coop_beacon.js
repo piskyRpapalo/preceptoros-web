@@ -82,9 +82,10 @@
       if (!open && req) { req = null; o.redraw(); }
       draw();
     }
-    function tag(g, t, x, y, dpr, H) {
+    // tag(...): the words on the canvas, left edge at x, beside the lamp (never above it, where the guide's bubble sits).
+    function tag(g, t, left, y, dpr, H) {
       g.font = '700 ' + Math.round(11 * dpr) + 'px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'top';
-      var tw = g.measureText(t).width + 10 * dpr, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink));
+      var tw = g.measureText(t).width + 10 * dpr, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), x = left + tw / 2;
       g.fillStyle = H.css(H.rgbOf(H.T.NEUTRAL.paper)); g.fillRect(x - tw / 2, y, tw, 16 * dpr);
       g.strokeStyle = ink; g.lineWidth = dpr; g.strokeRect(x - tw / 2, y, tw, 16 * dpr); g.fillStyle = ink; g.fillText(t, x, y + 3 * dpr);
       return [Math.round(x - tw / 2 + 3 * dpr), Math.round(y + 8 * dpr)];
@@ -92,7 +93,7 @@
     // paint(g, V, dpr): projection only, called last by the shared-crabs layer so the fog never covers it.
     function paint(g, V, dpr) {
       var k = V.G.k, cell = V.world.cells.at[beacon.q + ',' + beacon.r], h0 = V.P(beacon.q, beacon.r), h1 = V.P(beacon.q + 1, beacon.r), p = V.turn(h0.x, h0.y), p1 = V.turn(h1.x, h1.y);
-      var x = V.G.cx + p.x * k, y = V.G.cy + p.y * k - (cell ? V.height(cell) * V.HSTEP : 0) * k, u = Math.max(8 * dpr, Math.hypot(p1.x - p.x, p1.y - p.y) * k), ly = y - 1.1 * u;
+      var x = V.G.cx + p.x * k, y = V.G.cy + p.y * k - (cell ? V.height(cell) * V.HSTEP : 0) * k, u = Math.max(8 * dpr, Math.hypot(p1.x - p.x, p1.y - p.y) * k), ly = y - 0.55 * u;
       var L = sample(lit), X = sample(fx), R = sample(req), H = V.H, cyan = H.rgbOf(H.T.NEUTRAL.cyan), paper = H.rgbOf(H.T.NEUTRAL.paper), ink = H.css(H.rgbOf(H.T.NEUTRAL.ink));
       g.save(); g.setTransform(1, 0, 0, 1, 0, 0);
       if (X && X.dim > 0) { g.globalAlpha = X.dim; g.fillStyle = ink; g.beginPath(); g.ellipse(x, y, 1.5 * u, 0.85 * u, 0, 0, Math.PI * 2); g.fill(); g.globalAlpha = 1; }
@@ -106,7 +107,7 @@
         L.sparks.forEach(function (s) { g.globalAlpha = s.a; g.fillStyle = H.css(paper); g.fillRect(x + s.x * u - 1.5 * dpr, ly + s.y * u - 1.5 * dpr, 3 * dpr, 3 * dpr); }); g.globalAlpha = 1;
       }
       var words = L ? 'BEACON · LIT' : X ? 'BEACON · REFUSED' : R ? 'BEACON · ASKED' : 'BEACON';
-      var at = tag(g, words, x, ly - u - 18 * dpr, dpr, H);
+      var at = tag(g, words, x + 0.75 * u, ly - 8 * dpr, dpr, H);
       g.restore();
       o.surface.dataset.beacon = JSON.stringify({ id: L ? lit.score.id : null, lit: !!L, words: words, lamp: L ? L.lamp : 0, moving: !!(L && !L.done), x: Math.round(x), y: Math.round(y), light: [Math.round(x), Math.round(ly)], tag: at, cell: [beacon.q, beacon.r] });
     }

@@ -12,7 +12,7 @@
 //   6. A walks away: B is told the move, and the lighting is NOT said again
 // Sabotages, each must turn the receipt red: SABOTAJE=rechazo-brilla (a refusal plays the lighting score),
 // SABOTAJE=sin-heard (the line forgets which events were said), SABOTAJE=sin-luz (the lamp is never drawn).
-// Uso: node atlas/coop_beacon_browser.mjs   |   PHONES="<serialA>,<serialB>" node atlas/coop_beacon_browser.mjs
+// Uso: node atlas/coop_beacon_browser.mjs   |   PHONES="<serialA>,<serialB>" node …   |   PHONES="<serial>" node … (Chromium + phone)
 import { createServer } from 'node:http';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -29,7 +29,7 @@ const TICK_MS = num('TICK_MS', 500), POLL_MS = num('POLL_MS', 300), BEAT_MS = nu
 const LAW = { stale_after: 12, gone_after: 24, max_visits: 8, beat_gap: 1, meet_radius: 1, coop_radius: 2, coop_wait: 40 };
 const WEB_PORT = num('WEB_PORT', PHONES.length ? 8811 : 0), AUTH_PORT = num('AUTH_PORT', PHONES.length ? 8812 : 0);
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
-const fallos = [], medidas = { clients: PHONES.length ? 'two physical phones over adb' : 'two Chromium processes at 360x716', law: LAW };
+const fallos = [], medidas = { clients: PHONES.length === 2 ? 'two physical phones over adb' : PHONES.length === 1 ? 'one Chromium at 360x716 and one physical phone over adb' : 'two Chromium processes at 360x716', law: LAW };
 const ok = (c, que) => { if (!c) { fallos.push(que); } return !!c; };
 const tipos = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json', '.wasm': 'application/wasm' };
 const adb = (serial, ...a) => execFileSync('adb', ['-s', serial, ...a], { encoding: 'utf8' }).trim();
@@ -91,7 +91,9 @@ const LAMP = `(() => { const cv = document.getElementById('surface'), b = JSON.p
   const d = cv.getContext('2d').getImageData(x - 3, y - 3, 7, 7).data; let sum = 0; for (let i = 0; i < d.length; i += 4) { sum += 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]; }
   const c = Array.from(cv.getContext('2d').getImageData(x, y, 1, 1).data).slice(0, 3), H = AtlasMapPainter.view().H, paper = H.rgbOf(H.T.NEUTRAL.paper);
   const tg = Array.from(cv.getContext('2d').getImageData(b.tag[0], b.tag[1], 1, 1).data).slice(0, 3);
-  return { lum: Math.round(sum / 49), centre: c, paper_centre: c.every((v, i) => Math.abs(v - paper[i]) <= 8), tag_paper: tg.every((v, i) => Math.abs(v - paper[i]) <= 8), b }; })()`;
+  // Pixels on the canvas are not pixels on the screen: nothing of the page may cover the lamp or its words.
+  const rc = cv.getBoundingClientRect(), k = rc.width / cv.width, top = (p) => { const e = document.elementFromPoint(rc.left + p[0] * k, rc.top + p[1] * k); return e === cv ? 'canvas' : e ? (e.id || e.className || e.tagName) : 'off_screen'; };
+  return { lum: Math.round(sum / 49), centre: c, paper_centre: c.every((v, i) => Math.abs(v - paper[i]) <= 8), tag_paper: tg.every((v, i) => Math.abs(v - paper[i]) <= 8), on_top: { lamp: top(b.light), tag: top(b.tag) }, b }; })()`;
 // Above the fold: the live sentence on the stage must be inside the first screen.
 const FOLD = `(() => { const e = document.getElementById('coop-result'); if (!e) { return null; } const r = e.getBoundingClientRect(); return { top: Math.round(r.top), bottom: Math.round(r.bottom), h: innerHeight, inside: r.top >= 0 && r.bottom <= innerHeight }; })()`;
 
@@ -104,6 +106,7 @@ async function main() {
   const auth = await au.listen(), authPort = Number(new URL(auth).port); srv = await site();
   const webPort = srv.address().port, url = `http://127.0.0.1:${webPort}/openworld/?colony=alone&presence=${authPort}&poll=${POLL_MS}&beat=${BEAT_MS}`;
   if (PHONES.length === 2) { A = await phone(PHONES[0], 9601, url, [webPort, authPort], false); B = await phone(PHONES[1], 9602, url, [webPort, authPort], true); }
+  else if (PHONES.length === 1) { A = await local(9600 + (process.pid % 80), url, false); B = await phone(PHONES[0], 9602, url, [webPort, authPort], true); }   // one phone: Chromium asks, the phone answers
   else { const base = 9600 + (process.pid % 80); [A, B] = await Promise.all([local(base, url, false), local(base + 1, url, true)]); }
   medidas.devices = [A.name, B.name];
 
@@ -205,7 +208,7 @@ async function main() {
     const px = await t.ev(LAMP), fold = await t.ev(FOLD);
     const said = await t.ev(`document.getElementById('coop-result').textContent`);
     const ev = await t.ev(`window.__acho.filter((e) => e.kind === 'coop.beacon_lit' && e.status === 'accepted')`);
-    return { id: px && px.b.id, words: px && px.b.words, lum: px && px.lum, unlit: unlit && unlit.lum, centre_is_lamp: px && px.paper_centre, tag_visible: px && px.tag_paper, said, fold, events: ev.map((e) => e.id), notes: (await t.ev(`window.__osc`)) };
+    return { id: px && px.b.id, words: px && px.b.words, on_top: px && px.on_top, lum: px && px.lum, unlit: unlit && unlit.lum, centre_is_lamp: px && px.paper_centre, tag_visible: px && px.tag_paper, said, fold, events: ev.map((e) => e.id), notes: (await t.ev(`window.__osc`)) };
   };
   const ra = await read(A, unlitA), rb = await read(B, unlitB);
   medidas.lit = { authority_event: au.lit.map((l) => ({ id: l.id, served_ms: l.served })), seen_ms: { [A.name]: litA ? msA : null, [B.name]: litB ? msB : null }, [A.name]: ra, [B.name]: rb, reduced_motion_at_rest_on_first_frame: reducedB };
@@ -214,6 +217,7 @@ async function main() {
   for (const [t, r, osc] of [[A, ra, osc0.a], [B, rb, osc0.b]]) {
     ok(r.id === eid, t.name + ': the page must draw the authority\'s event id: ' + JSON.stringify([r.id, eid]));
     ok(r.words === 'BEACON · LIT' && r.tag_visible, t.name + ': BEACON · LIT must be written and visible on the canvas');
+    ok(r.on_top && r.on_top.lamp === 'canvas' && r.on_top.tag === 'canvas', t.name + ': something on the page covers the lamp or its words: ' + JSON.stringify(r.on_top));
     ok(r.centre_is_lamp && r.lum >= r.unlit + 40, t.name + ': the lamp must light the pixels (luminance ' + r.unlit + ' → ' + r.lum + ')');
     ok(/The beacon is lit: you and \w{4} lit it together\./.test(r.said || ''), t.name + ': the live sentence must say who lit it: ' + r.said);
     ok(r.fold && r.fold.inside, t.name + ': the sentence must be inside the first screen: ' + JSON.stringify(r.fold));
