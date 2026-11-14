@@ -50,9 +50,8 @@
   }
 
 
-  // Landmarks: every chunk is a village. Its floor cells are walked in a fixed hash order and a building stands wherever no
-  // other stands within SPACE hexes; the cabin clearing (radius 2) stays free for the tutorial. No count is set: the land
-  // decides. The kinds are the nine town buildings (building_interiors.json) and the model tower, each with its own roof.
+  // Landmarks: floor cells in a fixed hash order; a building stands where none is within SPACE hexes, the cabin (radius 2)
+  // stays free. Kinds: the nine town buildings (building_interiors.json) and the model tower, each with its roof.
   var SPACE = 4, KINDS = [['hostel', 'cone', 'PROPUESTA.base'], ['coliseum', 'arch', 'LIVE.base'], ['choir', 'dome', 'FIRMADO.base'],
     ['workshop', 'chimney', 'PROPUESTA.base'], ['tower', 'spire', 'cyan'], ['agora', 'dome', 'LIVE.base'], ['customs', 'flag', 'FIRMADO.base'],
     ['lottery', 'dome', 'PROPUESTA.base'], ['visitor-house', 'cone', 'cyan'], ['doctor', 'flag', 'LIVE.base']];
@@ -112,12 +111,14 @@
 
 
   function shadow(g, c, x, top, o, H, hh) {
-    var tone = CITY && CITY[c[0] + ',' + c[1]];
+    var tone = CITY && CITY[c[0] + ',' + c[1]], LA = root.AtlasLandArt; // land_art.js
+    if (LA && !tone) { LA.cell(g, c, x, top, o, H, CITY); }
     if (tone) { // stone at the cabin; elsewhere the building's colour (2026-11-14)
       var tones = o.cityTones || (o.cityTones = {}), F = H.T.FRONT_DOOR, rgb = tone === 1 ? H.rgbOf(F['PROPUESTA.base']) : H.rgbOf(F[tone]);
       var cb = { base: tones[tone] || (tones[tone] = H.mix(H.rgbOf(H.T.NEUTRAL.paper), rgb, tone === 1 ? 0.22 : 0.5)) };
       g.beginPath(); o.corner.forEach(function (q, j) { g[j ? 'lineTo' : 'moveTo'](x + q[0], top + q[1]); }); g.closePath();
-      g.fillStyle = H.css(H.shade(cb.base, (0.9 + 0.1 * H.LIGHT[2]) * o.lit)); g.fill(); g.strokeStyle = H.css(H.shade(cb.base, 0.62 * o.lit)); g.stroke();
+      g.fillStyle = H.css(H.shade(cb.base, (0.9 + 0.1 * H.LIGHT[2]) * o.lit)); g.fill(); g.strokeStyle = H.css(H.shade(cb.base, (LA ? 0.84 : 0.62) * o.lit)); g.stroke();
+      if (LA) { LA.cell(g, c, x, top, o, H, CITY); }
       o = { B: [cb, cb, cb, cb], corner: o.corner, at: o.at, lit: o.lit };
     }
     var b = o.B[c[3] === 'water' ? 0 : Math.max(1, Math.min(3, c[2]))], corner = o.corner;

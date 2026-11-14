@@ -32,6 +32,7 @@
     x.setAttribute('aria-label', 'Close panel'); x.title = 'Close panel';
     x.addEventListener('click', function () { var b = openCat(); if (b) { b.click(); b.focus(); } });
     v.insertBefore(x, v.firstChild);
+    var sh = doc.createElement('script'); sh.src = '/game/panel_sheet.js'; doc.head.appendChild(sh); // the sheet's header and skin
     doc.addEventListener('click', function (e) {
       var b = e.target && e.target.closest ? e.target.closest('button') : null, w = b && verdict(b.id);
       if (!w || b.disabled) { return; }

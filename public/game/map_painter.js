@@ -96,7 +96,7 @@
     }
     g.beginPath(); corner.forEach(function (q, j) { if (j) { g.lineTo(x + q[0], top + q[1]); } else { g.moveTo(x + q[0], top + q[1]); } }); g.closePath();
     g.fillStyle = css(shade(b.base, (0.9 + 0.1 * LIGHT[2]) * o.lit * occl)); g.fill();
-    g.strokeStyle = css(shade(b.base, 0.55 * o.lit)); g.lineWidth = Math.max(0.5, k * 0.6); g.stroke();
+    g.strokeStyle = css(shade(b.base, (b.pattern === 'solid' ? 0.74 : 0.55) * o.lit)); g.lineWidth = Math.max(0.5, k * 0.6); g.stroke();
     if (LM && LM.shadow) { LM.shadow(g, c, x, top, o, H(), hh); }
     if (o.lod && b.pattern !== 'solid' && !(o.still && b.kind === 'water')) { pattern(g, b.pattern, x, top, k, b.base, o.lit, o.wt, c); }
     var mk = o.marks && o.marks[c[0] + ',' + c[1]]; if (mk && LM) { LM.building(g, mk, x, top, o, H()); }

@@ -1,0 +1,78 @@
+/* The panel sheet (BEAUTY-02, Sovereign 2026-11-14: «los paneles deben hacerle justicia a la belleza del mundo»).
+   The panel is a sheet of the world's own paper rising from the gamepad: the map stays in view above it, a header
+   names it (and reads it aloud, panel_sheet.js), each voice is a card tinted with its own colour, and the buttons are
+   pills in that colour with an ink edge — no white boxes. Order on screen = order of the audio guide: title, one
+   sentence, the main action, the rest. Forced colours fall back to the system palette; reduced motion: no rise. */
+#voices.map-voices[data-active-category]{inset:auto 8px 8px 8px;max-height:min(66%,36rem);padding:0 12px 16px;gap:12px;color-scheme:light;
+  color:var(--a1d1b26);background:var(--afffaf0) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='48'%3E%3Cpath d='M14 0l14 8v16l-14 8L0 24V8zM42 24l14 8v16M42 24l-14 8' fill='none' stroke='%231d1b26' stroke-opacity='.05' stroke-width='1.5'/%3E%3C/svg%3E");
+  border:3px solid var(--a1d1b26);border-radius:28px;box-shadow:0 7px 0 var(--a8a7a63),0 22px 44px rgb(29 27 38/.28);scrollbar-width:thin}
+#voices.map-voices{--cat:var(--affe58a);--cat-deep:var(--ad49a1c)}
+#voices[data-active-category=Communication]{--cat:var(--adcc8ff);--cat-deep:var(--a7a52c7)}
+#voices[data-active-category=Profile]{--cat:var(--affc2b3);--cat-deep:var(--ad0573d)}
+#voices[data-active-category=Tools]{--cat:var(--ae6e8ef);--cat-deep:var(--a7c8296)}
+@media (min-width:900px){#voices.map-voices[data-active-category]{inset:12px 12px 12px auto;width:min(27rem,44vw);max-height:none}}
+@media (prefers-reduced-motion:no-preference){#voices.map-voices:not([hidden]){animation:sheet-rise .32s cubic-bezier(.2,.8,.2,1)}}
+@keyframes sheet-rise{from{transform:translateY(24px);opacity:0}}
+
+/* The header: a grab line, the panel's name on a hex of its colour, Listen and Close. It stays on top while scrolling. */
+#voices .sheet-head{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:8px;margin:0 -12px;padding:14px 12px 10px;
+  background:linear-gradient(var(--afffaf0) 82%,rgb(255 250 240/0));border-radius:25px 25px 0 0}
+#voices .sheet-head::before{content:"";position:absolute;top:5px;left:50%;width:44px;height:5px;margin-left:-22px;border-radius:3px;background:rgb(29 27 38/.22)}
+#voices .sheet-head h2{flex:1;display:flex;align-items:center;gap:10px;margin:0;font-size:1.2rem;font-weight:800;letter-spacing:.01em}
+#voices .sheet-head h2::before{content:"";flex:0 0 26px;height:30px;background:var(--cat);border:0;
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);box-shadow:inset 0 -6px 0 var(--cat-deep)}
+#voices .sheet-head button{min-width:44px;min-height:44px;padding:0 14px;font:inherit;font-weight:800;color:var(--a1d1b26);background:var(--afffdf6);
+  border:2px solid var(--a1d1b26);border-radius:999px;box-shadow:0 3px 0 var(--a1d1b26);cursor:pointer}
+#voices .sheet-head .panel-x{position:static;margin:0;width:44px;padding:0;font-size:1.05rem}
+#voices .sheet-head .sheet-say[aria-pressed=true]{background:var(--cat)}
+#voices .sheet-head button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--a1d1b26)}
+
+/* Cards: the voice's colour as a soft tint and a deep edge; its name on a hex chip in full colour. */
+#voices .voice{position:relative;background:color-mix(in srgb,var(--tile) 30%,var(--afffdf6));border:2px solid var(--a1d1b26);border-radius:22px;
+  box-shadow:0 5px 0 var(--edge);padding:12px 14px 16px;gap:10px}
+#voices .voice > .who{color:var(--a1d1b26);background:var(--tile);box-shadow:inset 0 -3px 0 var(--edge);font-weight:800}
+#voices .voice h3{margin:0;font-size:1.3rem;line-height:1.2}
+#voices .voice p{line-height:1.45}
+#voices .voice .state:empty{display:none}
+
+/* Buttons: pills in the card's colour; the one main action is leaf green. Disabled is faded and flat, never green. */
+#voices .voice :is(button,select){min-height:44px;padding:10px 18px;font:inherit;font-weight:700;color:var(--a1d1b26);background:var(--tile);
+  border:2px solid var(--a1d1b26);border-radius:999px;box-shadow:0 3px 0 var(--a1d1b26);cursor:pointer}
+#voices .voice :is(.welcome-play,#app-install,#open-chat > button:not(.ot-show),#entry button[type=submit]){color:var(--afffdf6);background:var(--a157a45)}
+#voices .voice button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--a1d1b26)}
+#voices .voice button:disabled{opacity:.5;box-shadow:none;cursor:not-allowed;background:var(--ae6e8ef);color:var(--a3d4252)}
+#voices :is(button,select,textarea,input,summary,label):focus-visible{outline:3px solid var(--a0b6e8f);outline-offset:3px}
+
+/* Welcome: a hero card — the title large, Play across the whole card, the other two side by side. */
+#voices .voice[data-speaker=Welcome]{background:color-mix(in srgb,var(--tile) 34%,var(--afffdf6)) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='96' viewBox='0 0 120 96'%3E%3Cg fill='none' stroke='%231d1b26' stroke-opacity='.12' stroke-width='2'%3E%3Cpath d='M60 6l22 12v24L60 54 38 42V18zM96 30l18 10v20L96 70 78 60V40zM60 54l22 12v24'/%3E%3C/g%3E%3C/svg%3E") right -10px top -6px/120px 96px no-repeat}
+#voices .welcome .acts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#voices .welcome .welcome-play{grid-column:1/-1;min-height:56px;font-size:1.15rem}
+#voices .welcome .acts button:not(.welcome-play){padding:10px 10px;font-size:.95rem;line-height:1.15}
+#voices .welcome .welcome-play::before{content:"▶";margin-right:10px}
+#voices input[type=checkbox]{width:26px;height:26px;accent-color:var(--a157a45)}
+
+/* Talk (Communication), ready for the chatbots: a notice, a writing field, bubbles for every message. */
+#voices .ot-pin{padding:8px 12px;font-size:.92rem;background:var(--afffdf6);border:2px dashed rgb(29 27 38/.4);border-radius:14px}
+#voices :is(textarea,input[type=text],input:not([type])){box-sizing:border-box;width:100%;min-height:44px;padding:10px 14px;font:inherit;color:var(--a1d1b26);
+  background:var(--afffaf0);border:2px solid var(--a1d1b26);border-radius:18px;box-shadow:inset 0 2px 0 rgb(29 27 38/.08)}
+#voices textarea{min-height:92px;resize:vertical}
+#voices .sheet-attach{position:relative;display:inline-flex;align-items:center;gap:8px;justify-self:start;min-height:44px;padding:8px 16px;font-weight:700;
+  border:2px dashed var(--a1d1b26);border-radius:999px;background:var(--afffdf6);cursor:pointer}
+#voices .sheet-attach input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+#voices .sheet-attach:focus-within{outline:3px solid var(--a0b6e8f);outline-offset:3px}
+#voices .radio-chat{padding:0;color:var(--a1d1b26);background:none;border:0;box-shadow:none}
+#voices .radio-chat-tabs{display:flex;gap:4px;padding:4px;background:rgb(29 27 38/.08);border-radius:999px}
+#voices .radio-chat-tab{flex:1;background:none;border:0;box-shadow:none}
+#voices .radio-chat-tab[aria-selected=true]{background:var(--afffdf6);border:2px solid var(--a1d1b26);box-shadow:0 2px 0 var(--a1d1b26)}
+#voices :is(.radio-msg,.log > li){padding:8px 12px;color:var(--a1d1b26);background:var(--afffdf6);border:2px solid var(--a1d1b26);border-radius:18px 18px 18px 6px;box-shadow:none}
+#voices .log > li[data-voice=you]{margin-left:18%;background:var(--affe58a);border-radius:18px 18px 6px 18px}
+#voices #entry{display:flex;gap:8px;align-items:center}
+#voices #entry input{flex:1}
+#voices details > summary{display:flex;align-items:center;gap:8px;min-height:44px;font-weight:700;cursor:pointer}
+
+/* The Town and Settings sheets wear the same paper. */
+.bs-sheet{color:var(--a1d1b26);background:var(--afffaf0);color-scheme:light;box-shadow:0 7px 0 var(--a8a7a63),0 22px 44px rgb(29 27 38/.28)}
+.bs-sheet .bs-card{border-radius:20px}
+@media (forced-colors:active){#voices.map-voices[data-active-category],#voices .sheet-head,#voices .voice,.bs-sheet{background:Canvas;color:CanvasText;box-shadow:none}
+  #voices .sheet-head h2::before{background:CanvasText}#voices .voice :is(button,select){background:ButtonFace;color:ButtonText}}
+@media (prefers-reduced-motion:reduce){#voices button:active{transform:none}}
