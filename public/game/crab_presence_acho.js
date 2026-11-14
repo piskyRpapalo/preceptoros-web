@@ -5,6 +5,9 @@
 //   describe(view, me, F, before) → { ok, line, frame, others: [{ id, seal, distance, way }], news } | { ok: false, cause }
 // `before` is the `others` of the last view: with it the line also says who arrived, who came nearer or went
 // farther, who fell silent and who is gone, so a change is heard and read, never only seen.
+// `heard` is the list of event ids already said: a meeting or the lit beacon (the authority's events, in the view) is
+// said ONCE, by its own id, with the same words for both crabs except for who «you» is. An ask to light the beacon
+// is said while it waits. The beacon's event sounds as three rising notes before the crabs' own notes.
 // The line names the nearest crabs first and counts the rest. Each named crab is one wave: a nearer crab is a higher
 // note, a STALE crab is a duller one (no upper harmonic). Pure: no clock, no randomness, no network.
 (function (root) {
@@ -40,7 +43,24 @@
     Object.keys(was).sort().forEach(function (id) { if (!is[id]) { out.push(id + ' gone'); } });
     return out;
   }
-  function describe(view, me, F, before) {
+  var CHORD = [[[1, 1, 0, 0], [6, 2, 0, 0], [2, 1, 1, 0]], [[1, 1, 0, 0], [8, 2, 0, 0], [2, 1, 1, 0]], [[1, 1, 0, 0], [10, 2, 0, 0], [2, 1, 1, 0]]];
+  function name(id, me) { return id === me ? 'you' : id; }
+  function pairOf(who, me) { var w = who.slice().sort(function (a, b) { return (a === me ? 0 : 1) - (b === me ? 0 : 1) || (a < b ? -1 : 1); }); return name(w[0], me) + ' and ' + name(w[1], me); }
+  // told(view, me, heard) → { lines, ids, lit }: what the authority's events and asks say to this crab.
+  function told(view, me, heard) {
+    var lines = [], ids = [], lit = false, done = Array.isArray(heard) ? heard : [];
+    (Array.isArray(view.events) ? view.events : []).forEach(function (e) {
+      if (!e || done.indexOf(e.id) >= 0 || !Array.isArray(e.who) || e.who.length !== 2) { return; }
+      if (e.k === 'meet') { lines.push(e.who.indexOf(me) >= 0 ? 'You met ' + (e.who[0] === me ? e.who[1] : e.who[0]) : e.who[0] + ' met ' + e.who[1]); ids.push(e.id); }
+      if (e.k === 'faro') { lines.push('The beacon is lit: ' + pairOf(e.who, me) + ' lit it together'); ids.push(e.id); lit = true; }
+    });
+    (Array.isArray(view.asks) ? view.asks : []).forEach(function (a) {
+      if (a.to === me) { lines.push(a.from + ' asks you to light the beacon together'); }
+      else if (a.from === me) { lines.push('You asked ' + a.to + ' · waiting for their yes'); }
+    });
+    return { lines: lines, ids: ids, lit: lit };
+  }
+  function describe(view, me, F, before, heard) {
     if (!view || view.esquema !== 'atlas.presencia/1' || !Array.isArray(view.crabs)) { return { ok: false, cause: 'view_not_readable' }; }
     var self = view.crabs.filter(function (c) { return c.id === me; })[0];
     if (!self) { return { ok: false, cause: 'you_are_not_in_this_view' }; }
@@ -51,13 +71,21 @@
       return o.id + ' ' + o.seal + (o.way === 'here' ? ' on your hex' : ' ' + o.distance + (o.distance === 1 ? ' hex ' : ' hexes ') + o.way);
     });
     var rest = others.length - said.length;
-    var changed = news(before, others), hidden = view.more ? ' · ' + view.more + ' more beyond this frame' : '';
-    var line = (changed.length ? changed.slice(0, NAMED).join('; ') + ' · ' : '') + 'You at ' + self.q + ', ' + self.r + ' · ' + (others.length ? others.length + (others.length === 1 ? ' other crab' : ' other crabs') + ' · ' + said.join('; ') + (rest > 0 ? '; and ' + rest + ' more' : '') : 'no other crab in sight') + hidden;
-    var frame = F.stateFrame({ id: 'presence/' + me, sentence: line, waves: others.slice(0, NAMED).map(wave) });
+    var changed = news(before, others), hidden = (view.more ? ' · ' + view.more + ' more beyond this frame' : '') + (view.lit ? ' · the beacon is lit' : '');
+    var t = told(view, me, heard), first = t.lines.concat(changed.slice(0, NAMED));
+    var line = (first.length ? first.join('; ') + ' · ' : '') + 'You at ' + self.q + ', ' + self.r + ' · ' + (others.length ? others.length + (others.length === 1 ? ' other crab' : ' other crabs') + ' · ' + said.join('; ') + (rest > 0 ? '; and ' + rest + ' more' : '') : 'no other crab in sight') + hidden;
+    var waves = (t.lit ? CHORD : []).concat(others.slice(0, t.lit ? 1 : NAMED).map(wave));
+    var frame = F.stateFrame({ id: 'presence/' + me, sentence: line, waves: waves });
+    // The syllable is never made bigger: a line too long for one frame keeps the authority's events and drops the notes.
+    if (F.valida(frame).length) { frame = F.stateFrame({ id: 'presence/' + me, sentence: line, waves: t.lit ? CHORD : [] }); }
+    if (F.valida(frame).length) { // still too long: the authority's events first, then where you are and how many; the names wait
+      line = t.lines.slice(-2).join('; ') + (t.lines.length ? ' · ' : '') + 'You at ' + self.q + ', ' + self.r + ' · ' + others.length + ' other crabs' + hidden;
+      frame = F.stateFrame({ id: 'presence/' + me, sentence: line, waves: [] });
+    }
     if (F.valida(frame).length) { return { ok: false, cause: 'frame_breaks_the_law' }; }
-    return { ok: true, line: line, frame: frame, others: others, news: changed };
+    return { ok: true, line: line, frame: frame, others: others, news: changed, events: t.ids, lit: !!view.lit };
   }
-  var api = { NAMED: NAMED, distance: distance, way: way, news: news, describe: describe };
+  var api = { NAMED: NAMED, distance: distance, way: way, news: news, told: told, describe: describe };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasCrabPresenceAcho = api;
 })(typeof globalThis === 'object' ? globalThis : this);

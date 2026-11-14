@@ -64,6 +64,42 @@ test('a change is said: who arrived, came nearer, went farther, fell silent, cam
   assert.deepEqual(say([a(4, 'LIVE')], first.others).news, []);       // nothing changed, nothing is said twice
   assert.match(D.describe({ ...view([me, a(1, 'LIVE')]), more: 5 }, me.id, F).line, / · 5 more beyond this frame$/);
 });
+test('a meeting and the lit beacon are said once, by the authority\'s own event id, the same for both except for «you»', () => {
+  const a = { id: 'crab-aaaaaaaa', q: 1, r: 0, seal: 'LIVE' }, meet = { k: 'meet', id: 'ev-11111111', who: [a.id, me.id].sort(), d: 1, tick: 3 };
+  const faro = { k: 'faro', id: 'ev-22222222', who: [a.id, me.id], cell: [6, 4], tick: 5 };
+  const v1 = { ...view([me, a]), events: [meet] };
+  const mine = D.describe(v1, me.id, F, undefined, []), theirs = D.describe(v1, a.id, F, undefined, []);
+  assert.match(mine.line, /^You met crab-aaaaaaaa · You at 0, 0 · /);
+  assert.match(theirs.line, /^You met crab-00000001 · You at 1, 0 · /);
+  assert.deepEqual(mine.events, ['ev-11111111']); assert.deepEqual(theirs.events, mine.events);
+  assert.doesNotMatch(D.describe(v1, me.id, F, mine.others, mine.events).line, /met/);            // not said twice
+  const v2 = { ...view([me, a]), events: [meet, faro], lit: faro.id };
+  const lit = D.describe(v2, me.id, F, mine.others, mine.events);
+  assert.match(lit.line, /^The beacon is lit: you and crab-aaaaaaaa lit it together · You at 0, 0 · .* · the beacon is lit$/);
+  assert.match(D.describe(v2, a.id, F, undefined, ['ev-11111111']).line, /^The beacon is lit: you and crab-00000001 lit it together · /);
+  assert.match(D.describe(v2, 'crab-cccccccc', F).cause, /you_are_not_in_this_view/);
+  const third = D.describe({ ...view([me, a, { id: 'crab-cccccccc', q: 3, r: 3, seal: 'LIVE' }]), events: [faro], lit: faro.id }, 'crab-cccccccc', F, undefined, []);
+  assert.match(third.line, /^The beacon is lit: crab-00000001 and crab-aaaaaaaa lit it together · /);
+  assert.deepEqual(lit.events, ['ev-22222222']); assert.equal(lit.lit, true);
+  assert.deepEqual(F.valida(lit.frame), []); assert.equal(lit.frame.atoms[0].r, lit.line);
+  const notes = S.sonify(lit.frame).voices.map((x) => x.recipe.carrier);
+  assert.ok(notes.length >= 3 && notes[0] < notes[1] && notes[1] < notes[2], 'the beacon sounds as three rising notes: ' + notes);
+  assert.match(D.describe(v2, me.id, F, lit.others, ['ev-11111111', 'ev-22222222']).line, /^You at 0, 0 · .* · the beacon is lit$/); // the state stays, the event is not repeated
+});
+test('an ask is said to the one it is for, and to the one who made it, while it waits', () => {
+  const a = { id: 'crab-aaaaaaaa', q: 1, r: 0, seal: 'LIVE' }, v = { ...view([me, a]), asks: [{ id: 'ask-33333333', from: a.id, to: me.id }] };
+  assert.match(D.describe(v, me.id, F).line, /^crab-aaaaaaaa asks you to light the beacon together · /);
+  assert.match(D.describe(v, a.id, F).line, /^You asked crab-00000001 · waiting for their yes · /);
+});
+test('sabotage: a line too long for one frame keeps the event and drops the notes; it never grows the frame', () => {
+  const crabs = [me]; for (let i = 0; i < 12; i++) { crabs.push({ id: 'crab-' + String(i).padStart(8, 'e'), q: -123456 - i, r: 654321 + i, seal: 'STALE' }); }
+  const events = [0, 1, 2].map((i) => ({ k: 'meet', id: 'ev-0000000' + i, who: [crabs[i + 1].id, crabs[i + 2].id], d: 1, tick: 1 }));
+  events.push({ k: 'faro', id: 'ev-99999999', who: [me.id, crabs[1].id], cell: [6, 4], tick: 2 });
+  const r = D.describe({ ...view(crabs), events, lit: 'ev-99999999', more: 40, asks: [{ id: 'ask-1', from: crabs[2].id, to: me.id }] }, me.id, F, undefined, []);
+  assert.equal(r.ok, true);
+  assert.deepEqual(F.valida(r.frame), []);
+  assert.match(r.line, /The beacon is lit: you and /);
+});
 test('pure: no clock, no randomness, no network', () => {
   assert.doesNotMatch(readFileSync(new URL('../../public/game/crab_presence_acho.js', import.meta.url), 'utf8'), /Math\.random|Date\.now|new Date|fetch\(|XMLHttpRequest/);
 });

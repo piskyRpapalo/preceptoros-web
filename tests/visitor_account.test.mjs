@@ -39,4 +39,9 @@ test('a step is signed only in its closed shape: one of six directions, on the c
  const beat = { esquema:'atlas.presente/1', seq:2, prev:'a'.repeat(64), clave_publica:i.publicKey };
  assert.match(await a.sign(beat,true), /^ed25519:[0-9a-f]{128}$/);
  await assert.rejects(a.sign({...beat, dir:'east'},true)); await assert.rejects(a.sign({...beat, seq:0},true));
+ const ask = { esquema:'atlas.coop/1', accion:'faro', con:'crab-0123abcd', seq:3, prev:'a'.repeat(64), clave_publica:i.publicKey };
+ const yes = { esquema:'atlas.coop_si/1', peticion:'ask-0123abcd', seq:3, prev:'a'.repeat(64), clave_publica:i.publicKey };
+ assert.match(await a.sign(ask,true), /^ed25519:[0-9a-f]{128}$/); assert.match(await a.sign(yes,true), /^ed25519:[0-9a-f]{128}$/);
+ await assert.rejects(a.sign({...ask, accion:'claim_land'},true)); await assert.rejects(a.sign({...ask, con:'everyone'},true));
+ await assert.rejects(a.sign({...ask, copper:100},true)); await assert.rejects(a.sign({...yes, peticion:'yes'},true)); await assert.rejects(a.sign(yes,false));
 });

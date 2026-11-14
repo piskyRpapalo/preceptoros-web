@@ -31,7 +31,12 @@ export async function realFloor() {
   const root = fileURLToPath(new URL('../public', import.meta.url));
   const get = async (u) => { const f = root + u; if (!existsSync(f)) { return { ok: false, status: 404 }; } const b = readFileSync(f); return { ok: true, arrayBuffer: async () => b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength) }; };
   const o = await C.load([0, 0], { fetch: get, base: '/map/' });
-  return MP.cellsOf(o.chunks);
+  const cells = MP.cellsOf(o.chunks), world = { cells };
+  C.landmarks(world);
+  // The beacon of the experiment is the node's own Model tower (the spire with the lamp), where the map already draws it.
+  const tower = world.markList.filter((m) => m.id === 'tower' && !m.fog)[0];
+  cells.beacon = tower ? { q: tower.q, r: tower.r } : null;
+  return cells;
 }
 // authority({ law, cells, sabotage, tick_ms }) → with tick_ms the tick advances by itself (a physical experiment);
 // without it the harness advances it (deterministic cases). `seen` keeps, on this machine's one clock, when a step was
@@ -40,15 +45,15 @@ export async function realFloor() {
 // { listen() → origin, close(), tick(n), state(), counts }. Bodies over 1,024 B are refused.
 export function authority({ law, cells = floor(), sabotage = '', tick_ms = 0, host = '127.0.0.1', port = 0 }) {
   let state = P.empty(), tick = 0, chain = Promise.resolve(), timer = null;
-  const pending = {}, seen = [];
-  const deps = { verify: sabotage === 'sin-firma' ? async () => true : verify, digest, walk: WALK, cells }, counts = { open: 0, step: 0, view: 0, refused: {}, bytesIn: 0, bytesOut: 0 };
+  const pending = {}, seen = [], lit = [];
+  const deps = { verify: sabotage === 'sin-firma' ? async () => true : verify, digest, walk: WALK, cells, beacon: cells.beacon || null }, counts = { open: 0, step: 0, view: 0, refused: {}, bytesIn: 0, bytesOut: 0 };
   const refuse = (c) => { counts.refused[c] = (counts.refused[c] || 0) + 1; };
   async function handle(path, body) {
     if (path === '/open') {
       counts.open++;
       const r = await P.open(state, { key: body && body.key, consent: body && body.consent, tick, start: body && body.start }, law, deps);
       if (!r.ok) { refuse(r.cause); return { ok: false, cause: r.cause }; }
-      state = r.state; return { ok: true, id: state.visits[body.key].id };
+      state = r.state; return { ok: true, id: state.visits[body.key].id, beacon: deps.beacon };
     }
     if (path === '/step') {
       counts.step++;
@@ -56,12 +61,15 @@ export function authority({ law, cells = floor(), sabotage = '', tick_ms = 0, ho
       if (!r.ok) { refuse(r.cause); return { ok: false, cause: r.cause }; }
       state = r.state;
       if (body.record.esquema === P.SCHEMA) { const id = state.visits[body.record.clave_publica].id; pending[id] = { id, at: r.at, t: performance.now(), dir: body.record.dir }; }
-      return { ok: true, at: r.at };
+      const out = { ok: true, at: r.at };
+      if (r.ask) { out.ask = r.ask; } if (r.event) { out.event = r.event; lit.push({ id: r.event.id, t: performance.now(), served: {} }); } if (r.met) { out.met = r.met; }
+      return out;
     }
     if (path === '/view') {
       counts.view++; state = P.forget(state, tick, law);
       const v = P.view(state, tick, law, body && Number.isSafeInteger(body.q) ? { q: body.q, r: body.r, radius: body.radius } : undefined);
       const as = body && typeof body.as === 'string' ? body.as : null;
+      if (as && v.lit) { const L = lit.find((x) => x.id === v.lit); if (L && L.served[as] === undefined) { L.served[as] = Math.round((performance.now() - L.t) * 10) / 10; } }
       if (as) { v.crabs.forEach((c) => { const p = pending[c.id]; if (p && c.id !== as && c.q === p.at.q && c.r === p.at.r) { seen.push({ mover: c.id, by: as, dir: p.dir, at: p.at, ms: Math.round((performance.now() - p.t) * 10) / 10 }); delete pending[c.id]; } }); }
       return v;
     }
@@ -89,7 +97,7 @@ export function authority({ law, cells = floor(), sabotage = '', tick_ms = 0, ho
   return {
     listen: () => new Promise((r) => server.listen(port, host, () => { if (tick_ms) { timer = setInterval(() => { tick++; }, tick_ms); } r('http://' + host + ':' + server.address().port); })),
     close: () => new Promise((r) => { if (timer) { clearInterval(timer); } server.close(r); server.closeAllConnections && server.closeAllConnections(); }),
-    seen, crabs: () => P.view(P.forget(state, tick, law), tick, law, { q: 0, r: 0, radius: 9999 }).crabs,
+    seen, lit, beacon: () => deps.beacon, crabs: () => P.view(P.forget(state, tick, law), tick, law, { q: 0, r: 0, radius: 9999 }).crabs,
     tick: (n = 1) => { tick += n; return tick; }, now: () => tick, state: () => state, counts, handle,
   };
 }
