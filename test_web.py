@@ -1263,6 +1263,45 @@ class PWA(unittest.TestCase):
                            cwd=RAIZ, capture_output=True, text=True, timeout=120)
         self.assertEqual(r.returncode, 0, "lo publicado no es lo que genera el emblema:\n" + r.stdout)
 
+    def test_la_marca_dibuja_la_cara_en_cada_escala(self):
+        """UI-COHERENCE-01, 2026-11-13: en la pestana (16 px) la marca se veia como un bloque.
+
+        Una sola rejilla de 28 celdas con cuatro niveles realzados no sirve a 16 px (media celda por
+        pixel) ni a 32. La marca lleva ahora una rejilla por escala y su propio CSS elige la de 16 cuando
+        se dibuja a 24 px o menos. Aqui se rasteriza cada rejilla tal como esta escrita y se compara con
+        la misma cabeza dibujada en tono real por lienzo(): error medio |diferencia| 0..255. Medido al
+        cambiar: 6.0 (16) y 5.8 (32); la marca vieja daba 22.7 y 31.7. Chromium, medido aparte: 26.8 -> 6.9
+        a 16 px, 38.5 -> 10.0 a 32 px."""
+        try:
+            from PIL import Image
+        except ImportError:
+            self.skipTest("NO_DATA · sin Pillow no se puede medir la marca. Remedio: instalar Pillow")
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("iconos", RAIZ / "bin" / "icons_from_emblem.py")
+        ic = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(ic)
+        svg = (PUBLICO / "assets" / "mark.svg").read_text(encoding="utf-8")
+        self.assertIn("@media (max-width:24px){.p{display:inline}.g{display:none}}", svg,
+                      "sin el cambio de rejilla la pestana dibuja la rejilla grande a media celda por pixel")
+        g = ic.rejilla()
+        fondo = ic.FONDO
+        for clase, n in (("p", 16), ("g", 32)):
+            bloque = re.search(r'<g class="%s"[^>]*>(.*?)</g>' % clase, svg, re.S)
+            self.assertIsNotNone(bloque, "falta la rejilla de %d" % n)
+            im = Image.new("RGB", (n, n), fondo)
+            px = im.load()
+            for color, opacidad, d in re.findall(r'<path fill="(#[0-9a-f]{6})" fill-opacity="([0-9.]+)" d="([^"]+)"/>',
+                                                bloque.group(1)):
+                tinta = tuple(int(color[i:i + 2], 16) for i in (1, 3, 5))
+                a = float(opacidad)
+                for x, y, w in re.findall(r"M(\d+) (\d+)h(\d+)v1h-\d+z", d):
+                    for xx in range(int(x), int(x) + int(w)):
+                        px[xx, int(y)] = tuple(round(f + (k - f) * a) for f, k in zip(fondo, tinta))
+            ref = ic.lienzo(g, n * 8, n * 8, 1.0, ic.CARA).resize((n, n), Image.LANCZOS)
+            err = sum(abs(p - q) for a_, b_ in zip(im.getdata(), ref.getdata()) for p, q in zip(a_, b_)) / (n * n * 3)
+            with self.subTest(rejilla=n):
+                self.assertLessEqual(err, 9.0, "la rejilla de %d se aleja de la cara: error %.1f" % (n, err))
+
     def test_el_maskable_cabe_de_verdad_en_su_circulo(self):
         """No que lo diga el manifiesto: que lo diga el fichero.
 
