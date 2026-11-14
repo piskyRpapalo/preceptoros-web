@@ -33,6 +33,7 @@
   function hitAt(px, py) { for (var i = 0; i < hits.length; i++) { var h = hits[i]; if (px >= h.x0 && px <= h.x1 && py >= h.y0 && py <= h.y1) { return h.m; } } return null; }
   function draw(g, V, s, still, oval, ow) {
     var wk = ow && ow.controls && ow.controls.walker && ow.controls.walker(), dpr = s.width / (s.getBoundingClientRect ? (s.getBoundingClientRect().width || s.width) : s.width); near(g, V, wk, dpr);
+    if (root.AtlasCrabTrail) { root.AtlasCrabTrail.draw(g, V, wk); } // the steps just walked (crab_trail.js)
     if (root.AtlasMissionHotspots) { root.AtlasMissionHotspots.draw(g, V, dpr); } // the missions waiting (mission_hotspots.js)
     var key = s.dataset.sel, c = key && V.world.cells.at[key];
     if (!c) { return false; }
@@ -91,7 +92,7 @@
   root.AtlasMapAura = api;
   if (root.document && root.document.addEventListener) {
     listen(root.document);
-    ['mission_hotspots', 'node_live', /[?&](go|ask)=/.test((root.location || {}).search || '') && 'map_links'].forEach(function (n) { // the missions waiting; a link's place
+    ['mission_hotspots', 'crab_trail', 'node_live', /[?&](go|ask)=/.test((root.location || {}).search || '') && 'map_links'].forEach(function (n) { // the missions waiting; a link's place
       if (n && root.document.head) { var e = root.document.createElement('script'); e.src = '/game/' + n + '.js'; root.document.head.appendChild(e); }
     });
   }
