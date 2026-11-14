@@ -57,13 +57,13 @@
   }
   function mount(doc, win) {
     var map = doc.getElementById('map'), stage = doc.getElementById('stage'),
-      bar = map && map.querySelector('.topbar'), surface = doc.getElementById('surface');
-    if (!map || !stage || !bar || !surface || doc.getElementById('ow-controls')) return null;
+      surface = doc.getElementById('surface');
+    if (!map || !stage || !surface || doc.getElementById('ow-controls')) return null;
     var toggle = doc.createElement('button');
     toggle.type = 'button'; toggle.id = 'ow-controls'; toggle.textContent = 'Walk crab';
     toggle.setAttribute('aria-controls', 'ow-directions'); toggle.setAttribute('aria-expanded', 'false');
     toggle.setAttribute('aria-label', 'Walk the crab, not the camera. Show six directions.');
-    bar.appendChild(toggle);
+    stage.appendChild(toggle);
     var panel = doc.createElement('section'); panel.id = 'ow-directions'; panel.hidden = true;
     panel.setAttribute('role', 'group'); panel.setAttribute('aria-label', 'Crab movement, one hex per press');
     var caption = doc.createElement('p'); caption.textContent = 'CRAB · one hex per press. Camera: left stick or drag the map.';
@@ -74,7 +74,7 @@
     brief.setAttribute('aria-live', 'polite'); brief.textContent = 'Press Play now, then Walk crab. One press = one hex.';
     stage.appendChild(brief);
     var coord = doc.createElement('span'); coord.id = 'ow-coords';
-    coord.setAttribute('aria-label', 'Crab position'); bar.appendChild(coord);
+    coord.setAttribute('aria-label', 'Crab position'); stage.appendChild(coord);
     var last = '';
     function say(heading, body, guide) {
       var t = message(body);
