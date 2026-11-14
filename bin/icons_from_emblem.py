@@ -98,6 +98,13 @@ def png(g, ancho, alto, frac):
     return b.getvalue()
 
 
+def ico(g):
+    """/favicon.ico (2026-11-14): crawlers ask for it first; the same face at 16, 32 and 48 px (48 is Google's unit)."""
+    b = io.BytesIO()
+    lienzo(g, 256, 256, 0.86).save(b, "ICO", sizes=[(16, 16), (32, 32), (48, 48)])
+    return b.getvalue()
+
+
 def nivel_de(c, niveles=4, alza=0.6):
     """Ink level 0..niveles of a pixel. alza < 1 lifts dark ink; 0.6 was the 28-grid's lift (2026-11-11)."""
     v = max(0.0, (max(c) - 0x26) / (255 - 0x26))
@@ -152,12 +159,13 @@ def svg(g):
 def ficheros():
     g = rejilla()
     return {
-        "mark.svg": svg(g).encode("utf-8"),
+        # [deprecated 2026-11-14] mark.svg (the dot grid face) is retired: every page uses icon-192.png (DEPRECATED.json brand.mark-svg).
         "icon-192.png": png(g, 192, 192, 0.86),
         "icon-512.png": png(g, 512, 512, 0.86),
         # maskable: Android crops to a circle of radius 0.40 * side; the drawing stays inside it.
         "icon-512-maskable.png": png(g, 512, 512, 0.62),
         "og-card.png": png(g, 1200, 630, 0.90),
+        "../favicon.ico": ico(g),   # served at the site root, where crawlers look
     }
 
 
