@@ -8,7 +8,7 @@ const html = `<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Army · OpenWorld</title>
 <meta name="description" content="Army data is unavailable until an account profile is linked to the shared OpenWorld colony.">
-<link rel="icon" type="image/svg+xml" href="/assets/mark.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#17131F">
 <style>

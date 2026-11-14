@@ -28,7 +28,7 @@ assert.ok(!text.includes('/face/basic.html') && !/shared map/i.test(text), 'decr
 assert.ok(!/<svg|<canvas/i.test(text), 'Army page must not draw a second map');
 assert.ok(text.includes('/assets/pwa.js'));
 assert.ok(text.includes('/manifest.webmanifest'));
-assert.ok(text.includes('/assets/mark.svg'));
+assert.ok(text.includes('/assets/icon-192.png'));
 assert.ok(readFileSync(new URL('../public/sw-listas.js', import.meta.url), 'utf8').includes("'/game/army.html'"));
 assert.ok(!readFileSync(new URL('../public/openworld/index.html', import.meta.url), 'utf8').includes('href="/game/army.html"'));
 assert.ok(!/https?:\/\//i.test(text));
