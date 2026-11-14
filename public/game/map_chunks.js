@@ -72,8 +72,13 @@
       var key = m.q + ',' + m.r; if (!marks[key] && world.cells.at[key]) { marks[key] = m; picked.push([m.q, m.r]); } }); } catch (e) {}
     world.marks = marks; world.markList = picked.map(function (c) { return marks[c[0] + ',' + c[1]]; });
     var near = {}; world.markList.forEach(function (m) { var d = hexDist([m.q, m.r], [0, 0]), n = near[m.id]; if (!n || d < n.d) { near[m.id] = { m: m, d: d }; } });
-    world.markList.forEach(function (m) { m.fog = !m.own && near[m.id].m !== m; }); // fog of war: one of each kind is the node's, the rest NPCs
-    var city = world.city = {}; world.cells.list.forEach(function (c) { if (c[3] !== 'water' && (hexDist(c, [0, 0]) <= 2 || world.markList.some(function (m) { return !m.fog && hexDist(c, [m.q, m.r]) <= 2; }))) { city[c[0] + ',' + c[1]] = 1; } });
+    // [deprecated 2026-11-14] NPC buildings retired (DEPRECATED.json map.npc-buildings): one of each kind stands.
+    world.markList = world.markList.filter(function (m) { return m.own || near[m.id].m === m; });
+    marks = world.marks = {}; world.markList.forEach(function (m) { m.fog = false; marks[m.q + ',' + m.r] = m; });
+    var city = world.city = {}; world.cells.list.forEach(function (c) { if (c[3] === 'water') { return; }
+      if (hexDist(c, [0, 0]) <= 2) { city[c[0] + ',' + c[1]] = 1; return; }
+      var best = null, bd = 3; world.markList.forEach(function (m) { var d = hexDist(c, [m.q, m.r]); if (d < bd) { bd = d; best = m; } });
+      if (best) { city[c[0] + ',' + c[1]] = best.tone; } });
     CITY = city; // the node's city: the cabin district and one around each of its buildings
     return marks;
   }
@@ -82,7 +87,6 @@
   // building(g, m, x, top, o): a smaller prism on the cell's top, ink-outlined (comic), its roof by kind.
   function building(g, m, x, top, o, H) {
     var k = o.k, F = H.T.FRONT_DOOR, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), base = H.mix(H.rgbOf(F[m.tone]), H.rgbOf(H.T.NEUTRAL.paper), 0.18);
-    if (m.fog) { var l = Math.round(base[0] * 0.3 + base[1] * 0.59 + base[2] * 0.11); base = [l, l, l]; } // an NPC's building is grey
     var ring = o.corner.map(function (q) { return [q[0] * 0.5, q[1] * 0.5]; }), hb = (m.roof === 'spire' ? 26 : 16) * k, y0 = top - 2 * k;
     if (k * 48 <= 12) { g.fillStyle = H.css(base); g.beginPath(); g.arc(x, y0 - 3 * k, Math.max(1.5, 5 * k), 0, 7); g.fill(); return; }
     g.lineWidth = Math.max(0.8, 1.6 * k); g.strokeStyle = ink;
@@ -108,8 +112,10 @@
 
 
   function shadow(g, c, x, top, o, H, hh) {
-    if (CITY && CITY[c[0] + ',' + c[1]]) { // the node's city: one stone paving, no band (Sovereign, 2026-11-08)
-      var cb = { base: o.city || (o.city = H.mix(H.rgbOf(H.T.NEUTRAL.paper), H.rgbOf(H.T.FRONT_DOOR['PROPUESTA.base']), 0.22)) };
+    var tone = CITY && CITY[c[0] + ',' + c[1]];
+    if (tone) { // stone at the cabin; elsewhere the building's colour (2026-11-14)
+      var tones = o.cityTones || (o.cityTones = {}), F = H.T.FRONT_DOOR, rgb = tone === 1 ? H.rgbOf(F['PROPUESTA.base']) : H.rgbOf(F[tone]);
+      var cb = { base: tones[tone] || (tones[tone] = H.mix(H.rgbOf(H.T.NEUTRAL.paper), rgb, tone === 1 ? 0.22 : 0.5)) };
       g.beginPath(); o.corner.forEach(function (q, j) { g[j ? 'lineTo' : 'moveTo'](x + q[0], top + q[1]); }); g.closePath();
       g.fillStyle = H.css(H.shade(cb.base, (0.9 + 0.1 * H.LIGHT[2]) * o.lit)); g.fill(); g.strokeStyle = H.css(H.shade(cb.base, 0.62 * o.lit)); g.stroke();
       o = { B: [cb, cb, cb, cb], corner: o.corner, at: o.at, lit: o.lit };
@@ -205,7 +211,6 @@
       var a = at(key), f = T && T.from ? at(T.from) : a, x = f.x + (a.x - f.x) * e, y = f.y + (a.y - f.y) * e; // the glide is projection only
       s.dataset.youx = String(Math.round(x)); s.dataset.youy = String(Math.round(y));
       var g = s.getContext('2d'); g.setTransform(1, 0, 0, 1, 0, 0);
-      if (root.AtlasMapFog) { root.AtlasMapFog.draw(g, V, s, w, oval); } // fog of war and the NPCs (map_fog_layer.js)
       if (root.AtlasMapAura) { root.AtlasMapAura.draw(g, V, s, still, oval, ow); } // the selected building's aura (map_aura.js)
       names(g, V, w, s.width / (s.getBoundingClientRect().width || s.width), x, y);
       if (B && !s.dataset.duel) { B.draw(g, x, y, Math.max(k, 0.5), B.pose(T.steps, still ? 1 : T.p, still ? 1 : T.gp), V.H, B.beat(ow.signal || null, Date.now()), oval); if (T.busy) { B.loop(ow.redraw); } }

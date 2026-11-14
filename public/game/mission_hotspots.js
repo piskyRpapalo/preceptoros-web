@@ -37,7 +37,7 @@
     var asks = /\b(missions?|waiting|wait|coming|next|ember|embers|hot ?spots?|flame|codes?)\b/i.test(q);
     if (code) { return code + ' is ' + WHAT[code] + '; it waits at ' + LABEL[id] + '.'; }
     if (id && asks) { return 'At ' + LABEL[id] + ' ' + (WAIT[id].length > 1 ? 'wait ' : 'waits ') + WAIT[id].map(function (c) { return c + ', ' + WHAT[c]; }).join('; ') + '.'; }
-    if (asks) { return 'An ember with codes beside a building is a mission waiting there; tap it to open that building\'s card.'; }
+    if (asks) { return 'An ember with a count beside a building is the missions waiting there; tap it to open that building\'s card.'; }
     return null;
   }
   // Pure: spots(markList) → the node's buildings with missions waiting, one per kind, never a fogged NPC.
@@ -57,7 +57,8 @@
     spots(V.world.markList).forEach(function (s) {
       var m = s.m, cell = V.world.cells.at[m.q + ',' + m.r], h0 = V.P(m.q, m.r), p = V.turn(h0.x, h0.y);
       var x = V.G.cx + p.x * k + 22 * k, y = V.G.cy + p.y * k - (cell ? V.height(cell) * V.HSTEP : 0) * k - 6 * k;
-      var t = s.codes.join(' '), r = Math.max(7 * dpr, 9 * k), tw = g.measureText(t).width, w = r * 2 + tw + 10 * dpr, h = r * 2 + 4 * dpr;
+      var t = s.codes.length + (s.codes.length > 1 ? ' missions' : ' mission'), // the count on the map; the codes live in the card and the guide (2026-11-14)
+         r = Math.max(7 * dpr, 9 * k), tw = g.measureText(t).width, w = r * 2 + tw + 10 * dpr, h = r * 2 + 4 * dpr;
       g.fillStyle = paper; g.strokeStyle = ink; g.lineWidth = Math.max(1.5, 2 * dpr);
       g.beginPath(); g.moveTo(x + h / 2, y - h / 2); g.arc(x + w - h / 2, y, h / 2, -Math.PI / 2, Math.PI / 2);
       g.arc(x + h / 2, y, h / 2, Math.PI / 2, Math.PI * 1.5); g.closePath(); g.fill(); g.stroke();
