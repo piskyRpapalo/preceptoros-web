@@ -67,9 +67,11 @@
     }
     // news(text, who): a line that cites a result (the duel's winner from the motor's own sentence); OK goes back.
     function news(text, who, open) {
-      var back = at; box.classList.add('pt-new'); if (open) { box.classList.remove('pt-min', 'pt-new'); who0.setAttribute('aria-expanded', 'true'); } line.textContent = text; who0.textContent = who; row.textContent = '';
+      // The resting bubble is gone from the map (Sovereign, 2026-11-14: it covered the world). Only a result that was
+      // asked for (a fogged building, a duel) shows here, open, until OK; then nothing rests on the map again.
+      var back = at; void open; box.classList.add('pt-news'); box.classList.remove('pt-min', 'pt-new'); who0.setAttribute('aria-expanded', 'true'); line.textContent = text; who0.textContent = who; row.textContent = '';
       var b = doc.createElement('button'); b.type = 'button'; b.textContent = 'OK';
-      b.addEventListener('click', function () { who0.textContent = 'Preceptor'; at = back; draw(); place(); });
+      b.addEventListener('click', function () { box.classList.remove('pt-news'); box.classList.add('pt-min'); who0.setAttribute('aria-expanded', 'false'); who0.textContent = 'Preceptor'; at = back; draw(); place(); });
       row.appendChild(b); place();
     }
     var who0 = who;
