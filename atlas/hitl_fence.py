@@ -53,6 +53,59 @@ def decide(comments, head_sha, head_fecha, hoy):
     return True, f"verde: {dentro[0][1]} firmado {dentro[0][2]} sobre {head_sha[:12]}"
 
 
+def estado_revision(ok, causa):
+    """Review label only; never changes the fail-closed merge verdict."""
+    if ok:
+        return "SIGNED"
+    if causa.startswith(("sin_firma:", "linea_malformada:", "sha_no_coincide:",
+                         "fecha_fuera_de_rango:")):
+        return "PENDING_HUMAN_SIGNATURE"
+    if causa.startswith("NO_DATA"):
+        return "NO_DATA"
+    return "BLOCKED"
+
+
+def _resumen_pr(pr, head, causa, estado, hoy):
+    """GitHub Actions review guidance. Not a signature, approval or extra gate."""
+    ruta = os.environ.get("GITHUB_STEP_SUMMARY")
+    if not ruta:
+        return
+    lineas = [
+        "## HITL · review status",
+        "",
+        f"- **PR:** #{pr}",
+        f"- **Exact head:** `{head}`",
+        f"- **State:** `{estado}`",
+        f"- **Evidence:** `{causa.replace(chr(96), '')[:180]}`",
+        "",
+    ]
+    if estado == "PENDING_HUMAN_SIGNATURE":
+        lineas += [
+            "This is **pending human review**, not a failed code test.",
+            "Technical results are reported independently by `gate` and `phase`.",
+            "The required `hitl` check deliberately remains unsuccessful until an exact-head decision.",
+            "",
+            "After the Sovereign explicitly signs this exact commit, the Mesa may copy",
+            "the following **unsigned template** into the existing buzon#30 register",
+            "(with the required sign-off header and the Sovereign's actual decision):",
+            "",
+            f"`HITL: {head} web-pr-{pr} {hoy}`",
+            "",
+            "**This template is not a signature.** No AI may post it as FIRMO on its own.",
+            "Rerun this PR's own `hitl` job after the signed line is registered;",
+            "do not push another commit after signing, because the SHA would change.",
+        ]
+    elif estado == "SIGNED":
+        lineas += ["Exact-head line found; separate technical checks still apply."]
+    else:
+        lineas += ["No verified signature. Merge remains blocked; inspect the cause above."]
+    try:
+        with open(ruta, "a", encoding="utf-8") as salida:
+            salida.write("\n".join(lineas) + "\n")
+    except OSError:
+        print("hitl: NO_DATA(summary_write_failed); the signature verdict is unchanged")
+
+
 def _gh(token, *args):
     env = dict(os.environ, GH_TOKEN=token)
     r = subprocess.run(["gh", "api", *args], env=env, capture_output=True, text=True)
@@ -85,7 +138,11 @@ def main():
         return 1
     hoy = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     ok, causa = decide(comentarios, head, fecha, hoy)
+    estado = estado_revision(ok, causa)
     print(("hitl: VERDE · " if ok else "hitl: ROJO · ") + causa)
+    if estado == "PENDING_HUMAN_SIGNATURE":
+        print("review: PENDING_HUMAN_SIGNATURE · code tests are separate; merge stays blocked")
+    _resumen_pr(pr, head, causa, estado, hoy)
     return 0 if ok else 1
 
 
