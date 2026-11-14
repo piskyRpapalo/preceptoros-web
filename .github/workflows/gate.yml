@@ -133,6 +133,7 @@ jobs:
             node --test atlas/map_painter_cases.mjs
             node --test atlas/visitor_walk_cases.mjs
             node --test atlas/puros/crab_presence_cases.mjs
+            node --test atlas/puros/crab_presence_acho_cases.mjs
             node --test atlas/face_retirement_cases.mjs
             node --test atlas/retired_names_cases.mjs
             node --test atlas/f0_functions_cases.mjs
@@ -212,6 +213,7 @@ jobs:
             node atlas/walk_keys_browser.mjs
             node atlas/a11y_four_readings_browser.mjs
             node atlas/visitor_account_browser.mjs
+            node atlas/crab_presence_browser.mjs
             node atlas/visitor_eggs_browser.mjs
             node --test atlas/voice_star_cases.mjs
             node atlas/visitor_battle_browser.mjs

@@ -19,11 +19,13 @@
         if (consent !== true) { throw new Error('Explicit signing consent is required'); }
         if (!record || typeof record !== 'object' || Array.isArray(record)) { throw new Error('Invalid visit record'); }
         var fields = record.esquema === 'atlas.adopcion/1' ? ['esquema', 'tropa', 'pseudonimo', 'clave_publica'] :
-          record.esquema === 'atlas.invocacion/2' ? ['esquema', 'tc', 'seq', 'prev', 'clave_publica'] : null;
+          record.esquema === 'atlas.invocacion/2' ? ['esquema', 'tc', 'seq', 'prev', 'clave_publica'] :
+          record.esquema === 'atlas.paso/1' ? ['esquema', 'dir', 'seq', 'prev', 'clave_publica'] : null; // one walked hex, for a shared-presence authority
         if (!fields || Object.keys(record).sort().join('|') !== fields.sort().join('|') || record.clave_publica !== publicKey) { throw new Error('Visit record scope rejected'); }
         var text = JSON.stringify(record);
         if (encode.encode(text).length >= 1024) { throw new Error('Visit record exceeds its frame budget'); }
         if (record.esquema === 'atlas.invocacion/2' && (!/^tc[1-4]$/.test(record.tc) || !Number.isSafeInteger(record.seq) || record.seq < 1 || !(record.prev === 'genesis' || /^[a-f0-9]{64}$/.test(record.prev)))) { throw new Error('Invalid invocation'); }
+        if (record.esquema === 'atlas.paso/1' && (!/^(east|west|north-east|north-west|south-east|south-west)$/.test(record.dir) || !Number.isSafeInteger(record.seq) || record.seq < 1 || !(record.prev === 'genesis' || /^[a-f0-9]{64}$/.test(record.prev)))) { throw new Error('Invalid step'); }
         if (record.esquema === 'atlas.adopcion/1' && (!record.tropa || record.tropa.esquema !== 'atlas.tropa/1' || record.pseudonimo !== 'Visitor-' + seed.slice(0, 8))) { throw new Error('Invalid adoption'); }
         var signature = await root.crypto.subtle.sign('Ed25519', keys.privateKey, encode.encode(text));
         alive();
