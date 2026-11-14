@@ -60,10 +60,16 @@
       var r = sf.getBoundingClientRect(), st = stage.getBoundingClientRect(), k = r.width / sf.width;
       var cx = r.left - st.left + Number(sf.dataset.youx) * k, cy = r.top - st.top + Number(sf.dataset.youy) * k;
       var gap = 16 + 30 * Math.max(0.5, Number(sf.dataset.zoom) || 1) * k * (sf.width / (r.width || sf.width)); // the crab grows with the zoom
-      var w = box.offsetWidth, h = box.offsetHeight, left = Math.max(8, Math.min(st.width - w - 8, cx - w / 2)), up = cy - gap - h >= 8;
-      box.classList.toggle('pt-tuck', !up && cy + 14 + h > st.height - 8); // no room: it waits, never over a panel
-      box.style.left = Math.round(left) + 'px'; box.style.top = Math.round(up ? cy - gap - h : cy + 14) + 'px';
-      box.style.setProperty('--tail', Math.round(Math.max(18, Math.min(w - 18, cx - left))) + 'px'); box.classList.toggle('pt-under', !up);
+      var w = box.offsetWidth, h = box.offsetHeight;
+      var off = !isFinite(cx) || !isFinite(cy) || cx < 0 || cy < 0 || cx > st.width || cy > st.height;
+      var above = cy - gap - h, below = cy + 14, up = above >= 8;
+      var dock = off || (!up && below + h > st.height - 8);
+      // A crab off-screen must never drag the preceptor's voice over the title or outside the scene.
+      var left = dock ? 8 : Math.max(8, Math.min(Math.max(8, st.width - w - 8), cx - w / 2));
+      var top = dock ? Math.max(8, st.height - h - 8) : up ? above : below;
+      box.classList.remove('pt-tuck'); box.classList.toggle('pt-docked', dock);
+      box.style.left = Math.round(left) + 'px'; box.style.top = Math.round(top) + 'px';
+      box.style.setProperty('--tail', Math.round(Math.max(18, Math.min(w - 18, cx - left))) + 'px'); box.classList.toggle('pt-under', !up && !dock);
     }
     // news(text, who): a line that cites a result (the duel's winner from the motor's own sentence); OK goes back.
     function news(text, who, open) {
