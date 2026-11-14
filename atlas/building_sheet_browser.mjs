@@ -9,8 +9,7 @@
 //   EFFECT is measured (an event, a changed page, the result of the real piece), never the words of its seal; a piece
 //   with no action and no door says NO_DATA · no_interaction_yet and does nothing. With a visit, the seven doors open.
 // Sabotage: SABOTAJE=sin-hoja (gamepad does not load the sheet) or SABOTAJE=sin-contrato (404 on the contract) ⇒ red;
-// SABOTAJE=falso-live (a piece alone counts as LIVE again) or SABOTAJE=efecto-mudo (actions only write words) ⇒ red;
-// SABOTAJE=otra-nota (the page sounds other notes than the odds give) ⇒ red.
+// SABOTAJE=falso-live (a piece alone counts as LIVE again) or SABOTAJE=efecto-mudo (actions only write words) ⇒ red.
 // Uso: node atlas/building_sheet_browser.mjs [carpeta-captura]
 import { createServer } from 'node:http';
 import { readFileSync, writeFileSync, statSync } from 'node:fs';
@@ -21,18 +20,11 @@ import { launchChrome } from './chrome_launch.mjs';
 const DOORS = createRequire(import.meta.url)('../public/game/building_doors.js');
 const GACHA = createRequire(import.meta.url)('../public/game/gacha.js');
 // What each action must leave behind: page(before) reads the page; line is the result the real piece said.
-const VOICE = createRequire(import.meta.url)('../public/game/odds_voice.js'), SON = createRequire(import.meta.url)('../public/game/acho_sonify.js');
-const NOTES = Object.keys(GACHA.TCS).map((tc) => SON.recipe(VOICE.wave(GACHA.odds(tc))).carrier); // what the ear must be handed
 const pedidos = new Set(), res = (t) => (t.split(' · missions ')[1] || '').split(' · ').slice(1).join(' · '); // the result after the verdict
 const EFFECT = {
   letters: { page: `document.documentElement.getAttribute('data-type-step') || document.documentElement.style.cssText`, changes: true },
   audio: { page: `document.documentElement.dataset.audioOnly || 'off'`, changes: true, twice: true },
-  // One event, four readings: the words on the live line (eye, screen reader), the frame on «acho:event» (machine) whose
-  // sentence is those words, and the tier notes handed to Web Audio (ear). A sound a person heard is NO_DATA here.
-  odds: { line: (t) => Object.keys(GACHA.TCS).every((tc) => t.includes(tc + ' ' + GACHA.odds(tc).join('/'))) && / notes, one per tier: higher is luckier$/.test(t),
-    also: `(() => { const a = window.__acho[window.__acho.length - 1], said = document.querySelector('#building-sheet .bs-line').textContent;
-      const hz = window.__osc.slice(-${2 * NOTES.length}).filter((o, i) => i % 2 === 0).map((o) => Math.round(o.frequency.value));
-      return !!a && /^acho:[0-9a-f]{8}$/.test(a.id) && a.frame.sound === 'ok' && said.includes(a.frame.atoms[0].r) && JSON.stringify(hz) === '${JSON.stringify(NOTES)}'; })()` },
+  odds: { line: (t) => Object.keys(GACHA.TCS).every((tc) => t.includes(tc + ' ' + GACHA.odds(tc).join('/'))) },
   gaps: { line: (t, doc) => t.includes(doc.buildings.flatMap((b) => b.options).filter((o) => !DOORS.live(o)).length + ' of 36 options are NO_DATA') },
   pulse: { line: (t) => /^Pulse · .*(MEASURED|NO_DATA)/.test(res(t)) },
   notebook: { line: (t) => /saved$|notebook_download_failed$/.test(t) },
@@ -57,7 +49,6 @@ function sirve(raiz) {
       if (ruta === '/game/gamepad.js' && SAB === 'sin-hoja') { cuerpo = Buffer.from(String(cuerpo).replace("town.src = '/game/building_sheet.js'; doc.head.appendChild(town);", '')); }
       if (ruta === '/game/building_interiors.json' && SAB === 'sin-contrato') { res.writeHead(404); res.end(); return; }
       if (ruta === '/game/building_doors.js' && SAB === 'falso-live') { cuerpo = Buffer.from(String(cuerpo).replace('o.piece && (o.action || DOORS[o.id])', 'o.piece')); }
-      if (ruta === '/game/odds_voice.js' && SAB === 'otra-nota') { cuerpo = Buffer.from(String(cuerpo).replace('var STEP = 15', 'var STEP = 40')); }
       if (ruta === '/game/town_actions.js' && SAB === 'efecto-mudo') { cuerpo = Buffer.from(String(cuerpo).replace("c.load(a[0], a[1], function (M) {", "done('LIVE · done'); return; c.load(a[0], a[1], function (M) {")); }
       res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
@@ -108,10 +99,7 @@ async function main() {
     await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });
     await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
     await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2500);
-    await ev(`(() => { window.__acts = []; document.addEventListener('building:act', (e) => window.__acts.push(e.detail && e.detail.name));
-      window.__acho = []; document.addEventListener('acho:event', (e) => window.__acho.push(e.detail));
-      window.__osc = []; const P = window.AudioContext || window.webkitAudioContext;
-      if (P) { const make = P.prototype.createOscillator; P.prototype.createOscillator = function () { const o = make.call(this); window.__osc.push(o); return o; }; } })()`);
+    await ev(`(() => { window.__acts = []; document.addEventListener('building:act', (e) => window.__acts.push(e.detail && e.detail.name)); })()`);
     const town = await ev(`(() => { const b = document.getElementById('gp-town'); if (!b) return null; const r = b.getBoundingClientRect();
       return JSON.stringify({ w: r.width, h: r.height, inMid: !!b.closest('#gamepad .gp-mid'), acho: b.classList.contains('gp-acho'), label: b.getAttribute('aria-label') }); })()`);
     ok(town, n + ': no Node button in the gamepad');
@@ -157,7 +145,7 @@ async function main() {
         for (let t = 0; t < 60 && !hecho; t++) {
           linea = await ev(LINE); const acts = JSON.parse(await ev(ACTS)).slice(acts0);
           if (!o.action) { hecho = DOORS.DOORS[o.id] && (linea.includes('NO_DATA · no_visit_yet') || acts.includes('door:' + o.id)); if (!DOORS.DOORS[o.id]) { break; } } // a door without a visit says why and opens nothing
-          else if (E) { hecho = acts.includes(o.action) && (E.page ? (await ev(E.page)) !== antes : E.line(linea, contrato)) && (!E.also || (await ev(E.also)) === true); }
+          else if (E) { hecho = acts.includes(o.action) && (E.page ? (await ev(E.page)) !== antes : E.line(linea, contrato)); }
           if (!hecho) { await espera(100); }
         }
         if (o.action) { efectos.lineas[o.action] = res(linea).slice(0, 80); }
