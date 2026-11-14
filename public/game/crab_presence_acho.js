@@ -13,7 +13,7 @@
 (function (root) {
   'use strict';
   var WAYS = [['east', 1, 0], ['north-east', 1, -1], ['north-west', 0, -1], ['west', -1, 0], ['south-west', -1, 1], ['south-east', 0, 1]];
-  var NAMED = 3, NEAR = 8; // crabs said by name; hexes beyond which the note stops falling
+  var NAMED = 3, AUDIO_RANGE = 8; // crabs said by name; hexes beyond which the note stops falling
   function distance(a, b) { var dq = b.q - a.q, dr = b.r - a.r; return (Math.abs(dq) + Math.abs(dr) + Math.abs(dq + dr)) / 2; }
   // way(a, b) → the one of the six walking directions that points most nearly from a to b; 'here' on the same cell.
   function way(a, b) {
@@ -24,7 +24,7 @@
     return best;
   }
   function wave(o) {
-    var h = [[1, 1, 0, 0], [4 + (NEAR - Math.min(NEAR, o.distance)), 2, 0, 0]];
+    var h = [[1, 1, 0, 0], [4 + (AUDIO_RANGE - Math.min(AUDIO_RANGE, o.distance)), 2, 0, 0]];
     if (o.seal === 'LIVE') { h.push([2, 1, 1, 0]); }
     return h;
   }

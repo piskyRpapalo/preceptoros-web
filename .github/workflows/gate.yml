@@ -217,6 +217,7 @@ jobs:
             node atlas/visitor_account_browser.mjs
             node atlas/crab_presence_browser.mjs
             node atlas/shared_crabs_browser.mjs
+            node atlas/openworld_experience_browser.mjs
             node atlas/visitor_eggs_browser.mjs
             node --test atlas/voice_star_cases.mjs
             node atlas/visitor_battle_browser.mjs
