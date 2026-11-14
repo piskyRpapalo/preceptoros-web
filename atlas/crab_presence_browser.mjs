@@ -33,7 +33,7 @@ function pages(auth) {
     try {
       const ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname);
       if (ruta === '/__presence.html') { res.writeHead(200, { 'Content-Type': 'text/html' }); res.end(html); return; }
-      const f = ruta === '/__client.js' ? join(RAIZ, 'atlas/puros/crab_presence_client.js') : resolve(PUBLIC, '.' + ruta);
+      const f = ruta === '/__client.js' ? join(RAIZ, 'public/game/crab_presence_client.js') : resolve(PUBLIC, '.' + ruta);
       if (ruta !== '/__client.js' && !f.startsWith(resolve(PUBLIC))) { res.writeHead(403); res.end(); return; }
       const cuerpo = readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }

@@ -1,8 +1,10 @@
-// Seam A · many crabs in Acho (Mesa #34). NOT served. One view of the authority becomes ONE event with the same
+// Seam A · many crabs in Acho (Mesa #34). Loaded only by shared_crabs.js after the visitor's consent. One view of the authority becomes ONE event with the same
 // meaning for eye, ear, screen reader and machine, reusing state_frames.js and acho_sonify.js: no new renderer, no
 // new sound. For someone who cannot see the map this is the map: who is here, how far, which way, and whether the
 // authority still hears them.
-//   describe(view, me, F) → { ok, line, frame, others: [{ id, seal, distance, way }] } | { ok: false, cause }
+//   describe(view, me, F, before) → { ok, line, frame, others: [{ id, seal, distance, way }], news } | { ok: false, cause }
+// `before` is the `others` of the last view: with it the line also says who arrived, who came nearer or went
+// farther, who fell silent and who is gone, so a change is heard and read, never only seen.
 // The line names the nearest crabs first and counts the rest. Each named crab is one wave: a nearer crab is a higher
 // note, a STALE crab is a duller one (no upper harmonic). Pure: no clock, no randomness, no network.
 (function (root) {
@@ -23,7 +25,22 @@
     if (o.seal === 'LIVE') { h.push([2, 1, 1, 0]); }
     return h;
   }
-  function describe(view, me, F) {
+  // news(before, now) → ['crab-x arrived', 'crab-y nearer', 'crab-z farther', 'crab-w silent', 'crab-v gone'], by id.
+  function news(before, now) {
+    if (!Array.isArray(before)) { return []; }
+    var was = {}, is = {}, out = [];
+    before.forEach(function (o) { was[o.id] = o; }); now.forEach(function (o) { is[o.id] = o; });
+    Object.keys(is).sort().forEach(function (id) {
+      var a = was[id], b = is[id];
+      if (!a) { out.push(id + ' arrived'); return; }
+      if (b.distance !== a.distance) { out.push(id + (b.distance < a.distance ? ' nearer' : ' farther')); }
+      if (a.seal === 'LIVE' && b.seal === 'STALE') { out.push(id + ' silent'); }
+      if (a.seal === 'STALE' && b.seal === 'LIVE') { out.push(id + ' back'); }
+    });
+    Object.keys(was).sort().forEach(function (id) { if (!is[id]) { out.push(id + ' gone'); } });
+    return out;
+  }
+  function describe(view, me, F, before) {
     if (!view || view.esquema !== 'atlas.presencia/1' || !Array.isArray(view.crabs)) { return { ok: false, cause: 'view_not_readable' }; }
     var self = view.crabs.filter(function (c) { return c.id === me; })[0];
     if (!self) { return { ok: false, cause: 'you_are_not_in_this_view' }; }
@@ -34,11 +51,13 @@
       return o.id + ' ' + o.seal + (o.way === 'here' ? ' on your hex' : ' ' + o.distance + (o.distance === 1 ? ' hex ' : ' hexes ') + o.way);
     });
     var rest = others.length - said.length;
-    var line = 'You at ' + self.q + ', ' + self.r + ' · ' + (others.length ? others.length + (others.length === 1 ? ' other crab' : ' other crabs') + ' · ' + said.join('; ') + (rest > 0 ? '; and ' + rest + ' more' : '') : 'no other crab in sight');
+    var changed = news(before, others), hidden = view.more ? ' · ' + view.more + ' more beyond this frame' : '';
+    var line = (changed.length ? changed.slice(0, NAMED).join('; ') + ' · ' : '') + 'You at ' + self.q + ', ' + self.r + ' · ' + (others.length ? others.length + (others.length === 1 ? ' other crab' : ' other crabs') + ' · ' + said.join('; ') + (rest > 0 ? '; and ' + rest + ' more' : '') : 'no other crab in sight') + hidden;
     var frame = F.stateFrame({ id: 'presence/' + me, sentence: line, waves: others.slice(0, NAMED).map(wave) });
     if (F.valida(frame).length) { return { ok: false, cause: 'frame_breaks_the_law' }; }
-    return { ok: true, line: line, frame: frame, others: others };
+    return { ok: true, line: line, frame: frame, others: others, news: changed };
   }
-  var api = { NAMED: NAMED, distance: distance, way: way, describe: describe };
-  if (typeof module === 'object' && module.exports) { module.exports = api; } else { root.AtlasCrabPresenceAcho = api; }
-})(this);
+  var api = { NAMED: NAMED, distance: distance, way: way, news: news, describe: describe };
+  if (typeof module === 'object' && module.exports) { module.exports = api; }
+  root.AtlasCrabPresenceAcho = api;
+})(typeof globalThis === 'object' ? globalThis : this);

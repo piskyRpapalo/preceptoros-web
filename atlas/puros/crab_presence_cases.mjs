@@ -33,7 +33,7 @@ async function visitor() {
   const local = WALK.create(cells, [0, 0]);
   return { key, local,
     async sign(dir, change) {
-      const record = { esquema: P.SCHEMA, dir, seq: seq + 1, prev, clave_publica: key }, text = JSON.stringify(record);
+      const record = dir === null ? { esquema: P.BEAT, seq: seq + 1, prev, clave_publica: key } : { esquema: P.SCHEMA, dir, seq: seq + 1, prev, clave_publica: key }, text = JSON.stringify(record);
       const signature = 'ed25519:' + hex(await wc.subtle.sign('Ed25519', keys.privateKey, enc.encode(text)));
       return { record: change ? change(record) : record, signature, commit() { seq++; prev = null; return digest(text).then((h) => { prev = h; }); } };
     } };
@@ -45,7 +45,7 @@ async function world(n) {
 }
 async function walk(w, v, dir, tick) {
   const m = await v.sign(dir), r = await P.step(w.state, { ...m, tick }, LAW, deps);
-  if (r.ok) { w.state = r.state; await m.commit(); v.local.step(dir); }
+  if (r.ok) { w.state = r.state; await m.commit(); if (dir !== null) { v.local.step(dir); } }
   return r;
 }
 
@@ -141,4 +141,51 @@ test('the law is not invented here: without the three numbers the piece refuses 
 test('pure: no clock, no randomness, no network, no storage', () => {
   const src = readFileSync(new URL('./crab_presence.js', import.meta.url), 'utf8');
   assert.doesNotMatch(src, /Math\.random|Date\.now|new Date|fetch\(|XMLHttpRequest|WebSocket|localStorage|setTimeout|setInterval/);
+});
+
+// Round 3 (Mesa #34): the still visitor, the cell of arrival and the crowded place.
+test('a still visitor stays LIVE with a signed beat on the same chain; a beat moves nothing', async () => {
+  const w = await world(2), [a, b] = w.vs;
+  await walk(w, a, 'east', 1);
+  for (const t of [2, 3, 4, 5, 6, 7]) { const r = await walk(w, a, null, t); assert.equal(r.ok, true, 'beat at ' + t); assert.deepEqual(r.at, { q: 1, r: 0 }); }
+  const crabs = P.view(w.state, 7, LAW).crabs;
+  assert.deepEqual(crabs.map((c) => [c.q, c.r, c.seal]), [[1, 0, 'LIVE']]); // A beat and is LIVE; B never signed and is gone
+  assert.equal((await walk(w, a, 'west', 8)).ok, true);                      // the chain goes on through beats and steps
+});
+test('sabotage: a beat is not replayed, not forged, not sent too often, and carries nothing else', async () => {
+  const w = await world(1), [a] = w.vs, law = { ...LAW, beat_gap: 2 };
+  const send = async (m, tick) => P.step(w.state, { ...m, tick }, law, deps);
+  const first = await a.sign(null); let r = await send(first, 1);
+  assert.equal(r.ok, true); w.state = r.state; await first.commit();
+  assert.equal((await send(first, 3)).cause, 'replayed_step');
+  assert.equal((await send(await a.sign(null), 2)).cause, 'beat_too_soon');
+  assert.equal((await send(await a.sign(null, (x) => ({ ...x, dir: 'east' })), 3)).cause, 'record_scope_rejected');
+  assert.equal((await send({ record: (await a.sign(null)).record, signature: 'ed25519:' + '0'.repeat(128) }, 3)).cause, 'signature_rejected');
+  assert.equal((await send(await a.sign(null), 3)).ok, true);
+  await assert.rejects(() => P.step(w.state, { ...first, tick: 9 }, { ...LAW, beat_gap: -1 }, deps), /law_not_signed/);
+});
+test('a crab joins on a cell of the floor, or not at all', async () => {
+  const v = await visitor();
+  const on = await P.open(P.empty(), { key: v.key, consent: true, tick: 0, start: [1, -1] }, LAW, deps);
+  assert.equal(on.ok, true);
+  assert.deepEqual(P.view(on.state, 0, LAW).crabs.map((c) => [c.q, c.r]), [[1, -1]]);
+  assert.equal((await P.open(P.empty(), { key: v.key, consent: true, tick: 0, start: [99, 99] }, LAW, deps)).cause, 'start_not_on_the_floor');
+  assert.equal((await P.open(P.empty(), { key: v.key, consent: true, tick: 0, start: 'here' }, LAW, deps)).cause, 'visit_malformed');
+});
+test('a crowded place is read by region: nearest first, one frame, the rest counted, the frame never grows', async () => {
+  const big = { stale_after: 3, gone_after: 6, max_visits: 60 }; let state = P.empty(); const spots = [];
+  for (let q = -3; q <= 3; q++) { for (let r = -3; r <= 3; r++) { if (!(q === 2 && r === 0)) { spots.push([q, r]); } } }
+  for (const s of spots) { const v = await visitor(); state = (await P.open(state, { key: v.key, consent: true, tick: 0, start: s }, big, deps)).state; }
+  assert.throws(() => P.view(state, 0, big), /view_over_budget/);                 // 48 crabs do not fit one frame
+  const near = P.view(state, 0, big, { q: 0, r: 0, radius: 1 });
+  assert.equal(near.crabs.length, 7); assert.equal(near.more, undefined);         // the cell and its six neighbours
+  assert.deepEqual([near.crabs[0].q, near.crabs[0].r], [0, 0]);
+  const wide = P.view(state, 0, big, { q: 0, r: 0, radius: 9 });
+  assert.ok(enc.encode(JSON.stringify(wide)).length < 1024);
+  assert.equal(wide.crabs.length + wide.more, 48);
+  assert.ok(wide.crabs.length >= 17 && wide.more > 0);
+  const d = (c) => (Math.abs(c.q) + Math.abs(c.r) + Math.abs(c.q + c.r)) / 2;
+  for (let i = 1; i < wide.crabs.length; i++) { assert.ok(d(wide.crabs[i]) >= d(wide.crabs[i - 1])); }
+  assert.equal(P.view(state, 0, big, { q: 50, r: 50, radius: 2 }).crabs.length, 0);
+  assert.throws(() => P.view(state, 0, big, { q: 0, r: 0, radius: -1 }), /region_malformed/);
 });

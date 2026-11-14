@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-const D = require('./crab_presence_acho.js'), F = require('../../public/game/state_frames.js'), S = require('../../public/game/acho_sonify.js');
+const D = require('../../public/game/crab_presence_acho.js'), F = require('../../public/game/state_frames.js'), S = require('../../public/game/acho_sonify.js');
 const C = require('../../public/game/acho_claim.js'), WALK = require('../../public/game/visitor_walk.js');
 const view = (crabs) => ({ esquema: 'atlas.presencia/1', tick: 4, crabs });
 const me = { id: 'crab-00000001', q: 0, r: 0, seal: 'LIVE' };
@@ -48,6 +48,22 @@ test('sabotage: a view that is not the authority\'s, or that does not hold you, 
   assert.deepEqual(D.describe({ crabs: [me] }, me.id, F), { ok: false, cause: 'view_not_readable' });
   assert.deepEqual(D.describe(view([{ ...me, id: 'crab-zzzzzzzz' }]), me.id, F), { ok: false, cause: 'you_are_not_in_this_view' });
 });
+test('a change is said: who arrived, came nearer, went farther, fell silent, came back, is gone', () => {
+  const a = (q, seal) => ({ id: 'crab-aaaaaaaa', q, r: 0, seal }), b = { id: 'crab-bbbbbbbb', q: 0, r: 3, seal: 'LIVE' };
+  const first = D.describe(view([me, a(4, 'LIVE')]), me.id, F);
+  assert.deepEqual(first.news, []);
+  const say = (crabs, before) => D.describe(view([me, ...crabs]), me.id, F, before);
+  assert.deepEqual(say([a(2, 'LIVE')], first.others).news, ['crab-aaaaaaaa nearer']);
+  assert.match(say([a(2, 'LIVE')], first.others).line, /^crab-aaaaaaaa nearer · You at 0, 0 · 1 other crab · crab-aaaaaaaa LIVE 2 hexes east$/);
+  assert.deepEqual(say([a(6, 'LIVE')], first.others).news, ['crab-aaaaaaaa farther']);
+  assert.deepEqual(say([a(4, 'STALE')], first.others).news, ['crab-aaaaaaaa silent']);
+  assert.deepEqual(say([a(4, 'LIVE')], say([a(4, 'STALE')], first.others).others).news, ['crab-aaaaaaaa back']);
+  assert.deepEqual(say([a(4, 'LIVE'), b], first.others).news, ['crab-bbbbbbbb arrived']);
+  assert.deepEqual(say([], first.others).news, ['crab-aaaaaaaa gone']);
+  assert.equal(say([], first.others).line, 'crab-aaaaaaaa gone · You at 0, 0 · no other crab in sight');
+  assert.deepEqual(say([a(4, 'LIVE')], first.others).news, []);       // nothing changed, nothing is said twice
+  assert.match(D.describe({ ...view([me, a(1, 'LIVE')]), more: 5 }, me.id, F).line, / · 5 more beyond this frame$/);
+});
 test('pure: no clock, no randomness, no network', () => {
-  assert.doesNotMatch(readFileSync(new URL('./crab_presence_acho.js', import.meta.url), 'utf8'), /Math\.random|Date\.now|new Date|fetch\(|XMLHttpRequest/);
+  assert.doesNotMatch(readFileSync(new URL('../../public/game/crab_presence_acho.js', import.meta.url), 'utf8'), /Math\.random|Date\.now|new Date|fetch\(|XMLHttpRequest/);
 });
