@@ -152,7 +152,7 @@ def svg(g):
 def ficheros():
     g = rejilla()
     return {
-        "mark.svg": svg(g).encode("utf-8"),
+        # [deprecated 2026-11-14] mark.svg (the dot grid face) is retired: every page uses icon-192.png (DEPRECATED.json brand.mark-svg).
         "icon-192.png": png(g, 192, 192, 0.86),
         "icon-512.png": png(g, 512, 512, 0.86),
         # maskable: Android crops to a circle of radius 0.40 * side; the drawing stays inside it.

@@ -113,6 +113,14 @@
       "where": "atlas/bake_chunks.mjs (cellWaterHeights)",
       "status": "kept_unused",
       "why": "Sovereign 2026-11-14: one colour, no holes, so crabs move freely."
+    },
+    {
+      "id": "brand.mark-svg",
+      "deprecated": "2026-11-14",
+      "replaced_by": "public/assets/icon-192.png (the app's Android icon, same bytes)",
+      "where": "public/assets/mark.svg, bin/icons_from_emblem.py",
+      "status": "gone",
+      "why": "Sovereign 2026-11-14: the dot-grid mark looked deformed at small sizes; one face everywhere, the one the app installs with."
     }
   ]
 }
