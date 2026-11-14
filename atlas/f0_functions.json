@@ -35,6 +35,36 @@
    ]
   },
   {
+   "id": "shared-crabs",
+   "scripts": [
+    "/game/shared_crabs.js"
+   ],
+   "globals": [
+    "AtlasSharedCrabs"
+   ],
+   "guards": [
+    {
+     "file": "atlas/shared_crabs_browser.mjs",
+     "text": "two devices must be two different crabs"
+    }
+   ]
+  },
+  {
+   "id": "openworld-experience",
+   "scripts": [
+    "/game/openworld_experience.js"
+   ],
+   "globals": [
+    "AtlasOpenworldExperience"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_experience_browser.mjs",
+     "text": "controls cannot open and close with Escape"
+    }
+   ]
+  },
+  {
    "id": "ephemeral-title",
    "scripts": [
     "/game/visitor_play.js"

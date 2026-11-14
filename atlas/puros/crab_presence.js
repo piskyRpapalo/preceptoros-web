@@ -43,7 +43,7 @@
 
   function empty() { return { visits: {}, events: [], near: {}, asks: {}, lit: null, n: 0 }; }
   function copy(state) {
-    var out = { visits: {}, events: (state.events || []).slice(), near: Object.assign({}, state.near), asks: Object.assign({}, state.asks), lit: state.lit || null, n: state.n || 0 };
+    var out = { visits: {}, events: (state.events || []).slice(), near: Object.assign({}, state['near']), asks: Object.assign({}, state.asks), lit: state.lit || null, n: state.n || 0 };
     Object.keys(state.visits).forEach(function (k) { var v = state.visits[k]; out.visits[k] = { q: v.q, r: v.r, seq: v.seq, last: v.last, seen: v.seen, id: v.id, beat: v.beat }; });
     return out;
   }
@@ -56,7 +56,7 @@
     // An ask dies with its time, or with either of its two crabs: a cooperation is never finished by a ghost.
     var alive = {}; Object.keys(out.visits).forEach(function (k) { alive[out.visits[k].id] = 1; });
     Object.keys(out.asks).forEach(function (id) { var a = out.asks[id]; if (!alive[a.from] || !alive[a.to] || (law.coop_wait !== undefined && tick - a.tick > law.coop_wait)) { delete out.asks[id]; } });
-    Object.keys(out.near).forEach(function (pair) { var w = pair.split('+'); if (!alive[w[0]] || !alive[w[1]]) { delete out.near[pair]; } });
+    Object.keys(out['near']).forEach(function (pair) { var w = pair.split('+'); if (!alive[w[0]] || !alive[w[1]]) { delete out['near'][pair]; } });
     return out;
   }
 
@@ -128,9 +128,9 @@
       var o = s.visits[keys[i]];
       if (o === v) { continue; }
       var pair = [v.id, o.id].sort().join('+'), d = dist(v, o);
-      if (d > law.meet_radius) { delete s.near[pair]; continue; }
-      if (s.near[pair] || !live(o, tick, law)) { continue; }
-      s.near[pair] = 1;
+      if (d > law.meet_radius) { delete s['near'][pair]; continue; }
+      if (s['near'][pair] || !live(o, tick, law)) { continue; }
+      s['near'][pair] = 1;
       out.push(await record(s, { k: 'meet', who: [v.id, o.id].sort(), d: d, tick: tick }, deps));
     }
     return out;
