@@ -124,8 +124,12 @@
     if (visit) {
       visit.addEventListener('visitor:render', function (event) {
         var now = snapshot(event.detail && event.detail.state), report = change(previous, now);
+        // A step updates the status and visit count, but should never open a popup
+        // every 260 ms while the crab walks. Popup only for resources and troops.
+        var notable = !!now && (!previous || now.copper !== previous.copper ||
+          now.light !== previous.light || now.troops !== previous.troops);
         previous = now;
-        if (report) say('Preceptor', report, now !== null);
+        if (report) say('Preceptor', report, notable);
         updatePosition();
       });
       visit.addEventListener('visitor:end', function () { previous = null; say('Preceptor', 'This visit ended. Its crab cannot sign for a node.', true); });
