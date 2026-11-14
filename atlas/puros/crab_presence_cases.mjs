@@ -32,6 +32,12 @@ async function visitor() {
   let seq = 0, prev = 'genesis';
   const local = WALK.create(cells, [0, 0]);
   return { key, local,
+    // rec(fields, change): any record of the chain (an ask, a yes), signed as the page would sign it.
+    async rec(fields, change) {
+      const record = { ...fields, seq: seq + 1, prev, clave_publica: key }, text = JSON.stringify(record);
+      const signature = 'ed25519:' + hex(await wc.subtle.sign('Ed25519', keys.privateKey, enc.encode(text)));
+      return { record: change ? change(record) : record, signature, commit() { seq++; prev = null; return digest(text).then((h) => { prev = h; }); } };
+    },
     async sign(dir, change) {
       const record = dir === null ? { esquema: P.BEAT, seq: seq + 1, prev, clave_publica: key } : { esquema: P.SCHEMA, dir, seq: seq + 1, prev, clave_publica: key }, text = JSON.stringify(record);
       const signature = 'ed25519:' + hex(await wc.subtle.sign('Ed25519', keys.privateKey, enc.encode(text)));
@@ -188,4 +194,123 @@ test('a crowded place is read by region: nearest first, one frame, the rest coun
   for (let i = 1; i < wide.crabs.length; i++) { assert.ok(d(wide.crabs[i]) >= d(wide.crabs[i - 1])); }
   assert.equal(P.view(state, 0, big, { q: 50, r: 50, radius: 2 }).crabs.length, 0);
   assert.throws(() => P.view(state, 0, big, { q: 0, r: 0, radius: -1 }), /region_malformed/);
+});
+
+// Round 4 · COOP-01 (Mesa #34): two crabs meet, and light the beacon together, once.
+const COOP = { stale_after: 3, gone_after: 6, max_visits: 8, meet_radius: 1, coop_radius: 2, coop_wait: 4 }; // a FIXTURE, not a law
+const cdeps = { ...deps, beacon: { q: -2, r: 1 } };
+async function pair(startA = [-1, 0], startB = [-2, 2]) {
+  let state = P.empty(); const vs = [], ids = [];
+  for (const start of [startA, startB]) { const v = await visitor(); const o = await P.open(state, { key: v.key, consent: true, tick: 0, start }, COOP, cdeps); assert.equal(o.ok, true); state = o.state; ids.push(state.visits[v.key].id); vs.push(v); }
+  return { state, a: vs[0], b: vs[1], ida: ids[0], idb: ids[1] };
+}
+const send = async (w, m, tick, law = COOP) => { const r = await P.step(w.state, { ...m, tick }, law, cdeps); if (r.ok) { w.state = r.state; await m.commit(); } return r; };
+const ask = (w) => w.a.rec({ esquema: P.ASK, accion: 'faro', con: w.idb });
+
+test('a meeting is one event for both: said once while they stay near, said again only after they part', async () => {
+  const w = await pair([0, 0], [3, -1]);                       // 3 hexes apart
+  let r = await send(w, await w.a.sign('east'), 1);            // A to 1,0: still 2 from B
+  assert.equal(r.met, undefined);
+  r = await send(w, await w.b.sign('west'), 1);                // B to 2,-1: now 1 from A
+  assert.equal(r.met.length, 1);
+  const e = r.met[0];
+  assert.deepEqual([e.k, e.who, e.d, e.tick], ['meet', [w.ida, w.idb].sort(), 1, 1]);
+  assert.match(e.id, /^ev-[0-9a-f]{8}$/);
+  const seenByA = P.view(w.state, 1, COOP, { q: 1, r: 0, radius: 5 }), seenByB = P.view(w.state, 1, COOP, { q: 2, r: -1, radius: 5 });
+  assert.deepEqual(seenByA.events, seenByB.events);           // one event, the same for both
+  assert.equal(seenByA.events[0].id, e.id);
+  assert.equal((await send(w, await w.a.sign('north-east'), 2)).met, undefined);   // still near: not said twice
+  await send(w, await w.a.sign('west'), 2); await send(w, await w.a.sign('west'), 2); // A walks away
+  r = await send(w, await w.a.sign('east'), 3); r = r.met ? r : await send(w, await w.a.sign('east'), 3);
+  assert.equal(r.met.length, 1); assert.notEqual(r.met[0].id, e.id);               // they parted and met again
+  assert.equal((await send(await pair([0, 0], [1, 0]), await (await visitor()).sign('east'), 1)).cause, 'visit_unknown');
+});
+test('without a meeting radius in the law nobody is said to have met', async () => {
+  const w = await pair([0, 0], [1, -1]);
+  const r = await P.step(w.state, { ...(await w.a.sign('north-east')), tick: 1 }, LAW, cdeps);
+  assert.equal(r.ok, true); assert.equal(r.met, undefined);
+});
+test('A asks, B says yes, the authority lights the beacon ONCE and both read the same event', async () => {
+  const w = await pair();
+  const q = await send(w, await ask(w), 1);
+  assert.equal(q.ok, true); assert.match(q.ask, /^ask-[0-9a-f]{8}$/);
+  assert.deepEqual(P.view(w.state, 1, COOP).asks, [{ id: q.ask, from: w.ida, to: w.idb }]);
+  assert.equal(P.view(w.state, 1, COOP).lit, undefined);     // one decision lights nothing
+  const y = await send(w, await w.b.rec({ esquema: P.YES, peticion: q.ask }), 2);
+  assert.equal(y.ok, true);
+  assert.deepEqual([y.event.k, y.event.who, y.event.cell, y.event.tick], ['faro', [w.ida, w.idb], [-2, 1], 2]);
+  const va = P.view(w.state, 2, COOP, { q: -1, r: 0, radius: 6 }), vb = P.view(w.state, 2, COOP, { q: -2, r: 2, radius: 6 });
+  assert.equal(va.lit, y.event.id); assert.equal(vb.lit, y.event.id);
+  assert.deepEqual(va.events, vb.events);
+  assert.equal(va.asks, undefined);
+  assert.ok(enc.encode(JSON.stringify(va)).length < 1024);
+  assert.equal(JSON.stringify(va).includes(w.a.key), false);
+  // The crabs did not move, earned nothing and hold nothing: the state has no copper, no land, no grant.
+  assert.deepEqual(Object.keys(w.state).sort(), ['asks', 'events', 'lit', 'n', 'near', 'visits']);
+  assert.deepEqual(va.crabs.map((c) => [c.q, c.r]).sort(), [[-1, 0], [-2, 2]].sort());
+});
+test('sabotage: the beacon cannot be cheated', async () => {
+  const lit = (w) => P.view(w.state, 9, { ...COOP, gone_after: 99, stale_after: 98 }).lit;
+  let w = await pair(), q = await send(w, await ask(w), 1);
+  // no consent of the second crab: the asker says yes to itself, a third crab says yes, nobody says yes
+  assert.equal((await send(w, await w.a.rec({ esquema: P.YES, peticion: q.ask }), 2)).cause, 'not_the_partner');
+  const c = await visitor(); w.state = (await P.open(w.state, { key: c.key, consent: true, tick: 1, start: [-2, 0] }, COOP, cdeps)).state;
+  assert.equal((await send(w, await c.rec({ esquema: P.YES, peticion: q.ask }), 2)).cause, 'not_the_partner');
+  assert.equal(lit(w), undefined);
+  // a forged yes: B's key named, another hand signing; and a yes changed after signing
+  assert.equal((await send(w, await c.rec({ esquema: P.YES, peticion: q.ask }, (r) => ({ ...r, clave_publica: w.b.key })), 2)).cause, 'signature_rejected');
+  assert.equal((await send(w, await w.b.rec({ esquema: P.YES, peticion: 'ask-00000000' }, (r) => ({ ...r, peticion: q.ask })), 2)).cause, 'signature_rejected');
+  assert.equal((await send(w, await w.b.rec({ esquema: P.YES, peticion: 'ask-00000000' }), 2)).cause, 'request_unknown');
+  assert.equal(lit(w), undefined);
+  // the true yes lights it; the same packet again, a second yes, and a second ask do not light it twice
+  const yes = await w.b.rec({ esquema: P.YES, peticion: q.ask }), y = await send(w, yes, 2);
+  assert.equal(y.ok, true);
+  assert.equal((await P.step(w.state, { ...yes, tick: 3 }, COOP, cdeps)).cause, 'replayed_step');
+  assert.equal((await send(w, await w.b.rec({ esquema: P.YES, peticion: q.ask }), 3)).cause, 'already_lit');
+  assert.equal((await send(w, await ask(w), 3)).cause, 'already_lit');
+  assert.equal(lit(w), y.event.id);
+  assert.equal(w.state.events.filter((e) => e.k === 'faro').length, 1);
+  // an old sequence and a replayed ask
+  w = await pair(); const first = await ask(w); q = await send(w, first, 1);
+  assert.equal((await P.step(w.state, { ...first, tick: 1 }, COOP, cdeps)).cause, 'replayed_step');
+  assert.equal((await send(w, await w.a.rec({ esquema: P.ASK, accion: 'faro', con: w.idb }, (r) => ({ ...r, seq: 1 })), 1)).cause, 'replayed_step');
+  // out of the radius: the asker, then the partner, then the partner who walked away before saying yes
+  w = await pair([1, 0], [-2, 2]); assert.equal((await send(w, await ask(w), 1)).cause, 'too_far_from_the_beacon');
+  w = await pair([-1, 0], [1, 1]); assert.equal((await send(w, await ask(w), 1)).cause, 'partner_too_far');
+  w = await pair([-1, 0], [-1, 1]); q = await send(w, await ask(w), 1); assert.equal(q.ok, true);
+  for (const d of ['east', 'east']) { assert.equal((await send(w, await w.b.sign(d), 1)).ok, true); }     // B walks to 1,1: 3 from the beacon
+  assert.equal((await send(w, await w.b.rec({ esquema: P.YES, peticion: q.ask }), 2)).cause, 'too_far_from_the_beacon');
+  assert.equal(lit(w), undefined);
+  // too late, and a disconnection during the cooperation
+  w = await pair(); q = await send(w, await ask(w), 1); await send(w, await w.a.sign(null), 4); await send(w, await w.b.sign(null), 4);
+  assert.equal((await send(w, await w.b.rec({ esquema: P.YES, peticion: q.ask }), 6)).cause, 'request_unknown'); // the ask died with its time
+  w = await pair(); q = await send(w, await ask(w), 1); await send(w, await w.b.sign(null), 3);                 // A falls silent after asking
+  assert.equal((await send(w, await w.b.rec({ esquema: P.YES, peticion: q.ask }), 4)).cause, 'partner_silent');
+  await send(w, await w.b.sign(null), 6);
+  assert.equal((await send(w, await w.b.rec({ esquema: P.YES, peticion: q.ask }), 7)).cause, 'request_unknown'); // A is forgotten: its ask is gone too
+  assert.equal(lit(w), undefined);
+  // an expired identity asks or answers: unknown, never a ghost's success
+  w = await pair(); q = await send(w, await ask(w), 1);
+  assert.equal((await P.step(P.forget(w.state, 20, COOP), { ...(await w.b.rec({ esquema: P.YES, peticion: q.ask })), tick: 20 }, COOP, cdeps)).cause, 'visit_unknown');
+  // a silent partner cannot be asked; a crab cannot ask itself; an unknown crab cannot be asked; other actions do not exist
+  w = await pair(); await send(w, await w.a.sign(null), 3);
+  assert.equal((await send(w, await ask(w), 3)).cause, 'partner_silent');
+  w = await pair();
+  assert.equal((await send(w, await w.a.rec({ esquema: P.ASK, accion: 'faro', con: w.ida }), 1)).cause, 'not_the_partner');
+  assert.equal((await send(w, await w.a.rec({ esquema: P.ASK, accion: 'faro', con: 'crab-00000000' }), 1)).cause, 'partner_unknown');
+  assert.equal((await send(w, await w.a.rec({ esquema: P.ASK, accion: 'claim_land', con: w.idb }), 1)).cause, 'record_scope_rejected');
+  assert.equal((await send(w, await w.a.rec({ esquema: P.ASK, accion: 'faro', con: w.idb, copper: 100 }), 1)).cause, 'record_scope_rejected');
+  // no cooperation in a law that does not name it, or without a beacon
+  assert.equal((await send(w, await ask(w), 1, LAW)).cause, 'coop_not_in_this_law');
+  assert.equal((await P.step(w.state, { ...(await ask(w)), tick: 1 }, COOP, deps)).cause, 'coop_not_in_this_law');
+});
+test('the view still fits one frame with a meeting, an ask and the lit beacon in it', async () => {
+  const w = await pair([-1, 0], [-2, 1]);
+  await send(w, await w.a.sign('west'), 1); await send(w, await w.a.sign('east'), 1);
+  const q = await send(w, await ask(w), 1);
+  assert.ok(enc.encode(JSON.stringify(P.view(w.state, 1, COOP, { q: 0, r: 0, radius: 9 }))).length < 1024);
+  await send(w, await w.b.rec({ esquema: P.YES, peticion: q.ask }), 2);
+  const v = P.view(w.state, 2, COOP, { q: 0, r: 0, radius: 9 });
+  assert.ok(enc.encode(JSON.stringify(v)).length < 1024);
+  assert.ok(v.events.length <= 3);
 });
