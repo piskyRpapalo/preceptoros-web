@@ -26,12 +26,15 @@
 
   // The four bands (sea, sand, moss, rock), house tokens only, each with a pattern.
   function bands() {
-    var N = T.NEUTRAL, F = T.FRONT_DOOR, ocean = rgbOf(N.ocean), cyan = rgbOf(N.cyan), paper = rgbOf(N.paper);
+    var N = T.NEUTRAL, ocean = rgbOf(N.ocean), cyan = rgbOf(N.cyan), paper = rgbOf(N.paper);
+    // All walkable land shares one neutral base. Elevation/pattern carry terrain type;
+    // LIVE, STALE and signature colours must not be mistaken for territorial ownership.
+    var land = mix(paper, rgbOf(N.ink), 0.08);
     return [
-      { h: 0, kind: 'water', pattern: 'waves', base: mix(mix(cyan, rgbOf(F['FIRMADO.base']), 0.4), ocean, 0.08) },
-      { h: 1, kind: 'sand', pattern: 'solid', base: mix(rgbOf(F['PROPUESTA.base']), paper, 0.38) },
-      { h: 2, kind: 'moss', pattern: 'hatch', base: mix(rgbOf(F['LIVE.base']), rgbOf(N.ink), 0.12) },
-      { h: 3, kind: 'rock', pattern: 'cross', base: mix(rgbOf(F['FIRMADO.base']), paper, 0.42) }];
+      { h: 0, kind: 'water', pattern: 'waves', base: mix(cyan, ocean, 0.08) },
+      { h: 1, kind: 'sand', pattern: 'solid', base: land },
+      { h: 2, kind: 'moss', pattern: 'hatch', base: land },
+      { h: 3, kind: 'rock', pattern: 'cross', base: land }];
   }
   function bandOf(cell) { return cell[3] === 'water' ? 0 : Math.max(1, Math.min(3, cell[2])); }
 
