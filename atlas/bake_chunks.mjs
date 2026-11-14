@@ -15,10 +15,15 @@ const OUT = new URL('../public/', import.meta.url);
 
 // Integer hash (xorshift-multiply on 32 bits): the floor detail comes from (seed, q, r) only.
 function h32(seed, q, r) { let x = (seed ^ Math.imul(q, 374761393) ^ Math.imul(r, 668265263)) >>> 0; x = Math.imul(x ^ (x >>> 13), 1274126177) >>> 0; return (x ^ (x >>> 16)) >>> 0; }
-function cell(q, r) {
+// One floor (Sovereign, 2026-11-14): one colour, no holes, no steps, so a crab can walk anywhere. The colour of the land
+// now belongs to the node's own buildings (map_chunks.js city). [deprecated 2026-11-14] the water-and-heights floor
+// below is kept only as the record of what was served before (DEPRECATED.json map.floor-water-heights).
+function cell(q, r) { return [q, r, 1, 'floor']; }
+// eslint-disable-next-line no-unused-vars
+function cellWaterHeights(q, r) {
   const d = C.dist(q, r), n = h32(SEED, q, r) % 100;
-  if (d <= 3) return [q, r, 1, 'floor'];                                     // the cabin clearing is always walkable
-  const h = n < 22 + Math.min(d, 20) ? 0 : 1 + (n % 3);                      // water grows toward the edge of the known sea
+  if (d <= 3) return [q, r, 1, 'floor'];
+  const h = n < 22 + Math.min(d, 20) ? 0 : 1 + (n % 3);
   return [q, r, h, h === 0 ? 'water' : 'floor'];
 }
 const sha = (s) => createHash('sha256').update(s).digest('hex');

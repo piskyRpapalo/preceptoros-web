@@ -11,7 +11,7 @@
     var detail = event.detail, state = detail.state; cur = detail;
     detail.squad = state.troops.map(function (x) { return x.adopcion && x.adopcion.tropa; }); // the House board draws these (visitor_view.js)
     var legend = doc.createElement('p'); legend.id = 'house-fights';
-    legend.textContent = 'Fights: walk to a grey NPC building on the map and challenge it. Practice rules · balance NO_DATA. No rating or loot. Squad limit 10.';
+    legend.textContent = 'Fights: NO_DATA · the grey NPC buildings were retired from the map and no new rival is built yet. Squad limit 10.';
     detail.controls.append(legend); offer();
   });
   async function fight(placeId, button, mk) {

@@ -1,8 +1,7 @@
 // P4 · the 2.5D floor of the one map (odd/tasks/mapa-25d-aldea.md F3/F4): baked chunks become hex prisms, placed by
 // colonia_pagina geometry (cx, cy, k, turn) + HexProjection. Each chunk is also a Acho frame < 1,024 B. Deterministic;
 // house tokens only, a pattern per band (colour never the only cue); reduced motion: the sea stands still.
-// Solid floor first (Sovereign, 2026-11-08): the walkable sand is ONE flat colour, no texture and no neighbour shade, so
-// every raised hexagon (moss, rock, a building) reads against it. Its cue is being the lowest land; texture comes later.
+// One flat floor (Sovereign, 2026-11-08 and 2026-11-14): one colour, and no side face where a neighbour hides it.
 (function (root) {
   'use strict';
   var common = typeof module === 'object' && module.exports;
@@ -87,6 +86,8 @@
       for (var i = 0; i < 6; i++) {
         var a = corner[i], e = corner[(i + 1) % 6], nx = (a[1] + e[1]) / 2, ny = -(a[0] + e[0]) / 2;
         if ((a[1] + e[1]) / 2 <= 0) { continue; }
+        var nd = NB[(i + 1) % 6], nb = o.at[(c[0] + nd[0]) + ',' + (c[1] + nd[1])];
+        if (nb && height(nb) >= hh) { continue; }
         var len = Math.sqrt(nx * nx + ny * ny) || 1, dot = Math.max(0, -(nx / len) * LIGHT[0] - (-(ny / len)) * LIGHT[1] * 0.4);
         g.fillStyle = css(shade(b.base, (0.38 + 0.4 * dot) * o.lit));
         g.beginPath(); g.moveTo(x + a[0], top + a[1]); g.lineTo(x + e[0], top + e[1]);
