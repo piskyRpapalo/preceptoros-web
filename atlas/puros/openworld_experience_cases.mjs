@@ -81,3 +81,13 @@ test('the new layer reuses native walkers without a second movement engine, netw
   assert.match(css, /forced-colors/);
   assert.match(css, /min-height:48px/);
 });
+
+test('neutral ground uses the exact same house colour across all land heights', () => {
+  const floor = require('../../public/game/map_painter.js').bands();
+  const land = floor.filter(x => x.kind !== 'water');
+  assert.equal(new Set(land.map(x => JSON.stringify(x.base))).size, 1,
+    'all walkable ground must use the same colour before ownership');
+  assert.notDeepEqual(floor.find(x => x.kind === 'water').base, land[0].base,
+    'water must remain distinguishable');
+  assert.deepEqual(land.map(x => x.pattern), ['solid', 'hatch', 'cross']);
+});
