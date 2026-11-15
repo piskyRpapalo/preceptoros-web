@@ -160,9 +160,41 @@
       (detail.squad || []).slice(-6).forEach(function (x) { squad.append(card(doc, x)); });
       if (ring) { ring.before(squad); } else { c.append(squad); }
     }
+    parts(doc, c, s, detail);
+  }
+  // The army in three parts (odd/tasks/noche-8nov-tanda.md A1, signed; Sovereign 2026-11-15: «the summons on top, they are
+  // the most beautiful»): the call (the eggs, each with its tier's silhouette and its odds, the nests), the workbench (the
+  // purse that pays and the newest wave's own math beside its turning figure), the cells (one energy cell per wave).
+  // Only the order and the frames change: every button is the one visitor_play.js drew, with its own listener.
+  function hint(tier) { // the silhouette of a tier: tc1 has 2 harmonics … tc4 has 5; fixed shapes, not the wave you will get
+    var n = tier + 1, h = []; for (var k = 1; k <= n; k++) { h.push([k, 1 / k, (k % 2 ? 1 : 0.6) / k, k * 37]); } return figure({ armonicos: h });
+  }
+  function svgOf(doc, d, cls) { var NS = 'http://www.w3.org/2000/svg', s = doc.createElementNS(NS, 'svg'), p = doc.createElementNS(NS, 'path'); s.setAttribute('viewBox', '0 0 100 100'); s.setAttribute('aria-hidden', 'true'); s.setAttribute('class', cls); p.setAttribute('d', d); s.append(p); return s; }
+  function part(doc, cls, title, said) { var sec = doc.createElement('section'), h = doc.createElement('h3'), p = doc.createElement('p'); sec.className = 'part ' + cls; h.textContent = title; p.className = 'said'; p.textContent = said; sec.append(h, p); return sec; }
+  function parts(doc, c, s, detail) {
+    if (c.querySelector(':scope > .part')) { return; }
+    var call = part(doc, 'call', 'The call', 'Summon a wave: an egg gestates, then hatches into your army.');
+    [].forEach.call(c.querySelectorAll('.egg'), function (b) {
+      var tier = Number(b.id.slice(-1)) || 1, odds = b.nextElementSibling && b.nextElementSibling.classList.contains('odds') ? b.nextElementSibling : null, row = doc.createElement('div');
+      row.className = 'egg-row'; b.prepend(svgOf(doc, hint(tier), 'hint')); row.append(b); if (odds) { row.append(odds); } call.append(row);
+    });
+    [].forEach.call(c.querySelectorAll('.nest'), function (b) { call.append(b); });
+    var bench = part(doc, 'bench', 'The workbench', 'What you hold pays for summons; each wave is its own math.'), purse = c.querySelector(':scope > .purse');
+    if (purse) { bench.append(purse); }
+    var last = s.troops.length ? (detail.squad || [])[(detail.squad || []).length - 1] : null, h = last && last.armonicos;
+    if (h && h.length) {
+      var mathBox = doc.createElement('div'), ol = doc.createElement('ol'); mathBox.className = 'math'; mathBox.append(svgOf(doc, figure(last), 'turn'));
+      ol.setAttribute('aria-label', 'The newest wave: x = sum of a·cos(k·t + φ), y = sum of b·sin(k·t + φ)');
+      h.slice(0, 6).forEach(function (q) { var li = doc.createElement('li'); var n = function (v) { return String(Math.round(v * 10) / 10); }; li.textContent = 'k' + q[0] + ' a' + n(q[1]) + ' b' + n(q[2]) + ' φ' + Math.round(q[3]) + '°'; ol.append(li); });
+      mathBox.append(ol); bench.append(mathBox);
+    }
+    var cells = part(doc, 'cells', 'The cells', s.troops.length ? 'One energy cell per wave: its rank and its true image.' : 'Empty cell: hatch an egg to fill it.'), squad = c.querySelector(':scope > .squad');
+    if (squad) { [].forEach.call(squad.children, function (li) { li.classList.add('cell'); }); cells.append(squad); }
+    var quests = c.querySelector(':scope > .quests');
+    c.prepend(call, bench, cells); if (quests) { cells.after(quests); }
   }
 
-  var api = { stats: stats, figure: figure, dress: dress };
+  var api = { stats: stats, figure: figure, hint: hint, dress: dress };
   root.AtlasVisitorBoard = api;
   var box = root.document && root.document.getElementById('visitor-play');
   if (box) { box.addEventListener('visitor:render', function (e) { dress(box, e.detail); }); }

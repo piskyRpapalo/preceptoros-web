@@ -124,3 +124,20 @@
 @media (prefers-reduced-motion:reduce){#ow-brief{transition:none}}
 /* the stick names sit inside the pad, under each stick (2026-11-15: above it they hid under the map's edge) */
 #gamepad .view-joy::before{top:auto;bottom:-4px;z-index:3;padding:1px 7px;border-radius:9px;background:var(--afffdf6);color:var(--a1d1b26)}
+/* the army in three parts (visitor_view.js parts(); A1): the call on top, the workbench, the cells */
+#visitor-play.board .part{border:3px solid var(--a1d1b26);border-radius:calc(var(--radius) + 6px);padding:8px 10px;margin:0 0 10px;background:var(--afffdf6)}
+#visitor-play.board .part>h3{margin:0;font-size:1.05rem}
+#visitor-play.board .part>.said{margin:2px 0 8px;font-size:.85rem}
+#visitor-play.board .part.call{background:var(--affe58a)}
+#visitor-play.board .egg-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 6px}
+#visitor-play.board .egg-row .odds{flex:1 1 140px;margin:0;font-size:.8rem}
+#visitor-play.board .egg{display:inline-flex;align-items:center;gap:6px}
+#visitor-play.board .egg svg.hint{width:34px;height:34px;flex:none}
+#visitor-play.board .egg svg.hint path,#visitor-play.board .math svg path{fill:none;stroke:var(--a1d1b26);stroke-width:4}
+#visitor-play.board .math{display:flex;gap:10px;align-items:center}
+#visitor-play.board .math svg.turn{width:84px;height:84px;flex:none;animation:wave-turn 9s linear infinite}
+#visitor-play.board .math ol{margin:0;padding-left:18px;font:600 .8rem ui-monospace,monospace;white-space:nowrap}
+@keyframes wave-turn{to{transform:rotate(360deg)}}
+#visitor-play.board .troop.cell{position:relative;margin-top:8px}
+#visitor-play.board .troop.cell::before{content:"";position:absolute;top:-9px;left:50%;width:34%;height:6px;transform:translateX(-50%);background:var(--a1d1b26);border-radius:var(--radius) var(--radius) 0 0}
+@media (prefers-reduced-motion:reduce){#visitor-play.board .math svg.turn{animation:none}}
