@@ -141,3 +141,14 @@
 #visitor-play.board .troop.cell{position:relative;margin-top:8px}
 #visitor-play.board .troop.cell::before{content:"";position:absolute;top:-9px;left:50%;width:34%;height:6px;transform:translateX(-50%);background:var(--a1d1b26);border-radius:var(--radius) var(--radius) 0 0}
 @media (prefers-reduced-motion:reduce){#visitor-play.board .math svg.turn{animation:none}}
+/* You (House) reads in one direction (2026-11-15, panels without repetition): the first step while it is open, the call,
+   the workbench, the cells, quests, the fights, then the quiet end. CSS order only: every element stays where its owner put it. */
+#visitor-play .deck{display:flex;flex-direction:column;gap:8px}
+#visitor-play .deck>*{order:7}
+#visitor-play .deck>#visitor-beacon{order:0;min-height:56px;font-weight:800;background:var(--a157a45);color:var(--afffdf6)}
+#visitor-play .deck>#visitor-beacon:disabled{order:8;min-height:44px;font-weight:600;background:none;color:inherit}
+#visitor-play .deck>.part.call{order:1}#visitor-play .deck>.part.bench{order:2}#visitor-play .deck>.part.cells{order:3}
+#visitor-play .deck>.quests{order:4}
+#visitor-play .deck>:is(#house-fights,#house-guardian,#house-coliseum){order:5}
+#visitor-play .deck>#visitor-step{order:6}
+#visitor-play .deck>#visitor-end{order:9;align-self:flex-start;background:none;border-style:dashed}

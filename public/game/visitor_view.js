@@ -172,6 +172,7 @@
   function svgOf(doc, d, cls) { var NS = 'http://www.w3.org/2000/svg', s = doc.createElementNS(NS, 'svg'), p = doc.createElementNS(NS, 'path'); s.setAttribute('viewBox', '0 0 100 100'); s.setAttribute('aria-hidden', 'true'); s.setAttribute('class', cls); p.setAttribute('d', d); s.append(p); return s; }
   function part(doc, cls, title, said) { var sec = doc.createElement('section'), h = doc.createElement('h3'), p = doc.createElement('p'); sec.className = 'part ' + cls; h.textContent = title; p.className = 'said'; p.textContent = said; sec.append(h, p); return sec; }
   function parts(doc, c, s, detail) {
+    c.classList.add('deck'); // panel_sheet.css orders the deck: the next step, the three parts, quests, fights, the end
     if (c.querySelector(':scope > .part')) { return; }
     var call = part(doc, 'call', 'The call', 'Summon a wave: an egg gestates, then hatches into your army.');
     [].forEach.call(c.querySelectorAll('.egg'), function (b) {
