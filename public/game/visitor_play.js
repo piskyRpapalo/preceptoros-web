@@ -39,7 +39,7 @@
   var nextText = doc.getElementById('next-text'), playNow = doc.getElementById('play-now');
   function next(s) {
     var t = !s ? 'Press Play now.' : s.copper >= 50 ? 'Summon a wave: press Summon at the Reef below.' :
-      (s.eggs.filter(function (e) { return !e.ready; })[0] ? 'Your egg is gestating: ' + s.eggs.filter(function (e) { return !e.ready; })[0].remaining + ' s to hatch.' : 'Ask the guide in the chat.');
+      (s.eggs.filter(function (e) { return !e.ready; })[0] ? 'Your egg is gestating: ' + s.eggs.filter(function (e) { return !e.ready; })[0].remaining + ' s to hatch.' : (root.AtlasGuideNext && root.AtlasGuideNext(s)) || 'Ask the guide in the chat.'); // guide_next.js names the real next step
     if (nextText && nextText.textContent !== t) { nextText.textContent = t; }
     if (playNow) { playNow.hidden = !!s; }
     // Y7 (2026-11-09): once the first wave hatched and nothing waits, the tutorial frame folds to its minimum and rests.
