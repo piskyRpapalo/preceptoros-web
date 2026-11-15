@@ -134,7 +134,7 @@
     var o = P(0, 0), e = P(1, 0), step = Math.max(4, Math.hypot(e.x - o.x, e.y - o.y)), W = s.width, Hh = s.height, sq = 0.433 * (V.G.tilt || 1) * 2;
     (V.world.markList || []).forEach(function (m) {
       var p = P(m.q, m.r);
-      if (m.won) { flag(g, p.x + 0.35 * step, p.y - 0.2 * step, Math.max(k, 0.5), V.H); return; }
+      if (m.won) { flag(g, p.x + 0.35 * step, p.y - 0.2 * step, Math.max(k, 0.5), V.H); if (root.AtlasHoldingsMap) { root.AtlasHoldingsMap.bar(g, p.x + 0.35 * step, p.y - 0.2 * step, Math.max(k, 0.5), V.H, m); } return; } // its garrison's life (holdings_map.js)
       if (!m.fog) { return; }
       if (p.x > -40 && p.x < W + 40 && p.y > -40 && p.y < Hh + 60) {
         var d = spot(m, tick, step, sq / 2), kk = Math.max(k, 0.5), gx = p.x + d[0], gy = p.y + 0.15 * step + d[1]; moving = true;
