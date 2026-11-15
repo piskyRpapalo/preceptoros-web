@@ -71,7 +71,7 @@
       var dt = last == null ? 16 : Math.min(64, ts - last); last = ts; vt += quieto ? 0 : dt * vel;
       if (quieto) { vt = ev.length * EV + BORN + END + 100; }
       ev = log();
-      var k = Math.min(ev.length, Math.max(0, Math.floor((vt - BORN) / EV + 0.5))); while (hechos < k) { golpe(ev[hechos]); hechos++; }
+      var k = Math.min(ev.length, Math.max(0, Math.floor((vt - BORN) / EV + 0.5))); while (hechos < k) { golpe(ev[hechos]); hechos++; if (op.alGolpe) { op.alGolpe(hechos); } } // combat_acho.js reads hit k from the record
       size(); var W = cv.width, H = cv.height, grow = Math.min(1, vt / BORN), mm = Math.min(W, H), all = U[0].concat(U[1]);
       g.clearRect(0, 0, W, H);
       var MP = root.AtlasMapPainter, V = MP && MP.view && MP.view(), HH = V && V.H, ck = mm / 150;
@@ -156,7 +156,7 @@
     reinicia(); raf = root.requestAnimationFrame(frame);
     return {
       velocidad: function (v) { vel = v; },
-      salta: function () { ev = log(); while (hechos < ev.length) { golpe(ev[hechos]); hechos++; } vt = Math.max(vt, ev.length * EV + BORN + END + 1); },
+      salta: function () { ev = log(); while (hechos < ev.length) { golpe(ev[hechos]); hechos++; } if (op.alGolpe) { op.alGolpe(hechos); } vt = Math.max(vt, ev.length * EV + BORN + END + 1); },
       otra: reinicia,
       para: function () { vivo = false; root.cancelAnimationFrame(raf); release(); }
     };
