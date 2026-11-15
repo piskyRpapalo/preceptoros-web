@@ -89,3 +89,15 @@
 /* the status line that only echoes the title: for the screen reader, not the eye */
 .bs-line[data-echo]{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 @media (forced-colors:active){.bs-more{background:ButtonText;color:ButtonFace}.bs-live p::before{border-color:CanvasText}}
+/* Way by ear (way_by_ear.js): the guide's chip on the map, one line for the ear under it */
+.bs-way{display:block;width:100%;min-height:48px;margin:0 0 10px;border:3px solid var(--a1d1b26);border-radius:999px;background:var(--afffdf6);font:800 1rem ui-rounded,system-ui,sans-serif;color:var(--a1d1b26);box-shadow:0 4px 0 var(--a1d1b26)}
+#way-guide{position:fixed;top:96px;left:50%;transform:translateX(-50%);z-index:30;display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 8px;max-width:min(92vw,26rem);padding:6px 6px 6px 14px;border:3px solid var(--a1d1b26);border-radius:22px;background:var(--afffdf6);color:var(--a1d1b26);box-shadow:0 4px 0 var(--a1d1b26)}
+#way-guide[hidden]{display:none}
+.way-text{font:800 1rem/1.2 ui-rounded,system-ui,sans-serif}
+.way-said{grid-column:1/-1;margin:0;font:600 .82rem/1.3 ui-rounded,system-ui,sans-serif;color:var(--a3d3950)}
+.way-x{min-width:44px;min-height:44px;border:2px solid var(--a1d1b26);border-radius:50%;background:var(--ae6e8ef);font:800 1rem system-ui}
+#way-guide[data-state=arrived]{background:var(--ab8f0a8);animation:way-pop .5s cubic-bezier(.3,1.6,.5,1) 1}
+@keyframes way-pop{0%{transform:translateX(-50%) scale(.9)}100%{transform:translateX(-50%) scale(1)}}
+@media (prefers-reduced-motion:reduce){#way-guide[data-state=arrived]{animation:none}}
+@media (forced-colors:active){#way-guide{background:Canvas;color:CanvasText;border-color:CanvasText}}
+.way-said:empty{display:none}

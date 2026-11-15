@@ -1,13 +1,8 @@
-// Sound from the first press (missions D10 «Audio only», K11, I7). Before this piece the audio-only choice was kept
-// but never read back: every arrival was silent, and the switch lived three presses deep inside the Choir building,
-// out of reach without sight. Now:
-// - on the landing, one switch before the door turns the spoken world on; the press itself is the gesture a browser
-//   asks for, so the welcome is heard at once;
-// - on /openworld/, a kept choice is restored on arrival, and the place heading is spoken each time it changes
-//   (arriving, walking), once a gesture has happened. It says only what the heading already shows;
-// - with the spoken world on, the focused control says its name and each visible message is said when it changes,
-//   so Tab and Enter are enough to play by ear. Hidden and technical panels stay silent.
-// The choice is the same key audio_only.js keeps. No voice in this browser is said as NO_DATA, never faked.
+// Sound from the first press (missions D10 «Audio only», K11, I7). The audio-only choice was kept but never read back.
+// Now: the landing has one switch before the door (its press is the gesture a browser needs, so the welcome is heard);
+// /openworld/ restores a kept choice and speaks the place heading when it changes; with sound on, the focused control
+// says its name and each visible message is said once when it changes, so Tab and Enter suffice to play by ear.
+// Hidden and technical panels stay silent. Same key as audio_only.js. No voice is said as NO_DATA, never faked.
 // No clock, no random numbers, no network.
 (function (root) {
   'use strict';
@@ -26,6 +21,18 @@
   function said(text) {
     var t = String(text || '').replace(/^Visitor-[0-9a-f]{8} · /, '').replace(/\s+/g, ' ').trim();
     return t.length > 120 ? t.slice(0, 117) + '...' : t;
+  }
+  // Pure: fresh(recent, text) → what is still new: '' if just said (or inside a line just said), the tail if it only
+  // grows one. Measured 2026-11-15 (Round 7): two regions said one message, and growing lines repeated their start.
+  function bare(s) { return String(s || '').replace(/^[A-Z][\w ]{0,23} · (?=\S)/, '').replace(/\s+/g, ' ').trim().toLowerCase(); }
+  function fresh(recent, text) {
+    var t = said(text), n = bare(t); if (!n) { return ''; }
+    for (var i = recent.length - 1; i >= 0; i--) {
+      var o = bare(recent[i]); if (!o) { continue; }
+      if (o.indexOf(n) >= 0) { return ''; }
+      if (n.indexOf(o) === 0) { var tail = t.slice(t.toLowerCase().indexOf(o) + o.length).replace(/^[\s·.,:;-]+/, ''); return tail.length > 2 ? tail : ''; }
+    }
+    return t;
   }
   // speak(win, text, wait) → true when handed to the system voice. A new line replaces the one being said, unless
   // wait is true: then it queues behind it (a message that follows a press must not cut the press's own name).
@@ -67,7 +74,7 @@
     if (win.MutationObserver) { new win.MutationObserver(say).observe(head, { childList: true, characterData: true, subtree: true }); }
     // Playing by ear: the focused control says its name, and every message the eye can see change is said after it.
     // A message is a visible status or live region outside the veiled technical panels; hidden ones stay silent.
-    var on = function () { return woke && doc.documentElement.dataset.audioOnly === 'on'; }, heard = new win.WeakMap();
+    var on = function () { return woke && doc.documentElement.dataset.audioOnly === 'on'; }, heard = new win.WeakMap(), recent = [];
     doc.addEventListener('focusin', function (e) { var t = name(e.target); if (on() && t) { speak(win, t); } });
     function region(node) {
       var el = node && node.nodeType === 1 ? node : node && node.parentNode;
@@ -81,13 +88,16 @@
         list.forEach(function (m) {
           var r = region(m.target), t = r ? said(r.textContent) : '';
           if (!t || heard.get(r) === t) { return; }
-          heard.set(r, t); speak(win, t, true);
+          heard.set(r, t);
+          // urgent (assertive/alert) interrupts; ordinary news queues; nothing twice
+          var urgent = r.getAttribute('aria-live') === 'assertive' || r.getAttribute('role') === 'alert', say = urgent ? t : fresh(recent, t);
+          if (say && speak(win, say, !urgent)) { recent.push(t); if (recent.length > 3) { recent.shift(); } }
         });
       }).observe(doc.body, { childList: true, characterData: true, subtree: true });
     }
   }
 
-  var api = { KEY: KEY, WELCOME: WELCOME, label: label, said: said, name: name, speak: speak };
+  var api = { KEY: KEY, WELCOME: WELCOME, label: label, said: said, name: name, speak: speak, fresh: fresh };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AtlasSoundFirst = api;
   var doc = root.document, btn = doc && doc.getElementById('sound-first'), head = doc && doc.getElementById('map-h');
