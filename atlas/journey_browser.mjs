@@ -141,11 +141,13 @@ async function main() {
     return { ok: ok && !!s, cause: !ok ? 'the summon button is missing, hidden or disabled (copper ' + (b.state && b.state.copper) + ')' : s ? '' : 'no egg after summoning', evidence: { panel, eggs: s && s.eggs } };
   });
   await stage(T, 'incubate', async (b) => {
-    const need = b.state && b.state.eggs.length ? b.state.eggs[0] : null;
+    const need = b.state && b.state.eggs.length ? b.state.eggs[0] : null; // seconds of gestation left (time, not steps)
     if (need === null) { return { ok: false, cause: 'no egg to incubate' }; }
-    const says = /walk/i.test(b.next || '') && new RegExp(String(need)).test(b.next || '');
-    const n = await walk(T, need);
-    return { ok: n === need, cause: n === need ? '' : 'only ' + n + ' of ' + need + ' steps walked', evidence: { steps_needed: need, guide_named_the_steps: says } };
+    const pill = await until(T, `(() => { const g = document.getElementById('gestation'); if (!g || g.hidden) { return null; } const r = g.getBoundingClientRect(), s = document.getElementById('stage').getBoundingClientRect(); return { text: g.textContent, top: Math.round(r.top - s.top), w: Math.round(r.width), traced: g.querySelector('.g-ring').style.strokeDasharray }; })()`, 5000);
+    const t0 = Date.now(), s = await until(T, `window.__s && window.__s.troops.length ? window.__s : null`, (need + 15) * 1000), waited = Math.round((Date.now() - t0) / 1000);
+    const said = await T.ev(`(document.getElementById('gestation-said') || {}).textContent || null`);
+    const ok = !!pill && /\d:\d\d/.test(pill.text) && pill.top < 40 && !!s;
+    return { ok, cause: !pill ? 'no gestation message at the top of the map' : !s ? 'the egg did not come to term within ' + (need + 15) + ' s' : '', evidence: { seconds_needed: need, seconds_waited: waited, pill, said } };
   });
   await stage(T, 'hatch', async () => {
     const s = await until(T, `window.__s && window.__s.troops.length ? window.__s : null`, 10000);

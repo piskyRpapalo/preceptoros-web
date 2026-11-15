@@ -71,6 +71,7 @@ async function main() {
   await ev('document.getElementById("visitor-summon-tc1").click()');
   ok(await hasta('document.getElementById("visitor-play").textContent.includes("Egg 1")', 10000),'paid egg exists');
   await ev(`(async()=>{for(let i=0;i<20;i++){document.getElementById('visitor-play').dispatchEvent(new CustomEvent('visitor:advance')) /* the crab walks one hex */;await new Promise(r=>setTimeout(r,0));}})()`);
+  await ev(`(()=>{window.AtlasVisitorEggs.clock.skip(120000);document.getElementById('visitor-play').dispatchEvent(new CustomEvent('visitor:tick'));return 1;})()`); // gestation is time now: skip it
   ok(await hasta('!document.getElementById("visitor-hatch-1") && /Troops [1-9]/.test(document.getElementById("visitor-play").textContent)', 10000), 'the ready egg hatched by itself into the army (no sign step)');
   ok(await hasta('document.getElementById("visitor-play").textContent.includes("Troops 1")',10000),'adopted troop available');
   const saved=await ev(`(async()=>{const x=await AtlasArmy.cajaWeb('atlas-army','army','mia',true).lee();return x;})()`);
