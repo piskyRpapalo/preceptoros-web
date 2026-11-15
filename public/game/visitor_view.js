@@ -131,6 +131,11 @@
       box.append(tech);
     }
     [].forEach.call(c.querySelectorAll(':scope > p'), function (p) { if (/^Practice battles/.test(p.textContent)) { tech.append(p); } });
+    // The odds stand beside the summon they price (honest doors, #816; JOURNEY-01 first break 2026-11-15): never folded.
+    [].forEach.call(box.querySelectorAll('p'), function (p) {
+      var m = /^(tc\d)\b.*odds per thousand/.exec(p.textContent), b = m && box.querySelector('#visitor-summon-' + m[1]);
+      if (b && b.nextElementSibling !== p) { p.classList.add('odds'); b.after(p); }
+    });
     var purse = chips(doc, [['Copper', s.copper], ['Light', s.light], ['Steps', s.step], ['Troops', s.troops.length]], 'purse');
     c.prepend(purse);
     if (detail.game && detail.game.quests) {
