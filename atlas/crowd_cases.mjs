@@ -19,3 +19,7 @@ test('preceptor news docks at the foot, above the beacon bar; it never floats ov
   const t = src('preceptor_talk.js');
   assert.ok(/var dock = news \|\|/.test(t)); assert.ok(/st\.height - h - 8 - foot/.test(t));
 });
+test('a near name that would sit over the crab moves under its building (the rule the small label had)', () => {
+  assert.ok(/over the crab → under the building/.test(src('map_aura.js')));
+  assert.ok(/sf\.dataset\.youx/.test(src('map_aura.js')));
+});
