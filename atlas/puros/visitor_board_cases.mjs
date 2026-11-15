@@ -24,3 +24,9 @@ test('figure: a closed path inside the 0..100 box, the same for the same harmoni
 test('figure: no harmonics, no figure', () => {
   assert.equal(B.figure({}), '');
 });
+test('hint: each tier has its own fixed silhouette, closed and inside the box (the call, A1)', () => {
+  const s = [1, 2, 3, 4].map((t) => B.hint(t));
+  assert.equal(new Set(s).size, 4);
+  s.forEach((d) => { assert.match(d, /^M[\d.]+ [\d.]+(L[\d.]+ [\d.]+)+Z$/); });
+  assert.equal(B.hint(3), s[2]);
+});
