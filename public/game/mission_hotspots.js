@@ -56,14 +56,13 @@
     g.save(); g.font = '800 ' + fs + 'px ui-rounded, system-ui, sans-serif'; g.textBaseline = 'middle'; g.textAlign = 'left';
     spots(V.world.markList).forEach(function (s) {
       var m = s.m, cell = V.world.cells.at[m.q + ',' + m.r], h0 = V.P(m.q, m.r), p = V.turn(h0.x, h0.y);
-      var x = V.G.cx + p.x * k + 22 * k, y = V.G.cy + p.y * k - (cell ? V.height(cell) * V.HSTEP : 0) * k - 6 * k;
-      var t = s.codes.length + (s.codes.length > 1 ? ' missions' : ' mission'), // the count on the map; the codes live in the card and the guide (2026-11-14)
-         r = Math.max(7 * dpr, 9 * k), tw = g.measureText(t).width, w = r * 2 + tw + 10 * dpr, h = r * 2 + 4 * dpr;
-      g.fillStyle = paper; g.strokeStyle = ink; g.lineWidth = Math.max(1.5, 2 * dpr);
-      g.beginPath(); g.moveTo(x + h / 2, y - h / 2); g.arc(x + w - h / 2, y, h / 2, -Math.PI / 2, Math.PI / 2);
-      g.arc(x + h / 2, y, h / 2, Math.PI / 2, Math.PI * 1.5); g.closePath(); g.fill(); g.stroke();
-      g.fillStyle = hot; g.beginPath(); g.arc(x + h / 2, y, r * 0.72, 0, 2 * Math.PI); g.fill(); g.stroke(); // the ember
-      g.fillStyle = ink; g.fillText(t, x + h / 2 + r + 2 * dpr, y + 0.5 * dpr);
+      // A gold ember with the count on the roof's right shoulder (2026-11-15: the «N missions» pills covered the names).
+      var x = V.G.cx + p.x * k + 14 * k, y = V.G.cy + p.y * k - (cell ? V.height(cell) * V.HSTEP : 0) * k - 26 * k;
+      var t = String(s.codes.length), r = Math.max(9 * dpr, 10 * k), w = r * 2, h = r * 2;
+      g.fillStyle = hot; g.strokeStyle = ink; g.lineWidth = Math.max(1.5, 2 * dpr);
+      g.beginPath(); g.arc(x + r, y, r, 0, 2 * Math.PI); g.fill(); g.stroke();
+      g.globalAlpha = 0.55; g.fillStyle = paper; g.beginPath(); g.arc(x + r * 0.7, y - r * 0.35, r * 0.32, 0, 2 * Math.PI); g.fill(); g.globalAlpha = 1; // the shine
+      g.fillStyle = ink; g.textAlign = 'center'; g.fillText(t, x + r, y + 0.5 * dpr); g.textAlign = 'left';
       var pad = Math.max(0, 44 * dpr - h) / 2;   // a 44 px tap target, whatever the drawing size
       hits.push({ m: m, codes: s.codes, x0: x - pad, x1: x + Math.max(w, 44 * dpr) + pad, y0: y - h / 2 - pad, y1: y + h / 2 + pad });
     });

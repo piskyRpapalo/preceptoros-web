@@ -28,3 +28,7 @@ test('sabotage: an NPC building moved inside the territory is caught', () => {
   const p = T.plan(world(), MC.KINDS, mix, []), m = p.markList.find((x) => x.fog); m.q = 1; m.r = 1;
   assert.ok(p.markList.some((x) => x.fog && T.hexDist([x.q, x.r], [0, 0]) <= T.TERR));
 });
+test('wall: the territory edge is 6(2R+1) hex sides, each from a hex at TERR to one outside', () => {
+  const e = T.edges(T.TERR); assert.equal(e.length, 6 * (2 * T.TERR + 1));
+  assert.ok(e.every(([a, b, c, d]) => T.hexDist(a, [0, 0]) === T.TERR && T.hexDist(b, [0, 0]) === T.TERR + 1 && T.hexDist(a, c) === 1 && T.hexDist(b, c) === 1 && T.hexDist(a, d) === 1 && T.hexDist(b, d) === 1));
+});

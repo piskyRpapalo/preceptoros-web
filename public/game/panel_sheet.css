@@ -118,3 +118,9 @@
 #gamepad #gp-play{--cap:var(--a157a45);--cap-deep:var(--a1d1b26);color:var(--afffdf6);background:radial-gradient(circle at 34% 28%,color-mix(in srgb,var(--a157a45) 55%,var(--afffdf6)) 0 18%,var(--a157a45) 19%)}
 #gamepad .cats button[aria-pressed="true"]{outline:3px solid var(--cap-deep);outline-offset:2px;box-shadow:0 3px 0 var(--a1d1b26),0 0 0 7px color-mix(in srgb,var(--cap) 45%,transparent)}
 @media (prefers-reduced-motion:no-preference){#gamepad :is(.gp-b,.cats button){transition:transform .12s,box-shadow .12s}}
+/* the top news line fades after 5 s (gestation_toast.js brief()); still read aloud, never in the way of the map */
+#ow-brief{transition:opacity .4s}
+#ow-brief:not(.fresh){opacity:0;pointer-events:none}
+@media (prefers-reduced-motion:reduce){#ow-brief{transition:none}}
+/* the stick names sit inside the pad, under each stick (2026-11-15: above it they hid under the map's edge) */
+#gamepad .view-joy::before{top:auto;bottom:-4px;z-index:3;padding:1px 7px;border-radius:9px;background:var(--afffdf6);color:var(--a1d1b26)}

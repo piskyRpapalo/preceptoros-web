@@ -49,9 +49,10 @@
     var drill = mk && !mk.fog && mk.id === 'coliseum', pat = drill && root.AtlasValores && root.AtlasValores.patrullas[0];
     if (!sheet || sheet.hidden || !mk || !(mk.fog || pat)) { return; }
     var st = cur && cur.game && cur.game.state && cur.game.state(), b = doc.createElement('button'), ready = !!(st && st.troops && st.troops.length); b.type = 'button'; b.id = 'bs-challenge'; b.className = 'bs-card';
-    b.style.minHeight = '44px'; b.disabled = !ready || running;
-    b.textContent = !ready ? (cur ? 'Practice · NO_DATA: hatch a troop in House first' : 'Practice · NO_DATA: press Play first') : drill ? 'Practice wave · your squad against the house patrol · no reward' : 'Challenge the NPC of this ' + String(mk.id).replace(/-/g, ' ');
-    b.addEventListener('click', function () { var x = sheet.querySelector('.bs-bar button:last-child'); if (x) { x.click(); } /* the card closes: the wave gets the whole map */ if (drill) { fight(pat.id, b, null, true); } else { fight('b:' + mk.id + ':' + mk.q + ',' + mk.r, b, mk); } });
+    b.style.minHeight = '44px'; b.disabled = running;
+    b.textContent = !ready ? (cur ? 'No troop yet · go to House and hatch one' : 'No visit yet · press Play') : drill ? 'Practice wave · your squad against the house patrol · no reward' : 'Challenge the NPC of this ' + String(mk.id).replace(/-/g, ' ');
+    b.addEventListener('click', function () { var x = sheet.querySelector('.bs-bar button:last-child'); if (x) { x.click(); }
+      if (!ready) { var go = ['gp-play', 'welcome-play', 'play-now'].map(function (i) { return doc.getElementById(i); }).find(function (e) { return e && !e.hidden && e.offsetParent; }); if (go) { go.click(); } root.setTimeout(function () { box.scrollIntoView({ block: 'start' }); }, 300); return; } /* a way forward, not a dead end (2026-11-15) */ /* the card closes: the wave gets the whole map */ if (drill) { fight(pat.id, b, null, true); } else { fight('b:' + mk.id + ':' + mk.q + ',' + mk.r, b, mk); } });
     sheet.insertBefore(b, sheet.lastChild);
   }
   if (surface && root.MutationObserver) { new root.MutationObserver(offer).observe(surface, { attributes: true, attributeFilter: ['data-sel'] }); }

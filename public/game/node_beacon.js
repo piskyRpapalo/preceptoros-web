@@ -61,6 +61,8 @@
     var box = doc.getElementById('node-doors');
     if (!box) { box = doc.createElement('div'); box.id = 'node-doors'; box.setAttribute('role', 'group'); box.setAttribute('aria-label', 'Nodes on the map'); stage.appendChild(box); }
     box.replaceChildren();
+    var st = doc.getElementById('state'), lv = nodes.filter(function (n) { return n.seal === 'LIVE'; }).map(function (n) { return n.id; }); // ids (no spaces); the Node sheet's «Live nodes» line (node_live.js) reads this
+    if (st && !cause) { st.dataset.live = lv.length ? lv.join(' ') : '-'; }
     if (!nodes.length) { var p = doc.createElement('p'); p.className = 'node-door'; p.textContent = 'Nodes: NO_DATA · ' + (cause || 'not read yet'); box.appendChild(p); }
     nodes.forEach(function (n) {
       var b = doc.createElement('button'); b.type = 'button'; b.className = 'node-door'; b.id = 'node-door-' + n.id; b.textContent = label(n);
@@ -77,10 +79,10 @@
   // draw(g, V, s): called by map_chunks.js youLayer after the fog, before the names and the crab.
   function draw(g, V, s) {
     load(); hits = []; if (!nodes.length) { return; } var placed = []; // label boxes so far: no pill covers another
-    var H = V.H, k = Math.max(V.G.k, 0.5), dpr = s.width / (s.clientWidth || s.width), ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), paper = H.css(H.rgbOf(H.T.NEUTRAL.paper));
+    var H = V.H, K = Math.max(V.G.k, 0.5), dpr = s.width / (s.clientWidth || s.width), ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), paper = H.css(H.rgbOf(H.T.NEUTRAL.paper));
     var gold = H.rgbOf(H.T.FRONT_DOOR['PROPUESTA.base'] || H.T.NEUTRAL.paper), dark = H.css(H.shade(H.rgbOf(H.T.NEUTRAL.paper), 0.62));
     nodes.forEach(function (n) {
-      var c = V.world.cells.at[n.q + ',' + n.r], h0 = V.P(n.q, n.r), p = V.turn(h0.x, h0.y), live = n.seal === 'LIVE', talk = !!TALKS[n.id];
+      var k = K, c = V.world.cells.at[n.q + ',' + n.r], h0 = V.P(n.q, n.r), p = V.turn(h0.x, h0.y), live = n.seal === 'LIVE', talk = !!TALKS[n.id];
       var x = V.G.cx + p.x * V.G.k + 30 * k, y = V.G.cy + p.y * V.G.k - (c ? V.height(c) * V.HSTEP : 0) * V.G.k - 4 * k, top = y - (talk ? 62 : 44) * k;
       if (x < -60 || x > s.width + 60 || y < -80 || y > s.height + 80) { return; }
       var TP = root.AtlasTownPlan;
@@ -95,11 +97,17 @@
         hits.push({ n: n, x0: Math.min(hb.x0, lx0 - w0 / 2), x1: Math.max(hb.x1, lx0 + w0 / 2), y0: ly0 - h0 / 2, y1: hb.y1 });
         return;
       }
+      // A node without its own building yet is a small post with a lantern (2026-11-15: inside the town the full mast and pill
+      // crowded the ring); its name shows when the crab stands on it, and the keyboard door always says it.
+      var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(), w = ow && ow.controls && ow.controls.walker && ow.controls.walker();
+      var close = !!w && (Math.abs(w.q - n.q) + Math.abs(w.r - n.r) + Math.abs(w.q + w.r - n.q - n.r)) / 2 < 1;
+      if (!talk) { k *= 0.6; top = y - 44 * k; }
       g.save(); g.lineCap = 'round'; g.strokeStyle = ink; g.lineWidth = Math.max(2, 3.2 * k);
       g.beginPath(); g.moveTo(x, y); g.lineTo(x, top + 12 * k); g.stroke(); g.beginPath(); g.moveTo(x - 9 * k, y); g.lineTo(x + 9 * k, y); g.stroke(); // the mast
       if (live) { var gl = g.createRadialGradient(x, top, 2, x, top, 30 * k); gl.addColorStop(0, H.css(gold.concat(200))); gl.addColorStop(1, H.css(gold.concat(0))); g.fillStyle = gl; g.beginPath(); g.arc(x, top, 30 * k, 0, 7); g.fill(); }
       g.fillStyle = live ? H.css(gold) : dark; g.lineWidth = Math.max(1.5, 2.2 * k);
       g.beginPath(); g.moveTo(x - 8 * k, top + 12 * k); g.lineTo(x - 10 * k, top - 6 * k); g.lineTo(x, top - 14 * k); g.lineTo(x + 10 * k, top - 6 * k); g.lineTo(x + 8 * k, top + 12 * k); g.closePath(); g.fill(); g.stroke(); // the lantern
+      if (!talk && !close) { g.restore(); hits.push({ n: n, x0: x - 22 * dpr, x1: x + 22 * dpr, y0: top - 22 * dpr, y1: y + 6 * dpr }); return; }
       var t = talk ? label(n) : nameOf(n), fs = Math.round((talk ? 13 : 11) * dpr); g.font = '800 ' + fs + 'px ui-rounded, system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
       var tw = g.measureText(t).width + 20 * dpr, th = fs + 14 * dpr, ly = talk ? top - 14 * k - th / 2 - 6 * dpr : y + th / 2 + 6 * dpr, lx = Math.max(tw / 2 + 4, Math.min(s.width - tw / 2 - 4, x));
       for (var tries = 0; tries < 6 && placed.some(function (b) { return Math.abs(b.x - lx) < (b.w + tw) / 2 && Math.abs(b.y - ly) < (b.h + th) / 2 + 2 * dpr; }); tries++) { ly += (talk ? -1 : 1) * (th + 4 * dpr); }
@@ -139,7 +147,7 @@
   }
   // use(data): a harness hands a world-state it measured elsewhere (the page itself reads only its own /api/world-state).
   function use(d) { nodes = pick(d); asked = Date.now(); cause = nodes.length ? '' : 'no node admitted in World'; nodes.forEach(tell); doors(); return nodes; }
-  var api = { NAMES: NAMES, TALKS: TALKS, label: label, age: age, describe: describe, pick: pick, frame: frame, draw: draw, hitAt: hitAt, open: open, use: use };
+  var api = { nodes: function () { return nodes.slice(); }, NAMES: NAMES, TALKS: TALKS, label: label, age: age, describe: describe, pick: pick, frame: frame, draw: draw, hitAt: hitAt, open: open, use: use };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasNodeBeacon = api;
 })(typeof window !== 'undefined' ? window : globalThis);
