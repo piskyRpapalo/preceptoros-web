@@ -100,7 +100,8 @@
       if (R && R.mark > 0 && !L) { g.globalAlpha = R.mark; g.strokeStyle = ink; g.lineWidth = 2 * dpr; g.setLineDash([5 * dpr, 4 * dpr]); g.beginPath(); g.ellipse(x, y, 1.2 * u, 0.7 * u, 0, 0, Math.PI * 2); g.stroke(); g.setLineDash([]); g.globalAlpha = 1; }
       if (L && L.lamp > 0) {
         var rad = u * (0.9 + 0.7 * L.lamp), glow = g.createRadialGradient(x, ly, 0, x, ly, rad);
-        glow.addColorStop(0, 'rgba(' + paper.join(',') + ',' + L.lamp + ')'); glow.addColorStop(0.35, 'rgba(' + cyan.join(',') + ',' + 0.75 * L.lamp + ')'); glow.addColorStop(1, 'rgba(' + cyan.join(',') + ',0)');
+        function tint(c, a) { return H.css(c.concat(Math.round(255 * Math.max(0, Math.min(1, a))))); } // a token with alpha (#rrggbbaa)
+        glow.addColorStop(0, tint(paper, L.lamp)); glow.addColorStop(0.35, tint(cyan, 0.75 * L.lamp)); glow.addColorStop(1, tint(cyan, 0));
         g.fillStyle = glow; g.beginPath(); g.arc(x, ly, rad, 0, Math.PI * 2); g.fill();
         g.fillStyle = H.css(paper); g.beginPath(); g.arc(x, ly, Math.max(2 * dpr, 0.16 * u), 0, Math.PI * 2); g.fill();
         if (L.ring) { g.globalAlpha = L.ring.a; g.strokeStyle = H.css(paper); g.lineWidth = 2.5 * dpr; g.beginPath(); g.ellipse(x, y, L.ring.r * u, L.ring.r * u * 0.58, 0, 0, Math.PI * 2); g.stroke(); g.globalAlpha = 1; }
