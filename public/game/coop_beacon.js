@@ -84,7 +84,8 @@
     }
     function tag(g, t, x, y, dpr, H) {
       g.font = '700 ' + Math.round(11 * dpr) + 'px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'top';
-      var tw = g.measureText(t).width + 10 * dpr, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink));
+      var tw = g.measureText(t).width + 10 * dpr, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), W = g.canvas ? g.canvas.width : 1e9, m = 4 * dpr;
+      x = Math.max(tw / 2 + m, Math.min(W - tw / 2 - m, x)); y = Math.max(m, y); // the words stay on the canvas, whole (2026-11-15)
       g.fillStyle = H.css(H.rgbOf(H.T.NEUTRAL.paper)); g.fillRect(x - tw / 2, y, tw, 16 * dpr);
       g.strokeStyle = ink; g.lineWidth = dpr; g.strokeRect(x - tw / 2, y, tw, 16 * dpr); g.fillStyle = ink; g.fillText(t, x, y + 3 * dpr);
       return [Math.round(x - tw / 2 + 3 * dpr), Math.round(y + 8 * dpr)];
