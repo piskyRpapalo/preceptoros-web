@@ -9,3 +9,4 @@ test('live nodes are counted and named in order', () => {
   assert.equal(N.line('primer-ancla doggee-s110'), 'Live nodes: 2 · primer-ancla, doggee-s110.');
   assert.deepEqual(N.names('primer-ancla doggee-s110'), ['primer-ancla', 'doggee-s110']);
 });
+test('sabotage: the NO_DATA line never reads as a count or as live', () => { const s = N.line(''); assert.ok(!/\d/.test(s) && !/\bLIVE\b|online/.test(s)); });
