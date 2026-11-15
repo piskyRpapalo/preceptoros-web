@@ -129,6 +129,9 @@
     var v = doc.getElementById('voices'), talk = doc.querySelector('.cats [data-cat=Communication]'), mode = doc.getElementById('chat-destination');
     if (talk && (!v || v.hidden || v.dataset.activeCategory !== 'Communication')) { talk.click(); }
     if (mode) { mode.value = 'hexelion'; mode.dispatchEvent(new root.Event('change')); }
+    if (v) { v.dataset.talk = 'node'; if (!v.dataset.talkWatch) { v.dataset.talkWatch = '1'; // the sheet is a conversation while you talk to a node (building_skins.css)
+      var off = function () { delete v.dataset.talk; }; if (mode) { mode.addEventListener('change', function () { if (mode.value !== 'hexelion') { off(); } }); }
+      new root.MutationObserver(function () { if (v.hidden || v.dataset.activeCategory !== 'Communication') { off(); } }).observe(v, { attributes: true, attributeFilter: ['hidden', 'data-active-category'] }); } }
     var q = doc.getElementById('question'), f = doc.getElementById('entry'), log = doc.getElementById('log');
     if (log) { var li = doc.createElement('li'); li.className = 'node-intro'; li.dataset.node = n.id; li.textContent = nm + ' node · ' + (n.seal === 'LIVE' ? 'live' : 'asleep since ' + (n.since || 'NO_DATA')) + ' · ' + TALKS[n.id] + ' answers from it through the gateway.'; log.appendChild(li); }
     root.setTimeout(function () { // after the sheet names itself (panel_sheet.js)
