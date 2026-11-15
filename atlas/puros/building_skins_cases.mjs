@@ -20,3 +20,9 @@ test('clean: a visitor\'s name keeps letters, digits and . - \' only, 2..24 char
 test('sabotage: markup never survives into a name', () => {
   assert.ok(!/[<>"&=]/.test(S.clean('"><script>alert(1)</script>') || ''));
 });
+test('below: a card with less than half of itself above the fold is counted as hidden', () => {
+  assert.equal(S.below([[10, 60], [200, 260], [600, 660], [900, 960]], 716), 1);
+  assert.equal(S.below([[10, 60], [200, 260]], 716), 0);
+  assert.equal(S.below([[475, 530]], 486), 1, 'Settings at 420x640: 11 of 55 px in view is hidden');
+  assert.equal(S.below([[440, 500]], 486), 0, 'more than half in view is visible');
+});

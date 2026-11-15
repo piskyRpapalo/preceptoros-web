@@ -94,10 +94,39 @@
     (function watch(n) { // the Node list (draw(null)) sends no event: a title that is not the entered one undresses
       var h = doc.getElementById('bs-h'), sheet = doc.getElementById('building-sheet');
       if (!h) { if (n < 30) { root.setTimeout(function () { watch(n + 1); }, 400); } return; }
-      new root.MutationObserver(function () { if (h.textContent !== entered) { delete sheet.dataset.kind; dress(sheet, null); } }).observe(h, { childList: true, characterData: true, subtree: true });
+      new root.MutationObserver(function () { if (h.textContent !== entered) { delete sheet.dataset.kind; dress(sheet, null); } echo(doc); }).observe(h, { childList: true, characterData: true, subtree: true });
+      new root.MutationObserver(function () { echo(doc); }).observe(sheet, { childList: true, subtree: true, characterData: true });
+      more(doc, sheet, '.bs-card');
+      var wire = function () { var set = doc.getElementById('settings-sheet'); if (set && !set.dataset.more) { set.dataset.more = '1'; more(doc, set, 'button:not(.bs-more)'); } };
+      wire(); doc.addEventListener('click', function () { root.setTimeout(wire, 250); }, true); // Settings is built on first open
     })(0);
   }
-  var api = { SKINS: SKINS, skinOf: skinOf, clean: clean, choose: choose };
+  // Pure: below(boxes, fold) → how many cards [top, bottom] show less than half of themselves above the fold.
+  function below(boxes, fold) { return boxes.filter(function (b) { return fold - b[0] < (b[1] - b[0]) / 2; }).length; }
+  // «↓ N more»: a sheet that hides cards under its fold says so, and one tap brings them up (BEAUTY-02).
+  function more(doc, sheet, cards) {
+    var pill = doc.createElement('button'); pill.type = 'button'; pill.className = 'bs-more'; pill.hidden = true; sheet.appendChild(pill);
+    var G = root.AtlasGamepad; if (G && G.paint) { G.paint(pill, 'More below'); } // an Acho button like every control of the sheet
+    function count() {
+      if (sheet.hidden) { return; }
+      var r = sheet.getBoundingClientRect(), n = below([].map.call(sheet.querySelectorAll(cards), function (c) { var q = c.getBoundingClientRect(); return [q.top, q.bottom]; }), r.bottom);
+      pill.hidden = !n; pill.textContent = '↓ ' + n + ' more'; pill.setAttribute('aria-label', n + ' more below: show them');
+      if (pill.parentNode !== sheet || pill !== sheet.lastElementChild) { sheet.appendChild(pill); }
+    }
+    pill.addEventListener('click', function () {
+      var calm = root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      sheet.scrollBy({ top: sheet.clientHeight * 0.8, behavior: calm ? 'auto' : 'smooth' });
+    });
+    sheet.addEventListener('scroll', count, { passive: true });
+    new root.MutationObserver(function () { root.requestAnimationFrame(count); }).observe(sheet, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
+    root.requestAnimationFrame(count);
+  }
+  // The status line that only repeats the title stays for the screen reader, not for the eye.
+  function echo(doc) {
+    var h = doc.getElementById('bs-h'), l = doc.querySelector('#building-sheet .bs-line'); if (!h || !l) { return; }
+    if (l.textContent.trim() === h.textContent.trim()) { l.dataset.echo = '1'; } else { delete l.dataset.echo; }
+  }
+  var api = { SKINS: SKINS, skinOf: skinOf, clean: clean, choose: choose, below: below };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasBuildingSkins = api;
   if (root.document && root.document.getElementById && !(typeof module === 'object' && module.exports)) { mount(root.document); }

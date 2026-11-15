@@ -6,7 +6,7 @@
   // line(live) → the sentence for a data-live value: '' unknown, '-' none live, else names separated by spaces.
   function names(live) { return live && live !== '-' ? live.split(' ') : []; }
   function line(live) {
-    if (!live) { return 'Live nodes: NO_DATA (the heartbeat is not measured yet).'; }
+    if (!live) { return 'Live nodes: NO_DATA · no measured heartbeat'; }
     var n = names(live);
     var B = root.AtlasNodeBeacon; n = n.map(function (id) { return (B && B.NAMES && B.NAMES[id]) || id; });
     return n.length ? 'Live nodes: ' + n.length + ' · ' + n.join(', ') + '.' : 'Live nodes: none right now.';
@@ -18,6 +18,7 @@
     if (!box) { box = doc.createElement('div'); box.id = 'bs-live'; box.className = 'bs-live'; sheet.insertBefore(box, sheet.querySelector('.bs-list')); } // on top, no scroll
     var live = state ? state.dataset.live || '' : '', p = doc.createElement('p');
     p.textContent = line(live); box.replaceChildren(p);
+    box.dataset.st = !live ? 'NO_DATA' : names(live).length ? 'LIVE' : 'NONE'; // one shape + word per state (building_skins.css): never colour alone
     names(live).forEach(function (id) {
       var B = root.AtlasNodeBeacon, nm = (B && B.NAMES[id]) || id, b = doc.createElement('button'); b.type = 'button'; b.className = 'bs-tool'; b.textContent = nm; b.dataset.node = id;
       b.setAttribute('aria-label', 'Live node ' + nm); box.appendChild(b);
