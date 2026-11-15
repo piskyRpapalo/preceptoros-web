@@ -211,6 +211,7 @@
       s.dataset.youx = String(Math.round(x)); s.dataset.youy = String(Math.round(y));
       var g = s.getContext('2d'); g.setTransform(1, 0, 0, 1, 0, 0);
       if (root.AtlasMapFog) { root.AtlasMapFog.draw(g, V, s, w, oval); } // fog and NPCs (map_fog_layer.js)
+      if (root.AtlasNodeBeacon) { root.AtlasNodeBeacon.draw(g, V, s); } // live nodes and their chat (node_beacon.js)
       if (root.AtlasMapAura) { root.AtlasMapAura.draw(g, V, s, still, oval, ow); } // the selected building's aura (map_aura.js)
       names(g, V, w, s.width / (s.getBoundingClientRect().width || s.width), x, y);
       if (B && !s.dataset.duel) { B.draw(g, x, y, Math.max(k, 0.5), B.pose(T.steps, still ? 1 : T.p, still ? 1 : T.gp), V.H, B.beat(ow.signal || null, Date.now()), oval); if (T.busy) { B.loop(ow.redraw); } }
