@@ -1,7 +1,7 @@
 // Terminals are always dark (Sovereign, 2026-11-08), proved in a real browser on /openworld/ at 420×642 in the light
 // and the dark theme. Laws: the open Welcome terminal (#voices) is dark (color-scheme dark, background luminance
 // < 0.05) in both themes; its text keeps >= 4.5:1; the page outside the terminals keeps the visitor's light theme.
-// Sabotage: SABOTAJE=sin-oscuro (the CSS rule loses color-scheme) ⇒ red.
+// Sabotage: SABOTAJE=tinta-palida (a panel heading in pale ink on the paper) ⇒ red. (sin-oscuro: retired with the dark law.)
 // Uso: node atlas/dark_terminals_browser.mjs [carpeta-captura]
 import { createServer } from 'node:http';
 import { readFileSync, writeFileSync, statSync } from 'node:fs';
@@ -21,6 +21,7 @@ function sirve(raiz) {
       let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
       let cuerpo = readFileSync(f);
+      if (ruta === '/game/panel_sheet.css' && SAB === 'tinta-palida') { cuerpo = Buffer.from(String(cuerpo).replace('#voices .voice h3{margin:0;', '#voices .voice h3{color:rgb(244 236 216);margin:0;')); }
       if (ruta === '/assets/openworld.css' && SAB === 'sin-oscuro') { cuerpo = Buffer.from(String(cuerpo).replace('#chat,#voices,#building-sheet,.radio-chat{color-scheme:dark;', '#chat,#voices,#building-sheet,.radio-chat{')); }
       res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
@@ -54,7 +55,7 @@ async function main() {
 
   // Luminance (WCAG) of an rgb() string; contrast of two.
   const MEDIR = `JSON.stringify((() => {
-    const rgb = (s) => (s.match(/[\\d.]+/g) || []).slice(0, 3).map(Number);
+    const rgb = (s) => { const n = (s.match(/[\\d.]+/g) || []).slice(0, 3).map(Number); return /^color\\(srgb/.test(s) ? n.map((v) => v * 255) : n; }; // color-mix() reads as color(srgb 0..1)
     const L = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; const [r, g, b] = c.map(f); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
     const bgOf = (e) => { for (let x = e; x; x = x.parentElement) { const c = getComputedStyle(x).backgroundColor; if (!/rgba\\(0, 0, 0, 0\\)|transparent/.test(c)) return c; } return 'rgb(255, 255, 255)'; };
     const w = document.querySelector('.cats [data-cat=Welcome]'); if (w) w.click();
@@ -77,7 +78,8 @@ async function main() {
     const v = m['#voices'];
     ok(v && v.texts > 0, scheme + ': the Welcome terminal is not open with text: ' + JSON.stringify(v));
     if (!v) { continue; }
-    ok(v.scheme === 'dark' && v.bgL < 0.05, scheme + ': the terminal is not dark: ' + JSON.stringify(v));
+    // [deprecated 2026-11-15] «terminals are always dark» (2026-11-08) gave way to the paper panel sheet (BEAUTY-02, Sovereign
+    // 2026-11-14, panel_sheet.css): the law that stays is the contrast (SABOTAJE=tinta-palida).
     ok(v.minContrast >= 4.5, scheme + ': terminal text under 4.5:1: ' + JSON.stringify(v));
     await foto('terminal-' + scheme + '.png');
   }

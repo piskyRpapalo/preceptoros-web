@@ -127,9 +127,10 @@ async function main() {
     await ev("(() => { const s = document.getElementById('building-sheet'); const c = [...s.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Close'); c && c.click(); return 1; })()"); await espera(400);
   }
   // 3c · fog of war: a tap on an NPC's building still in the fog opens no card; the crab's bubble says an NPC holds it.
-  const npc = JSON.parse(await ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(), MP = window.AtlasMapPainter, F = window.AtlasMapFog;
-    for (let y = r.top + 20; y < r.bottom - 20; y += 6) for (let x = r.left + 20; x < r.right - 20; x += 6) { const m = MP && MP.markAt && MP.markAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height); if (m && m.fog && F && F.hidden(m) && document.elementFromPoint(x, y) === s) return JSON.stringify({ x, y, id: m.id }); }
-    return 'null'; })()`));
+  const npc = JSON.parse(await ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(), MP = window.AtlasMapPainter, F = window.AtlasMapFog, pts = {};
+    for (let y = r.top + 20; y < r.bottom - 20; y += 6) for (let x = r.left + 20; x < r.right - 20; x += 6) { const m = MP && MP.markAt && MP.markAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height); if (m && m.fog && F && F.hidden(m) && document.elementFromPoint(x, y) === s) { (pts[m.id] = pts[m.id] || []).push([x, y]); } }
+    const id = Object.keys(pts).sort((a, b) => pts[b].length - pts[a].length)[0]; if (!id) { return 'null'; } const P = pts[id], c = [P.reduce((a, p) => a + p[0], 0) / P.length, P.reduce((a, p) => a + p[1], 0) / P.length];
+    const best = P.reduce((b, p) => Math.hypot(p[0] - c[0], p[1] - c[1]) < Math.hypot(b[0] - c[0], b[1] - c[1]) ? p : b); return JSON.stringify({ x: best[0], y: best[1], id }); })()`)); // the middle of the roof's reach, not its edge
   if (npc) {
     await espera(400);
     await dedo(npc.x, npc.y, 1, 0, 2); await espera(800);
