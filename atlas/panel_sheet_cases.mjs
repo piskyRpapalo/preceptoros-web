@@ -23,3 +23,7 @@ test('the sheet only reads and frames: it never presses a button and has no chan
   assert.ok(!/\.click\(\)|Math\.random|fetch\(/.test(src), 'no presses, no chance, no network');
   assert.ok(/NO_DATA/.test(src), 'a browser without a voice is told, not hidden');
 });
+test('Acho is drawn with classes only: a lamp that lights while it speaks, a dozing lid for NO_DATA, no raw colour', () => {
+  assert.match(S.ACHO, /class="lamp"/); assert.match(S.ACHO, /class="talk"/); assert.match(S.ACHO, /class="lid"/); assert.match(S.ACHO, /aria-hidden="true"/);
+  assert.doesNotMatch(S.ACHO, /#[0-9a-f]{3,8}\b|rgba?\(|fill="/i, 'colours belong in panel_sheet.css');
+});

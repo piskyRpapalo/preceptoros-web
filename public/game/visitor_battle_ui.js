@@ -11,17 +11,21 @@
     var detail = event.detail, state = detail.state; cur = detail;
     detail.squad = state.troops.map(function (x) { return x.adopcion && x.adopcion.tropa; }); // the House board draws these (visitor_view.js)
     var legend = doc.createElement('p'); legend.id = 'house-fights';
-    legend.textContent = 'Fights: NO_DATA · the grey NPC buildings were retired from the map and no new rival is built yet. Squad limit 10.';
-    detail.controls.append(legend); offer();
+    // JOURNEY-01 «fight» (Mesa #34 option A, Sovereign HITL 2026-11-15): the Coliseum on the map hosts a practice wave
+    // against the house patrol, with the real rules and replay — no reward, no territory, nothing stored or sent.
+    legend.textContent = 'Fights: a practice wave at the Coliseum on the map · no reward, no territory. Squad limit 10.';
+    var go = doc.createElement('button'); go.type = 'button'; go.id = 'house-coliseum'; go.textContent = 'Go to the Coliseum'; go.style.minHeight = '44px';
+    go.addEventListener('click', function () { var BS = root.AtlasBuildingSheet; if (BS && BS.open) { BS.open('coliseum'); } });
+    detail.controls.append(legend, go); offer();
   });
-  async function fight(placeId, button, mk) {
+  async function fight(placeId, button, mk, practice) {
     if (running || !cur) { return; } running = true; button.disabled = true;
     try {
       var troops = cur.game.state().troops.slice(0, 10).map(function (x) { return x.adopcion.tropa; });
       var result = await root.AtlasVisitorBattle.run(placeId, troops, cur.account.info().seed);
       if (!await root.AtlasVisitorBattle.verify(result, cur.account.info().seed)) { throw new Error('Replay did not verify'); }
-      last = result; var won = result.combat.gana === 'asalto'; if (cur.game.fought) { cur.game.fought(won); }
-      if (won && mk) { conquer(mk); }
+      last = result; result.practice = !!practice; var won = result.combat.gana === 'asalto';
+      if (!practice) { if (cur.game.fought) { cur.game.fought(won); } if (won && mk) { conquer(mk); } } // practice counts nothing
       show(result);
       box.dispatchEvent(new CustomEvent('visitor:battle', { detail: result }));
     } catch (error) { button.textContent = 'NO_DATA: ' + error.message; }
@@ -40,11 +44,12 @@
     var sheet = doc.getElementById('building-sheet'), old = doc.getElementById('bs-challenge'); if (old) { old.remove(); }
     var V = root.AtlasMapPainter && root.AtlasMapPainter.view && root.AtlasMapPainter.view(), key = surface && surface.dataset.sel;
     var mk = V && key && V.world.marks && V.world.marks[key];
-    if (!sheet || sheet.hidden || !mk || !mk.fog) { return; }
+    var drill = mk && !mk.fog && mk.id === 'coliseum', pat = drill && root.AtlasValores && root.AtlasValores.patrullas[0];
+    if (!sheet || sheet.hidden || !mk || !(mk.fog || pat)) { return; }
     var st = cur && cur.game && cur.game.state && cur.game.state(), b = doc.createElement('button'), ready = !!(st && st.troops && st.troops.length); b.type = 'button'; b.id = 'bs-challenge'; b.className = 'bs-card';
     b.style.minHeight = '44px'; b.disabled = !ready || running;
-    b.textContent = ready ? 'Challenge the NPC of this ' + String(mk.id).replace(/-/g, ' ') : 'Challenge · NO_DATA: adopt a troop in House first';
-    b.addEventListener('click', function () { fight('b:' + mk.id + ':' + mk.q + ',' + mk.r, b, mk); });
+    b.textContent = !ready ? (cur ? 'Practice · NO_DATA: hatch a troop in House first' : 'Practice · NO_DATA: press Play first') : drill ? 'Practice wave · your squad against the house patrol · no reward' : 'Challenge the NPC of this ' + String(mk.id).replace(/-/g, ' ');
+    b.addEventListener('click', function () { if (drill) { var x = sheet.querySelector('.bs-bar button:last-child'); if (x) { x.click(); } fight(pat.id, b, null, true); } /* the card closes: the wave gets the whole map */ else { fight('b:' + mk.id + ':' + mk.q + ',' + mk.r, b, mk); } });
     sheet.insertBefore(b, sheet.lastChild);
   }
   if (surface && root.MutationObserver) { new root.MutationObserver(offer).observe(surface, { attributes: true, attributeFilter: ['data-sel'] }); }
@@ -54,7 +59,7 @@
     if (renderer) { renderer.para(); }
     var dialog = root.document.createElement('dialog'); dialog.setAttribute('aria-label', 'Wave battle over OpenWorld'); dialog.style.width = 'min(90vw, 800px)';
     var sentence = root.document.createElement('p'); sentence.id = 'visitor-battle-result';
-    var winner = (result.combat.gana === 'asalto' ? 'Visitor wins' : result.combat.gana === 'defensa' ? 'NPC wins' : 'Draw') + ' · ' + result.combat.rondas + ' rounds · balance NO_DATA: historical provisional rules.';
+    var winner = (result.combat.gana === 'asalto' ? (result.practice ? 'Your squad wins' : 'Visitor wins') : result.combat.gana === 'defensa' ? (result.practice ? 'The patrol wins' : 'NPC wins') : 'Draw') + ' · ' + result.combat.rondas + ' rounds' + (result.practice ? ' · practice: no reward, no territory' : '') + ' · balance NO_DATA: historical provisional rules.';
     sentence.textContent = 'Round by round…'; // the winner is set only when the replay ends (finish)
     var canvas = root.document.createElement('canvas'); canvas.style.width = '100%'; canvas.setAttribute('role', 'img'); canvas.setAttribute('aria-label', sentence.textContent);
     var close = root.document.createElement('button'); close.textContent = 'Return to the map'; close.style.minHeight = '44px'; close.addEventListener('click', function () { dialog.close(); });

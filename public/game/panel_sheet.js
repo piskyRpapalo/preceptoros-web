@@ -73,6 +73,17 @@
       set = { x: from.x + d.dx, y: from.y + d.dy }; glide(s, V, from, set);
     };
   }
+  // Acho, the house's guide (drawn 2026-11-15, Sovereign: «dibuja acho»): a small honeycomb sea-sprite with a lantern on a
+  // stalk. Its body wears the panel's colour; its lamp is lit only while it is really saying something (light is
+  // information), and with no voice in the browser it dozes (NO_DATA, never a fake smile). Colours live in panel_sheet.css.
+  var ACHO = '<svg class="acho" viewBox="0 0 48 48" aria-hidden="true" focusable="false">' +
+    '<path class="stalk" d="M25 13c0-5 2-8 6-9"/><circle class="glow" cx="32" cy="5" r="7"/><circle class="lamp" cx="32" cy="5" r="3.4"/>' +
+    '<path class="fin" d="M9 31c-5 0-6 5-3 7M39 31c5 0 6 5 3 7"/>' +
+    '<path class="body" d="M24 12l14 7.5v15L24 42 10 34.5v-15z"/><path class="belly" d="M10.5 32L24 39.4 37.5 32v2.5L24 42 10.5 34.5z"/>' +
+    '<ellipse class="eye" cx="19" cy="25" rx="3.6" ry="4.2"/><ellipse class="eye" cx="29" cy="25" rx="3.6" ry="4.2"/>' +
+    '<circle class="pupil" cx="19.6" cy="25.8" r="1.9"/><circle class="pupil" cx="29.6" cy="25.8" r="1.9"/>' +
+    '<path class="lid" d="M15 23.6h8M25 23.6h8"/><circle class="cheek" cx="15" cy="31" r="2"/><circle class="cheek" cx="33" cy="31" r="2"/>' +
+    '<path class="smile" d="M21.5 31.5q2.5 2.4 5 0"/><ellipse class="talk" cx="24" cy="32.4" rx="2.6" ry="2.2"/></svg>';
   function mount(doc, win) {
     var v = doc.getElementById('voices');
     if (!v || v.querySelector(':scope > .sheet-head')) { return null; }
@@ -81,20 +92,22 @@
     var voice = !!(win.speechSynthesis && win.SpeechSynthesisUtterance);
     say.type = 'button'; say.className = 'sheet-say'; say.textContent = '🔊 Listen'; say.setAttribute('aria-pressed', 'false');
     say.disabled = !voice; say.title = voice ? 'Read this panel aloud' : 'Listen · NO_DATA · this browser has no voice';
+    head.insertAdjacentHTML('afterbegin', ACHO); if (!voice) { head.dataset.doze = '1'; }
     head.appendChild(h); head.appendChild(say); if (x) { head.appendChild(x); }
     v.insertBefore(head, v.firstChild);
+    function talk(on) { if (on) { head.dataset.talk = '1'; } else { delete head.dataset.talk; } } // Acho's mouth and lamp follow the real voice
     say.addEventListener('click', function () {
       var on = say.getAttribute('aria-pressed') !== 'true', SF = root.AtlasSoundFirst;
       if (win.speechSynthesis) { win.speechSynthesis.cancel(); }
-      say.setAttribute('aria-pressed', String(on));
+      say.setAttribute('aria-pressed', String(on)); talk(on && !!SF);
       if (!on || !SF) { return; }
       var lines = reading(h.textContent, cardsOf(v));
       lines.forEach(function (l, i) { SF.speak(win, l, i > 0); });
-      var u = win.speechSynthesis; (function done() { win.setTimeout(function () { if (u && u.speaking) { done(); } else { say.setAttribute('aria-pressed', 'false'); } }, 500); })();
+      var u = win.speechSynthesis; (function done() { win.setTimeout(function () { if (u && u.speaking) { done(); } else { say.setAttribute('aria-pressed', 'false'); talk(false); } }, 500); })();
     });
     function name() {
       var c = v.dataset.activeCategory; h.textContent = TITLES[c] || c || '';
-      if (v.hidden && win.speechSynthesis && say.getAttribute('aria-pressed') === 'true') { win.speechSynthesis.cancel(); say.setAttribute('aria-pressed', 'false'); }
+      if (v.hidden && win.speechSynthesis && say.getAttribute('aria-pressed') === 'true') { win.speechSynthesis.cancel(); say.setAttribute('aria-pressed', 'false'); talk(false); }
       attach(doc, v);
     }
     name();
@@ -104,7 +117,7 @@
       .observe(doc.body, { subtree: true, attributes: true, attributeFilter: ['hidden'] });
     return head;
   }
-  var api = { TITLES: TITLES, reading: reading, first: first, aim: aim, mount: mount };
+  var api = { TITLES: TITLES, ACHO: ACHO, reading: reading, first: first, aim: aim, mount: mount };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AtlasPanelSheet = api;
   var css = root.document.createElement('link'); css.rel = 'stylesheet'; css.href = '/game/panel_sheet.css'; root.document.head.appendChild(css);

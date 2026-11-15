@@ -39,3 +39,8 @@ test('an unknown kind holds as a visitor house; the key is stable', () => {
   assert.equal(L.key('b:workshop:3,1'), L.key('b:workshop:3,1'));
   assert.notEqual(L.key('b:workshop:3,1'), L.key('b:workshop:3,2'));
 });
+test('a practice wave holds nothing: a won practice takes no building and opens no store (Coliseum, 2026-11-15)', async () => {
+  const led = await ledger(), st = { step: 0, opened: false, names: {} };
+  assert.equal(L.won(st, led, Object.assign(win('b:coliseum:2,2', 4), { practice: true })), null, 'a practice took a building');
+  assert.deepEqual(led.holdings(), []); assert.equal(st.opened, false, 'a practice opened the stores');
+});

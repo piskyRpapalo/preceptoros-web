@@ -19,8 +19,19 @@
   background:linear-gradient(var(--afffaf0) 82%,rgb(255 250 240/0));border-radius:25px 25px 0 0}
 #voices .sheet-head::before{content:"";position:absolute;top:5px;left:50%;width:44px;height:5px;margin-left:-22px;border-radius:3px;background:rgb(29 27 38/.22)}
 #voices .sheet-head h2{flex:1;display:flex;align-items:center;gap:10px;margin:0;font-size:1.2rem;font-weight:800;letter-spacing:.01em}
-#voices .sheet-head h2::before{content:"";flex:0 0 26px;height:30px;background:var(--cat);border:0;
-  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);box-shadow:inset 0 -6px 0 var(--cat-deep)}
+/* Acho in the header (panel_sheet.js ACHO): body in the panel's colour, ink outline, lamp lit only while it speaks. */
+#voices .sheet-head .acho{flex:0 0 46px;width:46px;height:46px;margin:-8px -4px -4px 0;overflow:visible}
+#voices .acho :is(.body,.fin,.stalk,.eye,.lid,.smile,.belly){stroke:var(--a1d1b26);stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round}
+#voices .acho .body{fill:var(--cat)}#voices .acho .belly{fill:var(--cat-deep);stroke-width:0}#voices .acho .fin{fill:none;stroke-width:2.6}
+#voices .acho .stalk{fill:none}#voices .acho .eye{fill:var(--afffdf6);stroke-width:1.8}#voices .acho .pupil{fill:var(--a1d1b26)}
+#voices .acho .cheek{fill:var(--affc2b3)}#voices .acho .smile{fill:none;stroke-width:2}#voices .acho .talk{fill:var(--a1d1b26);display:none}
+#voices .acho .lid{display:none}#voices .acho .lamp{fill:var(--ae6e8ef);stroke:var(--a1d1b26);stroke-width:1.8}#voices .acho .glow{fill:var(--affe58a);opacity:0}
+#voices .sheet-head[data-talk] .acho .lamp{fill:var(--affe58a)}#voices .sheet-head[data-talk] .acho .glow{opacity:.55}
+#voices .sheet-head[data-talk] .acho .smile{display:none}#voices .sheet-head[data-talk] .acho .talk{display:inline}
+#voices .sheet-head[data-doze] .acho .pupil{display:none}#voices .sheet-head[data-doze] .acho .lid{display:inline}#voices .sheet-head[data-doze] .acho .eye{ry:1.2}
+@media (prefers-reduced-motion:no-preference){#voices .sheet-head[data-talk] .acho .talk{transform-origin:24px 32px;animation:acho-say .28s ease-in-out infinite alternate}
+  #voices.map-voices:not([hidden]) .acho{animation:acho-hop .5s cubic-bezier(.3,1.6,.5,1) .15s both}}
+@keyframes acho-say{from{transform:scaleY(.35)}}@keyframes acho-hop{from{transform:translateY(10px) scale(.8)}}
 #voices .sheet-head button{min-width:44px;min-height:44px;padding:0 14px;font:inherit;font-weight:800;color:var(--a1d1b26);background:var(--afffdf6);
   border:2px solid var(--a1d1b26);border-radius:999px;box-shadow:0 3px 0 var(--a1d1b26);cursor:pointer}
 #voices .sheet-head .panel-x{position:static;margin:0;width:44px;padding:0;font-size:1.05rem}
@@ -74,5 +85,5 @@
 .bs-sheet{color:var(--a1d1b26);background:var(--afffaf0);color-scheme:light;box-shadow:0 7px 0 var(--a8a7a63),0 22px 44px rgb(29 27 38/.28)}
 .bs-sheet .bs-card{border-radius:20px}
 @media (forced-colors:active){#voices.map-voices[data-active-category],#voices .sheet-head,#voices .voice,.bs-sheet{background:Canvas;color:CanvasText;box-shadow:none}
-  #voices .sheet-head h2::before{background:CanvasText}#voices .voice :is(button,select){background:ButtonFace;color:ButtonText}}
+  #voices .acho .body{fill:Canvas}#voices .acho .lamp{fill:CanvasText}#voices .voice :is(button,select){background:ButtonFace;color:ButtonText}}
 @media (prefers-reduced-motion:reduce){#voices button:active{transform:none}}
