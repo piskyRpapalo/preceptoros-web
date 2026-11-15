@@ -95,16 +95,18 @@
       "deprecated": "2026-11-14",
       "replaced_by": "one building of each kind per node (map_chunks.js landmarks)",
       "where": "public/game/map_chunks.js",
-      "status": "gone",
-      "why": "Sovereign 2026-11-14: the grey NPC buildings were not real; only the node's own buildings stand. Fights have no rival on the map until one is built (NO_DATA)."
+      "status": "restored",
+      "why": "Sovereign 2026-11-14: the grey NPC buildings were not real; only the node's own buildings stand. Fights have no rival on the map until one is built (NO_DATA). RESTORED 2026-11-15 (Sovereign: «recupera la niebla de guerra y npcs, es la solución»): the grey NPC buildings are the fights again (fog-and-conquest.md C1/C2); the flat floor and district colours stay.",
+      "restored": "2026-11-15"
     },
     {
       "id": "map.fog-veil",
       "deprecated": "2026-11-14",
       "replaced_by": "none: the whole floor is visible",
       "where": "public/game/map_fog_layer.js",
-      "status": "kept_unloaded",
-      "why": "the veil only hid NPC buildings; gamepad.js no longer loads it and map_chunks.js no longer draws it. The file stays for its pure cases and history."
+      "status": "restored",
+      "why": "the veil only hid NPC buildings; gamepad.js no longer loads it and map_chunks.js no longer draws it. The file stays for its pure cases and history. RESTORED 2026-11-15 (Sovereign: «recupera la niebla de guerra y npcs, es la solución»): the grey NPC buildings are the fights again (fog-and-conquest.md C1/C2); the flat floor and district colours stay.",
+      "restored": "2026-11-15"
     },
     {
       "id": "map.floor-water-heights",

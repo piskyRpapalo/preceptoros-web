@@ -159,8 +159,13 @@ async function main() {
   await stage(T, 'fight', async () => {
     // A person reads «walk to a grey NPC building on the map and challenge it», looks at the map, and taps one.
     await house(T); const legend = await T.ev(fold('#house-fights'));
+    await closeHouse(T);
+    const grey = await T.ev(`(() => { const V = AtlasMapPainter.view(), cv = document.getElementById('surface'), rc = cv.getBoundingClientRect(), k = rc.width / cv.width;
+      const list = (V.world.markList || []).filter((m) => m.fog).map((m) => { const c = V.world.cells.at[m.q + ',' + m.r], h = V.P(m.q, m.r), p = V.turn(h.x, h.y);
+        const x = V.G.cx + p.x * V.G.k, y = V.G.cy + p.y * V.G.k - (c ? V.height(c) * V.HSTEP : 0) * V.G.k; return { id: m.id, q: m.q, r: m.r, x: rc.left + x * k, y: rc.top + y * k - 8 }; });
+      return { total: list.length, on_screen: list.filter((m) => m.x > rc.left + 10 && m.x < rc.right - 10 && m.y > rc.top + 10 && m.y < rc.bottom - 10) }; })()`);
     // The legend names the Coliseum (practice wave, 2026-11-15): the person taps «Go to the Coliseum» and its card offers the practice.
-    if (legend && /Coliseum/.test(legend.text || '') && await T.ev(press('#house-coliseum'))) {
+    if ((!grey || !grey.total) && legend && /Coliseum/.test(legend.text || '') && await house(T) !== false && await T.ev(press('#house-coliseum'))) { // no NPC on the map: the practice
       const offer = await until(T, `(() => { const b = document.getElementById('bs-challenge'); return b ? { text: b.textContent, disabled: b.disabled } : null; })()`, 8000);
       if (!offer) { return { ok: false, cause: 'the Coliseum card offered no practice', evidence: { legend } }; }
       if (offer.disabled) { return { ok: false, cause: 'the practice button is off: ' + offer.text, evidence: { legend, offer } }; }
@@ -171,12 +176,17 @@ async function main() {
       const kept = before === after; // practice gives nothing: no holding, no conquest button, the fight missions unchanged — before and after read the same
       return { ok: !!said && /no reward/.test(said || '') && kept, cause: !said ? 'the practice never told its winner' : !/no reward/.test(said) ? 'the practice result does not say it gives nothing' : kept ? '' : 'the practice changed the visit: ' + before + ' → ' + after, evidence: { legend, offer, result: said, brief_before: before, brief_after: after } };
     }
-    await closeHouse(T);
-    const grey = await T.ev(`(() => { const V = AtlasMapPainter.view(), cv = document.getElementById('surface'), rc = cv.getBoundingClientRect(), k = rc.width / cv.width;
-      const list = (V.world.markList || []).filter((m) => m.fog).map((m) => { const c = V.world.cells.at[m.q + ',' + m.r], h = V.P(m.q, m.r), p = V.turn(h.x, h.y);
-        const x = V.G.cx + p.x * V.G.k, y = V.G.cy + p.y * V.G.k - (c ? V.height(c) * V.HSTEP : 0) * V.G.k; return { id: m.id, q: m.q, r: m.r, x: rc.left + x * k, y: rc.top + y * k - 8 }; });
-      return { total: list.length, on_screen: list.filter((m) => m.x > rc.left + 10 && m.x < rc.right - 10 && m.y > rc.top + 10 && m.y < rc.bottom - 10) }; })()`);
     if (!grey || !grey.total) { return { ok: false, cause: 'no grey NPC building on the map', evidence: { legend, grey } }; }
+    // The guardian walk (2026-11-15): the person taps «Walk to the nearest guardian»; the map walks the crab there and opens its card.
+    if (grey.total && legend && /guardian/.test(legend.text || '') && await house(T) !== false && await T.ev(press('#house-guardian'))) {
+      const offer = await until(T, `(() => { const b = document.getElementById('bs-challenge'); return b ? { text: b.textContent, disabled: b.disabled } : null; })()`, 90000);
+      const at = await T.ev(`(() => { const w = AtlasOpenworldView().controls.walker(); return { q: w.q, r: w.r, sel: document.getElementById('surface').dataset.sel || null }; })()`);
+      if (!offer) { return { ok: false, cause: 'the guardian walk ended without a challenge in the card', evidence: { legend, grey_total: grey.total, at } }; }
+      if (offer.disabled) { return { ok: false, cause: 'the challenge is off: ' + offer.text, evidence: { legend, offer, at } }; }
+      await T.ev(press('#bs-challenge'));
+      const said = await until(T, `(() => { const p = document.getElementById('visitor-battle-result'); if (!p) { return null; } const d = p.closest('dialog'); const fast = d && [...d.querySelectorAll('button')].filter((b) => /^×/.test(b.textContent)).pop(); if (fast && fast.getAttribute('aria-pressed') !== 'true') { fast.click(); } return /wins|Draw/.test(p.textContent) ? p.textContent : null; })()`, 60000);
+      return { ok: !!said, cause: said ? '' : 'the battle never told its winner', evidence: { legend, grey_total: grey.total, walked_to: at, offer, result: said } };
+    }
     if (!grey.on_screen.length) { return { ok: false, cause: 'no grey NPC building inside the map view; the legend says «walk to one» but the map does not point to any', evidence: { legend, grey_total: grey.total } }; }
     const m = grey.on_screen[0];
     for (const type of ['mousePressed', 'mouseReleased']) { await T.cmd('Input.dispatchMouseEvent', { type, x: m.x, y: m.y, button: 'left', clickCount: 1 }); }
