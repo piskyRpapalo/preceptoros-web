@@ -6,7 +6,7 @@
 // legs rest, no greeting sway. No chance anywhere in the body (no random numbers); the clock only times the picture, never the walk.
 (function (root) {
   'use strict';
-  var GLIDE = 240, GREET = 640;
+  var GLIDE = 240, GREET = 640, SETTLE = 260;
   // Pure: ease-in-out (cubic) on 0..1.
   function ease(p) { var q = Math.max(0, Math.min(1, p)); return q < 0.5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2; }
   // Pure: the pose of the body for a step count, the glide progress p (1 = standing) and the greeting progress gp (≥1 = none).
@@ -23,7 +23,14 @@
   // Pure: the beat of the floor ring for a signal freshness f (0..1, null = no signal) at time t → alpha.
   function beat(f, t) { return f ? 0.35 + 0.35 * f * (0.5 + 0.5 * Math.sin(t / 160)) : 0.5; }
 
-  var at = null, from = null, t0 = 0, steps = 0, g0 = null, raf = 0;
+  var at = null, from = null, t0 = 0, steps = 0, g0 = null, raf = 0, sp = 1, look = null;
+  // Pure: sink(s) → how far the body dips while it settles after a step (s 0..1 over SETTLE ms; ≥1 = at rest). A damped
+  // dip, never a bounce that rises above rest (Bot Crossing's lesson: the body follows the distance really walked).
+  function sink(s) { return s >= 1 || s < 0 ? 0 : Math.sin(Math.PI * s) * (1 - s); }
+  // Pure: gazeOf(dx, dy) → a unit look for the eyes toward a near door, or null when it stands on it. Attention, not state.
+  function gazeOf(dx, dy) { var d = Math.hypot(dx, dy); return d < 1 ? null : { x: dx / d, y: dy / d }; }
+  // gaze(v): map_aura.js tells the body where the nearest door of the node is (or null); it only turns the eyes.
+  function gaze(v) { look = v || null; }
   function now() { return root.performance && root.performance.now ? root.performance.now() : Date.now(); }
   // track(key, cell, isBuilding, still) → { from, p, steps, gp }: notes a new cell, starts the glide and maybe a greeting.
   function track(key, isBuilding, still) {
@@ -31,9 +38,10 @@
     if (at === null) { at = key; g0 = still ? null : n; }
     else if (key !== at) { from = at; at = key; t0 = still ? -1e9 : n; steps++; if (isBuilding && !still) { g0 = n + GLIDE; } }
     var p = from === null ? 1 : Math.min(1, (n - t0) / GLIDE), gp = g0 === null ? 1 : (n - g0) / GREET;
+    sp = still || t0 < 0 ? 1 : (n - t0 - GLIDE) / SETTLE; // after the glide, the settle (not in reduced motion)
     if (p >= 1) { from = null; }
     if (gp >= 1) { g0 = null; }
-    return { from: from, p: p, steps: steps, gp: gp < 0 ? 1 : gp, busy: p < 1 || (g0 !== null) };
+    return { from: from, p: p, steps: steps, gp: gp < 0 ? 1 : gp, busy: p < 1 || (g0 !== null) || (sp >= 0 && sp < 1) };
   }
   // loop(redraw): a few frames while the body moves; then it stops (the map has no idle loop of its own).
   function loop(redraw) {
@@ -44,7 +52,7 @@
   // draw(g, x, y, k, P, H, alpha): the crab body in Acho (shell from the polar wave, claws, legs, eyes on stalks).
   function draw(g, x, y, k, P, H, ringAlpha, oval) {
     var F = H.T.FRONT_DOOR, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), paper = H.rgbOf(H.T.NEUTRAL.paper);
-    var sea = H.mix(H.rgbOf(F.cyan), H.rgbOf(F['FIRMADO.base']), 0.35), R = 12 * k, cy = y - 11 * k - P.bob * 2 * k, i, a;
+    var sea = H.mix(H.rgbOf(F.cyan), H.rgbOf(F['FIRMADO.base']), 0.35), R = 12 * k, dip = sink(P.sp === undefined ? sp : P.sp), cy = y - 11 * k - P.bob * 2 * k + dip * 2.2 * k, i, a, L = P.look === undefined ? look : P.look;
     g.save(); g.lineJoin = 'round'; g.lineCap = 'round';
     g.globalAlpha = ringAlpha; g.lineWidth = Math.max(1, 2.2 * k); g.strokeStyle = H.css(H.rgbOf(F['PROPUESTA.base']));
     g.beginPath(); oval(g, x, y - 2 * k, 19 * k, 7.5 * k, 0, 2 * Math.PI); g.stroke();
@@ -52,7 +60,7 @@
     g.globalAlpha = 1; g.strokeStyle = ink; g.lineWidth = Math.max(1, 1.8 * k);
     for (i = 0; i < 6; i++) {                      // legs: three a side; a lifted leg bends up and reaches forward
       var s = i < 3 ? -1 : 1, j = i % 3, up = P.legs[i] * 3.5 * k, bx = x + s * (6 + j * 3.5) * k, by = cy + 3 * k;
-      g.beginPath(); g.moveTo(bx, by); g.lineTo(bx + s * 5 * k, by + 3 * k - up); g.lineTo(bx + s * (7 + P.legs[i] * 1.5) * k, by + 7 * k - up * 0.6); g.stroke();
+      g.beginPath(); g.moveTo(bx, by); g.lineTo(bx + s * 5 * k, by + 3 * k - up); g.lineTo(bx + s * (7 + P.legs[i] * 1.5 + dip * 2) * k, by + (7 - dip * 2) * k - up * 0.6); g.stroke();
     }
     [-1, 1].forEach(function (s) {                 // claws: the arm rises with the greeting, the jaws open
       var hx = x + s * (17 - P.raise * 3) * k, hy = cy - (6 + P.raise * 9) * k, o = P.open;
@@ -65,15 +73,15 @@
     g.closePath(); g.fill(); g.stroke();
     g.fillStyle = H.css(H.mix(sea, paper, 0.55)); g.beginPath(); oval(g, x - 3 * k, cy - 5 * k, 5 * k, 2.2 * k, 0, 2 * Math.PI); g.fill();
     [-1, 1].forEach(function (s) {                 // eyes on stalks, raised a little more while greeting
-      var ex = x + s * 4.5 * k, ey = cy - (12 + P.raise * 2) * k;
+      var ex = x + (s * 4.5 + (L ? L.x * 1.2 : 0)) * k, ey = cy - (12 + P.raise * 2) * k;
       g.beginPath(); g.moveTo(x + s * 3 * k, cy - 6 * k); g.lineTo(ex, ey); g.stroke();
       g.fillStyle = H.css(paper); g.beginPath(); g.arc(ex, ey, 3 * k, 0, 2 * Math.PI); g.fill(); g.stroke();
-      g.fillStyle = ink; g.beginPath(); g.arc(ex + 0.6 * k, ey + 0.3 * k, 1.3 * k, 0, 2 * Math.PI); g.fill();
+      g.fillStyle = ink; g.beginPath(); g.arc(ex + (L ? L.x * 1.4 : 0.6) * k, ey + (L ? L.y * 1.1 : 0.3) * k, 1.3 * k, 0, 2 * Math.PI); g.fill();
     });
     g.restore();
   }
 
-  var api = { GLIDE: GLIDE, GREET: GREET, ease: ease, pose: pose, beat: beat, track: track, loop: loop, draw: draw };
+  var api = { GLIDE: GLIDE, GREET: GREET, SETTLE: SETTLE, ease: ease, pose: pose, beat: beat, sink: sink, gazeOf: gazeOf, gaze: gaze, track: track, loop: loop, draw: draw };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasCrabBody = api;
 })(typeof window !== 'undefined' ? window : globalThis);

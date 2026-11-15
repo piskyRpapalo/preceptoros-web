@@ -125,6 +125,7 @@
       if (!me || !view || !V || !B || surface.dataset.duel) { return; }
       var g = surface.getContext('2d'), k = V.G.k, dpr = surface.width / (surface.getBoundingClientRect().width || surface.width), drawn = [];
       g.save(); g.setTransform(1, 0, 0, 1, 0, 0);
+      var rest = B.pose(0, 1, 1); rest.sp = 1; rest.look = null; // another crab: at rest, its own eyes (not this visitor's gestures)
       var here = {}; view.crabs.slice().sort(function (a, b) { return a.id === me.id ? -1 : b.id === me.id ? 1 : a.id < b.id ? -1 : 1; })
         .forEach(function (c) { var key = c.q + ',' + c.r; here[key] = (here[key] || 0) + 1; c.slot = here[key] - 1; });
       view.crabs.forEach(function (c) {
@@ -132,7 +133,7 @@
         var cell = V.world.cells.at[c.q + ',' + c.r], h0 = V.P(c.q, c.r), p = V.turn(h0.x, h0.y);
         var x = V.G.cx + p.x * k + slot(c.slot) * 26 * k, y = V.G.cy + p.y * k - (cell ? V.height(cell) * V.HSTEP : 0) * k, stale = c.seal === 'STALE', t = label(c);
         g.globalAlpha = stale ? 0.4 : 1;
-        B.draw(g, x, y, Math.max(k, 0.5) * 0.9, B.pose(0, 1, 1), V.H, stale ? 0.15 : 0.6, oval);
+        B.draw(g, x, y, Math.max(k, 0.5) * 0.9, rest, V.H, stale ? 0.15 : 0.6, oval);
         g.globalAlpha = 1; g.font = '600 ' + Math.round(11 * dpr) + 'px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'top';
         var tw = g.measureText(t).width + 8 * dpr;
         g.fillStyle = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.paper)); g.fillRect(x - tw / 2, y + 4 * dpr, tw, 15 * dpr);
