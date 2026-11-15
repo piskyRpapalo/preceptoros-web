@@ -51,6 +51,7 @@
       return cy - h;
     }
     var r1 = step * 0.8, h1 = step * 1.0, r2 = step * 0.54, h2 = step * 0.7;
+    var inkc = H.rgbOf(H.T.NEUTRAL.ink); g.fillStyle = H.css(inkc.concat(46)); g.beginPath(); g.ellipse(x + r1 * 0.12, y + r1 * sq * 0.35, r1 * 1.2, r1 * sq * 0.95, 0, 0, 7); g.fill(); // a soft shadow
     var t1 = prism(x, y, r1, h1, wall);
     g.fillStyle = ink; g.beginPath(); var dw = r1 * 0.22, dy = y + r1 * sq * 0.5; g.moveTo(x - dw, dy); g.lineTo(x - dw, dy - h1 * 0.45); g.arc(x, dy - h1 * 0.45, dw, Math.PI, 0); g.lineTo(x + dw, dy); g.closePath(); g.fill(); // the door
     g.fillStyle = H.css(paper); [-0.62, 0.62].forEach(function (s) { g.fillRect(x + s * r1 * 0.75 - r1 * 0.08, y + r1 * sq * 0.25 - h1 * 0.72, r1 * 0.16, h1 * 0.22); });
@@ -60,11 +61,28 @@
     var ly = t2 - r2 * 0.8, lr = step * 0.09;
     if (live) { var gl = g.createRadialGradient(x, ly - lr, 1, x, ly - lr, step * 0.6); gl.addColorStop(0, H.css(gold.concat(210))); gl.addColorStop(1, H.css(gold.concat(0))); g.fillStyle = gl; g.beginPath(); g.arc(x, ly - lr, step * 0.6, 0, 7); g.fill(); }
     g.fillStyle = live ? H.css(gold) : H.css(H.shade(paper, 0.55)); g.beginPath(); g.arc(x, ly - lr, lr, 0, 7); g.fill(); g.stroke(); // the lantern
-    g.beginPath(); g.moveTo(x, ly - 2 * lr); g.lineTo(x, ly - 3.4 * lr); g.stroke();
+    var fy = ly - 5.2 * lr; g.beginPath(); g.moveTo(x, ly - 2 * lr); g.lineTo(x, fy); g.stroke();
+    g.fillStyle = H.css(H.rgbOf(F.cyan)); g.beginPath(); g.moveTo(x, fy); g.quadraticCurveTo(x + 2.2 * lr, fy + 0.4 * lr, x + 3.4 * lr, fy + 0.9 * lr); g.lineTo(x, fy + 1.8 * lr); g.closePath(); g.fill(); g.stroke(); // Hexelion's pennant
     g.restore();
-    return { x0: x - r1, x1: x + r1, y0: ly - 3.4 * lr, y1: y + r1 * sq };
+    return { x0: x - r1, x1: x + r1, y0: fy, y1: y + r1 * sq };
   }
-  var api = { TERR: TERR, RING: RING, SQUARE: SQUARE, ring: ring, slots: slots, plan: plan, hall: hall, hexDist: hexDist };
+  // wall(g, P, H, step): the territory's edge in ink, like a town wall (2026-11-15). P(q, r) → the hex's screen centre. A hex
+  // corner is the mean of the three hexes that meet there, so the edge between A and its outside neighbour B runs between
+  // (A + B + C1) / 3 and (A + B + C2) / 3, C1 and C2 their common neighbours: true under any tilt and turn of the view.
+  var D = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1]];
+  function edges(R) {
+    var out = []; for (var d = 0; d <= R; d++) { (d ? ring(d) : [[0, 0]]).forEach(function (c) { if (d < R) { return; }
+      D.forEach(function (v, i) { var b = [c[0] + v[0], c[1] + v[1]]; if (hexDist(b, [0, 0]) <= R) { return; }
+        var u = D[(i + 5) % 6], w = D[(i + 1) % 6]; out.push([c, b, [c[0] + u[0], c[1] + u[1]], [c[0] + w[0], c[1] + w[1]]]); }); }); }
+    return out;
+  }
+  function wall(g, P, H, step) {
+    var ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), m = function (a, b, c) { return [(a.x + b.x + c.x) / 3, (a.y + b.y + c.y) / 3]; };
+    g.save(); g.strokeStyle = ink; g.lineCap = 'round'; g.lineWidth = Math.max(2, step * 0.09); g.beginPath();
+    edges(TERR).forEach(function (e) { var A = P(e[0][0], e[0][1]), B = P(e[1][0], e[1][1]), p = m(A, B, P(e[2][0], e[2][1])), q = m(A, B, P(e[3][0], e[3][1])); g.moveTo(p[0], p[1]); g.lineTo(q[0], q[1]); });
+    g.stroke(); g.restore();
+  }
+  var api = { edges: edges, wall: wall, TERR: TERR, RING: RING, SQUARE: SQUARE, ring: ring, slots: slots, plan: plan, hall: hall, hexDist: hexDist };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasTownPlan = api;
 })(typeof window !== 'undefined' ? window : globalThis);

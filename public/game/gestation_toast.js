@@ -50,7 +50,15 @@
     if (!gone) { paint(); }
     if (eggs.some(function (e) { return !done[e.seq]; }) && !timer) { timer = root.setInterval(function () { if (!gone) { paint(); } }, 1000); }
   }
+  // The top line (#ow-brief) shows each news for 5 s, then fades (2026-11-15: it covered the node's pill); the screen reader keeps it.
+  function brief(doc, n) {
+    var b = doc.getElementById('ow-brief'), h = 0; if (!root.MutationObserver) { return; }
+    if (!b) { if ((n || 0) < 20) { root.setTimeout(function () { brief(doc, (n || 0) + 1); }, 500); } return; }
+    var show = function () { b.classList.add('fresh'); root.clearTimeout(h); h = root.setTimeout(function () { b.classList.remove('fresh'); }, 5000); };
+    new root.MutationObserver(show).observe(b, { childList: true, characterData: true, subtree: true }); show();
+  }
   function mount(doc) {
+    root.setTimeout(function () { brief(doc); }, 0);
     box = doc.getElementById('visitor-play'); if (!box || !build(doc)) { return; }
     box.addEventListener('visitor:render', render);
     box.addEventListener('visitor:end', function () { eggs = []; done = {}; if (timer) { root.clearInterval(timer); timer = 0; } pill.hidden = true; });

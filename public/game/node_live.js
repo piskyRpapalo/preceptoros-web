@@ -8,6 +8,7 @@
   function line(live) {
     if (!live) { return 'Live nodes: NO_DATA (the heartbeat is not measured yet).'; }
     var n = names(live);
+    var B = root.AtlasNodeBeacon; n = n.map(function (id) { return (B && B.NAMES && B.NAMES[id]) || id; });
     return n.length ? 'Live nodes: ' + n.length + ' · ' + n.join(', ') + '.' : 'Live nodes: none right now.';
   }
   function paint(doc) {
@@ -18,8 +19,9 @@
     var live = state ? state.dataset.live || '' : '', p = doc.createElement('p');
     p.textContent = line(live); box.replaceChildren(p);
     names(live).forEach(function (id) {
-      var b = doc.createElement('button'); b.type = 'button'; b.className = 'bs-tool'; b.textContent = id; b.dataset.node = id;
-      b.setAttribute('aria-label', 'Live node ' + id); box.appendChild(b);
+      var B = root.AtlasNodeBeacon, nm = (B && B.NAMES[id]) || id, b = doc.createElement('button'); b.type = 'button'; b.className = 'bs-tool'; b.textContent = nm; b.dataset.node = id;
+      b.setAttribute('aria-label', 'Live node ' + nm); box.appendChild(b);
+      b.addEventListener('click', function () { var n = B && B.nodes && B.nodes().find(function (x) { return x.id === id; }); if (n) { B.open(n); } }); // node_beacon.js reads the gateway's world-state
     });
   }
   function mount(doc) {

@@ -107,7 +107,8 @@ async function main() {
   // 3 · a tap (2 px) on open floor still reaches the page and hands the camera back. The map now has village buildings
   // that take their own taps (building_sheet.js), so the tap goes to the nearest point where no building answers.
   const suelo = JSON.parse(await ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(), MP = window.AtlasMapPainter;
-    const free = (x, y) => !(MP && MP.markAt && MP.markAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height));
+    const other = (px, py) => [window.AtlasNodeBeacon, window.AtlasMissionHotspots, window.AtlasMapAura].some((L) => L && L.hitAt && L.hitAt(px, py)) || [window.AtlasMapFog].some((F) => F && ((F.askAt && F.askAt(px, py)) || (F.guideAt && F.guideAt(px, py)))); // posts, embers, names, guardians and the guide take their own taps
+    const free = (x, y) => { const px = (x - r.left) * s.width / r.width, py = (y - r.top) * s.height / r.height; return !(MP && MP.markAt && MP.markAt(px, py)) && !other(px, py); };
     for (let d = 0; d < 200; d += 8) for (const [dx, dy] of [[d, 0], [-d, 0], [0, d], [0, -d]]) { const x = ${centro.x} + dx, y = ${centro.y} + dy; if (free(x, y)) return JSON.stringify({ x, y }); }
     return JSON.stringify({ x: ${centro.x}, y: ${centro.y} }); })()`));
   await dedo(suelo.x, suelo.y, 1, 0, 2); await espera(500);
@@ -116,7 +117,7 @@ async function main() {
   ok(d.look === '', 'a tap did not hand the camera back to the crab');
   // 3b · a tap on a village building opens that building's card (and closes again for the next steps).
   const casa = JSON.parse(await ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(), MP = window.AtlasMapPainter; let best = null;
-    for (let y = r.top + 20; y < r.bottom - 20; y += 6) for (let x = r.left + 20; x < r.right - 20; x += 6) { const m = MP && MP.markAt && MP.markAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height); if (m && !m.fog && document.elementFromPoint(x, y) === s) { const d = Math.hypot(x - (r.left + r.right) / 2, y - (r.top + r.bottom) / 2); if (!best || d < best.d) best = { x, y, id: m.id, d }; } }
+    for (let y = r.top + 20; y < r.bottom - 20; y += 6) for (let x = r.left + 20; x < r.right - 20; x += 6) { const m = MP && MP.markAt && MP.markAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height); if (m && !m.fog && document.elementFromPoint(x, y) === s && ![window.AtlasNodeBeacon, window.AtlasMissionHotspots, window.AtlasMapAura].some((L) => L && L.hitAt && L.hitAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height))) { const d = Math.hypot(x - (r.left + r.right) / 2, y - (r.top + r.bottom) / 2); if (!best || d < best.d) best = { x, y, id: m.id, d }; } }
     return JSON.stringify(best); })()`)); // one of the node's own buildings (the grey ones are NPCs')
   ok(casa, 'no village building of the node is visible on the map');
   if (casa) {

@@ -109,7 +109,11 @@
     var p = P(n.m.q, n.m.r), pad = 34; if (p.x > pad && p.x < W - pad && p.y > pad && p.y < Hh - pad) { return; }
     var cx = W / 2, cy = Hh / 2, dx = p.x - cx, dy = p.y - cy, sc = Math.min((W / 2 - pad) / (Math.abs(dx) || 1), (Hh / 2 - pad) / (Math.abs(dy) || 1));
     var x = cx + dx * sc, y = cy + dy * sc, a = Math.atan2(dy, dx), H = V.H, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), paper = H.css(H.rgbOf(H.T.NEUTRAL.paper));
-    var dpr = W / ((root.document.getElementById('surface') || {}).clientWidth || W), r = 22 * dpr, t = going ? 'Stop' : n.d + ' hexes';
+    var sf = root.document.getElementById('surface') || {}, dpr = W / (sf.clientWidth || W), r = 22 * dpr, t = going ? 'Stop' : n.d + ' hexes';
+    var yx = Number((sf.dataset || {}).youx), yy = Number((sf.dataset || {}).youy), far = 3.4 * r; // never on the crab (2026-11-15): slide along the edge
+    if (isFinite(yx) && isFinite(yy) && Math.hypot(x - yx, y - yy) < far) {
+      if (y <= pad + 1 || y >= Hh - pad - 1) { x = Math.max(pad, Math.min(W - pad, yx + (x >= yx ? far : -far))); } else { y = Math.max(pad, Math.min(Hh - pad, yy + (y >= yy ? far : -far))); }
+    }
     g.save(); g.lineWidth = Math.max(1.5, 2.4 * dpr); g.strokeStyle = ink;
     g.fillStyle = H.css(H.rgbOf(H.T.FRONT_DOOR['FIRMADO.base'])); g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.stroke(); // the guardians' colour
     g.fillStyle = ink; g.beginPath(); g.moveTo(x + Math.cos(a) * (r + 12 * dpr), y + Math.sin(a) * (r + 12 * dpr));
@@ -155,6 +159,7 @@
       f.fillStyle = gr; f.beginPath(); f.arc(0, 0, R, 0, 7); f.fill(); f.restore();
     });
     g.drawImage(fc, 0, 0);
+    if (root.AtlasTownPlan && root.AtlasTownPlan.wall) { root.AtlasTownPlan.wall(g, P, V.H, step); } // the territory's wall, crisp over the fog
     asks.forEach(function (h) { ask(g, h.x, h.y, h.k, V.H); }); // over the fog: the question is always readable
     pointer(g, V, w, P, W, Hh);
     if (moving && !still) { pace(); }
