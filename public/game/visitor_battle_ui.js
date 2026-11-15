@@ -11,12 +11,14 @@
     var detail = event.detail, state = detail.state; cur = detail;
     detail.squad = state.troops.map(function (x) { return x.adopcion && x.adopcion.tropa; }); // the House board draws these (visitor_view.js)
     var legend = doc.createElement('p'); legend.id = 'house-fights';
-    // JOURNEY-01 «fight» (Mesa #34 option A, Sovereign HITL 2026-11-15): the Coliseum on the map hosts a practice wave
-    // against the house patrol, with the real rules and replay — no reward, no territory, nothing stored or sent.
-    legend.textContent = 'Fights: a practice wave at the Coliseum on the map · no reward, no territory. Squad limit 10.';
+    // The fights are the grey NPC buildings (fog restored 2026-11-15, fog-and-conquest.md C2); the Coliseum also hosts a
+    // practice wave against the house patrol, with the real rules and replay — no reward, no territory, nothing stored.
+    legend.textContent = 'Fights: each grey building in the fog is held by an NPC guardian. Walk to one (the ⚔ arrow at the map edge points the way) and challenge it; a win holds it for this visit. A practice wave at the Coliseum gives nothing. Squad limit 10.';
     var go = doc.createElement('button'); go.type = 'button'; go.id = 'house-coliseum'; go.textContent = 'Go to the Coliseum'; go.style.minHeight = '44px';
     go.addEventListener('click', function () { var BS = root.AtlasBuildingSheet; if (BS && BS.open) { BS.open('coliseum'); } });
-    detail.controls.append(legend, go); offer();
+    var walk = doc.createElement('button'); walk.type = 'button'; walk.id = 'house-guardian'; walk.textContent = 'Walk to the nearest guardian'; walk.style.minHeight = '44px';
+    walk.addEventListener('click', function () { var F = root.AtlasMapFog, x = doc.getElementById('voices-x'); if (x) { x.click(); } if (F && F.go) { F.go(); } }); // the panel closes: the map leads
+    detail.controls.append(legend, walk, go); offer();
   });
   async function fight(placeId, button, mk, practice) {
     if (running || !cur) { return; } running = true; button.disabled = true;
@@ -49,7 +51,7 @@
     var st = cur && cur.game && cur.game.state && cur.game.state(), b = doc.createElement('button'), ready = !!(st && st.troops && st.troops.length); b.type = 'button'; b.id = 'bs-challenge'; b.className = 'bs-card';
     b.style.minHeight = '44px'; b.disabled = !ready || running;
     b.textContent = !ready ? (cur ? 'Practice · NO_DATA: hatch a troop in House first' : 'Practice · NO_DATA: press Play first') : drill ? 'Practice wave · your squad against the house patrol · no reward' : 'Challenge the NPC of this ' + String(mk.id).replace(/-/g, ' ');
-    b.addEventListener('click', function () { if (drill) { var x = sheet.querySelector('.bs-bar button:last-child'); if (x) { x.click(); } fight(pat.id, b, null, true); } /* the card closes: the wave gets the whole map */ else { fight('b:' + mk.id + ':' + mk.q + ',' + mk.r, b, mk); } });
+    b.addEventListener('click', function () { var x = sheet.querySelector('.bs-bar button:last-child'); if (x) { x.click(); } /* the card closes: the wave gets the whole map */ if (drill) { fight(pat.id, b, null, true); } else { fight('b:' + mk.id + ':' + mk.q + ',' + mk.r, b, mk); } });
     sheet.insertBefore(b, sheet.lastChild);
   }
   if (surface && root.MutationObserver) { new root.MutationObserver(offer).observe(surface, { attributes: true, attributeFilter: ['data-sel'] }); }

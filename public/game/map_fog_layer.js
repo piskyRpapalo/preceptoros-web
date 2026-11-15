@@ -60,6 +60,66 @@
     if (T && T.news) { T.news(text, 'Guardian', true); }
     return text;
   }
+  // The way to the nearest guardian (Sovereign 2026-11-15: the fog and its NPCs are the tutorial's enemy and the map's own
+  // guidance). Off screen, an ink arrow at the map's edge points to it; a tap (or «Walk to the nearest guardian») walks the
+  // crab there with real steps (controls.step: the walker still decides every hex), and its card opens beside it.
+  var DIRS = [['east', 1, 0], ['north-east', 1, -1], ['north-west', 0, -1], ['west', -1, 0], ['south-west', -1, 1], ['south-east', 0, 1]];
+  // Pure: nearest(list, w) → { m, d } for the nearest NPC building not won in this visit, or null (ties: lower q, then r).
+  function nearest(list, w) {
+    var b = null; (list || []).forEach(function (m) { if (!m.fog || m.won) { return; } var d = hexDist([m.q, m.r], [w.q, w.r]);
+      if (!b || d < b.d || (d === b.d && (m.q < b.m.q || (m.q === b.m.q && m.r < b.m.r)))) { b = { m: m, d: d }; } });
+    return b;
+  }
+  // Pure: toward(w, t) → the six direction names, the ones that bring the crab nearest to t first (ties keep DIRS order).
+  function toward(w, t) {
+    return DIRS.map(function (D, i) { return { n: D[0], d: hexDist([w.q + D[1], w.r + D[2]], [t.q, t.r]), i: i }; })
+      .sort(function (a, b) { return a.d - b.d || a.i - b.i; }).map(function (x) { return x.n; });
+  }
+  var going = 0, guideHit = null;
+  function say(text) { var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(); if (ow && ow.controls && ow.controls.say) { ow.controls.say(text); } return text; }
+  function stop(text) { root.clearInterval(going); going = 0; if (text) { say(text); } }
+  function arrive(m) {
+    var doc = root.document, s = doc.getElementById('surface'), BS = root.AtlasBuildingSheet, A = root.AtlasMapAura, key = m.q + ',' + m.r;
+    say('You reach the guardian of this ' + String(m.id).replace(/-/g, ' ') + '. Its card is open: challenge it.');
+    if (BS && BS.open) { BS.open(m.id); }
+    root.setTimeout(function () { if (A && A.select && s && s.dataset.sel !== key) { A.select(doc, s, key); } }, 60);
+  }
+  function go() {
+    if (going) { stop('Walk to the guardian: stopped.'); return 'stopped'; }
+    var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(), MP = root.AtlasMapPainter, V = MP && MP.view && MP.view();
+    var c = ow && ow.controls, w = c && c.walker && c.walker();
+    if (!c || !c.step || !w || !V) { return say('NO_DATA: press Play first; the crab is not on the map yet.'); }
+    var n = nearest(V.world.markList, w);
+    if (!n) { return say('No guardian is left in the fog: every NPC building is yours for this visit.'); }
+    var m = n.m, stuck = 0, s = root.document.getElementById('surface'); if (s) { delete s.dataset.look; } // the camera follows the walk
+    say('Walking to the guardian of this ' + String(m.id).replace(/-/g, ' ') + ' · ' + n.d + ' hexes. Tap the arrow again to stop.');
+    going = root.setInterval(function () {
+      var a = c.walker(), here = a.q + ',' + a.r;
+      if (hexDist([a.q, a.r], [m.q, m.r]) <= 1) { stop(); arrive(m); return; }
+      var dirs = toward(a, m);
+      for (var i = 0; i < 3; i++) { c.step(dirs[i]); var b = c.walker(); if (b.q + ',' + b.r !== here) { break; } }
+      var now = c.walker(); stuck = now.q + ',' + now.r === here ? stuck + 1 : 0;
+      if (stuck > 2) { stop('NO_DATA: the way to the guardian is blocked here; walk around it with the stick.'); }
+    }, 260);
+    return 'walking';
+  }
+  // pointer(g, V, w, P, W, Hh): the arrow at the edge toward the nearest guardian when it is off the map view.
+  function pointer(g, V, w, P, W, Hh) {
+    guideHit = null; var n = nearest(V.world.markList, w); if (!n) { return; }
+    var p = P(n.m.q, n.m.r), pad = 34; if (p.x > pad && p.x < W - pad && p.y > pad && p.y < Hh - pad) { return; }
+    var cx = W / 2, cy = Hh / 2, dx = p.x - cx, dy = p.y - cy, sc = Math.min((W / 2 - pad) / (Math.abs(dx) || 1), (Hh / 2 - pad) / (Math.abs(dy) || 1));
+    var x = cx + dx * sc, y = cy + dy * sc, a = Math.atan2(dy, dx), H = V.H, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), paper = H.css(H.rgbOf(H.T.NEUTRAL.paper));
+    var dpr = W / ((root.document.getElementById('surface') || {}).clientWidth || W), r = 22 * dpr, t = going ? 'Stop' : n.d + ' hexes';
+    g.save(); g.lineWidth = Math.max(1.5, 2.4 * dpr); g.strokeStyle = ink;
+    g.fillStyle = H.css(H.rgbOf(H.T.FRONT_DOOR['FIRMADO.base'])); g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.stroke(); // the guardians' colour
+    g.fillStyle = ink; g.beginPath(); g.moveTo(x + Math.cos(a) * (r + 12 * dpr), y + Math.sin(a) * (r + 12 * dpr));
+    g.lineTo(x + Math.cos(a + 0.5) * r, y + Math.sin(a + 0.5) * r); g.lineTo(x + Math.cos(a - 0.5) * r, y + Math.sin(a - 0.5) * r); g.closePath(); g.fill();
+    g.fillStyle = paper; g.font = '900 ' + Math.round(17 * dpr) + 'px ui-rounded, system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('⚔', x, y + dpr);
+    g.font = '800 ' + Math.round(13 * dpr) + 'px ui-rounded, system-ui, sans-serif'; var tw = g.measureText(t).width + 14 * dpr, ty = y + (y > Hh / 2 ? -r - 14 * dpr : r + 14 * dpr);
+    var tx = Math.max(tw / 2 + 4, Math.min(W - tw / 2 - 4, x)); g.fillStyle = paper; g.fillRect(tx - tw / 2, ty - 11 * dpr, tw, 22 * dpr); g.strokeRect(tx - tw / 2, ty - 11 * dpr, tw, 22 * dpr);
+    g.fillStyle = ink; g.fillText(t, tx, ty + dpr); g.restore();
+    guideHit = { x0: x - r - 6 * dpr, x1: x + r + 6 * dpr, y0: Math.min(y - r, ty - 11 * dpr) - 6 * dpr, y1: Math.max(y + r, ty + 11 * dpr) + 6 * dpr };
+  }
   function askAt(px, py) { for (var i = 0; i < asks.length; i++) { var h = asks[i]; if (px >= h.x0 && px <= h.x1 && py >= h.y0 && py <= h.y1) { return h.m; } } return null; }
   // draw(g, V, s, w, oval): called by map_chunks.js youLayer before the names, the aura and the crab.
   function draw(g, V, s, w) {
@@ -96,6 +156,7 @@
     });
     g.drawImage(fc, 0, 0);
     asks.forEach(function (h) { ask(g, h.x, h.y, h.k, V.H); }); // over the fog: the question is always readable
+    pointer(g, V, w, P, W, Hh);
     if (moving && !still) { pace(); }
   }
   function pace() {
@@ -104,12 +165,13 @@
   }
   if (root.document && root.document.addEventListener) {
     root.document.addEventListener('click', function (e) {
-      var sf = root.document.getElementById('surface'); if (!sf || e.target !== sf || !asks.length) { return; }
-      var r = sf.getBoundingClientRect(), m = r.width ? askAt((e.clientX - r.left) * (sf.width / r.width), (e.clientY - r.top) * (sf.height / r.height)) : null;
+      var sf = root.document.getElementById('surface'); if (!sf || e.target !== sf || (!asks.length && !guideHit)) { return; }
+      var r = sf.getBoundingClientRect(), px = (e.clientX - r.left) * (sf.width / (r.width || 1)), py = (e.clientY - r.top) * (sf.height / (r.height || 1)), m = r.width ? askAt(px, py) : null, h = guideHit;
+      if (h && px >= h.x0 && px <= h.x1 && py >= h.y0 && py <= h.y1) { e.stopImmediatePropagation(); e.preventDefault(); go(); return; }
       if (m) { e.stopImmediatePropagation(); e.preventDefault(); profile(m); }
     }, true);
   }
-  var api = { clear: clear, hidden: hidden, won: won, npc: npc, tell: tell, draw: draw, spot: spot, askAt: askAt, profile: profile, CABIN: CABIN, OWN: OWN, STEP: STEP };
+  var api = { nearest: nearest, toward: toward, go: go, walking: function () { return !!going; }, clear: clear, hidden: hidden, won: won, npc: npc, tell: tell, draw: draw, spot: spot, askAt: askAt, profile: profile, CABIN: CABIN, OWN: OWN, STEP: STEP };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasMapFog = api;
 })(typeof window !== 'undefined' ? window : globalThis);

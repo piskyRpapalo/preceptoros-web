@@ -40,3 +40,14 @@ test('draw lays the fog over the whole map, then cuts the clearings out of it', 
   const fill = ops.indexOf('fog.fillRect:source-over'), cut = ops.indexOf('fog.fill:destination-out'), lay = ops.indexOf('map.drawImage:source-over');
   assert.ok(fill >= 0 && cut > fill && lay > cut, ops.join(' '));
 });
+test('the way to the nearest guardian: nearest skips the node\'s own and the won, toward steps closer, ties are fixed (2026-11-15)', () => {
+  const list = [{ id: 'doctor', q: 5, r: 0, fog: true }, { id: 'agora', q: 1, r: 0, fog: false }, { id: 'hostel', q: -3, r: 0, fog: true, won: true }, { id: 'choir', q: 0, r: 5, fog: true }];
+  const n = F.nearest(list, { q: 0, r: 0 });
+  assert.equal(n.m.id, 'choir'); assert.equal(n.d, 5, 'a tie at 5 goes to the lower q (choir 0,5 before doctor 5,0)');
+  assert.equal(F.nearest([{ id: 'x', q: 2, r: 0, fog: false }], { q: 0, r: 0 }), null, 'no guardian, no pointer');
+  assert.deepEqual(F.toward({ q: 0, r: 0 }, { q: 3, r: 0 }).slice(0, 1), ['east']);
+  assert.deepEqual(F.toward({ q: 0, r: 0 }, { q: 0, r: -4 }).slice(0, 1), ['north-west']);
+  let w = { q: 0, r: 0 }; const D = { east: [1, 0], 'north-east': [1, -1], 'north-west': [0, -1], west: [-1, 0], 'south-west': [-1, 1], 'south-east': [0, 1] };
+  let n7 = 0; while ((w.q !== 4 || w.r !== -7) && n7 < 12) { const d = D[F.toward(w, { q: 4, r: -7 })[0]]; w = { q: w.q + d[0], r: w.r + d[1] }; n7++; }
+  assert.deepEqual(w, { q: 4, r: -7 }, 'the greedy walk arrives on an open floor'); assert.equal(n7, 7, 'in exactly the hex distance');
+});

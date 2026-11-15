@@ -71,12 +71,11 @@
       var key = m.q + ',' + m.r; if (!marks[key] && world.cells.at[key]) { marks[key] = m; picked.push([m.q, m.r]); } }); } catch (e) {}
     world.marks = marks; world.markList = picked.map(function (c) { return marks[c[0] + ',' + c[1]]; });
     var near = {}; world.markList.forEach(function (m) { var d = hexDist([m.q, m.r], [0, 0]), n = near[m.id]; if (!n || d < n.d) { near[m.id] = { m: m, d: d }; } });
-    // [deprecated 2026-11-14] NPC buildings retired (DEPRECATED.json map.npc-buildings): one of each kind stands.
-    world.markList = world.markList.filter(function (m) { return m.own || near[m.id].m === m; });
-    marks = world.marks = {}; world.markList.forEach(function (m) { m.fog = false; marks[m.q + ',' + m.r] = m; });
+    // fog of war (restored 2026-11-15, fog-and-conquest.md C1): one of each kind is the node's, the rest grey NPCs
+    world.markList.forEach(function (m) { m.fog = !m.own && near[m.id].m !== m; });
     var city = world.city = {}; world.cells.list.forEach(function (c) { if (c[3] === 'water') { return; }
       if (hexDist(c, [0, 0]) <= 2) { city[c[0] + ',' + c[1]] = 1; return; }
-      var best = null, bd = 3; world.markList.forEach(function (m) { var d = hexDist(c, [m.q, m.r]); if (d < bd) { bd = d; best = m; } });
+      var best = null, bd = 3; world.markList.forEach(function (m) { if (m.fog) { return; } var d = hexDist(c, [m.q, m.r]); if (d < bd) { bd = d; best = m; } });
       if (best) { city[c[0] + ',' + c[1]] = best.tone; } });
     CITY = city; // the node's city: the cabin district and one around each of its buildings
     return marks;
@@ -86,6 +85,7 @@
   // building(g, m, x, top, o): a smaller prism on the cell's top, ink-outlined (comic), its roof by kind.
   function building(g, m, x, top, o, H) {
     var k = o.k, F = H.T.FRONT_DOOR, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), base = H.mix(H.rgbOf(F[m.tone]), H.rgbOf(H.T.NEUTRAL.paper), 0.18);
+    if (m.fog) { var l = Math.round(base[0] * 0.3 + base[1] * 0.59 + base[2] * 0.11); base = [l, l, l]; } // an NPC's building is grey
     var ring = o.corner.map(function (q) { return [q[0] * 0.5, q[1] * 0.5]; }), hb = (m.roof === 'spire' ? 26 : 16) * k, y0 = top - 2 * k;
     if (k * 48 <= 12) { g.fillStyle = H.css(base); g.beginPath(); g.arc(x, y0 - 3 * k, Math.max(1.5, 5 * k), 0, 7); g.fill(); return; }
     g.lineWidth = Math.max(0.8, 1.6 * k); g.strokeStyle = ink;
@@ -173,7 +173,7 @@
     var ux = dx * Math.cos(th) - vy * Math.sin(th), uy = (dx * Math.sin(th) + vy * Math.cos(th)) * q, a = (Math.atan2(-uy, ux) * 180 / Math.PI + 360) % 360;
     return SIX.reduce(function (b, d) { return Math.abs(a - d[1]) < Math.abs(a - b[1]) ? d : b; })[0];
   }
-  // The crab's body and its glide live in crab_body.js (AtlasCrabBody); without it the crab is not drawn (NO_DATA, not a fake).
+  // The crab's body and glide: crab_body.js (without it, no crab: NO_DATA).
   // names(): buildings within REACH hexes of the crab carry a small Acho name pill; the map reads as it is walked.
   var REACH = 6, NAMES = { hostel: 'Hostel', coliseum: 'Coliseum', choir: 'Choir', workshop: 'Workshop', tower: 'Model tower',
     agora: 'Agora', customs: 'Customs', lottery: 'Lottery', 'visitor-house': 'Visitor house', doctor: 'Doctor' };
@@ -195,9 +195,7 @@
     });
     g.restore();
   }
-  // The visitor layer: with no live colony the page draws only the floor, so the companion is drawn here on every
-  // visitor:draw, its place is written for the map tap (dataset.youx/youy), and the camera follows it when it nears an
-  // edge, unless the visitor is looking around (dataset.look, the left stick or a drag).
+  // The visitor layer: the crab on every visitor:draw (dataset.youx/youy for taps); the camera follows unless dataset.look.
   function youLayer(doc) {
     var s = doc.getElementById('surface');
     if (!s) { return; }
@@ -212,6 +210,7 @@
       var a = at(key), f = T && T.from ? at(T.from) : a, x = f.x + (a.x - f.x) * e, y = f.y + (a.y - f.y) * e; // the glide is projection only
       s.dataset.youx = String(Math.round(x)); s.dataset.youy = String(Math.round(y));
       var g = s.getContext('2d'); g.setTransform(1, 0, 0, 1, 0, 0);
+      if (root.AtlasMapFog) { root.AtlasMapFog.draw(g, V, s, w, oval); } // fog and NPCs (map_fog_layer.js)
       if (root.AtlasMapAura) { root.AtlasMapAura.draw(g, V, s, still, oval, ow); } // the selected building's aura (map_aura.js)
       names(g, V, w, s.width / (s.getBoundingClientRect().width || s.width), x, y);
       if (B && !s.dataset.duel) { B.draw(g, x, y, Math.max(k, 0.5), B.pose(T.steps, still ? 1 : T.p, still ? 1 : T.gp), V.H, B.beat(ow.signal || null, Date.now()), oval); if (T.busy) { B.loop(ow.redraw); } }
