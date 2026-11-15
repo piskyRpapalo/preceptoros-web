@@ -83,6 +83,18 @@
       var c = V.world.cells.at[n.q + ',' + n.r], h0 = V.P(n.q, n.r), p = V.turn(h0.x, h0.y), live = n.seal === 'LIVE', talk = !!TALKS[n.id];
       var x = V.G.cx + p.x * V.G.k + 30 * k, y = V.G.cy + p.y * V.G.k - (c ? V.height(c) * V.HSTEP : 0) * V.G.k - 4 * k, top = y - (talk ? 62 : 44) * k;
       if (x < -60 || x > s.width + 60 || y < -80 || y > s.height + 80) { return; }
+      var TP = root.AtlasTownPlan;
+      if (talk && TP && TP.hall) { // the node that talks is the town hall on its own cell (town_plan.js), the crab at its door
+        var e1 = V.P(n.q + 1, n.r), p1 = V.turn(e1.x, e1.y), step = Math.max(8, Math.hypot(p1.x - p.x, p1.y - p.y) * V.G.k), cx = x - 30 * k, cy = y - 0.5 * step * Math.min(1, 0.866 * (V.G.tilt || 1));
+        var hb = TP.hall(g, cx, cy, step, Math.min(1, 0.866 * (V.G.tilt || 1)), H, live);
+        var t0 = label(n), f0 = Math.round(13 * dpr); g.save(); g.font = '800 ' + f0 + 'px ui-rounded, system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineWidth = Math.max(1.5, 2.2 * k); g.strokeStyle = ink;
+        var w0 = g.measureText(t0).width + 20 * dpr, h0 = f0 + 14 * dpr, ly0 = hb.y0 - h0 / 2 - 6 * dpr, lx0 = Math.max(w0 / 2 + 4, Math.min(s.width - w0 / 2 - 4, cx));
+        g.fillStyle = live ? H.css(gold) : paper; g.beginPath(); g.moveTo(lx0 - w0 / 2 + h0 / 2, ly0 - h0 / 2); g.arc(lx0 + w0 / 2 - h0 / 2, ly0, h0 / 2, -Math.PI / 2, Math.PI / 2);
+        g.arc(lx0 - w0 / 2 + h0 / 2, ly0, h0 / 2, Math.PI / 2, Math.PI * 1.5); g.closePath(); g.fill(); g.stroke(); g.fillStyle = ink; g.fillText(t0, lx0, ly0 + dpr); g.restore();
+        placed.push({ x: lx0, y: ly0, w: w0, h: h0 });
+        hits.push({ n: n, x0: Math.min(hb.x0, lx0 - w0 / 2), x1: Math.max(hb.x1, lx0 + w0 / 2), y0: ly0 - h0 / 2, y1: hb.y1 });
+        return;
+      }
       g.save(); g.lineCap = 'round'; g.strokeStyle = ink; g.lineWidth = Math.max(2, 3.2 * k);
       g.beginPath(); g.moveTo(x, y); g.lineTo(x, top + 12 * k); g.stroke(); g.beginPath(); g.moveTo(x - 9 * k, y); g.lineTo(x + 9 * k, y); g.stroke(); // the mast
       if (live) { var gl = g.createRadialGradient(x, top, 2, x, top, 30 * k); gl.addColorStop(0, H.css(gold.concat(200))); gl.addColorStop(1, H.css(gold.concat(0))); g.fillStyle = gl; g.beginPath(); g.arc(x, top, 30 * k, 0, 7); g.fill(); }

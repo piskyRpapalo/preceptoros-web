@@ -50,35 +50,21 @@
   }
 
 
-  // Landmarks: floor cells in a fixed hash order; a building stands where none is within SPACE hexes, the cabin (radius 2)
-  // stays free. Kinds: the nine town buildings (building_interiors.json) and the model tower, each with its roof.
-  var SPACE = 4, KINDS = [['hostel', 'cone', 'PROPUESTA.base'], ['coliseum', 'arch', 'LIVE.base'], ['choir', 'dome', 'FIRMADO.base'],
+  // Landmarks: the node's town (town_plan.js, 2026-11-15): its ten buildings ring the town hall inside the coloured
+  // territory; outside, scattered grey buildings held by NPCs. Kinds: the nine town buildings and the model tower.
+  var KINDS = [['hostel', 'cone', 'PROPUESTA.base'], ['coliseum', 'arch', 'LIVE.base'], ['choir', 'dome', 'FIRMADO.base'],
     ['workshop', 'chimney', 'PROPUESTA.base'], ['tower', 'spire', 'cyan'], ['agora', 'dome', 'LIVE.base'], ['customs', 'flag', 'FIRMADO.base'],
     ['lottery', 'dome', 'PROPUESTA.base'], ['visitor-house', 'cone', 'cyan'], ['doctor', 'flag', 'LIVE.base']];
   function mixHash(q, r) { var h = (q * 73856093) ^ (r * 19349663) ^ 20261108; h = (h ^ (h >>> 13)) * 1274126177; return (h ^ (h >>> 16)) >>> 0; }
   function hexDist(a, b) { var dq = a[0] - b[0], dr = a[1] - b[1]; return (Math.abs(dq) + Math.abs(dr) + Math.abs(dq + dr)) / 2; }
-  var CITY = null;
+  var CITY = null, TP = root.AtlasTownPlan || (typeof require === 'function' ? require('./town_plan.js') : null);
   function landmarks(world) {
     if (world.marks) { return world.marks; }
-    var picked = [], marks = {}, list = world.cells.list.filter(function (c) { return c[3] !== 'water' && hexDist(c, [0, 0]) > 2; });
-    list.sort(function (a, b) { return mixHash(a[0], a[1]) - mixHash(b[0], b[1]) || a[0] - b[0] || a[1] - b[1]; });
-    list.forEach(function (c) {
-      if (picked.some(function (p) { return hexDist(p, c) < SPACE; })) { return; }
-      var k = KINDS[mixHash(c[1], c[0]) % KINDS.length];
-      picked.push(c); marks[c[0] + ',' + c[1]] = { q: c[0], r: c[1], id: k[0], roof: k[1], tone: k[2] };
-    });
-    try { JSON.parse(root.localStorage.getItem('preceptoros.built') || '[]').forEach(function (m) { // built in Settings
-      var key = m.q + ',' + m.r; if (!marks[key] && world.cells.at[key]) { marks[key] = m; picked.push([m.q, m.r]); } }); } catch (e) {}
-    world.marks = marks; world.markList = picked.map(function (c) { return marks[c[0] + ',' + c[1]]; });
-    var near = {}; world.markList.forEach(function (m) { var d = hexDist([m.q, m.r], [0, 0]), n = near[m.id]; if (!n || d < n.d) { near[m.id] = { m: m, d: d }; } });
-    // fog of war (restored 2026-11-15, fog-and-conquest.md C1): one of each kind is the node's, the rest grey NPCs
-    world.markList.forEach(function (m) { m.fog = !m.own && near[m.id].m !== m; });
-    var city = world.city = {}; world.cells.list.forEach(function (c) { if (c[3] === 'water') { return; }
-      if (hexDist(c, [0, 0]) <= 2) { city[c[0] + ',' + c[1]] = 1; return; }
-      var best = null, bd = 3; world.markList.forEach(function (m) { if (m.fog) { return; } var d = hexDist(c, [m.q, m.r]); if (d < bd) { bd = d; best = m; } });
-      if (best) { city[c[0] + ',' + c[1]] = best.tone; } });
-    CITY = city; // the node's city: the cabin district and one around each of its buildings
-    return marks;
+    TP = TP || root.AtlasTownPlan; if (!TP) { world.markList = []; return {}; } // the plan loads first (index.html)
+    var built = []; try { built = JSON.parse(root.localStorage.getItem('preceptoros.built') || '[]'); } catch (e) {}
+    var p = TP.plan(world, KINDS, mixHash, built);
+    world.marks = p.marks; world.markList = p.markList; world.city = CITY = p.city;
+    return p.marks;
   }
   // oval(g, …): an ellipse arc as a polygon (any 2D context, even the test double).
   function oval(g, x, y, rx, ry, a0, a1) { for (var i = 0; i <= 16; i++) { var a = a0 + (a1 - a0) * i / 16; g.lineTo(x + rx * Math.cos(a), y + ry * Math.sin(a)); } }

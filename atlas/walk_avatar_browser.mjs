@@ -112,16 +112,21 @@ async function main() {
   const libre = (on) => ev(`(() => { const f = document.getElementById('free-walk'); if (f && f.checked !== ${on}) { f.click(); } return !!f; })()`);
   await libre(false);
   const vacio = await anclaDe('home');
+  // an empty hex near home: no building, guardian or node under it (the town ring of town_plan.js now stands around home)
+  const off = await ev(`(() => { const MP = window.AtlasMapPainter, F = window.AtlasMapFog, B = window.AtlasNodeBeacon, s = document.getElementById('surface');
+    const free = (x, y) => x > 20 && y > 20 && x < s.width - 20 && y < s.height - 20 && !(MP && MP.markAt && MP.markAt(x, y)) && !(F && F.askAt && F.askAt(x, y)) && !(F && F.guideAt && F.guideAt(x, y)) && !(B && B.hitAt && B.hitAt(x, y));
+    for (let R = 160; R < Math.max(s.width, s.height); R += 40) for (let a = 0; a < 24; a++) { const dx = Math.round(R * Math.cos(a * Math.PI / 12 + 0.785)), dy = Math.round(R * Math.sin(a * Math.PI / 12 + 0.785)); if (free(${vacio.x} + dx, ${vacio.y} + dy)) return [dx, dy]; }
+    return [200, 200]; })()`);
   // A tap on the map with a panel open only closes the panel (Sovereign, 2026-11-08; panel_x.js outside()): when a panel
   // is open (arrival opens the node's; the free-walk switch lives in one), the first tap closes it and walks nowhere.
   const panel = () => ev(`!!(document.querySelector('#map .cats button[aria-pressed="true"]') || document.querySelector('#entry-tools[aria-expanded="true"]') || [...document.querySelectorAll('#building-sheet,#settings-sheet')].some((x) => !x.hidden))`);
   const cierra = async () => {
     if (!(await panel())) { return; }
-    await clicEn(vacio.x + 200, vacio.y + 200); await espera(200);
+    await clicEn(vacio.x + off[0], vacio.y + off[1]); await espera(200);
     ok(!(await panel()) && !/walking to|^You walk/.test(await estado()), 'a tap on the map with a panel open closes the panel and walks nowhere');
   };
   await cierra();
-  await clicEn(vacio.x + 200, vacio.y + 200);
+  await clicEn(vacio.x + off[0], vacio.y + off[1]);
   await espera(200);
   const vacia = await estado();
   ok(!/walking to/.test(vacia), 'an empty hex does not start a walk');
@@ -132,7 +137,7 @@ async function main() {
   // wait for the line to change, and tap once more if the first tap was consumed.
   let paso = '';
   for (let t = 0; t < 2 && !/^You walk/.test(paso); t++) {
-    await clicEn(vacio.x + 200, vacio.y + 200);
+    await clicEn(vacio.x + off[0], vacio.y + off[1]);
     for (let w = 0; w < 15 && !/^You walk/.test(paso = await estado()); w++) { await espera(100); }
   }
   ok(/^You walk (east|south-east|south-west|west|north-east|north-west) to /.test(paso), 'with free walk on, a tap off any node does not step the crab: ' + paso.slice(0, 120));
