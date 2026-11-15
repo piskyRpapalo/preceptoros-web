@@ -116,3 +116,8 @@ html,body{overscroll-behavior:none}
 #holdings .holdings-heal:disabled{opacity:.6}
 /* The resting bubble is gone from the map (Sovereign, 2026-11-14): it shows only while it carries a result. */
 #stage>#preceptor-talk.pt-bubble:not(.pt-news){display:none}
+/* News docks at the foot of the map (2026-11-15): one compact strip — who, the line, OK — so the world above stays seen. */
+#stage>#preceptor-talk.pt-bubble.pt-news.pt-docked{left:8px !important;right:8px;width:auto;max-width:none;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;padding:6px 8px 6px 12px}
+#stage>#preceptor-talk.pt-news.pt-docked .pt-line{flex:1 1 180px;margin:0}
+#stage>#preceptor-talk.pt-news.pt-docked .pt-row{flex:0 0 auto}
+#stage>#preceptor-talk.pt-news.pt-docked .pt-row button{padding:0 14px}
