@@ -62,6 +62,8 @@ async function main() {
     const said=[],bad=[],struck=[],acho=[];document.addEventListener('acho:event',e=>acho.push(e.detail.event.kind));
     const live=s.el.querySelector('.ca-live');new MutationObserver(()=>said.push(live.textContent)).observe(live,{childList:true,characterData:true,subtree:true});
     const check=(k)=>{const st=A.stateAt(A.read(res),k);
+      const said=live.textContent.match(/Life: you (\\d+) %, the patrol (\\d+) %/),pm=s.el.dataset.life.split(',').map(Number);
+      if(said&&(+said[1]!==Math.floor(pm[1]/10)||+said[2]!==Math.floor(pm[0]/10))&&k===s.el.dataset.hits*1&&live.textContent.startsWith('Round '+st.round+' ')&&A.script(A.read(res),true).some(x=>x.k===k&&!x.end))bad.push('ear '+k+' '+said[0]+' vs '+pm);
       if(s.el.dataset.life!==st.pm.join(','))bad.push('strip life '+k);
       s.el.querySelectorAll('.ca-card').forEach(c=>{const m=c.textContent.match(/· (\\d+) of (\\d+) · (.+)$/);
         if(!m||m[1]!==c.dataset.life||A.WORD[c.dataset.mood]!==m[3]||A.mood(+m[1],+m[2])!==c.dataset.mood)bad.push('card '+k+' '+c.textContent);

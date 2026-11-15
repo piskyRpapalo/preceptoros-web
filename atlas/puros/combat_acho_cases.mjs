@@ -41,7 +41,11 @@ test('each round is said once, in order, with who hit and both sides\' life; out
   const f = A.read(fight('x')), s = A.script(f, false), rounds = s.filter((x) => !x.end).map((x) => x.round);
   assert.deepEqual(rounds, [...new Set(rounds)].sort((a, b) => a - b));
   assert.equal(new Set(s.map((x) => x.line)).size, s.length, 'no line twice');
-  s.filter((x) => !x.end).forEach((x) => { assert.match(x.line, /^Round \d+ · /); assert.match(x.line, /Life: you \d+ %, the patrol \d+ %\.$/); });
+  s.forEach((x) => { // ear = machine: the life the voice says is the life the record gives at that hit
+    if (!x.end) { assert.match(x.line, /^Round \d+ · /); }
+    const m = x.line.match(/Life: you (\d+) %, the patrol (\d+) %\./), pm = A.stateAt(f, x.k).pm;
+    assert.ok(m, x.line); assert.deepEqual([+m[1], +m[2]], [Math.floor(pm[1] / 10), Math.floor(pm[0] / 10)], x.line);
+  });
   const outs = s.filter((x) => / is out\.| are out\./.test(x.line)); const zero = A.stateAt(f, f.hits.length).life.flat().filter((v) => v === 0).length;
   assert.equal(outs.map((x) => x.line.match(/(You|Patrol) \d+/g).length).reduce((a, b) => a + b, 0) >= Math.min(1, zero), true);
   assert.doesNotMatch(s.map((x) => x.line).join(' '), /SIGNED|LIVE/);
