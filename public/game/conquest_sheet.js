@@ -28,7 +28,7 @@
   // Pure: flags(markList) → the buildings this player controls, each with how it came to be held.
   function flags(list) {
     return (list || []).filter(function (m) { return !m.fog || m.won; }).map(function (m) {
-      return { id: m.id, q: m.q, r: m.r, name: NAMES[m.id] || m.id, how: m.won ? 'conquered this visit' : m.own ? 'built on this device' : "the node's own" };
+      return { id: m.id, q: m.q, r: m.r, name: m.name || NAMES[m.id] || m.id, how: m.won ? 'conquered this visit' : m.own ? 'built on this device' : "the node's own" };
     });
   }
   // Pure: types(mapKinds, built) → one row per kind: roof, tone, how many stand on this device, the level reached and why

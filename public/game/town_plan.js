@@ -1,6 +1,6 @@
-// The node's town (Sovereign 2026-11-15: «el edificio de Hexelion debe ser más alto, hexagonal, como el ayuntamiento; el
-// resto de edificios deben entrar en su territorio, lo coloreado; todo lo que esté fuera, NPCs con sus fantasmas; niebla de
-// guerra fuera del nodo»). One plan, pure and deterministic, read by map_chunks.js (landmarks, city paving), by
+// The node's town (Sovereign 2026-11-15: Hexelion's building is the high hexagonal town hall; the other buildings stand
+// inside its coloured territory; everything outside is NPC buildings with their ghosts; the fog of war starts outside
+// the node). One plan, pure and deterministic, read by map_chunks.js (landmarks, city paving), by
 // map_fog_layer.js (what is always seen) and by node_beacon.js (the town hall over the node's own cell):
 // - the town hall stands on the node's cell (0,0); the node's ten buildings ring it at radius RING, evenly spaced;
 // - the territory is every hex within TERR of the node: coloured, each hex by its nearest own building (its district),

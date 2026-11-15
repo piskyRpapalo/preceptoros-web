@@ -1,0 +1,77 @@
+/* Buildings with personality (building_skins.js): each building's card wears its function. Acho palette tokens only. */
+.bs-sheet[data-skin]{--sk-bg:var(--afffaf0);--sk-line:var(--ae6dbc3);--sk-acc:var(--ad49a1c);--sk-card:var(--afffdf6);--sk-head:var(--a1d1b26);background-color:var(--sk-bg);transition:background-color .25s}
+.bs-sheet[data-skin] #bs-h{color:var(--sk-head)}
+.bs-skin{display:flex;align-items:center;gap:10px;margin:2px 0 10px;padding:6px 12px 6px 6px;border:3px solid var(--a1d1b26);border-radius:999px;background:var(--sk-card);box-shadow:0 4px 0 var(--a1d1b26)}
+.bs-skin svg{flex:none;width:40px;height:40px;padding:4px;border-radius:50%;background:var(--sk-acc);border:2px solid var(--a1d1b26)}
+.bs-skin svg path{fill:none;stroke:var(--a1d1b26);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.bs-motto{margin:0;font:800 .95rem/1.2 ui-rounded,system-ui,sans-serif;color:var(--a1d1b26)}
+.bs-sheet[data-skin] .bs-card{background:var(--sk-card);border-color:var(--a1d1b26)}
+.bs-sheet[data-skin] .bs-card[data-seal=LIVE]{box-shadow:inset 0 -6px 0 var(--sk-acc),0 4px 0 var(--a1d1b26)}
+.bs-sheet[data-skin] .bs-line{color:var(--sk-head)}
+
+/* lottery · a fairground: candy stripes, tickets with notches */
+.bs-sheet[data-skin=lottery]{--sk-bg:var(--affe58a);--sk-acc:var(--ad49a1c);background-image:repeating-linear-gradient(135deg,transparent 0 18px,color-mix(in srgb,var(--ad49a1c) 22%,transparent) 18px 36px)}
+.bs-sheet[data-skin=lottery] .bs-card{border-style:dashed;border-radius:10px;background-image:radial-gradient(circle at 0 50%,var(--affe58a) 9px,transparent 10px),radial-gradient(circle at 100% 50%,var(--affe58a) 9px,transparent 10px)}
+/* doctor · a clinic: a soft cross grid, rounded calm cards */
+.bs-sheet[data-skin=doctor]{--sk-bg:var(--afffdf6);--sk-acc:var(--aa8e3ff);background-image:linear-gradient(var(--aa8e3ff) 2px,transparent 2px),linear-gradient(90deg,var(--aa8e3ff) 2px,transparent 2px);background-size:28px 28px;background-position:-1px -1px}
+.bs-sheet[data-skin=doctor] .bs-card{border-radius:28px;border-color:var(--a2a8fc4)}
+/* coliseum · the ring: sand, stone arches, a red banner */
+.bs-sheet[data-skin=coliseum]{--sk-bg:var(--af4ecda);--sk-acc:var(--ab8401a);background-image:radial-gradient(var(--ac8b99c) 1.5px,transparent 2px);background-size:14px 14px;border-top:10px solid var(--ab8401a)}
+.bs-sheet[data-skin=coliseum] .bs-card{border-radius:40px 40px 8px 8px;background:var(--ae6dbc3);border-width:3px 3px 6px}
+.bs-sheet[data-skin=coliseum] .bs-skin svg path{stroke:var(--afffdf6)}
+/* choir · sound: lilac with concentric waves, pill cards */
+.bs-sheet[data-skin=choir]{--sk-bg:var(--adcc8ff);--sk-acc:var(--a7a52c7);background-image:repeating-radial-gradient(circle at 100% 0,transparent 0 22px,color-mix(in srgb,var(--a7a52c7) 18%,transparent) 22px 25px)}
+.bs-sheet[data-skin=choir] .bs-card{border-radius:999px}
+.bs-sheet[data-skin=choir] .bs-skin svg path{stroke:var(--afffdf6)}
+/* customs · keys and stamps: steel hatch, double frames */
+.bs-sheet[data-skin=customs]{--sk-bg:var(--ae6e8ef);--sk-acc:var(--a7c8296);background-image:repeating-linear-gradient(45deg,transparent 0 10px,color-mix(in srgb,var(--a7c8296) 16%,transparent) 10px 12px)}
+.bs-sheet[data-skin=customs] .bs-card{border-style:double;border-width:6px;border-radius:6px}
+/* hostel · warm wood planks */
+.bs-sheet[data-skin=hostel]{--sk-bg:var(--ae6dbc3);--sk-acc:var(--affc2b3);background-image:repeating-linear-gradient(0deg,var(--ae6dbc3) 0 26px,var(--addd2ba) 26px 28px)}
+.bs-sheet[data-skin=hostel] .bs-card{border-radius:14px}
+/* model tower · night with a measuring grid */
+.bs-sheet[data-skin=tower]{--sk-bg:var(--a04334a);--sk-acc:var(--a2a8fc4);--sk-head:var(--afffdf6);background-image:linear-gradient(color-mix(in srgb,var(--a0b6e8f) 60%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--a0b6e8f) 60%,transparent) 1px,transparent 1px);background-size:22px 22px}
+.bs-sheet[data-skin=tower] .bs-bar .bs-tool{color:var(--a1d1b26)}
+/* agora · marble columns */
+.bs-sheet[data-skin=agora]{--sk-bg:var(--afffdf6);--sk-acc:var(--ab8f0a8);background-image:repeating-linear-gradient(90deg,transparent 0 30px,var(--ae6e8ef) 30px 38px)}
+.bs-sheet[data-skin=agora] .bs-card{border-radius:4px;border-top-width:8px}
+/* workshop · a blueprint */
+.bs-sheet[data-skin=workshop]{--sk-bg:var(--a0b5d9a);--sk-acc:var(--aa8e3ff);--sk-head:var(--afffdf6);background-image:linear-gradient(color-mix(in srgb,var(--aa8e3ff) 30%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--aa8e3ff) 30%,transparent) 1px,transparent 1px);background-size:16px 16px}
+.bs-sheet[data-skin=workshop] .bs-card{border-style:dashed;border-radius:8px}
+/* visitor house · cosy dots */
+.bs-sheet[data-skin=visitor-house]{--sk-bg:var(--affc2b3);--sk-acc:var(--affd0e6);background-image:radial-gradient(var(--affd0e6) 4px,transparent 5px);background-size:24px 24px}
+.bs-sheet[data-skin=visitor-house] .bs-card{border-radius:22px}
+
+/* a visitor's chosen accent (welcome|talk|you|tools: the pad's sheet colours) */
+.bs-sheet[data-accent=welcome]{--sk-acc:var(--affe58a)}.bs-sheet[data-accent=talk]{--sk-acc:var(--adcc8ff)}
+.bs-sheet[data-accent=you]{--sk-acc:var(--affc2b3)}.bs-sheet[data-accent=tools]{--sk-acc:var(--ae6e8ef)}
+@media (prefers-reduced-motion:reduce){.bs-sheet[data-skin]{transition:none}}
+@media (forced-colors:active){.bs-sheet[data-skin]{background-image:none;border-top:0}.bs-skin{background:Canvas}.bs-skin svg path{stroke:CanvasText}}
+.bs-sheet[data-skin] .bs-live p{color:var(--sk-head)}
+/* «Make it yours» (a conquered building's card) */
+.bs-make{margin:0 0 10px;padding:8px 10px;border:3px dashed var(--a1d1b26);border-radius:18px;background:var(--sk-card)}
+.bs-make>summary{min-height:44px;display:flex;align-items:center;font:800 1rem ui-rounded,system-ui,sans-serif;cursor:pointer}
+.mk-skins{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px;margin:6px 0}
+.mk-skins button,.mk-acc button{min-height:44px;border:2px solid var(--a1d1b26);border-radius:14px;background:var(--afffdf6);font:700 .78rem ui-rounded,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px}
+.mk-skins svg{width:26px;height:26px}.mk-skins svg path{fill:none;stroke:var(--a1d1b26);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.mk-skins [aria-checked=true],.mk-acc [aria-checked=true]{background:var(--sk-acc);box-shadow:0 3px 0 var(--a1d1b26)}
+.mk-acc{display:flex;gap:6px;margin:6px 0}.mk-acc button{flex:1;flex-direction:row;justify-content:center}
+.mk-acc [data-accent=welcome]{border-bottom:8px solid var(--affe58a)}.mk-acc [data-accent=talk]{border-bottom:8px solid var(--adcc8ff)}
+.mk-acc [data-accent=you]{border-bottom:8px solid var(--affc2b3)}.mk-acc [data-accent=tools]{border-bottom:8px solid var(--ae6e8ef)}
+.bs-make label{display:flex;flex-direction:column;gap:4px;font-weight:700;margin:6px 0}
+.bs-make input{min-height:44px;border:2px solid var(--a1d1b26);border-radius:12px;padding:0 10px;font:inherit;background:var(--afffdf6)}
+.mk-keep{min-height:48px;width:100%;border:3px solid var(--a1d1b26);border-radius:999px;background:var(--a157a45);color:var(--afffdf6);font:800 1rem ui-rounded,system-ui,sans-serif;box-shadow:0 4px 0 var(--a1d1b26)}
+/* Talking to a node (node_beacon.js open(): #voices data-talk=node): the sheet becomes the conversation */
+#voices[data-talk=node] #radio-chat>:not(#chat-h):not(#log):not(#entry),#voices[data-talk=node] [data-speaker=Radio]>details{display:none}
+#voices[data-talk=node] #log{max-height:none;min-height:38vh;display:flex;flex-direction:column;gap:8px;padding:6px 4px 12px}
+#voices[data-talk=node] #log .node-intro{display:flex;align-items:center;gap:8px;padding:10px 12px;border:3px solid var(--a1d1b26);border-left-width:3px;border-radius:18px;background:var(--adcc8ff);box-shadow:0 4px 0 var(--a1d1b26)}
+#voices[data-talk=node] #log .node-intro::before{content:"";flex:none;width:14px;height:14px;border-radius:50%;background:var(--a157a45);border:2px solid var(--a1d1b26)}
+#voices[data-talk=node] #log li.turn{max-width:86%;padding:10px 14px;border:2px solid var(--a1d1b26);font-size:1rem;line-height:1.4}
+#voices[data-talk=node] #log li.turn.me{align-self:flex-end;background:var(--adcc8ff);border-radius:18px 18px 4px 18px}
+#voices[data-talk=node] #log li.turn.them{align-self:flex-start;background:var(--afffdf6);border-radius:18px 18px 18px 4px;box-shadow:0 3px 0 var(--a1d1b26)}
+#voices[data-talk=node] #log li.turn.nodata{align-self:center;background:var(--ae6e8ef);border-style:dashed;border-radius:12px;font-size:.9rem}
+#voices[data-talk=node] #entry{position:sticky;bottom:0;z-index:2;padding:8px 0 4px;background:var(--afffaf0);box-shadow:0 -8px 12px -8px var(--a1d1b26)}
+#voices[data-talk=node] #chat-h{font:800 1.05rem ui-rounded,system-ui,sans-serif;margin:4px 0}
+#voices[data-talk=node] #open-chat{display:none !important}
+#voices.map-voices[data-talk=node][data-active-category]{max-height:min(80%,40rem)}
+#voices[data-talk=node]{scroll-padding-bottom:96px}#voices[data-talk=node] #log{padding-bottom:84px}

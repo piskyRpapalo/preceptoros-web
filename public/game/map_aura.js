@@ -20,7 +20,7 @@
     g.save(); g.font = '800 ' + fs + 'px ui-rounded, "SF Pro Rounded", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
     V.world.markList.forEach(function (m) {
       if (m.fog || hexDist([m.q, m.r], [w.q, w.r]) > 2) { return; }
-      var cell = V.world.cells.at[m.q + ',' + m.r], h0 = V.P(m.q, m.r), p = V.turn(h0.x, h0.y), t = NAMES[m.id] || m.id;
+      var cell = V.world.cells.at[m.q + ',' + m.r], h0 = V.P(m.q, m.r), p = V.turn(h0.x, h0.y), t = m.name || NAMES[m.id] || m.id;
       var x = V.G.cx + p.x * k, y = V.G.cy + p.y * k - ((cell ? V.height(cell) * V.HSTEP : 0) + (m.roof === 'spire' ? 58 : 44)) * k;
       if (bc && bc[0] === m.q && bc[1] === m.r) { y += ((m.roof === 'spire' ? 58 : 44) + 30) * k; } // the beacon's lamp shines there: the name goes under
       var tw = g.measureText(t).width + 18 * dpr, th = Math.max(fs + 10 * dpr, 44 * dpr * 0.6);

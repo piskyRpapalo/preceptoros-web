@@ -106,7 +106,7 @@
     pad.appendChild(joy); pad.appendChild(mid); pad.appendChild(right);
     stage.parentNode.insertBefore(pad, stage.nextSibling);
     // Pieces that join once the pad exists: the Town sheet, the preceptor's box, the living crab, panel close, the map layers.
-    ['building_sheet', 'preceptor_talk', 'crab_body', 'panel_x', 'map_aura', 'map_fog_layer', 'node_beacon', 'gestation_toast', 'holdings_map', 'worm_panels'].forEach(function (n) { var e = doc.createElement('script'); e.src = '/game/' + n + '.js'; doc.head.appendChild(e); });
+    ['building_sheet', 'preceptor_talk', 'crab_body', 'panel_x', 'map_aura', 'map_fog_layer', 'node_beacon', 'gestation_toast', 'holdings_map', 'worm_panels', 'building_skins'].forEach(function (n) { var e = doc.createElement('script'); e.src = '/game/' + n + '.js'; doc.head.appendChild(e); });
     var stage = doc.createElement('script'); stage.src = '/game/crab_stage.js'; doc.head.appendChild(stage); // duels and eggs on the map
     // The Aa letters button (type_scale.js) joins the middle once the pad exists.
     var letters = doc.createElement('script'); letters.src = '/game/type_scale.js'; doc.head.appendChild(letters);

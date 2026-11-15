@@ -171,7 +171,7 @@
       var dd = hexDist([m.q, m.r], [w.q, w.r]); if (dd > REACH || m.fog || (dd <= 2 && root.AtlasMapAura)) { return; } // near: map_aura's tap label
       var cell = V.world.cells.at[m.q + ',' + m.r], h0 = V.P(m.q, m.r), p = V.turn(h0.x, h0.y);
       var x = V.G.cx + p.x * k, y = V.G.cy + p.y * k - ((cell ? V.height(cell) * V.HSTEP : 0) + (m.roof === 'spire' ? 58 : 44)) * k;
-      var t = NAMES[m.id] || m.id, tw = g.measureText(t).width + 12 * dpr, th = fs + 6 * dpr;
+      var t = m.name || NAMES[m.id] || m.id, tw = g.measureText(t).width + 12 * dpr, th = fs + 6 * dpr;
       // A label over the crab moves under its building.
       if (Math.abs(x - cx) < tw / 2 + 24 * k && Math.abs(y - cy) < th / 2 + 26 * k) { y += ((m.roof === 'spire' ? 58 : 44) + 22) * k; }
       g.fillStyle = paper; g.strokeStyle = ink; g.lineWidth = Math.max(1, 1.6 * dpr);
