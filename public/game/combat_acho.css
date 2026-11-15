@@ -1,0 +1,37 @@
+/* Combat, alive (combat_acho.js): one comic card per fighter — its own wave, a face that follows its mood, its life in
+   words. Your squad in lilac, the holder in coral; the side is also written, never colour alone. Acho tokens only. */
+.ca-strip{margin:8px 0;display:flex;flex-direction:column;gap:8px}
+.ca-row{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:8px}
+.ca-side{display:flex;flex-direction:column;gap:4px}
+.ca-head{margin:0;font:800 .85rem ui-rounded,system-ui,sans-serif;color:var(--a1d1b26)}
+/* many standing: ten fit in one line of a phone — tiny waves, no names on screen (the name stays for the reader) */
+.ca-side[data-view=tiles] .ca-row{grid-template-columns:repeat(auto-fill,minmax(22px,1fr));gap:2px}
+.ca-side[data-view=tiles] .ca-card{min-height:0;padding:0;justify-content:center;border-width:2px;border-radius:8px;box-shadow:0 2px 0 var(--a1d1b26)}
+.ca-side[data-view=tiles] .ca-card svg{width:20px;height:20px}
+.ca-side[data-view=tiles] .ca-card>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.ca-side[data-view=tiles] .ca-card[data-mood=out]{opacity:.55}
+/* few standing: the fallen leave the row, the last ones unfold with their names */
+.ca-side[data-view=named] .ca-card[data-mood=out]{display:none}
+.ca-side[data-view=named] .ca-card{animation:ca-unfold .35s ease-out}
+@keyframes ca-unfold{0%{transform:scale(.5);opacity:.3}100%{transform:none;opacity:1}}
+.ca-card{display:flex;align-items:center;gap:6px;min-height:44px;padding:4px 8px 4px 4px;border:3px solid var(--a1d1b26);border-radius:14px;background:var(--afffdf6);box-shadow:0 4px 0 var(--a1d1b26);font:700 .8rem/1.2 ui-rounded,system-ui,sans-serif;color:var(--a1d1b26)}
+.ca-card[data-side="1"]{background:var(--adcc8ff)}.ca-card[data-side="0"]{background:var(--affc2b3)}
+.ca-card svg{flex:none;width:48px;height:48px}
+.ca-wave{fill:none;stroke-width:2.4;stroke-linejoin:round;transition:d .35s ease}
+.ca-card[data-side="1"] .ca-wave{stroke:var(--a5b2fb0)}.ca-card[data-side="0"] .ca-wave{stroke:var(--ab8401a)}
+.ca-eye{fill:var(--a1d1b26)}.ca-mouth{fill:none;stroke:var(--a1d1b26);stroke-width:2.4;stroke-linecap:round}
+.ca-card[data-mood=grave]{border-style:dashed}
+.ca-card[data-mood=out]{border-style:dotted;box-shadow:none;background:var(--ae6e8ef)}
+.ca-card[data-mood=out] .ca-eye{r:0}.ca-card[data-mood=out] .ca-wave{stroke:var(--a7c8296)}
+.ca-side .ca-card.is-struck{animation:ca-struck .32s ease-out}
+@keyframes ca-struck{0%{transform:translateX(0)}25%{transform:translateX(-5px) rotate(-2deg)}55%{transform:translateX(4px) rotate(1deg)}100%{transform:none}}
+.ca-live{margin:0;min-height:1.3em;font:700 .9rem/1.35 ui-rounded,system-ui,sans-serif}
+.ca-verdict{margin:0;padding:10px 14px;border:3px solid var(--a1d1b26);border-radius:22px;box-shadow:0 4px 0 var(--a1d1b26);font:800 1.1rem ui-rounded,system-ui,sans-serif;text-align:center;animation:ca-stamp .45s cubic-bezier(.2,1.6,.4,1)}
+.ca-verdict span{display:block;font:700 .8rem/1.3 ui-rounded,system-ui,sans-serif}
+.ca-quiet{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.ca-verdict[data-state=won]{background:var(--affe58a)}.ca-verdict[data-state=lost]{background:var(--ae6e8ef);border-style:dashed}.ca-verdict[data-state=draw]{background:var(--afffdf6)}
+@keyframes ca-stamp{0%{transform:scale(.6) rotate(-6deg);opacity:0}100%{transform:none;opacity:1}}
+.ca-log>summary{min-height:44px;display:flex;align-items:center;font-weight:800;cursor:pointer}
+.ca-log ol{margin:0;padding-left:1.4em;font-size:.85rem}
+@media (prefers-reduced-motion:reduce){.ca-side .ca-card.is-struck,.ca-verdict,.ca-side[data-view=named] .ca-card{animation:none}.ca-wave{transition:none}}
+@media (forced-colors:active){.ca-card{background:Canvas;color:CanvasText;border-color:CanvasText}.ca-wave,.ca-mouth{stroke:CanvasText}.ca-eye{fill:CanvasText}}

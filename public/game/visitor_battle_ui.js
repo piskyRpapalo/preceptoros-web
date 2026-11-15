@@ -4,7 +4,8 @@
   if (!box) { return; }
   var doc = root.document, cur = null, surface = doc.getElementById('surface');
   var face = doc.createElement('script'); face.src = '/game/duel_face.js'; doc.head.appendChild(face); // the duel's creature-wave face
-  var cq = doc.createElement('script'); cq.src = '/game/conquest_sheet.js'; doc.head.appendChild(cq); // C3: the Conquest card in Town
+  var cq = doc.createElement('script'); cq.src = '/game/conquest_sheet.js'; doc.head.appendChild(cq);
+  var ca = doc.createElement('script'); ca.src = '/game/combat_acho.js'; doc.head.appendChild(ca); // the fighters' cards, voice and data-* (BEAUTY-02 p2) // C3: the Conquest card in Town
   // House keeps the squad and one honest line; the fights are the NPC buildings on the map (odd/tasks/fog-and-conquest.md C2:
   // the Sovereign moved the combat places out of House; the account fights and conquers the NPC buildings).
   box.addEventListener('visitor:render', function (event) {
@@ -81,10 +82,12 @@
       replay.SPEEDS.forEach(function (v) { bar.append(control('×' + v, function (st) { return replay.setSpeed(st, v); }, state.speed === v)); });
     }
     render();
-    dialog.append(sentence, canvas, bar, status, close);
+    var CA = root.AtlasCombatAcho, still = root.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var strip = CA ? CA.strip(root.document, result, { practice: result.practice, reduce: still, names: [result.practice ? 'The patrol' : 'The NPC', 'Your squad'] }) : null;
+    dialog.append(sentence, canvas); if (strip) { dialog.append(strip.el); } dialog.append(bar, status, close);
     var CS = root.AtlasCrabStage; if (!(CS && CS.hold(dialog))) { box.append(dialog); dialog.showModal(); } // on the map, over the crab (crab_stage.js)
-    function finish() { sentence.textContent = winner; canvas.setAttribute('aria-label', winner); }
-    var F = root.AtlasDuelFace, L = { log: function () { return result.hits || []; } };
+    function finish() { sentence.textContent = winner; canvas.setAttribute('aria-label', winner); if (strip) { strip.end(); } }
+    var F = root.AtlasDuelFace, L = { log: function () { return result.hits || []; }, alGolpe: function (k) { if (strip) { strip.at(k); } } };
     // the creature-wave face when the wave renderer is there (duel_face.js); else the older face, never a blank
     renderer = F && F.ready() ? F.scene(canvas, result.defenders, result.attackers, result.combat, Object.assign(L, { semilla: result.seed, quieto: root.matchMedia('(prefers-reduced-motion: reduce)').matches, emulado: 0, alFin: finish, origen: dialog.classList.contains('duel') ? [0.5, 0.5] : null })) : root.AtlasWaveDuel.escena(canvas, result.defenders, result.attackers, result.combat, { semilla: result.seed, quieto: root.matchMedia('(prefers-reduced-motion: reduce)').matches, emulado: 0, alFin: finish, origen: dialog.classList.contains('duel') ? [0.5, 0.5] : null }); // staged: the camera centres the crab
     if (root.matchMedia('(prefers-reduced-motion: reduce)').matches) { renderer.salta(); finish(); }
