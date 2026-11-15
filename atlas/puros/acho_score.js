@@ -2,7 +2,7 @@
 // An event the world accepted or refused becomes a SCORE: what the eye, the ear, the camera and a machine are given
 // at any instant t. Nothing here decides what happened; the status comes with the event and the score obeys it.
 //   event(e)        → { ok, event } | { ok: false, cause }     the envelope «acho.event/1», checked field by field
-//   lit(ev, source) → the envelope of the authority's «faro» event (the beacon two crabs lit together)
+//   lit(ev, source) → the envelope of the authority's lighting event (the beacon two crabs lit together)
 //   refused(kind, cause, id, source) / asked(ask, source) → the envelopes of a refusal and of an open request
 //   score(event)    → { v, id, kind, status, seal, light, dur, waves, caption, ... }
 //   at(score, t)    → { t, done, lamp, ring, dim, mark, sparks, focus }   t in milliseconds since the event was seen
