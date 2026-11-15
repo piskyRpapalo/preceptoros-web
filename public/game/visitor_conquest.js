@@ -19,7 +19,7 @@
   root.addEventListener('pagehide', clear);
   box.addEventListener('visitor:battle', function (event) {
     var result = event.detail, captured = context, dialog = box.querySelector('dialog');
-    if (!captured || !dialog || result.combat.gana !== 'asalto') { return; }
+    if (!captured || !dialog || result.practice || result.combat.gana !== 'asalto') { return; } // a practice wave conquers nothing
     var button = doc.createElement('button'); button.id = 'visitor-conquer'; button.textContent = 'Record this local conquest'; button.style.minHeight = '44px';
     button.addEventListener('click', async function () {
       button.disabled = true;

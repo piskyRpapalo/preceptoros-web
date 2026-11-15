@@ -22,7 +22,7 @@
   function title(k) { return k.charAt(0).toUpperCase() + k.slice(1).replace(/-/g, ' '); }
   // won(st, led, result): a won fight becomes a holding; returns the sentence to tell (or null when it was not a win).
   function won(st, led, result) {
-    if (!result || !result.combat || result.combat.gana !== 'asalto') { return null; }
+    if (!result || result.practice || !result.combat || result.combat.gana !== 'asalto') { return null; } // a practice wave holds nothing
     var k = kindOf(result.place, KINDS), n = Math.max(1, Math.min(10, (result.attackers || []).length));
     if (!st.opened) { STORES.forEach(function (s) { led.grant(s[0], s[1], st.step); }); st.opened = true; }
     if (!led.conquer(key(result.place), k, n, LIFE_AFTER_WIN)) { return 'NO_DATA: the ledger refused the ' + k; }
