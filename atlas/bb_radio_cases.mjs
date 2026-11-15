@@ -56,10 +56,44 @@ caso('frames distintos dan audios distintos (anti-slop del sonido)', () => {
   return sha(R.pcm(FRAME)) !== sha(R.pcm(otro)) || 'dos frames distintos suenan igual';
 });
 
-caso('las notas salen de los digitos de la foto del frame (round(|a|*1000))', () => {
-  // [1, 0.5, 0] -> "500" -> digitos 5,0,0 -> indices 5%8=5, 0, 0
-  const n = R.notas([[1, 0.5, 0]]);
-  return (n.length === 3 && n[0].idx === 5 && n[1].idx === 0 && n[2].idx === 0) || JSON.stringify(n);
+caso('las notas son los armonicos k >= 2 de la forma, en el orden de su fase (k = 1 es el suelo comun)', () => {
+  const n = R.notas([[1, 1, 0], [4, 0.4, 2], [2, 0.5, 1], [3, 0.3, 3]]);
+  return (n.map((x) => x.k).join() === '2,4,3' && n[0].hz === 440 && n[1].hz === 880) || JSON.stringify(n);
+});
+
+const SEIS = ['LIVE', 'PROPUESTA', 'FIRMADO', 'ERROR', 'SIMULATED', 'STALE'];
+const terms = (s) => T.visual(s).fourierTerms.map((t) => [t.k, t.a, t.phi]);
+caso('seis sellos con melodia: el aviso de dos notas de la radio es distinto en los seis (antes 1 de 6)', () => {
+  const avisos = SEIS.map((s) => sha(R.pcm({ sello: s, terminos: terms(s) }).slice(0, 2 * R.NOTA_TICKS * R.MUESTRAS_TICK)));
+  return new Set(avisos).size === 6 || 'distintos: ' + new Set(avisos).size;
+});
+
+caso('sabotaje: cantar el fundamental comun (k = 1) vuelve a igualar los avisos', () => {
+  const conSuelo = (s) => [{ k: 1 }].concat(R.notas(terms(s))).slice(0, 2).map((x) => x.k).join();
+  return new Set(SEIS.map(conSuelo)).size < 6 || 'el sabotaje no iguala';
+});
+
+// La palabra y la huella dicen la misma melodia: el contorno se reconstruye desde las marcas dibujadas.
+function cantoDesdeHuella(s) {
+  const h = R.huella(s), reg = (k) => (k <= 2 ? 'low' : k <= 4 ? 'middle' : 'high'), mov = [];
+  for (let i = 1; i < h.length; i++) { const m = h[i].y < h[i - 1].y ? 'rises' : 'falls'; if (mov[mov.length - 1] !== m) mov.push(m); }
+  return h.length === 1 ? 'One ' + reg(h[0].k) + ' note' : 'From ' + reg(h[0].k) + ', ' + mov.join(', then ');
+}
+caso('ojo = lector: la huella dibujada y las palabras del canto describen la misma melodia en los seis', () => {
+  for (const s of SEIS) { if (!R.canto(s).startsWith(cantoDesdeHuella(s) + ' · ')) return s + ': ' + R.canto(s) + ' / ' + cantoDesdeHuella(s); }
+  return true;
+});
+
+caso('cada sello tiene un canto propio y su gemelo lo lleva; NO_DATA no canta (sin canto ni huella)', () => {
+  const c = SEIS.map((s) => R.canto(s));
+  if (new Set(c).size !== 6) return 'cantos repetidos: ' + c.join(' | ');
+  if (SEIS.some((s) => R.gemelo(s).canto !== R.canto(s))) return 'el gemelo no lleva el canto';
+  return (R.canto('NO_DATA') === null && R.huella('NO_DATA').length === 0 && R.gemelo('NO_DATA').canto === null) || 'NO_DATA canta';
+});
+
+caso('sabotaje: una huella con dos notas cambiadas de orden ya no dice el canto', () => {
+  const h = R.huella('FIRMADO'), swap = [h[1], h[0]].concat(h.slice(2)), reg = (k) => (k <= 2 ? 'low' : k <= 4 ? 'middle' : 'high');
+  return !R.canto('FIRMADO').startsWith('From ' + reg(swap[0].k) + ', rises, then falls, then rises') || 'el sabotaje pasa';
 });
 
 caso('NO_DATA es silencio: sin muestras', () => {

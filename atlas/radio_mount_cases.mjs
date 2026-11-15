@@ -67,7 +67,7 @@ check('pressing plays a short cue of the last line, then every new line', () => 
   assert.equal(r.button.textContent, 'Tone: on');
   assert.equal(r.played.length, 1);
   const cue = r.played[0], full = r.frame.sound({ seal: 'LIVE', source: 'state', cycle: 5, text: 'x' }).samples.length;
-  assert.ok(cue > 0 && cue < full);                                     // a prefix of the full tone, never another sound
+  assert.ok(cue > 0 && cue <= full);                                    // a prefix of the full tone, never another sound (LIVE sings two notes, harmonics 2 and 3: its cue is its whole tune)
   r.api.dice({ texto: 'A crab arrived', fuente: 'state' });
   assert.equal(r.played.length, 2);
   assert.equal(r.note.hidden, true);

@@ -49,7 +49,7 @@
       meta.title = causa;
       cab.appendChild(meta);
     }
-    li.appendChild(cab); li.appendChild(el('p', 'radio-msg-texto', m.texto));
+    li.appendChild(cab); li.appendChild(el('p', 'radio-msg-texto', m.texto)); if (m.oido) { huellaEn(li, m.oido); }
     return li;
   }
   function pinta() {
@@ -106,7 +106,25 @@
     if (!oido.on || !m) { return null; }
     var F = marco(), r = F ? F.play(oido.ac, linea(m), 2) : { played: false, cause: 'NO_DATA: the radio frame is not loaded on this page' };
     if (R.tonoNota) { R.tonoNota.textContent = r.played ? '' : r.cause; R.tonoNota.hidden = !!r.played; }
+    if (r.played) { m.oido = { seal: r.seal, ms: r.ms }; var all = R.lista && R.lista.querySelectorAll ? R.lista.querySelectorAll('li[data-evento="' + r.id + '"]') : []; if (all.length) { huellaEn(all[all.length - 1], m.oido); } } // kept on the line: a repaint draws it again
     return r;
+  }
+  // The eye's copy of a tone (2026-11-16): the bubble that just sounded shows the notes it played as dots on a tiny
+  // staff (higher dot = higher harmonic, bigger = stronger) and the seal's tune in words. aria-hidden: a screen reader
+  // user hears the tone itself, and the line's words were already said. Static: nothing moves.
+  function huellaEn(li, r) {
+    var B = raiz.AtlasBBRadio;
+    if (!B || !B.huella || !li || !document.createElementNS || li.querySelector('.radio-tune')) { return; }
+    var marks = B.huella(r.seal).slice(0, Math.max(1, Math.round(r.ms / 250))), NS = 'http://www.w3.org/2000/svg';
+    if (!marks.length) { return; }
+    var tag = el('span', 'radio-tune', ' ' + B.canto(r.seal)), svg = document.createElementNS(NS, 'svg'), d = '';
+    svg.setAttribute('fill', 'currentColor'); svg.setAttribute('stroke', 'currentColor'); svg.style.flex = 'none'; svg.setAttribute('viewBox', '0 0 ' + (marks.length * 12 + 4) + ' 20'); svg.setAttribute('width', String(marks.length * 12 + 4)); svg.setAttribute('height', '20');
+    marks.forEach(function (m, i) {
+      var c = document.createElementNS(NS, 'circle'), x = 8 + i * 12, y = 2 + m.y * 2.4; d += (i ? 'L' : 'M') + x + ' ' + y;
+      c.setAttribute('cx', String(x)); c.setAttribute('cy', String(y)); c.setAttribute('r', String(m.r * 1.6)); svg.appendChild(c);
+    });
+    var p = document.createElementNS(NS, 'path'); p.setAttribute('d', d); p.setAttribute('fill', 'none'); p.setAttribute('stroke-width', '1.5'); p.setAttribute('stroke-dasharray', '2 2'); svg.insertBefore(p, svg.firstChild);
+    tag.style.cssText = 'display:flex;align-items:center;gap:6px;margin-top:4px;font:700 .78rem ui-rounded,system-ui,sans-serif;color:var(--a3d3950)'; tag.setAttribute('aria-hidden', 'true'); tag.dataset.seal = r.seal; tag.insertBefore(svg, tag.firstChild); li.appendChild(tag);
   }
   function tono(on) {
     oido.on = on == null ? !oido.on : !!on;
