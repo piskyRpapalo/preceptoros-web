@@ -29,6 +29,9 @@
   }
   // Pure: label(crab) → what is written under another crab: its short id, and STALE in words when it fell silent.
   function label(c) { return c.id.slice(5, 9) + (c.seal === 'STALE' ? ' · STALE' : ''); }
+  // Pure: slot(s) → the sideways place (in crab widths) of the s-th crab drawn on one hex: 0, +1, -1, +2, -2… Crowds, not
+  // piles (2026-11-15): two crabs on one cell stand side by side. s counts the visitor's own crab, which keeps the centre.
+  function slot(s) { return s ? (s % 2 ? 1 : -1) * Math.ceil(s / 2) : 0; }
   function oval(g, x, y, rx, ry, a0, a1) { for (var i = 0; i <= 16; i++) { var a = a0 + (a1 - a0) * i / 16; g.lineTo(x + rx * Math.cos(a), y + ry * Math.sin(a)); } }
 
   function mount(doc, win) {
@@ -122,10 +125,12 @@
       if (!me || !view || !V || !B || surface.dataset.duel) { return; }
       var g = surface.getContext('2d'), k = V.G.k, dpr = surface.width / (surface.getBoundingClientRect().width || surface.width), drawn = [];
       g.save(); g.setTransform(1, 0, 0, 1, 0, 0);
+      var here = {}; view.crabs.slice().sort(function (a, b) { return a.id === me.id ? -1 : b.id === me.id ? 1 : a.id < b.id ? -1 : 1; })
+        .forEach(function (c) { var key = c.q + ',' + c.r; here[key] = (here[key] || 0) + 1; c.slot = here[key] - 1; });
       view.crabs.forEach(function (c) {
         if (c.id === me.id) { return; }
         var cell = V.world.cells.at[c.q + ',' + c.r], h0 = V.P(c.q, c.r), p = V.turn(h0.x, h0.y);
-        var x = V.G.cx + p.x * k, y = V.G.cy + p.y * k - (cell ? V.height(cell) * V.HSTEP : 0) * k, stale = c.seal === 'STALE', t = label(c);
+        var x = V.G.cx + p.x * k + slot(c.slot) * 26 * k, y = V.G.cy + p.y * k - (cell ? V.height(cell) * V.HSTEP : 0) * k, stale = c.seal === 'STALE', t = label(c);
         g.globalAlpha = stale ? 0.4 : 1;
         B.draw(g, x, y, Math.max(k, 0.5) * 0.9, B.pose(0, 1, 1), V.H, stale ? 0.15 : 0.6, oval);
         g.globalAlpha = 1; g.font = '600 ' + Math.round(11 * dpr) + 'px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'top';
@@ -141,7 +146,7 @@
     return { auth: auth, poll: POLL, beat: BEAT, radius: RADIUS, state: function () { return { id: me ? me.id : null, pos: pos, view: view, said: said.slice(), beacon: coop ? coop.state() : null }; } };
   }
 
-  var api = { authority: authority, dirOf: dirOf, label: label, mount: mount, mounted: null };
+  var api = { authority: authority, dirOf: dirOf, label: label, slot: slot, mount: mount, mounted: null };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasSharedCrabs = api;
   if (root.document && root.document.getElementById && root.location) { api.mounted = mount(root.document, root); }

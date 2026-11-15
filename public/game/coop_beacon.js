@@ -107,7 +107,9 @@
         L.sparks.forEach(function (s) { g.globalAlpha = s.a; g.fillStyle = H.css(paper); g.fillRect(x + s.x * u - 1.5 * dpr, ly + s.y * u - 1.5 * dpr, 3 * dpr, 3 * dpr); }); g.globalAlpha = 1;
       }
       var words = L ? 'BEACON · LIT' : X ? 'BEACON · REFUSED' : R ? 'BEACON · ASKED' : 'BEACON';
-      var at = tag(g, words, x, ly - u - 18 * dpr, dpr, H);
+      var hb = doc.getElementById('ow-brief'), sr = o.surface.getBoundingClientRect(), hr = hb && hb.offsetParent ? hb.getBoundingClientRect() : null;
+      var ty = ly - u - 18 * dpr, hud = hr ? (hr.bottom - sr.top) * dpr + 4 * dpr : 0; // the words never sit under the top bar
+      var at = tag(g, words, x, ty < hud ? y + 30 * k + 16 * dpr : ty, dpr, H); // under the building's name (map_aura.js moves it there)
       g.restore();
       o.surface.dataset.beacon = JSON.stringify({ id: L ? lit.score.id : null, lit: !!L, words: words, lamp: L ? L.lamp : 0, moving: !!(L && !L.done), x: Math.round(x), y: Math.round(y), light: [Math.round(x), Math.round(ly)], tag: at, cell: [beacon.q, beacon.r] });
     }
