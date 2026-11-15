@@ -15,13 +15,17 @@
     customs: 'Customs', lottery: 'Lottery', 'visitor-house': 'Visitor house', doctor: 'Doctor' }, hits = [];
   function near(g, V, w, dpr) {
     hits = []; if (!w || !V.world.markList) { return hits; }
+    var sf = root.document && root.document.getElementById('surface'), bc = null; try { bc = JSON.parse(sf.dataset.beacon).cell; } catch (e) { bc = null; }
     var k = V.G.k, ink = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.ink)), paper = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.paper)), fs = Math.round(16.5 * dpr);
     g.save(); g.font = '800 ' + fs + 'px ui-rounded, "SF Pro Rounded", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
     V.world.markList.forEach(function (m) {
       if (m.fog || hexDist([m.q, m.r], [w.q, w.r]) > 2) { return; }
       var cell = V.world.cells.at[m.q + ',' + m.r], h0 = V.P(m.q, m.r), p = V.turn(h0.x, h0.y), t = NAMES[m.id] || m.id;
       var x = V.G.cx + p.x * k, y = V.G.cy + p.y * k - ((cell ? V.height(cell) * V.HSTEP : 0) + (m.roof === 'spire' ? 58 : 44)) * k;
+      if (bc && bc[0] === m.q && bc[1] === m.r) { y += ((m.roof === 'spire' ? 58 : 44) + 30) * k; } // the beacon's lamp shines there: the name goes under
       var tw = g.measureText(t).width + 18 * dpr, th = Math.max(fs + 10 * dpr, 44 * dpr * 0.6);
+      x = Math.max(tw / 2 + 4 * dpr, Math.min(g.canvas.width - tw / 2 - 4 * dpr, x)); // a name is read whole, never cut by the edge
+      if (sf && Math.abs(x - +sf.dataset.youx) < tw / 2 + 24 * k && Math.abs(y - +sf.dataset.youy) < th / 2 + 30 * k) { y += ((m.roof === 'spire' ? 58 : 44) + 30) * k; } // over the crab → under the building
       g.fillStyle = paper; g.strokeStyle = ink; g.lineWidth = Math.max(1.5, 2.2 * dpr);
       g.beginPath(); g.moveTo(x - tw / 2 + th / 2, y - th / 2); g.arc(x + tw / 2 - th / 2, y, th / 2, -Math.PI / 2, Math.PI / 2);
       g.arc(x - tw / 2 + th / 2, y, th / 2, Math.PI / 2, Math.PI * 1.5); g.closePath(); g.fill(); g.stroke();
@@ -34,6 +38,9 @@
   function draw(g, V, s, still, oval, ow) {
     var wk = ow && ow.controls && ow.controls.walker && ow.controls.walker(), dpr = s.width / (s.getBoundingClientRect ? (s.getBoundingClientRect().width || s.width) : s.width); near(g, V, wk, dpr);
     if (root.AtlasCrabTrail) { root.AtlasCrabTrail.draw(g, V, wk); } // the steps just walked (crab_trail.js)
+    var CB = root.AtlasCrabBody; if (CB && CB.gaze) { // the crab looks at the nearest door of the node within one hex
+      var dm = wk && (V.world.markList || []).filter(function (m) { return !m.fog && hexDist([m.q, m.r], [wk.q, wk.r]) <= 1; })[0], c0 = wk && V.P(wk.q, wk.r), c1 = dm && V.P(dm.q, dm.r);
+      CB.gaze(dm ? CB.gazeOf(V.turn(c1.x, c1.y).x - V.turn(c0.x, c0.y).x, V.turn(c1.x, c1.y).y - V.turn(c0.x, c0.y).y) : null); }
     if (root.AtlasMissionHotspots) { root.AtlasMissionHotspots.draw(g, V, dpr); } // the missions waiting (mission_hotspots.js)
     var key = s.dataset.sel, c = key && V.world.cells.at[key];
     if (!c) { return false; }

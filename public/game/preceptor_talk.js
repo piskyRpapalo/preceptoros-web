@@ -63,10 +63,13 @@
       var w = box.offsetWidth, h = box.offsetHeight;
       var off = !isFinite(cx) || !isFinite(cy) || cx < 0 || cy < 0 || cx > st.width || cy > st.height;
       var above = cy - gap - h, below = cy + 14, up = above >= 8;
-      var dock = off || (!up && below + h > st.height - 8);
+      // A piece of news docks at the foot of the map, above the beacon bar (2026-11-15): it must be seen without covering
+      // the crabs and the beacon it speaks about; the follow-cam keeps the crab in the middle band, away from the foot.
+      var news = box.classList.contains('pt-news'), bar = doc.getElementById('coop-beacon'), foot = bar && bar.offsetParent ? bar.offsetHeight + 8 : 0;
+      var dock = news || off || (!up && below + h > st.height - 8);
       // A crab off-screen must never drag the preceptor's voice over the title or outside the scene.
       var left = dock ? 8 : Math.max(8, Math.min(Math.max(8, st.width - w - 8), cx - w / 2));
-      var top = dock ? Math.max(8, st.height - h - 8) : up ? above : below;
+      var top = dock ? Math.max(8, st.height - h - 8 - foot) : up ? above : below;
       box.classList.remove('pt-tuck'); box.classList.toggle('pt-docked', dock);
       box.style.left = Math.round(left) + 'px'; box.style.top = Math.round(top) + 'px';
       box.style.setProperty('--tail', Math.round(Math.max(18, Math.min(w - 18, cx - left))) + 'px'); box.classList.toggle('pt-under', !up && !dock);

@@ -85,7 +85,11 @@
     if (F.valida(frame).length) { return { ok: false, cause: 'frame_breaks_the_law' }; }
     return { ok: true, line: line, frame: frame, others: others, news: changed, events: t.ids, lit: !!view.lit };
   }
-  var api = { NAMED: NAMED, distance: distance, way: way, news: news, told: told, describe: describe };
+  // beaconEvents(view) → the authority's lightings in this view, as it sent them: the one door for the beacon layer.
+  function beaconEvents(view) {
+    return (view && Array.isArray(view.events) ? view.events : []).filter(function (e) { return e && e.k === 'faro' && typeof e.id === 'string' && Array.isArray(e.who) && e.who.length === 2 && Array.isArray(e.cell); });
+  }
+  var api = { NAMED: NAMED, distance: distance, way: way, news: news, told: told, describe: describe, beaconEvents: beaconEvents };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasCrabPresenceAcho = api;
 })(typeof globalThis === 'object' ? globalThis : this);
