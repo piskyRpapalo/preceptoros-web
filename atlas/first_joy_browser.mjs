@@ -102,8 +102,13 @@ async function main() {
   // 2 · a tap on a near hex walks: the heading says the new place.
   const lugar = (h) => h.replace(/^Visitor-[0-9a-f]{8} · /, '');
   let paso = crab;
-  for (const [x, y] of [[250, 330], [110, 330], [180, 200]]) {
+  // a near hex with no building and no guardian under the finger (a fogged building now speaks instead of walking)
+  const libre = (x, y) => ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(), px = (${x} - r.left) * s.width / r.width, py = (${y} - r.top) * s.height / r.height, MP = window.AtlasMapPainter, F = window.AtlasMapFog, B = window.AtlasNodeBeacon;
+    return document.elementFromPoint(${x}, ${y}) === s && !(MP && MP.markAt && MP.markAt(px, py)) && !(F && F.askAt && F.askAt(px, py)) && !(B && B.hitAt && B.hitAt(px, py)); })()`);
+  medidas.walk_tries = [];
+  for (const [x, y] of [[250, 330], [110, 330], [180, 200], [250, 250], [110, 250], [180, 400], [250, 400], [110, 400]]) {
     if (lugar(paso.h1) !== lugar(crab.h1)) { break; }
+    if (!(await libre(x, y))) { medidas.walk_tries.push([x, y, 'occupied']); continue; } medidas.walk_tries.push([x, y]);
     for (const type of ['mousePressed', 'mouseReleased']) { await cmd('Input.dispatchMouseEvent', { type, x, y, button: 'left', clickCount: 1 }); }
     paso = await hasta((m) => lugar(m.h1) !== lugar(crab.h1), 3000);
   }
