@@ -13,7 +13,7 @@
   function add(q, r, r0) { var k = q + ',' + r; if (seen[k] >= r0) { return; } seen[k] = r0; centres.push({ q: q, r: r, r0: r0 }); }
   function seed(V) {
     if (centres.length) { return; }
-    add(0, 0, CABIN); // the cabin is seen to radius 4; the city (radius 2 around the cabin and each own building) is always seen
+    var TP = root.AtlasTownPlan; add(0, 0, TP ? TP.TERR : CABIN); // the node's territory (town_plan.js) is always seen; the fog starts at its edge
     (V.world.markList || []).forEach(function (m) { if (!m.fog) { add(m.q, m.r, OWN); } });
   }
   function hidden(m) { return !clear(centres, m.q, m.r); }
@@ -171,7 +171,8 @@
       if (m) { e.stopImmediatePropagation(); e.preventDefault(); profile(m); }
     }, true);
   }
-  var api = { nearest: nearest, toward: toward, go: go, walking: function () { return !!going; }, clear: clear, hidden: hidden, won: won, npc: npc, tell: tell, draw: draw, spot: spot, askAt: askAt, profile: profile, CABIN: CABIN, OWN: OWN, STEP: STEP };
+  function guideAt(px, py) { var h = guideHit; return !!(h && px >= h.x0 && px <= h.x1 && py >= h.y0 && py <= h.y1); }
+  var api = { guideAt: guideAt, nearest: nearest, toward: toward, go: go, walking: function () { return !!going; }, clear: clear, hidden: hidden, won: won, npc: npc, tell: tell, draw: draw, spot: spot, askAt: askAt, profile: profile, CABIN: CABIN, OWN: OWN, STEP: STEP };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasMapFog = api;
 })(typeof window !== 'undefined' ? window : globalThis);

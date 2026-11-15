@@ -24,11 +24,11 @@ test('every village building is found where it stands, and only there', () => {
   }
   assert.equal(MC.markAt(w, G, -5000, -5000, V), null);
 });
-test('placement is fixed and keeps four hexes between buildings, the cabin clearing free', () => {
+test('placement is fixed: the town ring two hexes apart around a free square, NPC buildings four apart (town_plan.js)', () => {
   const a = world(), b = world(); MC.landmarks(a); MC.landmarks(b);
   assert.deepEqual(a.markList, b.markList);
   const d = (p, q) => (Math.abs(p.q - q.q) + Math.abs(p.r - q.r) + Math.abs(p.q + p.r - q.q - q.r)) / 2;
-  a.markList.forEach((m, i) => { assert.ok(d(m, { q: 0, r: 0 }) > 2); a.markList.slice(i + 1).forEach((n) => assert.ok(d(m, n) >= 4)); });
+  a.markList.forEach((m, i) => { assert.ok(d(m, { q: 0, r: 0 }) > 2); a.markList.slice(i + 1).forEach((n) => assert.ok(d(m, n) >= (m.fog && n.fog ? 4 : 2))); });
 });
 test('the crab stick: a push turns into one of the six hex steps, true under the orbit', () => {
   const S = 0.433;
