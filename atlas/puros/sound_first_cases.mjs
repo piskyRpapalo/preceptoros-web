@@ -64,3 +64,15 @@ test('the landing: the switch is a 1-press control placed before the single door
 test('the piece stays small', () => {
   assert.ok(statSync(new URL('../../public/game/sound_first.js', import.meta.url)).size <= 7168);
 });
+// Round 7 · measured duplicates (2026-11-15 probe): the same message from two regions, and a line that only grows.
+test('fresh: a message already said by another region is silence', () => {
+  assert.equal(S.fresh(['Preceptor · Visit started. Copper 0, light 0.'], 'Visit started. Copper 0, light 0.'), '');
+});
+test('fresh: a line that extends the one just said gives only its tail', () => {
+  const a = 'Honest lottery · See the odds before you roll · LIVE · piece gacha.js · missions D4';
+  assert.equal(S.fresh([a], a + ' · per thousand normal 600'), 'per thousand normal 600');
+});
+test('fresh: a new message is said whole; sabotage: an empty one is never said', () => {
+  assert.equal(S.fresh(['Visit started.'], 'Raid · garrison at 75 %'), 'Raid · garrison at 75 %');
+  assert.equal(S.fresh([], '   '), '');
+});
