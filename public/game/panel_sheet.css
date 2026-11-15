@@ -157,3 +157,6 @@
 #holding-toast[hidden]{display:none}
 #stage:has(#gestation:not([hidden])) #holding-toast{top:52px}
 @media (forced-colors:active){#holding-toast{background:Canvas;color:CanvasText}}
+/* the worm from what you pressed to what opened (worm_panels.js) */
+#worm-panels{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:40}
+@media (prefers-reduced-motion:reduce){#worm-panels{display:none}}
