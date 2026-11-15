@@ -39,7 +39,7 @@
   var nextText = doc.getElementById('next-text'), playNow = doc.getElementById('play-now');
   function next(s) {
     var t = !s ? 'Press Play now.' : s.copper >= 50 ? 'Summon a wave: press Summon at the Reef below.' :
-      (s.eggs.filter(function (e) { return !e.ready; })[0] ? 'Walk ' + s.eggs.filter(function (e) { return !e.ready; })[0].remaining + ' steps to hatch.' : 'Ask the guide in the chat.');
+      (s.eggs.filter(function (e) { return !e.ready; })[0] ? 'Your egg is gestating: ' + s.eggs.filter(function (e) { return !e.ready; })[0].remaining + ' s to hatch.' : 'Ask the guide in the chat.');
     if (nextText && nextText.textContent !== t) { nextText.textContent = t; }
     if (playNow) { playNow.hidden = !!s; }
     // Y7 (2026-11-09): once the first wave hatched and nothing waits, the tutorial frame folds to its minimum and rests.
@@ -79,7 +79,7 @@
     // Q-06 (Sovereign, 2026-11-08): no «sign for adoption» step. The call was the consent: a ready egg hatches by itself and its
     // wave goes straight to the army (still signed with the visit key in visitor_eggs.js, so the chain stays verifiable).
     s.eggs.forEach(function (egg) {
-      line('Egg ' + egg.seq + (egg.ready ? ' · hatching into your army' : ' · hatches in ' + egg.remaining + ' steps'));
+      line('Egg ' + egg.seq + (egg.ready ? ' · hatching into your army' : ' · gestating, hatches in ' + egg.remaining + ' s'));
       if (egg.ready && !hatching[egg.seq]) { hatching[egg.seq] = true; game.hatch(egg.seq, true).then(function (after) { var R = root.AtlasHatchReveal; if (R) { R.show(after, function (t) { status.textContent = t; }); } if (!waiting) { render(); } }, function (e) { hatching[egg.seq] = false; status.textContent = 'NO_DATA: ' + e.message; }); }
     });
     s.chronicle.forEach(function (e) { line('Invocation ' + e.seq + ' · ' + e.tc + ' · seal ' + e.sello + ' · ' + e.rareza); });
@@ -90,6 +90,7 @@
   doc.addEventListener('building:enter', function (e) { if (game) { try { game.entered(e.detail.id); } catch (_) { /* visit ended */ } } });
   doc.addEventListener('building:act', function () { if (game) { try { game.acted(); } catch (_) { /* visit ended */ } } });
   // Free walk: each accepted step on the floor is one game step of an active visit, so walking hatches eggs.
+  box.addEventListener('visitor:tick', function () { if (game && !waiting) { try { render(); } catch (_) { /* visit ended */ } } }); // gestation_toast.js: an egg came to term
   box.addEventListener('visitor:advance', function () { if (!game || waiting) { return; } try { game.advance(); } catch (_) { return; } render(); });
   // Voice Star rewards model answers, never the page-grounded controls response.
   doc.addEventListener('brain:answer', async function (event) {

@@ -1,6 +1,10 @@
 (function (root) {
   'use strict';
   var ECHO_CAP = 4, ECHO_COPPER = 25, encode = new TextEncoder();
+  // Gestation (Sovereign 2026-11-15: «elimina los pasos para invocar; una gestación como mini mensaje arriba»): an egg
+  // hatches after time, not steps. One incubation cycle (values.js incuba) is one second: tc1 20 s … tc4 1 min 30 s.
+  // The clock is the page's; a harness may skip it forward (clock.skip), which only moves this visit's own eggs.
+  var CYCLE_MS = 1000, clock = { offset: 0, now: function () { return Date.now() + clock.offset; }, skip: function (ms) { clock.offset += Math.max(0, +ms || 0); } };
   async function sha256(text) { return Array.from(new Uint8Array(await root.crypto.subtle.digest('SHA-256', encode.encode(text))), function (v) { return v.toString(16).padStart(2, '0'); }).join(''); }
   async function create(account) {
     var A = root.AtlasArmy, G = root.AtlasGacha, info = account.info();
@@ -26,7 +30,7 @@
     }
     var army = A.crea(A.verificaWeb);
     function alive() { account.info(); if (ended) { throw new Error('Visit has ended'); } }
-    function state() { alive(); return { copper: copper, light: light, step: step, claimed: claimed, echoes: echoes, echoCap: ECHO_CAP, eggs: pending.map(function (e) { return { seq: e.seq, tc: e.tc, ready: e.until <= step, remaining: Math.max(0, e.until - step) }; }), troops: army.lista(), chronicle: A.cronica(chain, G.tirada), busy: busy }; }
+    function state() { alive(); return { copper: copper, light: light, step: step, claimed: claimed, echoes: echoes, echoCap: ECHO_CAP, eggs: pending.map(function (e) { return { seq: e.seq, tc: e.tc, ready: clock.now() - e.t0 >= e.ms, remaining: Math.max(0, Math.ceil((e.ms - (clock.now() - e.t0)) / 1000)), total: e.ms / 1000 }; }), troops: army.lista(), chronicle: A.cronica(chain, G.tirada), busy: busy }; }
     return Object.freeze({
       state: state,
       quests: quests,
@@ -61,14 +65,14 @@
           var record = A.eslabon(chain, tc, info.publicKey), signature = await account.sign(record, true);
           var seed = await A.semillaWeb(signature); alive();
           chain = A.anexa(chain, record, signature, seed, step, step + G.TCS[tc].incuba);
-          pending.push({ seq: record.seq, tc: tc, seed: seed, until: step + G.TCS[tc].incuba });
+          pending.push({ seq: record.seq, tc: tc, seed: seed, t0: clock.now(), ms: G.TCS[tc].incuba * CYCLE_MS });
           copper -= cost.cobre; light -= cost.luz; done.summons++; return state();
         } finally { busy = false; }
       },
       hatch: async function (seq, consent) {
         alive(); if (busy || consent !== true) { throw new Error('Explicit adoption consent is required'); }
         var egg = pending.find(function (e) { return e.seq === seq; });
-        if (!egg || egg.until > step) { throw new Error('Egg is not ready'); }
+        if (!egg || clock.now() - egg.t0 < egg.ms) { throw new Error('Egg is not ready'); }
         busy = true;
         try {
           var troop = G.tirada(egg.seed, egg.tc), adoption = A.adopcion(troop, info.name, info.publicKey);
@@ -85,5 +89,5 @@
       end: function () { ended = true; pending = []; chain = []; account.end(); }
     });
   }
-  root.AtlasVisitorEggs = Object.freeze({ create: create });
+  root.AtlasVisitorEggs = Object.freeze({ create: create, clock: clock, CYCLE_MS: CYCLE_MS });
 })(globalThis);
