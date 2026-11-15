@@ -38,6 +38,11 @@ try {
   out.steps.world = await t.ev(`fetch('/api/world-state',{cache:'no-store'}).then(r=>r.json()).then(d=>d.colonia.nodes.map(n=>n.id+':'+n.seal+':'+n.since))`);
   out.steps.beacon = await t.ev(`(() => { const B = window.AtlasNodeBeacon; if (!B) { return 'NO_DATA: node_beacon.js is not on this LIVE version yet'; } const s = document.getElementById('surface'); let hit = null; for (let y = 0; y < s.height && !hit; y += 8) for (let x = 0; x < s.width && !hit; x += 8) { if (B.hitAt(x, y)) hit = [x, y]; } if (!hit) { return 'NO_DATA: no node mast in view'; } const r = s.getBoundingClientRect(), k = r.width / s.width; s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + hit[0] * k, clientY: r.top + hit[1] * k })); return 'tapped the mast'; })()`);
   await espera(800);
+  // 2b · the keyboard door (one button per node; the same open() as the mast) and what Talk shows after it.
+  out.steps.door = await t.ev(`(() => { const d = document.getElementById('node-door-primer-ancla'); if (!d) { return 'NO_DATA: no node door on this version'; } d.focus(); const ok = document.activeElement === d; d.click(); return ok ? d.getAttribute('aria-label') : 'door not focusable'; })()`);
+  await espera(600);
+  out.steps.talk_title = await t.ev(`(document.getElementById('voices-title') || {}).textContent || null`);
+  out.steps.attribution = await t.ev(`(document.querySelector('#log .node-intro') || {}).textContent || null`);
   // 3 · the chatbot: Who answers = Hexelion, one question, one answer.
   out.steps.chat_open = await t.ev(`(() => { const m = document.getElementById('chat-destination'); if (!m) { return false; } m.value = 'hexelion'; m.dispatchEvent(new Event('change')); const c = document.querySelector('.cats [data-cat=Communication]'); const v = document.getElementById('voices'); if (c && (v.hidden || v.dataset.activeCategory !== 'Communication')) { c.click(); } return true; })()`);
   await espera(600);
@@ -45,8 +50,12 @@ try {
   const asked = 'Hello from a Doogee phone. Which machine are you running on? One sentence.';
   out.steps.sent = await t.ev(`(() => { const q = document.getElementById('question'), f = document.getElementById('entry'); if (!q || !f) { return false; } q.value = ${JSON.stringify(asked)}; q.dispatchEvent(new Event('input', { bubbles: true })); f.requestSubmit ? f.requestSubmit() : f.querySelector('button').click(); return true; })()`);
   out.steps.answer = await until(t, `(() => { const l = [...document.getElementById('log').children].slice(${before}); const a = l.map((x) => x.textContent.trim()).filter((x) => x && x.indexOf(${JSON.stringify(asked.slice(0, 20))}) < 0); return a.length ? a.join(' | ').slice(0, 400) : null; })()`, 60000);
+  // 4 · back to the map without losing the visit: close the sheet, the same ephemeral account is still on the map.
+  out.steps.back = await t.ev(`(() => { const x = document.getElementById('voices-x'); if (x) { x.click(); } const v = document.getElementById('voices'); return { closed: !v || v.hidden || !v.dataset.activeCategory, heading: (document.body.innerText.match(/Visitor-[0-9a-f]{8}/) || [null])[0] }; })()`);
   if (CAPTURA) { const g = await t.cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'doogee-node-chat.png'), Buffer.from(g.result.data, 'base64')); }
-  const ok = !!out.steps.visit && !!out.steps.answer && !/NO_DATA/.test(out.steps.answer);
+  const same = out.steps.back && out.steps.back.heading && out.steps.back.heading.slice(8) === String(out.steps.visit).slice(0, 8);
+  if (!same) { out.fallos.push('the visit changed or vanished after closing Talk'); }
+  const ok = !!out.steps.visit && !!out.steps.answer && !/NO_DATA/.test(out.steps.answer) && same;
   if (!out.steps.visit) { out.fallos.push('no ephemeral visit after Play'); }
   if (!out.steps.answer) { out.fallos.push('no answer from the chatbot within 60 s'); } else if (/NO_DATA/.test(out.steps.answer)) { out.fallos.push('the chatbot answered NO_DATA: ' + out.steps.answer); }
   out.receipt = ok ? 'VERDE' : 'ROJO';
