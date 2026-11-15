@@ -49,7 +49,7 @@
       .then(function () { return root.fetch(url === undefined ? '/game/acho_ledger.wasm' : url); })
       .then(function (r) { if (!r.ok) { throw new Error('HTTP ' + r.status); } return r.arrayBuffer(); })
       .then(function (bytes) { return W.instantiate(bytes, {}); })
-      .then(function (m) { return fromExports(m.instance.exports); })
+      .then(function (m) { var led = fromExports(m.instance.exports); api.api = led; return led; }) // the one ledger of this page, for its readers (holdings_map.js)
       .catch(function (err) { return nd('load failed: ' + (err && err.message || 'unknown')); });
   }
   var api = { KINDS: KINDS, RES: RES, load: load, fromExports: fromExports };

@@ -152,3 +152,11 @@
 #visitor-play .deck>:is(#house-fights,#house-guardian,#house-coliseum){order:5}
 #visitor-play .deck>#visitor-step{order:6}
 #visitor-play .deck>#visitor-end{order:9;align-self:flex-start;background:none;border-style:dashed}
+/* a garrison's news (holdings_map.js): the gestation pill's shape, under it, 4 s */
+#holding-toast{position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:5;margin:0;max-width:calc(100% - 32px);padding:6px 14px;border-radius:999px;border:2px solid var(--a1d1b26);background:var(--afffdf6);color:var(--a1d1b26);font:800 13px/1.2 ui-rounded,system-ui,sans-serif;box-shadow:0 3px 0 var(--a1d1b26);pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#holding-toast[hidden]{display:none}
+#stage:has(#gestation:not([hidden])) #holding-toast{top:52px}
+@media (forced-colors:active){#holding-toast{background:Canvas;color:CanvasText}}
+/* the worm from what you pressed to what opened (worm_panels.js) */
+#worm-panels{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:40}
+@media (prefers-reduced-motion:reduce){#worm-panels{display:none}}
