@@ -38,6 +38,9 @@
   function draw(g, V, s, still, oval, ow) {
     var wk = ow && ow.controls && ow.controls.walker && ow.controls.walker(), dpr = s.width / (s.getBoundingClientRect ? (s.getBoundingClientRect().width || s.width) : s.width); near(g, V, wk, dpr);
     if (root.AtlasCrabTrail) { root.AtlasCrabTrail.draw(g, V, wk); } // the steps just walked (crab_trail.js)
+    var CB = root.AtlasCrabBody; if (CB && CB.gaze) { // the crab looks at the nearest door of the node within one hex
+      var dm = wk && (V.world.markList || []).filter(function (m) { return !m.fog && hexDist([m.q, m.r], [wk.q, wk.r]) <= 1; })[0], c0 = wk && V.P(wk.q, wk.r), c1 = dm && V.P(dm.q, dm.r);
+      CB.gaze(dm ? CB.gazeOf(V.turn(c1.x, c1.y).x - V.turn(c0.x, c0.y).x, V.turn(c1.x, c1.y).y - V.turn(c0.x, c0.y).y) : null); }
     if (root.AtlasMissionHotspots) { root.AtlasMissionHotspots.draw(g, V, dpr); } // the missions waiting (mission_hotspots.js)
     var key = s.dataset.sel, c = key && V.world.cells.at[key];
     if (!c) { return false; }
