@@ -24,7 +24,7 @@
       var x = V.G.cx + p.x * k, y = V.G.cy + p.y * k - ((cell ? V.height(cell) * V.HSTEP : 0) + (m.roof === 'spire' ? 58 : 44)) * k;
       if (bc && bc[0] === m.q && bc[1] === m.r) { y += ((m.roof === 'spire' ? 58 : 44) + 30) * k; } // the beacon's lamp shines there: the name goes under
       var tw = g.measureText(t).width + 18 * dpr, th = Math.max(fs + 10 * dpr, 44 * dpr * 0.6);
-      x = Math.max(tw / 2 + 4 * dpr, Math.min(g.canvas.width - tw / 2 - 4 * dpr, x)); // a name is read whole, never cut by the edge
+      if (g.canvas) { x = Math.max(tw / 2 + 4 * dpr, Math.min(g.canvas.width - tw / 2 - 4 * dpr, x)); } // a name is read whole, never cut by the edge
       if (sf && Math.abs(x - +sf.dataset.youx) < tw / 2 + 24 * k && Math.abs(y - +sf.dataset.youy) < th / 2 + 30 * k) { y += ((m.roof === 'spire' ? 58 : 44) + 30) * k; } // over the crab → under the building
       g.fillStyle = paper; g.strokeStyle = ink; g.lineWidth = Math.max(1.5, 2.2 * dpr);
       g.beginPath(); g.moveTo(x - tw / 2 + th / 2, y - th / 2); g.arc(x + tw / 2 - th / 2, y, th / 2, -Math.PI / 2, Math.PI / 2);
