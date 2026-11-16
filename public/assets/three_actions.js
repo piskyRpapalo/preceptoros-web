@@ -1,10 +1,11 @@
-// Three actions, no fourth (APP-MESA-06): Progressive Web App · App (Android / Ubuntu / Windows) · Update App.
+// Four actions (WEB-FOUR-DOORS-01): PWA · Download App (Android / Ubuntu / Windows) · Update App · Create Companion
+// (create_companion.js, its own panel). Only the four ids below exist in #four-actions.
 // Every sentence is what was measured, with its date; what was not is NO_DATA with its cause. This page never says it
 // sees an installed app: a browser cannot prove that (except this web, installed as a PWA: display-mode standalone).
 // Nothing downloads or installs without the person's click. Reuses PreceptorPwa (pwa.js) for the browser's offer.
 (function () {
   'use strict';
-  var box = document.getElementById('three-actions');
+  var box = document.getElementById('four-actions');
   if (!box) return;
   var REL = 'https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/';
   var APK = '/get-the-app/PreceptorOS-android-1.0.1.apk';

@@ -114,13 +114,15 @@ test('SABOTAGE Android download: absent or fabricated hash keeps APK lane closed
 });
 
 
-test('Homepage has exactly three actions; its Android choice downloads the published APK (without claiming local AI)', () => {
+test('Homepage has exactly four actions (PWA, Download App, Update App, Create Companion); its Android choice downloads the published APK (without claiming local AI)', () => {
   // 2026-11-16 (APP-MESA-06): PWA | App (Android / Ubuntu / Windows) | Update App replaced the two APK links.
   const apk = R.android.assets[0];
   const home = leer('public/index.html');
   const js = leer('public/assets/three_actions.js');
-  const main = home.match(/<button type="button" id="ta-(pwa|app|update)" class="ta-btn"/g) || [];
-  if (main.length !== 3 || (home.match(/class="ta-btn"/g) || []).length !== 3) { throw new Error('the homepage must keep exactly three main actions'); }
+  // WEB-FOUR-DOORS-01: exactly four main actions, in the one row of #four-actions; the panel's own buttons are not main actions.
+  const row = (home.match(/<div class="ta-row"[\s\S]*?<\/div>/) || [''])[0];
+  const ids = [...row.matchAll(/<button type="button" id="([a-z-]+)" class="ta-btn"/g)].map((m) => m[1]);
+  if (ids.join(',') !== 'ta-pwa,ta-app,ta-update,fa-companion') { throw new Error('the homepage must keep exactly four main actions: ' + ids.join(',')); }
   const route = '/get-the-app/' + apk.nombre;
   if (!js.includes("var APK = '" + route + "'")) { throw new Error('Android choice does not target the published release'); }
   if (apk.sha256 && (js.split(apk.sha256).length - 1) !== 2) { throw new Error('Android get and update must show the published SHA-256'); }
