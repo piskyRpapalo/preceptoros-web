@@ -65,6 +65,18 @@
   }
   root.addEventListener('storage', function (e) { if (e.key === TOUR) { set(); } });
   set();
+  // UX-VISIBILITY-01 (Mesa #39, 2026-11-16): content before the sticks. With a panel, a card or a dialog open the CSS
+  // folds the two sticks and keeps one row of named buttons; while the visitor writes in a field there and the screen
+  // has shrunk (a phone's keyboard), the gamepad steps aside entirely and comes back when the field is left.
+  function typing() {
+    var a = doc.activeElement, vv = root.visualViewport, h = vv ? vv.height : root.innerHeight;
+    var field = !!(a && (a.tagName === 'TEXTAREA' || (a.tagName === 'INPUT' && !/^(range|checkbox|radio|button|submit)$/.test(a.type))) && a.closest && a.closest('#voices, .bs-sheet, dialog'));
+    var t = field && (h < 0.75 * (root.screen && root.screen.height || h * 2) || h < 520);
+    if (t) { html.dataset.owTyping = '1'; } else { delete html.dataset.owTyping; }
+  }
+  doc.addEventListener('focusin', typing); doc.addEventListener('focusout', function () { root.setTimeout(typing, 0); });
+  if (root.visualViewport) { root.visualViewport.addEventListener('resize', typing); } root.addEventListener('resize', typing);
+  api.typing = typing;
   var css = doc.createElement('link'); css.rel = 'stylesheet'; css.href = '/game/ow_calm.css'; doc.head.appendChild(css);
   function caption() {
     Array.prototype.forEach.call(doc.querySelectorAll('#gamepad .gp-mid button'), function (b) {
