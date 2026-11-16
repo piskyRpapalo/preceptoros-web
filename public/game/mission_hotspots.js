@@ -51,6 +51,7 @@
   // draw(g, V, dpr): called by map_aura.js on every map frame, after the names.
   function draw(g, V, dpr) {
     hits = []; if (!V || !V.world || !V.H) { return hits; }
+    var C = root.AtlasOwCalm; if (C && !C.shows('embers', C.now())) { return hits; } // ow_calm.js: once the visitor is free
     var k = V.G.k, ink = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.ink)), paper = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.paper));
     var hot = V.H.css(V.H.rgbOf(V.H.T.FRONT_DOOR['PROPUESTA.base'])), fs = Math.round(12 * dpr);
     g.save(); g.font = '800 ' + fs + 'px ui-rounded, system-ui, sans-serif'; g.textBaseline = 'middle'; g.textAlign = 'left';

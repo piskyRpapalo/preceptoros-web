@@ -1,5 +1,6 @@
 // Public OpenWorld chat draft safety; synthetic local gateway, actual Chromium DOM.
 // The gateway is never contacted. SABOTAJE=borrar-borrador must fail.
+// Contract since 2026-11-16 (Node 0): a sent message leaves the box at once; a failure offers it back, after any newer draft.
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
 import { resolve, extname } from 'node:path';
@@ -21,7 +22,7 @@ function serve(){
    const f=resolve(BASE,'.'+path);
    if(!f.startsWith(resolve(BASE))){res.writeHead(403);res.end();return;}
    let buf=readFileSync(f);
-   if(path==='/game/map_chat.js'&&SAB==='borrar-borrador')buf=Buffer.from(String(buf).replace("line('You', text);","line('You', text); input.value = '';"));
+   if(path==='/game/map_chat.js'&&SAB==='borrar-borrador')buf=Buffer.from(String(buf).replace("input.value = now ? now + ' ' + text : text;","input.value = text;")); // recovery over a newer draft
    res.writeHead(200,{'Content-Type':TYPES[extname(f)]||'text/plain','Cache-Control':'no-store'});res.end(buf);
   }catch{res.writeHead(404);res.end();}
  });return new Promise(ok=>s.listen(0,'127.0.0.1',()=>ok(s)));
@@ -65,11 +66,13 @@ async function main(){
  const fill=(value)=>ev('(()=>{document.getElementById("question").value='+JSON.stringify(value)+';return true})()');
  const draft=()=>ev('document.getElementById("question").value');
  const send=()=>ev('(()=>{document.getElementById("entry").requestSubmit();return true})()');
+ const back=()=>ev('(()=>{const b=[...document.querySelectorAll("#log li.back button")].pop();if(!b)return false;b.click();return true})()');
  await fill('Source-backed question');
  await ev('window.__queue.push({status:503,body:{estado:"NO_DATA",causa:"nodo_dormido"}});true');await send();
  ok(await until('window.__calls.length===1'),'failed request not sent');
  await sleep(350);
- ok((await draft())==='Source-backed question','failed gateway erased draft');
+ ok((await draft())==='','a sent message stayed in the box');
+ ok(await back() && (await draft())==='Source-backed question','the failed message is not offered back');
 
  await fill('Second question');
  await ev('window.__queue.push({status:200,body:{estado:"OK",burbuja:{texto:"Synthetic answer",recortada:false},sello:{tic:1}}});true');await send();
@@ -84,6 +87,7 @@ async function main(){
  await ev('window.__held.shift()({status:503,body:{estado:"NO_DATA",causa:"nodo_dormido"}});true');
  await sleep(300);
  ok((await draft())==='New draft while pending','new draft overwritten after late rejection');
+ ok(await back() && (await draft())==='New draft while pending Third question','the recovered message overwrote the newer draft');
  ok(await ev('window.__calls.length')===3,'unexpected extra gateway calls');
  // Use a deterministic mock of the local brain. No large model download.
  await ev('window.AtlasWebNodeBrain={model:()=>"Synthetic guide",offline:()=>true,load:async()=>{},reply:async()=>{throw new Error("synthetic_model_unavailable")}};document.getElementById("brain-load").click();true');
@@ -91,7 +95,8 @@ async function main(){
  await ev('(()=>{let x=document.getElementById("chat-destination");x.value="local";x.dispatchEvent(new Event("change",{bubbles:true}));return true})()');
  await fill('A local question when the model fails');await send();
  ok(await until('document.getElementById("log").textContent.includes("synthetic_model_unavailable")'),'local refusal not shown');
- ok((await draft())==='A local question when the model fails','local failure erased draft');
+ ok((await draft())==='','a sent local message stayed in the box');
+ ok(await back() && (await draft())==='A local question when the model fails','the failed local message is not offered back');
  await ev('window.AtlasWebNodeBrain.reply=async()=>({source:"page-controls",model:"Synthetic guide",text:"Grounded page controls",verified:true,sha:"synthetic"});true');
  await fill('One local question with an answer');await send();
  ok(await until('document.getElementById("log").textContent.includes("Grounded page controls")'),'local reply not shown');

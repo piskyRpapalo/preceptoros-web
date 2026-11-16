@@ -105,7 +105,8 @@
   }
   // pointer(g, V, w, P, W, Hh): the arrow at the edge toward the nearest guardian when it is off the map view.
   function pointer(g, V, w, P, W, Hh) {
-    guideHit = null; var n = nearest(V.world.markList, w); if (!n) { return; }
+    guideHit = null; var C = root.AtlasOwCalm; if (C && !C.shows('arrow', C.now())) { return; } // ow_calm.js: from the visit on
+    var n = nearest(V.world.markList, w); if (!n) { return; }
     var p = P(n.m.q, n.m.r), pad = 34; if (p.x > pad && p.x < W - pad && p.y > pad && p.y < Hh - pad) { return; }
     var cx = W / 2, cy = Hh / 2, dx = p.x - cx, dy = p.y - cy, sc = Math.min((W / 2 - pad) / (Math.abs(dx) || 1), (Hh / 2 - pad) / (Math.abs(dy) || 1));
     var x = cx + dx * sc, y = cy + dy * sc, a = Math.atan2(dy, dx), H = V.H, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), paper = H.css(H.rgbOf(H.T.NEUTRAL.paper));
