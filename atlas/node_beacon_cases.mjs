@@ -1,9 +1,9 @@
 // node_beacon_cases.mjs · the live node on the map (public/game/node_beacon.js, 2026-11-15): honest words, honest lamp.
 import { test } from 'node:test'; import assert from 'node:assert/strict'; import { createRequire } from 'node:module';
 const B = createRequire(import.meta.url)('../public/game/node_beacon.js');
-test('label: the Beelink by its human name; LIVE says live, STALE says asleep with its last heartbeat day', () => {
-  assert.equal(B.label({ id: 'primer-ancla', seal: 'LIVE', since: '2026-11-15' }), '💬 Beelink · live');
-  assert.equal(B.label({ id: 'primer-ancla', seal: 'STALE', since: '2026-11-09' }), '💬 Beelink · asleep 11-09');
+test('label: the Beelink host by its public name, Node 0; LIVE says live, STALE says asleep with its last heartbeat day', () => {
+  assert.equal(B.label({ id: 'primer-ancla', seal: 'LIVE', since: '2026-11-15' }), '💬 Node 0 · live');
+  assert.equal(B.label({ id: 'primer-ancla', seal: 'STALE', since: '2026-11-09' }), '💬 Node 0 · asleep 11-09');
   assert.equal(B.label({ id: 'onexstation', seal: 'STALE', since: '' }), 'Onexstation · asleep NO_DATA');
 });
 test('pick: only alive nodes on an integer cell; any seal other than LIVE is STALE (never a fake glow)', () => {
@@ -14,14 +14,14 @@ test('pick: only alive nodes on an integer cell; any seal other than LIVE is STA
 });
 test('describe: state, cause and age in words; talk only for the node that declares a chatbot', () => {
   const s = B.describe({ id: 'primer-ancla', seal: 'STALE', since: '2026-11-09' }, '2026-11-15');
-  assert.match(s, /^Beelink node, asleep: no heartbeat in the last 5 minutes; the last one was 2026-11-09, 6 days ago\./); assert.match(s, /Hexelion/);
-  assert.match(B.describe({ id: 'primer-ancla', seal: 'LIVE', since: '2026-11-15' }, '2026-11-15'), /^Beelink node, live/);
+  assert.match(s, /^Node 0, asleep: no heartbeat in the last 5 minutes; the last one was 2026-11-09, 6 days ago\./); assert.match(s, /Hexelion/);
+  assert.match(B.describe({ id: 'primer-ancla', seal: 'LIVE', since: '2026-11-15' }, '2026-11-15'), /^Node 0, live/);
   const o = B.describe({ id: 'onexstation', seal: 'STALE', since: '' }, '2026-11-15');
   assert.match(o, /never measured \(NO_DATA\)/); assert.match(o, /declares no chatbot \(NO_DATA\)/); assert.doesNotMatch(o, /live/);
 });
 test('frame: the machine reads the same truth (status, source, age, talks) in under 1,024 bytes', () => {
   const f = B.frame({ id: 'primer-ancla', seal: 'STALE', since: '2026-11-09' }, '2026-11-15');
-  assert.equal(f.status, 'STALE'); assert.equal(f.age_days, 6); assert.equal(f.talks, 'Hexelion'); assert.equal(f.source, 'gateway:/api/world-state');
+  assert.equal(f.status, 'STALE'); assert.equal(f.age_days, 6); assert.equal(f.talks, 'Node 0'); assert.equal(f.source, 'gateway:/api/world-state');
   assert.equal(f.change[0], B.describe({ id: 'primer-ancla', seal: 'STALE', since: '2026-11-09' }, '2026-11-15'));
   assert.ok(new TextEncoder().encode(JSON.stringify(f)).length < 1024);
   assert.equal(B.frame({ id: 'doggee-s110', seal: 'STALE', since: '2026-11-09' }, '2026-11-15').talks, null);

@@ -1,15 +1,15 @@
 // The real nodes on the map (Sovereign 2026-11-15; WORLD/ACHO/LIVE NODE commission). Four separate truths, never mixed:
 // admitted in World (the gateway's /api/world-state lists it, at its own cell) · heartbeat (LIVE only with one in the last
-// 5 minutes, else asleep with its age and cause) · can talk (a chatbot is declared for it: today only the Beelink, where
+// 5 minutes, else asleep with its age and cause) · can talk (a chatbot is declared for it: today only Node 0 (the Beelink host), where
 // Hexelion runs) · can run tasks (never claimed here). Each node is a mast with a lantern, lit only when LIVE. Three ways
 // to perceive one truth: the eye (mast, lamp, words), the ear (its description spoken and a short motif, only when the
 // visitor turned the spoken world on), the machine (an «acho:event» with status, source and age). A tap — or the node's
-// keyboard door — opens «Talk to Beelink»: Talk with Hexelion (map_chat.js → classroom_chat.js → the gateway's chat).
+// keyboard door — opens «Talk to Node 0»: the Hexelion model answers (map_chat.js → classroom_chat.js → the gateway's chat).
 // Projection only: this file sends nothing about the visitor; the only call is its read of /api/world-state.
 (function (root) {
   'use strict';
-  var NAMES = { 'primer-ancla': 'Beelink', onexstation: 'Onexstation', 'doggee-s110': 'Doogee S110' };
-  var TALKS = { 'primer-ancla': 'Hexelion' }; // the chatbot each node declares; absent = cannot talk (NO_DATA)
+  var NAMES = { 'primer-ancla': 'Node 0', onexstation: 'Onexstation', 'doggee-s110': 'Doogee S110' };
+  var TALKS = { 'primer-ancla': 'Node 0' }; // the public name of its chatbot (the Hexelion model answers through the gateway) // the chatbot each node declares; absent = cannot talk (NO_DATA)
   var WS = '/api/world-state', nodes = [], hits = [], asked = 0, cause = '', told = {}; // WS: a worker route, not a file
   var DAY = 86400000;
   function nameOf(n) { return NAMES[n.id] || n.id; }
@@ -19,10 +19,10 @@
   function age(since, today) { var a = Date.parse(since + 'T00:00:00Z'), b = Date.parse(today + 'T00:00:00Z'); return isNaN(a) || isNaN(b) ? null : Math.max(0, Math.round((b - a) / DAY)); }
   // Pure: describe(n, today) → the sentence the ear hears and the screen reader reads: state, its cause and age, and talk.
   function describe(n, today) {
-    var nm = nameOf(n), t = TALKS[n.id], d = age(n.since, today), s;
-    if (n.seal === 'LIVE') { s = nm + ' node, live: its heartbeat arrived in the last 5 minutes.'; }
-    else { s = nm + ' node, asleep: no heartbeat in the last 5 minutes; the last one was ' + (n.since ? n.since + (d === null ? '' : d === 0 ? ', today' : ', ' + d + (d === 1 ? ' day' : ' days') + ' ago') : 'never measured (NO_DATA)') + '.'; }
-    return s + (t ? ' Its chatbot, ' + t + ', answers through the gateway: press to talk.' : ' It declares no chatbot (NO_DATA).');
+    var nm = /^Node\b/.test(nameOf(n)) ? nameOf(n) : nameOf(n) + ' node', t = TALKS[n.id], d = age(n.since, today), s; // «Node 0», never «Node 0 node»
+    if (n.seal === 'LIVE') { s = nm + ', live: its heartbeat arrived in the last 5 minutes.'; }
+    else { s = nm + ', asleep: no heartbeat in the last 5 minutes; the last one was ' + (n.since ? n.since + (d === null ? '' : d === 0 ? ', today' : ', ' + d + (d === 1 ? ' day' : ' days') + ' ago') : 'never measured (NO_DATA)') + '.'; }
+    return s + (t ? (t === nameOf(n) ? ' It answers through the gateway (the Hexelion model): press to talk.' : ' Its chatbot, ' + t + ', answers through the gateway: press to talk.') : ' It declares no chatbot (NO_DATA).');
   }
   // Pure: pick(data) → the nodes a map can show: well formed, alive, with an integer cell; any seal but LIVE is STALE.
   function pick(d) {
@@ -136,7 +136,7 @@
     if (log) { var li = doc.createElement('li'); li.className = 'node-intro'; li.dataset.node = n.id; li.textContent = nm + ' node · ' + (n.seal === 'LIVE' ? 'live' : 'asleep since ' + (n.since || 'NO_DATA')) + ' · ' + TALKS[n.id] + ' answers from it through the gateway.'; log.appendChild(li); }
     root.setTimeout(function () { // after the sheet names itself (panel_sheet.js)
       var h = doc.getElementById('chat-h'), tt = doc.getElementById('voices-title');
-      if (h) { h.textContent = nm + ' · ' + TALKS[n.id]; } if (tt) { tt.textContent = 'Talk to ' + nm; }
+      if (h) { h.textContent = TALKS[n.id] === nm ? nm : nm + ' · ' + TALKS[n.id]; } if (tt) { tt.textContent = 'Talk to ' + nm; }
       if (q) { q.placeholder = 'Ask the ' + nm + ' node'; } if (f && f.scrollIntoView) { f.scrollIntoView({ block: 'center' }); } if (q) { q.focus({ preventScroll: true }); }
     }, 120);
     return d;
