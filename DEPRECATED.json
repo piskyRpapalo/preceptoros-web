@@ -123,6 +123,14 @@
       "where": "public/assets/mark.svg, bin/icons_from_emblem.py",
       "status": "gone",
       "why": "Sovereign 2026-11-14: the dot-grid mark looked deformed at small sizes; one face everywhere, the one the app installs with."
+    },
+    {
+      "id": "talk-head.photo-faces",
+      "deprecated": "2026-11-16",
+      "replaced_by": "public/assets/caras/preceptor-habla0..2-180.webp (the pixel bust: closed, half, open)",
+      "where": "public/assets/caras/cara-habla0..4-180.webp (copies of PreceptorOS/assets/caras, which keeps the originals)",
+      "status": "gone",
+      "why": "Sovereign 2026-11-16: «esta es la cara que habla en la web; la que has puesto es antigua». Cut from the pixel sheet p0x/Cuarentena/pixel.png."
     }
   ]
 }

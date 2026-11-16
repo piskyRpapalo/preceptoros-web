@@ -1,0 +1,182 @@
+{
+ "v": "preceptoros.first-journey/1",
+ "when": "2026-11-16",
+ "viewport": "360×716@2",
+ "scenes": [
+  {
+   "n": "01",
+   "scene": "welcome",
+   "file": "01-welcome.webp",
+   "visitor": null,
+   "step": "play",
+   "node": "Node 0 (primer-ancla)",
+   "action": "arrive",
+   "result": "one primary action: Play; the town is hall, hostel, coliseum and doctor",
+   "evidence": "measured"
+  },
+  {
+   "n": "02",
+   "scene": "crab",
+   "file": "02-crab.webp",
+   "visitor": "visitor#1",
+   "step": "meet",
+   "node": "Node 0 (primer-ancla)",
+   "action": "Play: visit signed on this device (Ed25519, ephemeral)",
+   "result": "ephemeral id issued (shown here as visitor#1)",
+   "evidence": "measured"
+  },
+  {
+   "n": "03",
+   "scene": "node0",
+   "file": "03-node0.webp",
+   "visitor": "visitor#1",
+   "step": "beacon",
+   "node": "Node 0 (primer-ancla)",
+   "action": "ask Node 0 in Talk",
+   "result": "Node 0 · NO_DATA · The door did not answer. Try again in a moment. (red)",
+   "evidence": "NO_DATA(The door did not answer. Try again in a moment. (red))"
+  },
+  {
+   "n": "03b",
+   "scene": "node0-keyboard",
+   "file": "03b-node0-keyboard.webp",
+   "visitor": "visitor#1",
+   "step": "beacon",
+   "node": "Node 0 (primer-ancla)",
+   "action": "write with the keyboard up",
+   "result": "gamepad stepped aside",
+   "evidence": "measured (viewport 360×400 stands for the keyboard)"
+  },
+  {
+   "n": "04",
+   "scene": "summon",
+   "file": "04-summon.webp",
+   "visitor": "visitor#1",
+   "step": "practice",
+   "node": "Node 0 (primer-ancla)",
+   "action": "Visit the beacon (+copper) → reef summon",
+   "result": "Summoned · reef egg · 50 copper",
+   "evidence": "measured"
+  },
+  {
+   "n": "05",
+   "scene": "battle",
+   "file": "05-battle.webp",
+   "visitor": "visitor#1",
+   "step": "conquest",
+   "node": "Node 0 (primer-ancla)",
+   "action": "Go → coliseum (hex by hex) → practice wave",
+   "result": "The patrol wins · 7 rounds · practice: no reward, no territory · balance NO_DATA: historical provisional rules.",
+   "evidence": "measured (practice: nothing won or lost)"
+  },
+  {
+   "n": "05b",
+   "scene": "threat",
+   "file": null,
+   "result": "Walking to the choir · 11 hexes · its guardian fields 2 reef guards (tc1): the weakest near you.",
+   "evidence": "measured (read from npcPlace before the fight)"
+  },
+  {
+   "n": "06",
+   "scene": "victory",
+   "file": "06-victory.webp",
+   "visitor": "visitor#1",
+   "step": "town",
+   "node": "Node 0 (primer-ancla)",
+   "action": "challenge the weakest guardian near (Go)",
+   "result": "Visitor wins · 7 rounds · balance NO_DATA: historical provisional rules.",
+   "evidence": "measured"
+  },
+  {
+   "n": "07",
+   "scene": "conquest",
+   "file": "07-conquest.webp",
+   "visitor": "visitor#1",
+   "step": "town",
+   "node": "Node 0 (primer-ancla)",
+   "action": "Record this local conquest (the battle receipt verified against this visit)",
+   "result": "Conquest recorded for this visit · a record of this visit, never accredited ownership",
+   "evidence": "measured"
+  },
+  {
+   "n": "08",
+   "scene": "build",
+   "file": "08-build.webp",
+   "visitor": "visitor#1",
+   "step": "town",
+   "node": "Node 0 (primer-ancla)",
+   "action": "the town step: what the win opened",
+   "result": "{\"hostel\":\"available\",\"coliseum\":\"available\",\"choir\":\"locked\",\"workshop\":\"available\",\"tower\":\"locked\",\"agora\":\"available\",\"customs\":\"locked\",\"lottery\":\"locked\",\"visitor-house\":\"available\",\"doctor\":\"available\"}",
+   "evidence": "measured; BUILD itself NO_DATA(an ephemeral account only conquers; only nodes build, in the app)"
+  },
+  {
+   "n": "09",
+   "scene": "hospital",
+   "file": "09-hospital.webp",
+   "visitor": "visitor#1",
+   "step": "explore",
+   "node": "Node 0 (primer-ancla)",
+   "action": "open the doctor on duty",
+   "result": "available since the start (accessibility: never locked); healing is not this building's function today",
+   "evidence": "measured"
+  },
+  {
+   "n": "10",
+   "scene": "explore",
+   "file": "10-explore.webp",
+   "visitor": "visitor#1",
+   "step": "explore",
+   "node": "Node 0 (primer-ancla)",
+   "action": "OK: explore freely",
+   "result": "tour=done, phase=free",
+   "evidence": "measured"
+  }
+ ],
+ "machine": [
+  {
+   "event": "map_opened",
+   "ok": true,
+   "state": "TRAVEL"
+  },
+  {
+   "event": "player_arrived",
+   "ok": true,
+   "state": "NODE_0"
+  },
+  {
+   "event": "skipped:summon_unit",
+   "ok": true,
+   "state": "SUMMON",
+   "cause": "Node 0 did not answer from this page: Node 0 · NO_DATA · The door did not answer. Try again in a moment. (red)"
+  },
+  {
+   "event": "summon_completed",
+   "ok": true,
+   "state": "BATTLE"
+  },
+  {
+   "event": "battle_won",
+   "ok": true,
+   "state": "CONQUEST"
+  },
+  {
+   "event": "conquest_credited",
+   "ok": true,
+   "state": "BUILD"
+  },
+  {
+   "event": "skipped:explore",
+   "ok": true,
+   "state": "EXPLORE",
+   "cause": "building_built: an ephemeral account only conquers; only nodes build (conquest_sheet.js)"
+  }
+ ],
+ "contract": {
+  "state": "EXPLORE",
+  "completed": 5,
+  "skipped": 2,
+  "total": 7
+ },
+ "fallos": [],
+ "identity": "a new ephemeral visit (Ed25519 on this device); its id is masked in every picture and never written here"
+}

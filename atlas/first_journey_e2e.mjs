@@ -63,12 +63,20 @@ async function main() {
   const skip = (cause) => { const t = J.TRANSITIONS.find((x) => x.from === jr.state); if (!t) { return; } const r = J.skipStep(jr, t.action); if (r.ok) { jr = r.journey; jr.state = t.to; machine.push({ event: 'skipped:' + t.action, ok: true, state: jr.state, cause }); } };
   const scenes = []; let vid = null;
   const shot = async (n, name, info) => {
-    await espera(500); const r = await cmd('Page.captureScreenshot', { format: 'png' }); const file = n + '-' + name + '.png';
+    await espera(700);
+    // invariant (P0): no capture where content is open (a panel, a card, a dialog, a troop reveal) and a stick still stands
+    const cover = await ev(`(()=>{const open=!!document.querySelector('#voices.map-voices:not([hidden]),.bs-sheet:not([hidden]),dialog[open],.revela'); const stick=[...document.querySelectorAll('#view-joystick,#character-joystick')].some(e=>e.getClientRects().length); return open&&stick})()`);
+    ok(!cover, n + ': content is open and a stick still stands');
+    // the ephemeral id is masked in the picture only (restored at once): the gallery is anonymised, the play is not
+    await ev(`(()=>{const h=document.getElementById('map-h'); if(!h) return 0; h.dataset.mask=h.textContent.replace(/Visitor-[0-9a-f]{8}/,'Visitor-········'); let st=document.getElementById('e2e-mask'); if(!st){st=document.createElement('style'); st.id='e2e-mask'; st.textContent='#map-h{font-size:0!important}#map-h::after{content:attr(data-mask);font-size:1rem}'; document.head.append(st);} return 1})()`);
+    const r = await cmd('Page.captureScreenshot', { format: 'png' }); const file = n + '-' + name + '.png';
+    const leak = await ev(`(()=>{const h=document.getElementById('map-h'); const s=document.getElementById('e2e-mask'); const shown=h?getComputedStyle(h).fontSize:'0px'; if(s) s.remove(); if(h) delete h.dataset.mask; return shown!=='0px'})()`); ok(!leak, n + ': the ephemeral id was not masked in the picture');
     writeFileSync(OUT + file, Buffer.from(r.result.data, 'base64'));
     const step = await ev(`(document.getElementById('fa')||{dataset:{}}).dataset.step || (localStorage.getItem('preceptoros.tour')||'none')`);
     scenes.push(Object.assign({ n, scene: name, file, visitor: vid ? 'visitor#1' : null, step, node: 'Node 0 (primer-ancla)' }, info));
   };
-  const press = () => ev(`(()=>{const e=document.querySelector('[data-fa-next]'); if(!e) return null; const k=e.id||e.dataset.cat; e.click(); return k;})()`);
+  // the player follows the «!»: a troop reveal it marks first (its Continue) is read and closed, then the next mark is pressed
+  const press = async () => { for (let i = 0; i < 6; i++) { const r = await ev(`(()=>{const e=document.querySelector('[data-fa-next]'); if(!e) return null; if(e.classList.contains('revela-ok')){e.click(); return 'reveal'} const k=e.id||e.dataset.cat; e.click(); return k;})()`); if (r !== 'reveal') { return r; } await espera(700); } return null; };
   const stepIs = (s, ms) => hasta(`(document.getElementById('fa')||{dataset:{}}).dataset.step===${JSON.stringify(s)}`, ms || 15000);
   await cmd('Emulation.setDeviceMetricsOverride', { width: 360, height: 716, deviceScaleFactor: 2, mobile: true });
   await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/` });
@@ -113,7 +121,9 @@ async function main() {
   let win = false, tries = [];
   for (let t = 0; t < 5 && !win; t++) {
     if (!(await stepIs('conquest', 4000))) { break; }
-    await ev(`document.getElementById('fa-go').click()`);
+    if (t === 0 && await ev(`document.getElementById('fa-go').disabled`)) { const wait = await ev(`document.querySelector('#fa .fa-line').textContent`); scenes.push({ n: '05c', scene: 'wait-for-squad', file: null, result: wait.slice(0, 160), evidence: 'measured (Go waits while an egg still hatches)' }); }
+    ok(await hasta(`!document.getElementById('fa-go').disabled || !!document.querySelector('#stage > .revela.on-map')`, 200000), 'the real fight never became possible');
+    await press(); // Go (after any reveal)
     await espera(150); const threat = await ev(`document.querySelector('#fa .fa-line').textContent`); if (!t) { scenes.push({ n: '05b', scene: 'threat', file: null, result: threat.slice(0, 160), evidence: 'measured (read from npcPlace before the fight)' }); }
     if (!(await hasta(`!!document.getElementById('bs-challenge') && /Challenge the NPC/.test(document.getElementById('bs-challenge').textContent)`, 30000))) { tries.push('no guardian reached'); break; }
     await ev(`document.getElementById('bs-challenge').click()`);
@@ -141,6 +151,8 @@ async function main() {
     skip('no valid win'); 
     await ev(`document.getElementById('fa-ok').click()`); // Later: the honest way on
   }
+  // a player reads each troop reveal and presses its Continue before looking at the town (one reveal shows at a time)
+  for (let i = 0; i < 6; i++) { const left = await ev(`(()=>{const v=[...document.querySelectorAll('.revela')]; const shown=v.filter(e=>e.getClientRects().length); if(v.length>1 && shown.length>1) return 'stacked'; const b=shown[0] && [...shown[0].querySelectorAll('button')].pop(); if(b){b.click(); return v.length} return 0})()`); ok(left !== 'stacked', 'two troop reveals are shown stacked'); if (!left) { break; } await espera(500); }
   // 08 BUILD: what the conquest opened (an ephemeral account never builds: conquest_sheet.js, Sovereign 2026-11-08)
   const town = await ev(`JSON.stringify(Object.fromEntries(AtlasMapPainter.view().world.markList.filter(m=>m.town).map(m=>[m.id,AtlasOwCalm.stateOf(m)])))`);
   await shot('08', 'build', { action: win ? 'the town step: what the win opened' : 'Later (no win): the town stays as it was', result: town, evidence: 'measured; BUILD itself NO_DATA(an ephemeral account only conquers; only nodes build, in the app)' });
@@ -150,6 +162,7 @@ async function main() {
   await ev(`AtlasBuildingSheet.open('doctor')`); await espera(700);
   await shot('09', 'hospital', { action: 'open the doctor on duty', result: 'available since the start (accessibility: never locked); healing is not this building\'s function today', evidence: 'measured' });
   await ev(`(()=>{const x=document.querySelector('#building-sheet .bs-bar button:last-child'); if(x) x.click(); return 1})()`); await espera(400);
+  await ev(`(()=>{const b=[...document.querySelectorAll('#preceptor-talk button')].find(b=>b.textContent==='OK'); if(b) b.click(); return 1})()`); await espera(300); // the player reads the duel news and presses OK
   // 10 EXPLORE
   if (await ev(`document.getElementById('fa').dataset.step==='explore'`)) { await ev(`document.getElementById('fa-ok').click()`); }
   await espera(600);

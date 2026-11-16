@@ -1,4 +1,4 @@
-// The talking head (Mission D, 2026-11-16): the preceptor's real face (PreceptorOS/assets/caras, cara-habla0…4) beside
+// The talking head (Mission D, 2026-11-16): the preceptor's real face (the pixel bust, assets/caras/preceptor-habla0…2) beside
 // a comic box that reveals an answer ALREADY RECEIVED, phrase by phrase, with a pause at each stop and the mouth moving
 // only while a phrase is being revealed. It is presentation, never a fake stream: it starts after the whole text exists.
 // Accessibility: the full text stays where it was (a live region or the conversation log), only veiled for the eye;
@@ -7,7 +7,9 @@
 // with the visitor's own sound choice on) says the same full text, once.
 (function (root) {
   'use strict';
-  var FACES = ['/assets/caras/cara-habla0-180.webp', '/assets/caras/cara-habla1-180.webp', '/assets/caras/cara-habla2-180.webp', '/assets/caras/cara-habla3-180.webp', '/assets/caras/cara-habla4-180.webp'];
+  // the speaking face is the pixel bust (Sovereign 2026-11-16: «esta es la cara que habla»): closed, half, open. The sheet's
+  // flash and eye-ring frames are not mouth shapes and stay out of speech (no flicker). Index 0 is closed; 1–4 open.
+  var FACES = ['/assets/caras/preceptor-habla0-180.webp', '/assets/caras/preceptor-habla1-180.webp', '/assets/caras/preceptor-habla2-180.webp', '/assets/caras/preceptor-habla1-180.webp', '/assets/caras/preceptor-habla2-180.webp'];
   var MS_PER_CHAR = 38, MIN = 280, MAX = 2600, STOP = 320, BREATH = 140;
   // Pure: phrases(text) → the text cut at its natural stops (. ! ? ; : and « · »), long ones again at commas; joining
   // them gives the text back exactly.

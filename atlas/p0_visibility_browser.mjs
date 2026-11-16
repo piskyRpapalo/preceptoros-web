@@ -1,6 +1,7 @@
 // UX-VISIBILITY-01 (Mesa #39): the joystick must never cover Node 0's chat, Talk, a building card or a dialog. With
 // content open every visible control in it is reachable (the topmost element at its centre is itself), the field and
-// Send stay in view with a phone keyboard up (viewport 360×400), and Tab goes from the field to Send. 360, 420, 1280.
+// Send stay in view with a phone keyboard up (viewport 360×400), and Tab goes from the field to Send. 360, 420, 1280; at 360 also with audio-only on and with reduced motion, and the
+// field and Send keep an accessible name while the folded sticks leave the tree.
 // SABOTAJE=css must be red. Uso: node atlas/p0_visibility_browser.mjs
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
@@ -97,6 +98,32 @@ async function main() {
     await ev('AtlasBuildingSheet.open("doctor")'); await espera(500);
     const card = await run('.bs-sheet:not([hidden])'); medidas[w + ' card'] = card;
     ok(card.n > 0 && card.bad.length === 0 && card.joy === 0, w + ': in a building card a control is covered or the sticks stand: ' + JSON.stringify(card));
+  }
+  // the same promise for a person who listens (audio-only on) and one who asks for less motion, at 360 with the keyboard up;
+  // and for a screen reader: the field and Send have a name, the folded sticks leave the accessibility tree
+  for (const mode of ['audio', 'still']) {
+    await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: mode === 'still' ? 'reduce' : 'no-preference' }] });
+    await cmd('Emulation.setDeviceMetricsOverride', { width: 360, height: 716, deviceScaleFactor: 1, mobile: true });
+    await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/?colony=alone` });
+    ok(await hasta('!!document.getElementById("visitor-start")', 15000), mode + ': page');
+    await ev(`localStorage.setItem("preceptoros.tour","skipped"); localStorage.setItem("preceptoros.audio-only", ${JSON.stringify(mode === 'audio' ? 'on' : 'off')}); 1`);
+    await cmd('Page.reload'); ok(await hasta('!!document.getElementById("visitor-start")', 15000), mode + ': reload');
+    if (mode === 'audio') { ok(await ev('document.documentElement.dataset.audioOnly === "on"'), 'audio: the listening mode did not turn on'); }
+    await ev('document.getElementById("visitor-start").click()'); await hasta('!!document.getElementById("visitor-beacon")', 10000);
+    await ev('document.querySelector(".cats [data-cat=Communication]").click()'); await espera(500);
+    const talk = await run('#voices'); medidas[mode + ' talk'] = talk;
+    ok(talk.n > 0 && talk.bad.length === 0 && talk.joy === 0, mode + ': in Talk a control is covered or the sticks stand: ' + JSON.stringify(talk));
+    const names = JSON.parse(await ev(`(()=>{const nm=e=>e?((e.getAttribute('aria-label')||'')+' '+(e.labels&&e.labels[0]?e.labels[0].textContent:'')+' '+(e.placeholder||'')+' '+(e.title||'')+' '+(e.tagName==='BUTTON'?e.textContent:'')).trim():'';
+      const q=document.getElementById('question'), s=document.querySelector('#entry button[type=submit]');
+      const sticks=['view-joystick','character-joystick'].map(i=>document.getElementById(i)).filter(Boolean).map(e=>getComputedStyle(e).display);
+      return JSON.stringify({q:nm(q).slice(0,40), send:nm(s).slice(0,20), sticks}); })()`)); medidas[mode + ' names'] = names;
+    ok(names.q && names.send, mode + ': the field or Send has no accessible name: ' + JSON.stringify(names));
+    ok(names.sticks.every((d) => d === 'none'), mode + ': folded sticks stay in the accessibility tree: ' + JSON.stringify(names.sticks));
+    await cmd('Emulation.setDeviceMetricsOverride', { width: 360, height: 400, deviceScaleFactor: 1, mobile: true });
+    await ev('document.getElementById("question").focus(); window.dispatchEvent(new Event("resize"))'); await espera(400);
+    const kb = JSON.parse(await ev(`(()=>{const q=document.getElementById('question'); q.scrollIntoView({block:'nearest'}); const s=document.querySelector('#entry button[type=submit]'); const at=e=>{const r=e.getBoundingClientRect(); if(r.bottom>innerHeight||r.top<0) return 'out'; const t=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2); return t===e||e.contains(t)?'ok':'covered'}; return JSON.stringify({q:at(q),send:at(s),pad:document.getElementById('gamepad').getClientRects().length>0})})()`)); medidas[mode + ' keyboard'] = kb;
+    ok(kb.q === 'ok' && kb.send === 'ok' && !kb.pad, mode + ': with the keyboard up the field or Send is covered: ' + JSON.stringify(kb));
+    await ev('localStorage.removeItem("preceptoros.audio-only"); 1');
   }
   console.log(JSON.stringify({ piece: 'p0_visibility', sabotage: SAB || null, medidas, fallos }));
 }

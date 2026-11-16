@@ -71,7 +71,10 @@
   function visible(el) { return !!(el && !el.hidden && !el.disabled && el.getClientRects().length && el.offsetParent !== null); }
   function mark(id) {
     var list = ['.revela .revela-ok'].concat(target(id, { at: at })), el = null; // an egg that hatches now covers the card: its Continue comes first
+    var rv = doc.querySelector('#stage > .revela.on-map'), rb = rv && rv.querySelector('.revela-ok'); // a troop is being shown: its Continue comes first (the card waits behind it)
+    if (rb && rb.getClientRects().length) { el = rb; }
     for (var i = 0; i < list.length && !el; i++) { var c = doc.querySelector(list[i]); if (visible(c)) { el = c; } }
+    var dl = !el && doc.querySelector('#stage > dialog[open]'); if (dl) { el = Array.prototype.find.call(dl.querySelectorAll('button'), function (b) { return /^(Return to the map|Close)$/.test(b.textContent.trim()) && visible(b); }) || null; } // a finished fight still open: the way back
     Array.prototype.forEach.call(doc.querySelectorAll('[data-fa-next]'), function (e) { if (e !== el) { delete e.dataset.faNext; } });
     if (!el) { bang.hidden = true; return null; }
     el.dataset.faNext = '1'; var r = el.getBoundingClientRect();
@@ -91,11 +94,13 @@
     count.textContent = 'First adventure · ' + (i + 1) + ' of ' + IDS.length;
     var words = say(id);
     if (id === 'practice' && st && !(st.troops || []).length) { words = 'Your egg is hatching into a troop; the house says when. Then press Go to the coliseum.'; }
-    if (id === 'conquest' && threat && !lost) { words = threat; }
+    var hatching = id === 'conquest' && !walking && !at && st && (st.eggs || []).length > 0; // a real fight waits for the whole squad (measured: two reef troops win about half the time against two reef guards, one alone about one in ten)
+    if (hatching) { words = 'Your other egg is still hatching. Wait for it: two troops win about half the time against the weakest guardians; one alone, about one time in ten.'; }
+    else if (id === 'conquest' && threat && !lost) { words = threat; }
     if (id === 'conquest' && lost) { words = 'The guardian wins this time (' + lost + (lost === 1 ? ' try' : ' tries') + '): nothing is conquered and the town stays as it was. Press Go: we walk to the next weakest guardian, or choose Later.'; }
     if (line.textContent !== words) { line.textContent = words; said = ''; }
     go.hidden = !(id === 'practice' || id === 'conquest') || !!at; go.textContent = walking ? 'Stop' : 'Go';
-    go.disabled = id === 'practice' && st && !(st.troops || []).length;
+    go.disabled = id === 'practice' && st && !(st.troops || []).length || hatching;
     okB.hidden = !(id === 'meet' || id === 'town' || id === 'explore' || (id === 'conquest' && lost)); okB.textContent = id === 'conquest' ? 'Later' : 'OK';
     card.dataset.step = id;
     // the preceptor's head speaks inside this card (talk_head.js); the map bubble stays free for real results
@@ -148,7 +153,7 @@
   skip.addEventListener('click', function () { stop(); put('skipped'); draw(); });
   play.addEventListener('visitor:render', function (e) { var d = e.detail || {}; if (d.state) { st = d.state; } draw(); });
   play.addEventListener('visitor:end', function () { st = null; at = ''; stop(); draw(); });
-  play.addEventListener('visitor:battle', function (e) { var d = e.detail || {}; if (d.practice || (d.combat && /coliseum|patrol/.test(String(d.place)))) { practised = true; } else if (d.combat && d.combat.gana === 'asalto') { threat = ''; } else if (d.combat && d.combat.gana !== 'asalto') { lost++; threat = ''; var s0 = doc.getElementById('surface'); if (s0 && s0.dataset.sel) { lostAt[s0.dataset.sel] = 1; } } at = ''; root.setTimeout(draw, 50); });
+  play.addEventListener('visitor:battle', function (e) { var d = e.detail || {}; if (d.practice || (d.combat && /coliseum|patrol/.test(String(d.place)))) { practised = true; } else if (d.combat && d.combat.gana === 'asalto') { threat = ''; } else if (d.combat && d.combat.gana !== 'asalto') { lost++; threat = ''; var at0 = /:(-?\d+,-?\d+)$/.exec(String(d.place || '')); if (at0) { lostAt[at0[1]] = 1; } } at = ''; root.setTimeout(draw, 50); });
   var surface = doc.getElementById('surface'); if (surface && root.MutationObserver) { new root.MutationObserver(function () { if (!surface.dataset.sel) { at = ''; } draw(); }).observe(surface, { attributes: true, attributeFilter: ['data-sel'] }); }
   root.addEventListener('resize', function () { mark(now()); });
   doc.addEventListener('click', function () { root.setTimeout(function () { if (!card.hidden) { mark(now()); } }, 150); }); // a panel opened: the «!» follows its button

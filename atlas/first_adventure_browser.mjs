@@ -95,6 +95,12 @@ async function main() {
   await press(); ok(await hasta(`document.getElementById('fa').dataset.step==='conquest'`, 30000), 'the practice wave does not move the adventure on'); trail.push('practice');
   s = await st(); ok(Object.values(s.states).filter((v) => v === 'locked').length === 7, 'a practice wave opened buildings: it must win nothing');
   await ev(`(()=>{const b=document.querySelector('#building-sheet .bs-bar button:last-child'); if(b) b.click(); return 1})()`); await espera(300);
+  // the real fight waits for the whole squad: while an egg hatches Go is off and the card says why (no silent block)
+  if (await ev(`document.getElementById('fa-go').disabled`)) {
+    ok(/still hatching/.test(await ev(`document.querySelector('#fa .fa-line').textContent`)), 'Go is off at the real fight without saying the egg is hatching');
+    await ev(`(()=>{window.AtlasVisitorEggs.clock.skip(120000); document.getElementById('visitor-play').dispatchEvent(new CustomEvent('visitor:tick')); return 1})()`);
+  }
+  for (let i = 0; i < 40; i++) { const r = await ev(`(()=>{const b=document.querySelector('#stage > .revela.on-map .revela-ok'); if(b){b.click(); return 1} return document.getElementById('fa-go').disabled?2:0})()`); if (!r) { break; } await espera(500); }
   path = JSON.parse(await walkTo(`!!document.getElementById('bs-challenge') && /Challenge the NPC/.test(document.getElementById('bs-challenge').textContent)`)); medidas.toGrey = path.length - 1;
   ok(path.length >= 2 && hop(path), 'Go to the grey building is not a walk of one hex per step: ' + JSON.stringify(path.slice(0, 12)));
   s = await st(); ok(s.marks.join() === 'bs-challenge', 'at the grey building «!» is not on the challenge: ' + JSON.stringify(s.marks));
@@ -116,8 +122,8 @@ async function main() {
   // after a win the «!» first asks to record it (visitor_conquest.js verifies the receipt against this visit), then OK
   await espera(300); s = await st();
   if (s.step === 'town' && s.marks.join() === 'visitor-conquer') { await ev(`document.getElementById('visitor-conquer').click()`); ok(await hasta(`/Conquest recorded for this visit/.test(document.getElementById('visitor-conquer').textContent)`, 8000), 'the verified win was not recorded'); await ev(`(()=>{const d=document.getElementById('visitor-conquer').closest('dialog'); if(d) d.close(); return 1})()`); }
-  for (const want of ['town', 'explore']) { await espera(300); s = await st();
-    ok(s.step === want && s.marks.join() === 'fa-ok', want + ' is not marked on OK: ' + JSON.stringify(s)); await ev(`document.getElementById('fa-ok').click()`); await espera(300); trail.push(want); }
+  for (const want of ['town', 'explore']) { await espera(300); if (await ev(`!!document.querySelector('#stage > dialog[open] [data-fa-next]')`)) { await ev(`document.querySelector('#stage > dialog[open] [data-fa-next]').click()`); await espera(500); } s = await st();
+    ok(s.step === want && s.marks.join() === 'fa-ok', want + ' is not marked on OK: ' + JSON.stringify(s) + ' open: ' + await ev(`JSON.stringify({sheet:!!document.querySelector('.bs-sheet:not([hidden])'),voices:!!document.querySelector('#voices.map-voices:not([hidden])'),dialog:[...document.querySelectorAll('dialog[open]')].map(d=>d.className+'|'+d.textContent.slice(0,40)),revela:document.querySelectorAll('.revela').length})`)); await ev(`document.getElementById('fa-ok').click()`); await espera(300); trail.push(want); }
   ok(await ev(`localStorage.getItem('preceptoros.tour')==='done' && document.getElementById('fa').hidden && document.documentElement.dataset.owPhase==='free'`), 'explore does not finish the adventure and free the visitor');
   s = await st(); ok(Object.values(s.states).every((v) => v === 'available' || v === 'built'), 'once free the whole town is not open: ' + JSON.stringify(s.states));
   // Skip and Resume
