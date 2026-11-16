@@ -18,13 +18,15 @@
   box.addEventListener('visitor:end', clear);
   root.addEventListener('pagehide', clear);
   box.addEventListener('visitor:battle', function (event) {
-    var result = event.detail, captured = context, dialog = box.querySelector('dialog');
+    var result = event.detail, captured = context, verdict = doc.getElementById('visitor-battle-result'), dialog = box.querySelector('dialog[open]') || (verdict && verdict.closest('dialog[open]')) || box.querySelector('dialog'); // crab_stage.js shows the fight on the map
     if (!captured || !dialog || result.practice || result.combat.gana !== 'asalto') { return; } // a practice wave conquers nothing
     var button = doc.createElement('button'); button.id = 'visitor-conquer'; button.textContent = 'Record this local conquest'; button.style.minHeight = '44px';
     button.addEventListener('click', async function () {
       button.disabled = true;
       try {
-        if (context !== captured || !await root.AtlasVisitorBattle.verify(result, captured.account.info().seed)) { throw new Error('Current visit and verified victory are required'); }
+        var same = context && context.account && context.account.info().seed === captured.account.info().seed; // the same visit (a re-render makes a new context object)
+        var receipt = Object.assign({}, result); delete receipt.practice; // a presentation flag set after the fight's own verify: not part of the receipt
+        if (!same || !await root.AtlasVisitorBattle.verify(receipt, captured.account.info().seed)) { throw new Error('Current visit and verified victory are required'); }
         captured.account.info();
         if (records[result.place]) { throw new Error('This place is already recorded in this visit'); }
         records[result.place] = { place: result.place, step: captured.game.state().step, seed: result.seed, rules: result.rules };

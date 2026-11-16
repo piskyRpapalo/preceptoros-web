@@ -109,6 +109,9 @@ async function main() {
     s = await st(); ok(s.step === 'town', 'after a win the town step does not come: ' + s.step); medidas.syntheticWin = true;
   }
   ok(s.won.length >= 1 && Object.values(s.states).concat(s.won).every((v) => v !== 'accredited'), 'a visit\'s win was shown as accredited ownership: ' + JSON.stringify(s.won));
+  // after a win the «!» first asks to record it (visitor_conquest.js verifies the receipt against this visit), then OK
+  await espera(300); s = await st();
+  if (s.step === 'town' && s.marks.join() === 'visitor-conquer') { await ev(`document.getElementById('visitor-conquer').click()`); ok(await hasta(`/Conquest recorded for this visit/.test(document.getElementById('visitor-conquer').textContent)`, 8000), 'the verified win was not recorded'); await ev(`(()=>{const d=document.getElementById('visitor-conquer').closest('dialog'); if(d) d.close(); return 1})()`); }
   for (const want of ['town', 'explore']) { await espera(300); s = await st(); ok(s.step === want && s.marks.join() === 'fa-ok', want + ' is not marked on OK: ' + JSON.stringify(s)); await ev(`document.getElementById('fa-ok').click()`); await espera(300); trail.push(want); }
   ok(await ev(`localStorage.getItem('preceptoros.tour')==='done' && document.getElementById('fa').hidden && document.documentElement.dataset.owPhase==='free'`), 'explore does not finish the adventure and free the visitor');
   s = await st(); ok(Object.values(s.states).every((v) => v === 'available' || v === 'built'), 'once free the whole town is not open: ' + JSON.stringify(s.states));

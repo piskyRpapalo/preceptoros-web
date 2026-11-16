@@ -16,7 +16,7 @@
     ['play', 'This little crab is you, at the door of Node 0. Press Play: your visit is signed on this device.'],
     ['meet', 'Hello, I am your preceptor. Node 0 is the town hall: the rack\'s AI answers there. Every building is a door; every number on this map is measured. Shall we begin?'],
     ['beacon', 'Node 0\'s beacon gives your first copper. Press «Visit the beacon».'],
-    ['summon', 'Copper buys a summon: an egg that hatches into a troop. Press the reef summon.'],
+    ['summon', 'Copper buys a summon: an egg that hatches into a troop. The beacon\'s copper pays for two: press the reef summon twice.'],
     ['practice', 'Your troop can practise. Press Go: we walk to the coliseum, hex by hex, and try a practice wave. Nothing is won or lost.'],
     ['conquest', 'Now a real fight. Press Go: we walk to the nearest grey building. Challenge its guardian; only a win counts.'],
     ['town', 'Your conquest opened new buildings in the town. The doctor on duty was open from the start: it makes the game readable for everyone.'],
@@ -30,7 +30,7 @@
     if (!v.visit) { return 'play'; }
     if (!v.met) { return 'meet'; }
     if (!v.claimed) { return 'beacon'; }
-    if (!v.troops && !v.eggs) { return 'summon'; }
+    if (!v.troops && !v.eggs || (v.canSummon && (v.troops || 0) + (v.eggs || 0) < 2)) { return 'summon'; } // two reef summons: the beacon's copper
     if (!v.practised) { return 'practice'; }
     if (!v.wins) { return v.later ? 'explore' : 'conquest'; } // later: no valid win yet, nothing opened
     if (!v.seen) { return 'town'; }
@@ -41,8 +41,8 @@
   // Pure: target(id, v) → the selectors of the one control to mark «!», first visible wins ('' when Go is the action).
   function target(id, v) {
     return { play: ['#gp-play', '#welcome-play'], meet: ['#fa-ok'], beacon: ['#visitor-beacon', '.cats [data-cat=Profile]'],
-      summon: ['#visitor-summon-tc1', '.cats [data-cat=Profile]'], practice: v && v.at ? ['#bs-challenge'] : ['#fa-go'],
-      conquest: v && v.at ? ['#bs-challenge'] : ['#fa-go', '#fa-ok'], town: ['#fa-ok'], explore: ['#fa-ok'] }[id] || [];
+      summon: ['#visitor-summon-tc1', '.cats [data-cat=Profile]'], practice: v && v.at ? ['#bs-challenge'] : ['#fa-go'], // town: first record the win (visitor_conquest.js verifies it)
+      conquest: v && v.at ? ['#bs-challenge'] : ['#fa-go', '#fa-ok'], town: ['#visitor-conquer', '#fa-ok'], explore: ['#fa-ok'] }[id] || [];
   }
   var api = { TOUR: TOUR, STEPS: STEPS, IDS: IDS, step: step, say: say, target: target, index: index };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
@@ -51,7 +51,7 @@
   if (!stage || !play) { return; }
   function get() { try { return root.localStorage.getItem(TOUR) || ''; } catch (e) { return ''; } }
   function put(v) { try { root.localStorage.setItem(TOUR, v); } catch (e) { /* not kept: the card still works this visit */ } if (root.AtlasOwCalm) { root.AtlasOwCalm.refresh(); } }
-  var st = null, met = false, seen = false, practised = false, lost = 0, later = false, at = '', walking = 0, said = '';
+  var threat = '', st = null, met = false, seen = false, practised = false, lost = 0, later = false, at = '', walking = 0, said = '';
   var card = doc.createElement('section'); card.id = 'fa'; card.setAttribute('aria-label', 'First adventure');
   var count = doc.createElement('p'); count.className = 'fa-count';
   var line = doc.createElement('p'); line.className = 'fa-line'; line.setAttribute('role', 'status');
@@ -66,7 +66,7 @@
   function wins() { var V = view(); return V && V.world && V.world.markList ? V.world.markList.filter(function (m) { return m.won; }).length : 0; }
   function now() {
     var s = st || {};
-    return step({ visit: !!doc.getElementById('visitor-beacon') || !!st, met: met, claimed: !!s.claimed, troops: (s.troops || []).length, eggs: (s.eggs || []).length, practised: practised, wins: wins(), seen: seen, later: later });
+    return step({ visit: !!doc.getElementById('visitor-beacon') || !!st, met: met, claimed: !!s.claimed, troops: (s.troops || []).length, eggs: (s.eggs || []).length, canSummon: !!(s.copper >= 50), practised: practised, wins: wins(), seen: seen, later: later });
   }
   function visible(el) { return !!(el && !el.hidden && !el.disabled && el.getClientRects().length && el.offsetParent !== null); }
   function mark(id) {
@@ -87,7 +87,8 @@
     count.textContent = 'First adventure · ' + (i + 1) + ' of ' + IDS.length;
     var words = say(id);
     if (id === 'practice' && st && !(st.troops || []).length) { words = 'Your egg is hatching into a troop; the house says when. Then press Go to the coliseum.'; }
-    if (id === 'conquest' && lost) { words = 'The guardian wins this time (' + lost + (lost === 1 ? ' try' : ' tries') + '): nothing is conquered and the town stays as it was. Summon more troops and press Go again, or choose Later.'; }
+    if (id === 'conquest' && threat && !lost) { words = threat; }
+    if (id === 'conquest' && lost) { words = 'The guardian wins this time (' + lost + (lost === 1 ? ' try' : ' tries') + '): nothing is conquered and the town stays as it was. Press Go: we walk to the next weakest guardian, or choose Later.'; }
     if (line.textContent !== words) { line.textContent = words; said = ''; }
     go.hidden = !(id === 'practice' || id === 'conquest') || !!at; go.textContent = walking ? 'Stop' : 'Go';
     go.disabled = id === 'practice' && st && !(st.troops || []).length;
@@ -114,12 +115,28 @@
       if (stuck > 2) { stop(); line.textContent = 'NO_DATA: the way is blocked here; walk around it with the crab stick, then press Go again.'; }
     }, 260); draw();
   }
+  // weakest(list, w) → the grey building whose guardian fields the lightest patrol (values.js order), nearest first,
+  // never one already lost to in this visit (a fight is deterministic: the same squad loses the same way). Read only.
+  var lostAt = {}, KINDS = { arrecife: 'reef guards', algas: 'kelp guards', ruinas: 'ruin guards', limo: 'silt guards', abismo: 'abyss guards', nucleo: 'core guards' };
+  function weakest(list, w) {
+    var B = root.AtlasVisitorBattle, P = root.AtlasValores && root.AtlasValores.patrullas, best = null;
+    list.forEach(function (m) {
+      if (!m.fog || m.won || lostAt[m.q + ',' + m.r] || !B || !P) { return; }
+      var pl = B.npcPlace('b:' + m.id + ':' + m.q + ',' + m.r); if (!pl) { return; }
+      var tc = pl.troops[0].tc, rank = P.findIndex(function (p) { return p.tc === tc && p.n === pl.troops.length; }), d = hexDist(w, m);
+      var c = { m: m, d: d, n: pl.troops.length, tc: tc, kind: KINDS[(P[rank] || {}).id] || 'guards', score: rank * 1000 + d };
+      if (!best || c.score < best.score) { best = c; }
+    });
+    return best;
+  }
+  api.weakest = weakest;
   function stop() { root.clearInterval(walking); walking = 0; go.textContent = 'Go'; }
   go.addEventListener('click', function () {
     if (walking) { stop(); draw(); return; }
     var V = view(), list = V && V.world && V.world.markList || [], id = now(), m = null;
     if (id === 'practice') { m = list.filter(function (x) { return x.town && x.id === 'coliseum'; })[0]; }
-    if (id === 'conquest') { var F = root.AtlasMapFog, ow = root.AtlasOpenworldView && root.AtlasOpenworldView(), w = ow && ow.controls && ow.controls.walker && ow.controls.walker(), n = F && w && F.nearest(list, w); m = n && n.m; }
+    if (id === 'conquest') { var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(), w = ow && ow.controls && ow.controls.walker && ow.controls.walker(), pick = w && weakest(list, w); m = pick && pick.m;
+      if (pick) { threat = line.textContent = 'Walking to the ' + String(m.id).replace(/-/g, ' ') + ' · ' + pick.d + ' hexes · its guardian fields ' + pick.n + ' ' + pick.kind + ' (' + pick.tc + '): the weakest near you.'; } }
     if (!m) { line.textContent = 'NO_DATA: no place for this step on the map.'; return; }
     walk(m, function () {});
   });
@@ -127,7 +144,7 @@
   skip.addEventListener('click', function () { stop(); put('skipped'); draw(); });
   play.addEventListener('visitor:render', function (e) { var d = e.detail || {}; if (d.state) { st = d.state; } draw(); });
   play.addEventListener('visitor:end', function () { st = null; at = ''; stop(); draw(); });
-  play.addEventListener('visitor:battle', function (e) { var d = e.detail || {}; if (d.practice || (d.combat && /coliseum|patrol/.test(String(d.place)))) { practised = true; } else if (d.combat && d.combat.gana !== 'asalto') { lost++; } at = ''; root.setTimeout(draw, 50); });
+  play.addEventListener('visitor:battle', function (e) { var d = e.detail || {}; if (d.practice || (d.combat && /coliseum|patrol/.test(String(d.place)))) { practised = true; } else if (d.combat && d.combat.gana === 'asalto') { threat = ''; } else if (d.combat && d.combat.gana !== 'asalto') { lost++; threat = ''; var s0 = doc.getElementById('surface'); if (s0 && s0.dataset.sel) { lostAt[s0.dataset.sel] = 1; } } at = ''; root.setTimeout(draw, 50); });
   var surface = doc.getElementById('surface'); if (surface && root.MutationObserver) { new root.MutationObserver(function () { if (!surface.dataset.sel) { at = ''; } draw(); }).observe(surface, { attributes: true, attributeFilter: ['data-sel'] }); }
   root.addEventListener('resize', function () { mark(now()); });
   doc.addEventListener('click', function () { root.setTimeout(function () { if (!card.hidden) { mark(now()); } }, 150); }); // a panel opened: the «!» follows its button
