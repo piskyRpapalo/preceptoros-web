@@ -117,6 +117,7 @@
       settle(wait); if (generation !== visitGeneration || account !== visitAccount) return;
       chain = result.chain;
       line(NAME, result.ok ? result.text + (result.cut ? ' [shortened]' : '') : root.AtlasAulaChat.plain(result.cause));
+      if (result.ok && root.AtlasTalkHead && log.lastElementChild) { root.AtlasTalkHead.show(log.lastElementChild, result.text + (result.cut ? ' [shortened]' : ''), { who: NAME, voice: true }); } // the answer arrived whole: revealed, never streamed
       if (!result.ok) { failed = true; }
       if (result.ok && root.AtlasAulaChat.renderReceipt) root.AtlasAulaChat.renderReceipt(doc, log, result.receiptState);
     } catch (_) { settle(wait); if (generation === visitGeneration) { line(NAME, 'NO_DATA · The chat gateway did not answer.'); failed = true; } }
