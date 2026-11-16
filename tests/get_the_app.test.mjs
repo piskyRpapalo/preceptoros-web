@@ -114,14 +114,20 @@ test('SABOTAGE Android download: absent or fabricated hash keeps APK lane closed
 });
 
 
-test('Homepage downloads the same verified APK with one click (without claiming offline AI)', () => {
+test('Homepage has exactly three actions; its Android choice downloads the published APK (without claiming local AI)', () => {
+  // 2026-11-16 (APP-MESA-06): PWA | App (Android / Ubuntu / Windows) | Update App replaced the two APK links.
   const apk = R.android.assets[0];
   const home = leer('public/index.html');
+  const js = leer('public/assets/three_actions.js');
+  const main = home.match(/<button type="button" id="ta-(pwa|app|update)" class="ta-btn"/g) || [];
+  if (main.length !== 3 || (home.match(/class="ta-btn"/g) || []).length !== 3) { throw new Error('the homepage must keep exactly three main actions'); }
   const route = '/get-the-app/' + apk.nombre;
-  const links = home.match(/<a class="android-apk-action"[^>]+>/g) || [];
-  if (links.length !== 2 || !links.every((a) => a.includes('href="' + route + '"') && a.includes(' download '))) {
-    throw new Error('homepage APK and update links do not target the published release');
-  }
-  if (!home.includes('Local offline AI: NO_DATA')) { throw new Error('home falsely presents TWA as local AI'); }
-  if (!/\.android-apk-action:focus-visible/.test(home)) { throw new Error('missing visible keyboard focus'); }
+  if (!js.includes("var APK = '" + route + "'")) { throw new Error('Android choice does not target the published release'); }
+  if (apk.sha256 && (js.split(apk.sha256).length - 1) !== 2) { throw new Error('Android get and update must show the published SHA-256'); }
+  // Each download names what it installs; the OpenWorld APK is never the APP, and nothing public promises Hexelion.
+  if (!js.includes('It is not the PreceptorOS APP and has no model inside')) { throw new Error('home presents the OpenWorld APK as the APP'); }
+  if (!js.includes("'Download OpenWorld (APK)'") || !js.includes("'Download the APP installer (install.sh)'")) { throw new Error('a download does not say what it installs'); }
+  if (/hexelion/i.test(js)) { throw new Error('the public base product must not promise Hexelion'); }
+  if (!js.includes('cannot see which version your phone has')) { throw new Error('update must not claim to detect an installed app'); }
+  if (!/\.ta-btn:focus-visible/.test(home)) { throw new Error('missing visible keyboard focus'); }
 });
