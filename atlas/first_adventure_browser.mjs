@@ -28,6 +28,7 @@ const SAB = process.env.SABOTAJE || '';
 const SABS = { // each must turn the test red
   teleport: ['/game/first_adventure.js', "var dirs = F.toward(a, m); for (var i = 0; i < 3; i++) { c.step(dirs[i]);", "var dirs = F.toward(a, m); for (var i = 0; i < 3; i++) { c.step(dirs[i]); c.step(dirs[i]);"], // two hexes a beat
   owner: ['/game/ow_calm.js', "return m && m.own ? 'built' : 'available';", "return m && (m.own || m.won) ? 'accredited' : 'available';"], // a visit's win made into ownership // a visit's record made into ownership
+  hatch: ['/game/first_adventure.js', "['.revela .revela-ok'].concat(target(id, { at: at }))", "target(id, { at: at })"], // a hatch covers the card and nothing is marked
   open: ['/game/ow_calm.js', "(wins > 0 && i < 2 + wins)", "(wins >= 0 && i < 2 + wins)"] // the town opens before any conquest
 };
 const ok = (cond, que) => { if (!cond) { fallos.push(que); } };
@@ -67,7 +68,10 @@ async function main() {
   const S = `JSON.stringify({ step: (document.getElementById('fa')||{dataset:{}}).dataset.step, marks: [...document.querySelectorAll('[data-fa-next]')].map(e=>e.id||e.dataset.cat),
     bang: !document.getElementById('fa-bang').hidden, states: (()=>{const V=AtlasMapPainter.view(); return Object.fromEntries(V.world.markList.filter(m=>m.town).map(m=>[m.id, AtlasOwCalm.stateOf(m)]));})(),
     won: AtlasMapPainter.view().world.markList.filter(m=>m.won).map(m=>AtlasOwCalm.stateOf(m)) })`;
-  const st = async () => JSON.parse(await ev(S));
+  medidas.hatches = 0;
+  const st = async () => { // an egg hatching covers everything: the «!» must be on its Continue, and the test presses it
+    for (let h = 0; h < 3 && await ev(`!!document.querySelector('.revela [data-fa-next]')`); h++) { await ev(`document.querySelector('.revela [data-fa-next]').click()`); medidas.hatches++; await espera(500); }
+    return JSON.parse(await ev(S)); };
   const press = async () => ev(`(()=>{const e=document.querySelector('[data-fa-next]'); if(!e) return null; const id=e.id||e.dataset.cat; e.click(); return id;})()`);
   const trail = [];
   let s = await st(); trail.push(s.step);
@@ -112,7 +116,8 @@ async function main() {
   // after a win the «!» first asks to record it (visitor_conquest.js verifies the receipt against this visit), then OK
   await espera(300); s = await st();
   if (s.step === 'town' && s.marks.join() === 'visitor-conquer') { await ev(`document.getElementById('visitor-conquer').click()`); ok(await hasta(`/Conquest recorded for this visit/.test(document.getElementById('visitor-conquer').textContent)`, 8000), 'the verified win was not recorded'); await ev(`(()=>{const d=document.getElementById('visitor-conquer').closest('dialog'); if(d) d.close(); return 1})()`); }
-  for (const want of ['town', 'explore']) { await espera(300); s = await st(); ok(s.step === want && s.marks.join() === 'fa-ok', want + ' is not marked on OK: ' + JSON.stringify(s)); await ev(`document.getElementById('fa-ok').click()`); await espera(300); trail.push(want); }
+  for (const want of ['town', 'explore']) { await espera(300); s = await st();
+    ok(s.step === want && s.marks.join() === 'fa-ok', want + ' is not marked on OK: ' + JSON.stringify(s)); await ev(`document.getElementById('fa-ok').click()`); await espera(300); trail.push(want); }
   ok(await ev(`localStorage.getItem('preceptoros.tour')==='done' && document.getElementById('fa').hidden && document.documentElement.dataset.owPhase==='free'`), 'explore does not finish the adventure and free the visitor');
   s = await st(); ok(Object.values(s.states).every((v) => v === 'available' || v === 'built'), 'once free the whole town is not open: ' + JSON.stringify(s.states));
   // Skip and Resume

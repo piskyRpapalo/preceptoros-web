@@ -70,15 +70,19 @@
   }
   function visible(el) { return !!(el && !el.hidden && !el.disabled && el.getClientRects().length && el.offsetParent !== null); }
   function mark(id) {
-    var list = target(id, { at: at }), el = null;
+    var list = ['.revela .revela-ok'].concat(target(id, { at: at })), el = null; // an egg that hatches now covers the card: its Continue comes first
     for (var i = 0; i < list.length && !el; i++) { var c = doc.querySelector(list[i]); if (visible(c)) { el = c; } }
     Array.prototype.forEach.call(doc.querySelectorAll('[data-fa-next]'), function (e) { if (e !== el) { delete e.dataset.faNext; } });
     if (!el) { bang.hidden = true; return null; }
     el.dataset.faNext = '1'; var r = el.getBoundingClientRect();
-    if ((r.bottom > root.innerHeight || r.top < 0) && el.scrollIntoView) { el.scrollIntoView({ block: 'nearest' }); r = el.getBoundingClientRect(); }
-    bang.hidden = false; bang.style.left = Math.round(r.right + root.scrollX - 12) + 'px'; bang.style.top = Math.round(r.top + root.scrollY - 12) + 'px';
+    if ((r.bottom > root.innerHeight || r.top < 0) && el.scrollIntoView) { el.scrollIntoView({ block: 'nearest' }); }
+    bang.hidden = false; place(el);
     return el;
   }
+  // place(el): the «!» sits on the marked button's corner. A dialog grows after it is marked (the record button arrives
+  // below the verdict), so the corner is read again twice a second while a mark stands: never left on an old spot.
+  function place(el) { var r = el.getBoundingClientRect(); bang.style.left = Math.round(r.right + root.scrollX - 12) + 'px'; bang.style.top = Math.round(r.top + root.scrollY - 12) + 'px'; }
+  root.setInterval(function () { var e = !bang.hidden && doc.querySelector('[data-fa-next]'); if (e && e.isConnected) { place(e); } }, 500);
   function draw() {
     var t = get(), id = now();
     var off = t === 'done' || t === 'skipped';
