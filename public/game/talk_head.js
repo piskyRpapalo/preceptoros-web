@@ -7,7 +7,7 @@
 // with the visitor's own sound choice on) says the same full text, once.
 (function (root) {
   'use strict';
-  var FACES = [0, 1, 2, 3, 4].map(function (i) { return '/assets/caras/cara-habla' + i + '-180.webp'; });
+  var FACES = ['/assets/caras/cara-habla0-180.webp', '/assets/caras/cara-habla1-180.webp', '/assets/caras/cara-habla2-180.webp', '/assets/caras/cara-habla3-180.webp', '/assets/caras/cara-habla4-180.webp'];
   var MS_PER_CHAR = 38, MIN = 280, MAX = 2600, STOP = 320, BREATH = 140;
   // Pure: phrases(text) → the text cut at its natural stops (. ! ? ; : and « · »), long ones again at commas; joining
   // them gives the text back exactly.
@@ -37,7 +37,7 @@
     var doc = target.ownerDocument, win = doc.defaultView || root, o = opts || {}, list = phrases(text), still = reduced(win);
     var box = doc.createElement(target.tagName === 'LI' ? 'li' : 'span'); box.className = 'th'; box.dataset.state = 'speaking';
     var art = doc.createElement('span'); art.className = 'th-art'; art.setAttribute('aria-hidden', 'true');
-    var face = doc.createElement('img'); face.className = 'th-face'; face.alt = ''; face.width = 56; face.height = 56; face.decoding = 'async'; face.src = FACES[0];
+    var face = doc.createElement('img'); face.className = 'th-face'; face.alt = ''; face.width = 56; face.height = 56; face.decoding = 'async'; face.onerror = function () { face.hidden = true; }; face.src = FACES[0]; // on demand, never in the shell; offline the box speaks alone
     var says = doc.createElement('span'); says.className = 'th-says'; says.dataset.t = '';
     if (o.who) { says.dataset.who = o.who; }
     art.append(face, says); box.append(art);
