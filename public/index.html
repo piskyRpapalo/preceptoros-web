@@ -94,18 +94,13 @@ body.landing-world>main{width:28rem;margin:0;max-height:calc(100dvh - 48px);bord
 <li>Walk the map with your crab and enter the buildings.</li>
 <li>Talk to the guides and summon your first wave.</li>
 </ol>
-<details class="honest"><summary>Not measured yet · 3 things, said honestly</summary>
-<ul aria-label="What comes next, said honestly">
-<li>Other visitors online · NO_DATA · no shared count yet</li>
-<li>Your own building · NO_DATA · not open yet</li>
-<li>Nodes building the world · NO_DATA until measured</li>
-</ul></details>
-<section id="three-actions" class="three-actions" aria-labelledby="ta-title" hidden>
-<h3 id="ta-title">Get PreceptorOS</h3>
-<div class="ta-row">
-<button type="button" id="ta-pwa" class="ta-btn" aria-describedby="ta-pwa-say">Progressive Web App</button>
-<button type="button" id="ta-app" class="ta-btn" aria-expanded="false" aria-controls="ta-panel">App</button>
+<section id="four-actions" class="three-actions four-actions" aria-labelledby="fa-title" hidden>
+<h3 id="fa-title">Get PreceptorOS</h3>
+<div class="ta-row" role="group" aria-label="Four actions">
+<button type="button" id="ta-pwa" class="ta-btn" aria-describedby="ta-pwa-say">PWA</button>
+<button type="button" id="ta-app" class="ta-btn" aria-expanded="false" aria-controls="ta-panel">Download App</button>
 <button type="button" id="ta-update" class="ta-btn" aria-expanded="false" aria-controls="ta-panel">Update App</button>
+<button type="button" id="fa-companion" class="ta-btn" aria-expanded="false" aria-controls="fa-panel">Create Companion</button>
 </div>
 <p id="ta-pwa-say" class="ta-say" role="status"></p>
 <div id="ta-panel" hidden><fieldset><legend id="ta-legend">App for which system?</legend>
@@ -113,9 +108,35 @@ body.landing-world>main{width:28rem;margin:0;max-height:calc(100dvh - 48px);bord
 <label><input type="radio" name="ta-os" value="ubuntu"> Ubuntu</label>
 <label><input type="radio" name="ta-os" value="windows"> Windows</label>
 </fieldset><div id="ta-out" aria-live="polite"></div></div>
+<div id="fa-panel" hidden>
+<h4 id="fa-h">Create your Companion, on this device</h4>
+<p class="ta-say">We prepare two drafts from your answers. Nothing is sent anywhere, and nothing is registered until a pull request is accepted in the companion repository. Blank measurements stay NO_DATA.</p>
+<label for="fa-name">Companion name (lowercase letters, digits, hyphens)</label>
+<input id="fa-name" autocomplete="off" spellcheck="false" maxlength="40">
+<label for="fa-project">Project name</label>
+<input id="fa-project" autocomplete="off" maxlength="120">
+<label for="fa-what">What your project is</label>
+<textarea id="fa-what" rows="3" maxlength="2000"></textarea>
+<label for="fa-solves">What it solves, and for whom</label>
+<textarea id="fa-solves" rows="3" maxlength="2000"></textarea>
+<label for="fa-stack">Stack</label>
+<input id="fa-stack" maxlength="300">
+<label for="fa-state">Current state</label>
+<input id="fa-state" maxlength="300">
+<fieldset><legend>Measurements (blank = NO_DATA)</legend>
+<label for="fa-acc">Accuracy</label><input id="fa-acc" maxlength="200">
+<label for="fa-tests">Tests</label><input id="fa-tests" maxlength="200">
+<label for="fa-cost">Cost</label><input id="fa-cost" maxlength="200">
+<label for="fa-date">Run date</label><input id="fa-date" type="date">
+<label for="fa-machine">Machine</label><input id="fa-machine" maxlength="200">
+</fieldset>
+<button type="button" id="fa-make" class="ta-btn">Prepare my two drafts</button>
+<p id="fa-say" role="status" aria-live="polite">NO_DATA: nothing prepared yet.</p>
+<div id="fa-out"></div>
+<p>Then <a href="https://github.com/piskyRpapalo/preceptoros-companion/blob/main/CONTRIBUTING.md">read CONTRIBUTING</a>, put both files in <code>companions/&lt;your-name&gt;/</code>, and open a docs-only pull request titled HITL.</p>
+</div>
 </section>
 <p class="go"><a href="/get-the-app/">Release details, every file and its SHA-256</a></p>
-<p>Want to go further? Join our benchmarks and learn how to create your companion: <a href="https://github.com/piskyRpapalo/preceptoros-companion">the companion door</a>.</p>
 </div>
 </section>
 </main>
@@ -128,6 +149,7 @@ body.landing-world>main{width:28rem;margin:0;max-height:calc(100dvh - 48px);bord
 <script src="/assets/landing_doors.js"></script>
 <script src="/assets/pwa.js"></script>
 <script src="/assets/three_actions.js"></script>
+<script src="/assets/create_companion.js"></script>
 <script src="/assets/intro.js"></script>
 <script src="/assets/landing_world.js"></script>
 <script src="/game/sound_first.js"></script>
