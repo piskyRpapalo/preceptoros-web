@@ -14,5 +14,5 @@
 @media (prefers-reduced-motion:reduce){#fa-bang{animation:none}}
 @media (forced-colors:active){#fa,#fa .fa-row button,#fa-bang{border-color:CanvasText;background:Canvas;color:CanvasText}}
 /* a card or a panel open: it speaks; the «!» alone guides (the card returns when it closes) */
-#map:has(.bs-sheet:not([hidden])) #fa,#map:has(#voices.map-voices:not([hidden])) #fa{display:none}
+#map:has(.bs-sheet:not([hidden]),#voices.map-voices:not([hidden]),dialog[open],.revela) #fa{display:none}
 #fa .th{margin:2px 0 6px}#fa .th-face{width:44px;height:44px}#fa .th-says{font-size:.88rem;min-height:0;padding:6px 10px}#fa .th-bar{padding-left:52px}
