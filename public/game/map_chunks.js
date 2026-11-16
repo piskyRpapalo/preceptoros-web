@@ -70,6 +70,7 @@
   function oval(g, x, y, rx, ry, a0, a1) { for (var i = 0; i <= 16; i++) { var a = a0 + (a1 - a0) * i / 16; g.lineTo(x + rx * Math.cos(a), y + ry * Math.sin(a)); } }
   // building(g, m, x, top, o): a smaller prism on the cell's top, ink-outlined (comic), its roof by kind.
   function building(g, m, x, top, o, H) {
+    var C = root.AtlasOwCalm; if (C && C.locked && C.locked(m)) { C.plot(g, x, top, o, H); return; } // ow_calm.js: a foundation until opened
     var k = o.k, F = H.T.FRONT_DOOR, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), base = H.mix(H.rgbOf(F[m.tone]), H.rgbOf(H.T.NEUTRAL.paper), 0.18);
     if (m.fog) { var l = Math.round(base[0] * 0.3 + base[1] * 0.59 + base[2] * 0.11); base = [l, l, l]; } // an NPC's building is grey
     var ring = o.corner.map(function (q) { return [q[0] * 0.5, q[1] * 0.5]; }), hb = (m.roof === 'spire' ? 26 : 16) * k, y0 = top - 2 * k;
@@ -168,10 +169,11 @@
     var k = V.G.k, ink = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.ink)), paper = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.paper)), fs = Math.round(11 * dpr);
     g.save(); g.font = '700 ' + fs + 'px ui-rounded, "SF Pro Rounded", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
     V.world.markList.forEach(function (m) {
-      var dd = hexDist([m.q, m.r], [w.q, w.r]); if (dd > REACH || m.fog || (dd <= 2 && root.AtlasMapAura)) { return; } // near: map_aura's tap label
+      var dd = hexDist([m.q, m.r], [w.q, w.r]); if (dd > REACH || m.fog || (dd <= 2 && root.AtlasMapAura)) { return; }
+      var C = root.AtlasOwCalm; if (C && !C.named(m.id, dd, C.now())) { return; } // ow_calm.js: the rest named as you walk near // near: map_aura's tap label
       var cell = V.world.cells.at[m.q + ',' + m.r], h0 = V.P(m.q, m.r), p = V.turn(h0.x, h0.y);
       var x = V.G.cx + p.x * k, y = V.G.cy + p.y * k - ((cell ? V.height(cell) * V.HSTEP : 0) + (m.roof === 'spire' ? 58 : 44)) * k;
-      var t = m.name || NAMES[m.id] || m.id, tw = g.measureText(t).width + 12 * dpr, th = fs + 6 * dpr;
+      var C2 = root.AtlasOwCalm, st = C2 && C2.stateOf ? C2.stateOf(m) : 'available', t = (m.name || NAMES[m.id] || m.id) + (st === 'available' ? '' : ' · ' + st), tw = g.measureText(t).width + 12 * dpr, th = fs + 6 * dpr;
       // A label over the crab moves under its building.
       if (Math.abs(x - cx) < tw / 2 + 24 * k && Math.abs(y - cy) < th / 2 + 26 * k) { y += ((m.roof === 'spire' ? 58 : 44) + 22) * k; }
       g.fillStyle = paper; g.strokeStyle = ink; g.lineWidth = Math.max(1, 1.6 * dpr);
@@ -217,6 +219,7 @@
       var MP = root.AtlasMapPainter, BS = root.AtlasBuildingSheet, r = s.getBoundingClientRect();
       var mk = MP && MP.markAt && r.width ? MP.markAt((e.clientX - r.left) * (s.width / r.width), (e.clientY - r.top) * (s.height / r.height)) : null;
       if (mk && mk.fog && root.AtlasMapFog && root.AtlasMapFog.hidden(mk)) { e.stopImmediatePropagation(); root.AtlasMapFog.tell(mk); return; }
+      var C = root.AtlasOwCalm; if (C && C.locked && C.locked(mk)) { e.stopImmediatePropagation(); C.tell(mk, NAMES[mk.id]); return; }
       if (mk && BS && BS.open && BS.open(mk.id)) { e.stopImmediatePropagation(); if (root.AtlasMapAura) { root.AtlasMapAura.select(doc, s, mk.q + ',' + mk.r); } }
     }, true);
   }

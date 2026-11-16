@@ -1,0 +1,13 @@
+/* The talking head (talk_head.js): the real face, a comic box, the text revealed phrase by phrase. Acho tokens only. */
+.th{display:flex;flex-direction:column;gap:4px;list-style:none;margin:6px 0}
+.th-art{display:flex;align-items:flex-start;gap:8px}
+.th-face{flex:none;width:56px;height:56px;border:3px solid var(--a1d1b26);border-radius:50%;background:var(--afffdf6);box-shadow:0 3px 0 var(--a1d1b26);object-fit:cover}
+.th-says{position:relative;flex:1 1 auto;min-height:44px;padding:8px 12px;border:3px solid var(--a1d1b26);border-radius:18px;background:var(--afffdf6);color:var(--a1d1b26);box-shadow:0 3px 0 var(--a1d1b26);font:600 .95rem/1.35 ui-rounded,system-ui,sans-serif}
+.th-says::before{content:"";position:absolute;left:-11px;top:16px;border:8px solid transparent;border-right-color:var(--a1d1b26)}
+.th-says[data-who]::after{content:attr(data-who) " · " attr(data-t)}
+.th-says:not([data-who])::after{content:attr(data-t)}
+.th-bar{display:flex;gap:6px;padding-left:64px}
+.th-bar button{min-height:44px;min-width:44px;padding:0 12px;border:2px solid var(--a1d1b26);border-radius:999px;background:var(--affe58a);color:var(--a1d1b26);font:800 .85rem ui-rounded,system-ui,sans-serif}
+.th-bar button[aria-pressed=true]{background:var(--adcc8ff)}
+.th-veiled{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important}
+@media (forced-colors:active){.th-face,.th-says,.th-bar button{border-color:CanvasText;background:Canvas;color:CanvasText}.th-says::before{border-right-color:CanvasText}}

@@ -1,0 +1,16 @@
+/* OpenWorld, calm (ow_calm.js): the middle buttons say their names; before a visit, Play is the one primary action. */
+#gamepad .gp-mid button[data-name]::before{inset:3px 11px 17px}
+#gamepad .gp-mid button[data-name]::after{content:attr(data-name);position:absolute;left:0;right:0;bottom:4px;text-align:center;font:800 9px/1 ui-rounded,system-ui,sans-serif;color:var(--a1d1b26);white-space:nowrap}
+html[data-ow-phase=arrive] #gamepad #gp-play{background:var(--affe58a);border:3px solid var(--a1d1b26);box-shadow:0 3px 0 var(--a1d1b26),0 0 0 3px var(--affe58a)}
+/* before a visit the crab cannot step and the brief repeats what Play says: both wait for the visit (the brief stays for readers) */
+html[data-ow-phase=arrive] #ow-controls{display:none}
+html[data-ow-phase=arrive] #ow-brief,#ow-coords{clip-path:inset(50%);width:1px;height:1px;overflow:hidden;padding:0;border:0}
+@media (forced-colors:active){html[data-ow-phase=arrive] #gamepad #gp-play{background:ButtonFace;border-color:ButtonText}#gamepad .gp-mid button[data-name]::after{color:ButtonText}}
+/* UX-VISIBILITY-01: content first. A panel, a card or a dialog open → the sticks fold, one row of named buttons stays
+   (to change panel); writing with the keyboard up → the gamepad steps aside until the field is left. */
+#map:has(#voices.map-voices:not([hidden]),.bs-sheet:not([hidden]),dialog[open],.revela) #gamepad :is(#view-joystick,#character-joystick,.gp-off){display:none}
+#map:has(#voices.map-voices:not([hidden]),.bs-sheet:not([hidden]),dialog[open],.revela) #gamepad .gp-mid{flex-wrap:nowrap;max-width:none;padding-top:0}
+#map:has(#voices.map-voices:not([hidden]),.bs-sheet:not([hidden]),dialog[open],.revela) #gamepad .gp-mid::after{display:none}
+html[data-ow-typing] #gamepad{display:none}
+/* two eggs hatch together: one reveal at a time (the next waits behind the first one's Continue), never two stacked */
+#stage > .revela.on-map ~ .revela.on-map{display:none}

@@ -45,13 +45,15 @@
     var at = 'hello'; box.classList.add('pt-min'); // minimized by default: it never insists (Sovereign, 2026-11-08); a tap on its name opens it
     who.addEventListener('click', function () { var open = box.classList.toggle('pt-min') === false; who.setAttribute('aria-expanded', String(open)); box.classList.remove('pt-new'); place(); });
     function draw() {
-      var l = LINES[at]; line.textContent = l[0]; row.textContent = ''; box.dataset.at = at; box.classList.toggle('pt-rest', at === 'rest');
+      var l = LINES[at]; unhead(); line.textContent = l[0]; row.textContent = ''; box.dataset.at = at; box.classList.toggle('pt-rest', at === 'rest');
       l[1].forEach(function (a, i) {
         var b = doc.createElement('button'); b.type = 'button'; b.textContent = a[0];
         b.addEventListener('click', function () { at = choose(at, i); draw(); place(); });
         row.appendChild(b);
       });
     }
+    // the talking head (talk_head.js) speaks a piece of news; the line keeps the whole text for readers
+    function unhead() { line.classList.remove('th-veiled'); Array.prototype.forEach.call(head.querySelectorAll('.th'), function (h) { h.remove(); }); }
     function on(event) { var to = next(at, event); if (to !== at) { at = to; draw(); } }
     // place(): above the crab with the tail down; near the top edge, below it with the tail up. Projection only.
     function place() {
@@ -78,7 +80,7 @@
     function news(text, who, open) {
       // The resting bubble is gone from the map (Sovereign, 2026-11-14: it covered the world). Only a result that was
       // asked for (a fogged building, a duel) shows here, open, until OK; then nothing rests on the map again.
-      var back = at; void open; box.classList.add('pt-news'); box.classList.remove('pt-min', 'pt-new'); who0.setAttribute('aria-expanded', 'true'); line.textContent = text; who0.textContent = who; row.textContent = '';
+      var back = at; void open; box.classList.add('pt-news'); box.classList.remove('pt-min', 'pt-new'); who0.setAttribute('aria-expanded', 'true'); unhead(); line.textContent = text; who0.textContent = who; row.textContent = ''; if (win.AtlasTalkHead) { win.AtlasTalkHead.show(line, text); }
       var b = doc.createElement('button'); b.type = 'button'; b.textContent = 'OK';
       b.addEventListener('click', function () { box.classList.remove('pt-news'); box.classList.add('pt-min'); who0.setAttribute('aria-expanded', 'false'); who0.textContent = 'Preceptor'; at = back; draw(); place(); });
       row.appendChild(b); place();

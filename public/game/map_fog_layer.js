@@ -31,17 +31,18 @@
     if (T && T.news) { T.news('An NPC holds this ' + name + ' in the fog. Walk closer to clear it.', 'NPC'); }
   }
   // npc(g, x, y, k, H): a small wave creature in Acho (body, two eyes, a wave under it); its colour is the duel's other side.
-  function npc(g, x, y, k, H) {
+  function npc(g, x, y, k, H, L) {
     var F = H.T.FRONT_DOOR, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), paper = H.css(H.rgbOf(H.T.NEUTRAL.paper)), r = 7 * k;
     g.save(); g.lineWidth = Math.max(1, 1.5 * k); g.strokeStyle = ink; g.fillStyle = H.css(H.rgbOf(F['FIRMADO.base']));
     g.beginPath(); g.moveTo(x - r, y); g.quadraticCurveTo(x - r, y - 2.2 * r, x, y - 2.2 * r); g.quadraticCurveTo(x + r, y - 2.2 * r, x + r, y);
     for (var i = 0; i < 4; i++) { g.quadraticCurveTo(x + r - (i + 0.5) * r / 2, y + (i % 2 ? -0.35 : 0.35) * r, x + r - (i + 1) * r / 2, y); }
     g.closePath(); g.fill(); g.stroke();
     [-1, 1].forEach(function (s) { g.fillStyle = paper; g.beginPath(); g.arc(x + s * 0.38 * r, y - 1.25 * r, 0.32 * r, 0, 7); g.fill(); g.stroke();
-      g.fillStyle = ink; g.beginPath(); g.arc(x + s * 0.38 * r + 0.08 * r, y - 1.2 * r, 0.13 * r, 0, 7); g.fill(); });
+      g.fillStyle = ink; g.beginPath(); g.arc(x + s * 0.38 * r + (L ? L[0] * 0.14 : 0.08) * r, y - 1.2 * r + (L ? L[1] * 0.14 * r : 0), 0.13 * r, 0, 7); g.fill(); });
     g.restore();
   }
-  // Q-02 (Sovereign, 2026-11-08): each guardian walks a loop inside the hexagon it guards. The pace is a frame count and the
+  // Q-02 (Sovereign, 2026-11-08): each guardian walks a loop inside the hexagon it guards. [deprecated 2026-11-16: the pace is
+  // now a clock, guardian_pressure.js; `spot` stays only as the fallback if that piece does not load] The pace is a frame count and the
   // offset comes from the building's key: no chance, no clock; reduced motion keeps it still. Near the crab (<= 3 hexes) a «?»
   // floats over its head: a tap opens the guardian's profile (difficulty and reward; never its army).
   var tick = 0, asks = [], timer = 0;
@@ -56,7 +57,8 @@
     var T = root.AtlasPreceptorTalk && root.AtlasPreceptorTalk.view, B = root.AtlasVisitorBattle, name = String(m.id).replace(/-/g, ' ');
     var pl = B && B.npcPlace ? B.npcPlace('b:' + m.id + ':' + m.q + ',' + m.r) : null, n = pl ? pl.troops.length : 0;
     var hard = !pl ? 'NO_DATA: the battle rules are not loaded' : n <= 2 ? 'easy' : n <= 4 ? 'steady' : 'hard';
-    var text = 'Guardian of this ' + name + ' · difficulty: ' + hard + ' · reward: NO_DATA until holdings (C8). Clear the fog and challenge it from its card.';
+    var GP = root.AtlasGuardianPressure, k = m.id + ':' + m.q + ',' + m.r, seen = GP && GP.read ? GP.read().some(function (x) { return x.key === k && x.state === 'alert'; }) : false;
+    var text = 'Guardian of this ' + name + (seen ? ' · it has seen you and stands its ground' : '') + ' · difficulty: ' + hard + ' · reward: NO_DATA until holdings (C8). Clear the fog and challenge it from its card.';
     if (T && T.news) { T.news(text, 'Guardian', true); }
     return text;
   }
@@ -105,7 +107,8 @@
   }
   // pointer(g, V, w, P, W, Hh): the arrow at the edge toward the nearest guardian when it is off the map view.
   function pointer(g, V, w, P, W, Hh) {
-    guideHit = null; var n = nearest(V.world.markList, w); if (!n) { return; }
+    guideHit = null; var C = root.AtlasOwCalm; if (C && !C.shows('arrow', C.now())) { return; } // ow_calm.js: from the visit on
+    var n = nearest(V.world.markList, w); if (!n) { return; }
     var p = P(n.m.q, n.m.r), pad = 34; if (p.x > pad && p.x < W - pad && p.y > pad && p.y < Hh - pad) { return; }
     var cx = W / 2, cy = Hh / 2, dx = p.x - cx, dy = p.y - cy, sc = Math.min((W / 2 - pad) / (Math.abs(dx) || 1), (Hh / 2 - pad) / (Math.abs(dy) || 1));
     var x = cx + dx * sc, y = cy + dy * sc, a = Math.atan2(dy, dx), H = V.H, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), paper = H.css(H.rgbOf(H.T.NEUTRAL.paper));
@@ -132,13 +135,16 @@
     var k = V.G.k, P = function (q, r) { var h = V.P(q, r), p = V.turn(h.x, h.y), c = V.world.cells.at[q + ',' + r];
       return { x: V.G.cx + p.x * k, y: V.G.cy + p.y * k - (c ? V.height(c) * V.HSTEP : 0) * k }; };
     var o = P(0, 0), e = P(1, 0), step = Math.max(4, Math.hypot(e.x - o.x, e.y - o.y)), W = s.width, Hh = s.height, sq = 0.433 * (V.G.tilt || 1) * 2;
+    var GP = root.AtlasGuardianPressure, cw = P(w.q, w.r); if (GP) { GP.frame(); } // guardian_pressure.js: clock pace, the crab is noticed
+    var gp = function (m, p) { if (!GP) { return null; } var vx = cw.x - p.x, vy = cw.y - p.y, L = Math.hypot(vx, vy) || 1; return GP.at(m, hexDist([m.q, m.r], [w.q, w.r]), [vx / L, vy / L], step, sq / 2); };
     (V.world.markList || []).forEach(function (m) {
       var p = P(m.q, m.r);
-      if (m.won) { flag(g, p.x + 0.35 * step, p.y - 0.2 * step, Math.max(k, 0.5), V.H); if (root.AtlasHoldingsMap) { root.AtlasHoldingsMap.bar(g, p.x + 0.35 * step, p.y - 0.2 * step, Math.max(k, 0.5), V.H, m); } return; } // its garrison's life (holdings_map.js)
+      if (m.won) { flag(g, p.x + 0.35 * step, p.y - 0.2 * step, Math.max(k, 0.5), V.H); if (root.AtlasHoldingsMap) { root.AtlasHoldingsMap.bar(g, p.x + 0.35 * step, p.y - 0.2 * step, Math.max(k, 0.5), V.H, m); }
+        var R = gp(m, p); if (R) { g.save(); g.globalAlpha = R.alpha; npc(g, p.x + R.dx, p.y + 0.15 * step + R.dy, Math.max(k, 0.5) * R.scale, V.H, R.look); g.restore(); moving = true; } return; } // the beaten guardian withdraws // its garrison's life (holdings_map.js)
       if (!m.fog) { return; }
       if (p.x > -40 && p.x < W + 40 && p.y > -40 && p.y < Hh + 60) {
-        var d = spot(m, tick, step, sq / 2), kk = Math.max(k, 0.5), gx = p.x + d[0], gy = p.y + 0.15 * step + d[1]; moving = true;
-        npc(g, gx, gy, kk, V.H);
+        var R = gp(m, p), d = R ? [R.dx, R.dy] : spot(m, tick, step, sq / 2), kk = Math.max(k, 0.5), gx = p.x + d[0], gy = p.y + 0.15 * step + d[1]; moving = true;
+        npc(g, gx, gy, kk, V.H, R && R.look);
         if (hexDist([m.q, m.r], [w.q, w.r]) <= 3) {
           var ay = gy - 15.4 * 7 * kk / 7 - 12 * kk, half = Math.max(22, 10 * kk);
           asks.push({ m: m, x: gx, y: ay, k: kk, x0: gx - half, x1: gx + half, y0: ay - half, y1: ay + half });

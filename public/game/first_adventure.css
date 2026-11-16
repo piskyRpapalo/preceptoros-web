@@ -1,0 +1,18 @@
+/* The first adventure (first_adventure.js): one card at the top of the map, one «!» on the next button. Acho tokens. */
+#fa{position:absolute;z-index:7;top:6px;left:8px;right:8px;padding:6px 10px 8px;border:3px solid var(--a1d1b26);border-radius:18px;background:var(--afffdf6);color:var(--a1d1b26);box-shadow:0 3px 0 var(--a1d1b26);font:600 .88rem/1.3 ui-rounded,system-ui,sans-serif}
+#fa[hidden]{display:none}
+#fa .fa-count{margin:0;font-size:.72rem;font-weight:800;letter-spacing:.02em}
+#fa .fa-line{margin:2px 0 6px}
+#fa .fa-row{display:flex;gap:6px;flex-wrap:wrap}
+#fa .fa-row button{min-height:44px;min-width:44px;padding:0 14px;border:2px solid var(--a1d1b26);border-radius:999px;background:var(--afffdf6);color:var(--a1d1b26);font:800 .9rem ui-rounded,system-ui,sans-serif}
+#fa .fa-row button[hidden]{display:none}
+#fa #fa-go,#fa #fa-ok{background:var(--affe58a);border-width:3px}
+#fa #fa-skip{margin-left:auto;background:transparent;border-style:dashed;font-weight:700}
+#fa-bang{position:absolute;z-index:40;width:24px;height:24px;border:3px solid var(--a1d1b26);border-radius:50%;background:var(--affe58a);color:var(--a1d1b26);font:900 15px/18px ui-rounded,system-ui,sans-serif;text-align:center;pointer-events:none;animation:fa-hop 1.2s ease-in-out 2}
+#fa-bang[hidden]{display:none}
+@keyframes fa-hop{50%{transform:translateY(-4px)}}
+@media (prefers-reduced-motion:reduce){#fa-bang{animation:none}}
+@media (forced-colors:active){#fa,#fa .fa-row button,#fa-bang{border-color:CanvasText;background:Canvas;color:CanvasText}}
+/* a card or a panel open: it speaks; the «!» alone guides (the card returns when it closes) */
+#map:has(.bs-sheet:not([hidden]),#voices.map-voices:not([hidden]),dialog[open],.revela) #fa{display:none}
+#fa .th{margin:2px 0 6px}#fa .th-face{width:44px;height:44px}#fa .th-says{font-size:.88rem;min-height:0;padding:6px 10px}#fa .th-bar{padding-left:52px}
