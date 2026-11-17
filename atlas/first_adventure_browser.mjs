@@ -31,7 +31,7 @@ const SABS = { // each must turn the test red
   hatch: ['/game/first_adventure.js', "['.revela .revela-ok'].concat(target(id, { at: at }))", "target(id, { at: at })"], // a hatch covers the card and nothing is marked
   open: ['/game/ow_calm.js', "OPEN.indexOf(m.id) >= 0 || i < 0 || (wins > 0 && i < 2 + wins)", "true"], // the town opens before any conquest
   // MAP-CONTINUITY-01 sabotage: tutorial finish used to unlock everything via 'free' phase
-  tutorial_unlock: ['/game/ow_calm.js', "function phase(visit, tour) { return !visit ? 'arrive' : 'visit'; }", "function phase(visit, tour) { return !visit ? 'arrive' : tour === 'done' || tour === 'skipped' ? 'free' : 'visit'; }"]
+  tutorial_unlock: ['/game/ow_calm.js', "return OPEN.indexOf(m.id) >= 0 || i < 0 || (wins > 0 && i < 2 + wins) ? 'available' : 'locked';", "return (root.localStorage && /^(done|skipped)$/.test(root.localStorage.getItem('preceptoros.tour') || '')) || OPEN.indexOf(m.id) >= 0 || i < 0 || (wins > 0 && i < 2 + wins) ? 'available' : 'locked';"]
 };
 const ok = (cond, que) => { if (!cond) { fallos.push(que); } };
 let ws = null, ch = null, srv = null, id = 0;
@@ -77,11 +77,12 @@ async function main() {
   const press = async () => ev(`(()=>{const e=document.querySelector('[data-fa-next]'); if(!e) return null; const id=e.id||e.dataset.cat; e.click(); return id;})()`);
   const trail = [];
   let s = await st(); trail.push(s.step);
-  ok(s.marks.join() === 'gp-play' && s.bang, 'at arrival the one «!» is not on Play: ' + JSON.stringify(s.marks));
+  ok(s.marks.join() === 'gp-play' && !s.bang && await ev("document.getElementById('fa').hidden"),
+    'arrival must keep only Welcome, with Play highlighted but no second adventure card or marker: ' + JSON.stringify(s.marks));
   ok(['workshop', 'agora', 'lottery', 'choir', 'customs', 'tower', 'visitor-house'].every((k) => s.states[k] === 'locked') && ['hostel', 'coliseum', 'doctor'].every((k) => s.states[k] === 'available'), 'before a conquest the town is not reduced to hall, hostel, coliseum and doctor: ' + JSON.stringify(s.states));
   const told = await ev(`(()=>{const V=AtlasMapPainter.view(), m=V.world.markList.find(x=>x.town&&x.id==='lottery'); return AtlasOwCalm.tell(m,'Lottery');})()`);
   ok(/^Lottery is locked: it opens after your first conquest/.test(told || ''), 'a locked building does not say what opens it: ' + told);
-  // follow the «!» through play, meet, beacon, summon (each press is the marked button)
+  // Welcome owns arrival; Play starts the visit, then the first-adventure marker guides the remaining steps.
   for (let i = 0; i < 12; i++) {
     s = await st(); if (s.step === 'practice') { break; }
     ok(s.marks.length <= 1, 'more than one button wears «!»: ' + JSON.stringify(s.marks));

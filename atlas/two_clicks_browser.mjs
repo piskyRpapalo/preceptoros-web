@@ -109,7 +109,7 @@ async function main() {
   ok(jugando.summon, 'after two clicks the reef summon button is not enabled');
   ok(jugando.card === true && jugando.tab === 'true', 'the welcome card did not give way to the House voice of the panel: ' + JSON.stringify(jugando));
   ok(/Visit started · signed on this device · 100 copper from the beacon · you can summon twice/.test(jugando.state), '#state does not announce the visit: ' + jugando.state);
-  ok(/Play the tutorial by walking to the beacon, or press Skip tutorial/.test(jugando.result), 'the tutorial choice is not said: ' + jugando.result);
+  ok(/Your visit is active. Walk with the crab stick to explore/.test(jugando.result), 'the active visit has no honest guidance: ' + jugando.result);
   await foto('dos-clics-playing.png');
   // «Look around first» and Escape: a fresh page, the card closes and the map is there.
   enMapa = false; await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(1500);

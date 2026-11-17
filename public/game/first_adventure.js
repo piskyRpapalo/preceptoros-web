@@ -89,8 +89,9 @@
   root.setInterval(function () { var e = !bang.hidden && doc.querySelector('[data-fa-next]'); if (e && e.isConnected) { place(e); } }, 500);
   function draw() {
     var t = get(), id = now();
-    var off = t === 'done' || t === 'skipped';
-    card.hidden = off; if (off) { bang.hidden = true; mark(''); return; }
+    var waiting = !st && !doc.getElementById('visitor-beacon'), off = waiting || t === 'done' || t === 'skipped';
+    // Welcome owns the arrival: the first adventure must not open a second tutorial card before a visit begins.
+    card.hidden = off; card.dataset.step = id; if (off) { bang.hidden = true; mark(waiting ? 'play' : ''); return; }
     var i = index(id);
     count.textContent = 'First adventure · ' + (i + 1) + ' of ' + IDS.length;
     var words = say(id);

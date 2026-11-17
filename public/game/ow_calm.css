@@ -14,3 +14,5 @@ html[data-ow-phase=arrive] #ow-brief,#ow-coords{clip-path:inset(50%);width:1px;h
 html[data-ow-typing] #gamepad{display:none}
 /* two eggs hatch together: one reveal at a time (the next waits behind the first one's Continue), never two stacked */
 #stage > .revela.on-map ~ .revela.on-map{display:none}
+/* Welcome alone at arrival: legacy Tutorial and Guide nodes remain for consumers, never on screen. */
+.voice #joy[hidden],#voices>.voice[data-speaker=Tutorial]:has(#joy[hidden]),#voices>#next[hidden]{display:none}
