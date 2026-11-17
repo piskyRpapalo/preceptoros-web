@@ -79,7 +79,8 @@
     if (!el) { bang.hidden = true; return null; }
     el.dataset.faNext = '1'; var r = el.getBoundingClientRect();
     if ((r.bottom > root.innerHeight || r.top < 0) && el.scrollIntoView) { el.scrollIntoView({ block: 'nearest' }); }
-    bang.hidden = false; place(el);
+    // A floating ! overlaps neighbouring buttons in the compact gamepad. Its target has an inset highlight instead.
+    bang.hidden = !!el.closest('#gamepad'); if (!bang.hidden) { place(el); }
     return el;
   }
   // place(el): the «!» sits on the marked button's corner. A dialog grows after it is marked (the record button arrives
