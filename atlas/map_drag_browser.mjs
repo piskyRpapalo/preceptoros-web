@@ -115,9 +115,9 @@ async function main() {
   const d = await vista();
   ok(d.clicks === c.clicks + 1, 'a tap did not reach the page: ' + (d.clicks - c.clicks) + ' clicks');
   ok(d.look === '', 'a tap did not hand the camera back to the crab');
-  // 3b · a tap on a village building opens that building's card (and closes again for the next steps).
+  // 3b · tap on an available village building opens its card; ow_calm keeps some town foundations locked until conquest.
   const casa = JSON.parse(await ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(), MP = window.AtlasMapPainter; let best = null;
-    for (let y = r.top + 20; y < r.bottom - 20; y += 6) for (let x = r.left + 20; x < r.right - 20; x += 6) { const m = MP && MP.markAt && MP.markAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height); if (m && !m.fog && document.elementFromPoint(x, y) === s && ![window.AtlasNodeBeacon, window.AtlasMissionHotspots, window.AtlasMapAura].some((L) => L && L.hitAt && L.hitAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height))) { const d = Math.hypot(x - (r.left + r.right) / 2, y - (r.top + r.bottom) / 2); if (!best || d < best.d) best = { x, y, id: m.id, d }; } }
+    for (let y = r.top + 20; y < r.bottom - 20; y += 6) for (let x = r.left + 20; x < r.right - 20; x += 6) { const m = MP && MP.markAt && MP.markAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height); if (m && !m.fog && !(window.AtlasOwCalm && window.AtlasOwCalm.locked && window.AtlasOwCalm.locked(m)) && document.elementFromPoint(x, y) === s && ![window.AtlasNodeBeacon, window.AtlasMissionHotspots, window.AtlasMapAura].some((L) => L && L.hitAt && L.hitAt((x - r.left) * s.width / r.width, (y - r.top) * s.height / r.height))) { const d = Math.hypot(x - (r.left + r.right) / 2, y - (r.top + r.bottom) / 2); if (!best || d < best.d) best = { x, y, id: m.id, d }; } }
     return JSON.stringify(best); })()`)); // one of the node's own buildings (the grey ones are NPCs')
   ok(casa, 'no village building of the node is visible on the map');
   if (casa) {
