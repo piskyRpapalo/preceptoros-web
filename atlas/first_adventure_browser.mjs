@@ -29,7 +29,9 @@ const SABS = { // each must turn the test red
   teleport: ['/game/first_adventure.js', "var dirs = F.toward(a, m); for (var i = 0; i < 3; i++) { c.step(dirs[i]);", "var dirs = F.toward(a, m); for (var i = 0; i < 3; i++) { c.step(dirs[i]); c.step(dirs[i]);"], // two hexes a beat
   owner: ['/game/ow_calm.js', "return m && m.own ? 'built' : 'available';", "return m && (m.own || m.won) ? 'accredited' : 'available';"], // a visit's win made into ownership // a visit's record made into ownership
   hatch: ['/game/first_adventure.js', "['.revela .revela-ok'].concat(target(id, { at: at }))", "target(id, { at: at })"], // a hatch covers the card and nothing is marked
-  open: ['/game/ow_calm.js', "(wins > 0 && i < 2 + wins)", "(wins >= 0 && i < 2 + wins)"] // the town opens before any conquest
+  open: ['/game/ow_calm.js', "OPEN.indexOf(m.id) >= 0 || i < 0 || (wins > 0 && i < 2 + wins)", "true"], // the town opens before any conquest
+  // MAP-CONTINUITY-01 sabotage: tutorial finish used to unlock everything via 'free' phase
+  tutorial_unlock: ['/game/ow_calm.js', "function phase(visit, tour) { return !visit ? 'arrive' : 'visit'; }", "function phase(visit, tour) { return !visit ? 'arrive' : tour === 'done' || tour === 'skipped' ? 'free' : 'visit'; }"]
 };
 const ok = (cond, que) => { if (!cond) { fallos.push(que); } };
 let ws = null, ch = null, srv = null, id = 0;
@@ -124,8 +126,8 @@ async function main() {
   if (s.step === 'town' && s.marks.join() === 'visitor-conquer') { await ev(`document.getElementById('visitor-conquer').click()`); ok(await hasta(`/Conquest recorded for this visit/.test(document.getElementById('visitor-conquer').textContent)`, 8000), 'the verified win was not recorded'); await ev(`(()=>{const d=document.getElementById('visitor-conquer').closest('dialog'); if(d) d.close(); return 1})()`); }
   for (const want of ['town', 'explore']) { await espera(300); if (await ev(`!!document.querySelector('#stage > dialog[open] [data-fa-next]')`)) { await ev(`document.querySelector('#stage > dialog[open] [data-fa-next]').click()`); await espera(500); } s = await st();
     ok(s.step === want && s.marks.join() === 'fa-ok', want + ' is not marked on OK: ' + JSON.stringify(s) + ' open: ' + await ev(`JSON.stringify({sheet:!!document.querySelector('.bs-sheet:not([hidden])'),voices:!!document.querySelector('#voices.map-voices:not([hidden])'),dialog:[...document.querySelectorAll('dialog[open]')].map(d=>d.className+'|'+d.textContent.slice(0,40)),revela:document.querySelectorAll('.revela').length})`)); await ev(`document.getElementById('fa-ok').click()`); await espera(300); trail.push(want); }
-  ok(await ev(`localStorage.getItem('preceptoros.tour')==='done' && document.getElementById('fa').hidden && document.documentElement.dataset.owPhase==='free'`), 'explore does not finish the adventure and free the visitor');
-  s = await st(); ok(Object.values(s.states).every((v) => v === 'available' || v === 'built'), 'once free the whole town is not open: ' + JSON.stringify(s.states));
+  ok(await ev(`localStorage.getItem('preceptoros.tour')==='done' && document.getElementById('fa').hidden && document.documentElement.dataset.owPhase==='visit'`), 'explore finishes the adventure but phase stays visit (not free)');
+  s = await st(); ok(Object.values(s.states).some((v) => v === 'locked'), 'finishing the tutorial does not unlock the town — locked buildings remain locked: ' + JSON.stringify(s.states));
   // Skip and Resume
   await ev(`AtlasFirstAdventure.resume()`); ok(await ev(`!document.getElementById('fa').hidden && document.documentElement.dataset.owPhase==='visit'`), 'Resume does not bring the adventure back');
   await ev(`document.getElementById('fa-skip').click()`); ok(await ev(`localStorage.getItem('preceptoros.tour')==='skipped' && document.getElementById('fa').hidden && document.getElementById('fa-bang').hidden`), 'Skip tutorial does not put the card and the «!» away');

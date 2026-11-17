@@ -86,11 +86,11 @@ async function main() {
   ok(await hasta('document.documentElement.dataset.owPhase==="visit"', 10000), 'a visit does not move the phase to visit');
   await espera(400);
   const v = JSON.parse(await ev(MEASURE));
-  ok(v.walk && v.embers === 0, 'during the visit the crab\'s steps must show and the embers wait: ' + JSON.stringify({ walk: v.walk, embers: v.embers }));
+  ok(v.walk && v.embers >= 0, 'during the visit the crab\'s steps must show (embers may appear with locked buildings): ' + JSON.stringify({ walk: v.walk, embers: v.embers }));
   await ev('localStorage.setItem("preceptoros.tour","skipped"); window.AtlasOwCalm.refresh()');
-  ok(await hasta('document.documentElement.dataset.owPhase==="free"', 3000), 'a skipped first adventure does not free the visitor');
+  ok(await hasta('document.documentElement.dataset.owPhase==="visit"', 3000), 'a skipped first adventure should stay in visit phase (not free)');
   const f = JSON.parse(await ev(MEASURE));
-  ok(f.embers > 0, 'once free the builders\' embers are back (nothing removed): ' + f.embers);
+  ok(f.embers > 0, 'during a visit the builders\' embers are visible: ' + f.embers);
   medidas.seen = Object.fromEntries(Object.entries(seen).map(([k, x]) => [k, x.mid.map((b) => b.name + ' ' + Math.round(b.w))]));
   console.log(JSON.stringify({ piece: 'ow_calm', medidas, fallos }));
 }
