@@ -94,8 +94,10 @@ async function main() {
     return { visible: !b.hidden, target: target.id, bounds: rect(x), targetBounds: rect(t), highlight: parseFloat(getComputedStyle(target).outlineWidth), collisions };
   })())`));
   medidas.badge = badge;
-  ok(!badge.missing && !badge.visible && badge.target === 'gp-play' && badge.highlight >= 3 && badge.collisions.length === 0,
-    'tutorial ! obscures a gamepad control or Play has no visible highlight: ' + JSON.stringify(badge));
+  const introCard = await ev("document.getElementById('fa').hidden");
+  medidas.introCardHidden = introCard;
+  ok(introCard && !badge.missing && !badge.visible && badge.target === 'gp-play' && badge.highlight >= 3 && badge.collisions.length === 0,
+    'arrival has an extra tutorial card or its ! obscures Play/other controls: ' + JSON.stringify({badge,introCard}));
   medidas.antes = { alto_mapa: a.h, ventana: a.alto, fraccion: +(a.h / a.alto).toFixed(2) };
   // Sovereign order 2026-11-07: the view bar (and with it the Explore button) is gone; only the two joysticks float over the map.
   ok(!a.boton && !a.barra, 'the map still carries a view bar or an Explore button: ' + JSON.stringify([a.boton, a.barra]));

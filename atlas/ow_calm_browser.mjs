@@ -55,11 +55,13 @@ async function main() {
   const MEASURE = `(()=>{ const vis=e=>{if(!e)return false;const r=e.getBoundingClientRect(),s=getComputedStyle(e);return r.width>2&&r.height>2&&s.visibility!=='hidden'&&s.display!=='none';};
     const mid=[...document.querySelectorAll('#gamepad .gp-mid button')].filter(vis).map(b=>{const r=b.getBoundingClientRect();return {name:b.dataset.name||'',aria:b.getAttribute('aria-label')||'',w:r.width,h:r.height,cs:getComputedStyle(b,'::after').content};});
     const play=document.getElementById('gp-play'), pr=play&&play.getBoundingClientRect(), bg=(b)=>getComputedStyle(b).backgroundColor, others=[...document.querySelectorAll('#gamepad .gp-mid button')].filter(b=>vis(b)&&b!==play);
-    const H=window.AtlasMissionHotspots, MP=window.AtlasMapPainter, V=MP&&MP.view&&MP.view(); let embers=null;
-    try { const c=document.createElement('canvas').getContext('2d'); embers = H && V && V.world ? H.draw(c, V, 1).length : null; } catch(e) { embers='err '+e.message; }
+    const H=window.AtlasMissionHotspots, MP=window.AtlasMapPainter, V=MP&&MP.view&&MP.view(), C=window.AtlasOwCalm;
+    let embers=null, lockedEmbers=null, lockedBuildings=V?.world?.markList?.filter(m=>m.town&&C?.locked(m)).length ?? null;
+    try { const c=document.createElement('canvas').getContext('2d'), hits=H && V && V.world ? H.draw(c, V, 1) : null;
+      embers=hits?.length ?? null; lockedEmbers=hits?.filter(h=>C&&C.locked(h.m)).length ?? null; } catch(e) { embers='err '+e.message; }
     const page=document.documentElement; return JSON.stringify({ phase:page.dataset.owPhase, mid, play: pr?{w:pr.width,h:pr.height,vis:vis(play),border:parseFloat(getComputedStyle(play).borderTopWidth),alone:others.every(b=>bg(b)!==bg(play)&&parseFloat(getComputedStyle(b).borderTopWidth)<3)}:null, padH:document.getElementById('gamepad').getBoundingClientRect().height,
       walk:vis(document.getElementById('ow-controls')), coordsW:(document.getElementById('ow-coords')||{getBoundingClientRect:()=>({width:0})}).getBoundingClientRect().width,
-      embers, hscroll: page.scrollWidth > innerWidth + 1 });})()`;
+      embers, lockedEmbers, lockedBuildings, hscroll: page.scrollWidth > innerWidth + 1 });})()`;
   const seen = {};
   for (const [w, h] of [[360, 716], [420, 680], [1280, 800]]) {
     await cmd('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: 1, mobile: w < 600 });
@@ -67,6 +69,16 @@ async function main() {
     ok(await hasta('document.documentElement.dataset.owPhase==="arrive" && document.querySelectorAll("#gamepad [data-name]").length>=4', 15000), w + ': calm did not mount');
     await espera(600);
     const a = JSON.parse(await ev(MEASURE)); seen[w] = a;
+    const legacy = JSON.parse(await ev(`JSON.stringify((() => {
+      const b=document.querySelector('.cats [data-cat=Welcome]'); b.click();
+      const show=(id)=>{const e=document.getElementById(id),r=e.getBoundingClientRect();return {css:getComputedStyle(e).display,visible:r.width>0&&r.height>0}};
+      const out={joy:show('joy'),tutorial:show('joy').visible,guide:show('next'),welcome:show('sheet-welcome')};
+      b.click(); return out;
+    })())`));
+    a.legacy = legacy;
+    ok(!legacy.joy.visible && legacy.joy.css==='none' && !legacy.guide.visible &&
+      legacy.guide.css==='none' && legacy.welcome.visible,
+      w + ': Help resurrects legacy tutorial or Guide, or hides Welcome: ' + JSON.stringify(legacy));
     ok(a.phase === 'arrive', w + ': phase before a visit is ' + a.phase);
     ok(a.mid.length >= 4 && a.mid.every((b) => b.name && b.w >= 44 && b.h >= 44 && b.aria.toLowerCase().startsWith(b.name.toLowerCase()) && b.cs.includes(b.name)), w + ': a middle button has no visible name, is under 44 px or its name is not in its label: ' + JSON.stringify(a.mid));
     ok(a.play && a.play.vis && a.play.border >= 3 && a.play.alone, w + ': Play is not the one primary action: ' + JSON.stringify(a.play));
@@ -86,11 +98,16 @@ async function main() {
   ok(await hasta('document.documentElement.dataset.owPhase==="visit"', 10000), 'a visit does not move the phase to visit');
   await espera(400);
   const v = JSON.parse(await ev(MEASURE));
-  ok(v.walk && v.embers === 0, 'during the visit the crab\'s steps must show and the embers wait: ' + JSON.stringify({ walk: v.walk, embers: v.embers }));
+  ok(v.walk && v.lockedBuildings === 7 && v.lockedEmbers === 0,
+    'visit must keep seven buildings locked and never show their mission embers: ' + JSON.stringify({ walk: v.walk, locked: v.lockedBuildings, lockedEmbers: v.lockedEmbers }));
   await ev('localStorage.setItem("preceptoros.tour","skipped"); window.AtlasOwCalm.refresh()');
-  ok(await hasta('document.documentElement.dataset.owPhase==="free"', 3000), 'a skipped first adventure does not free the visitor');
+  ok(await hasta('document.documentElement.dataset.owPhase==="visit"', 3000), 'a skipped first adventure should stay in visit phase (not free)');
   const f = JSON.parse(await ev(MEASURE));
-  ok(f.embers > 0, 'once free the builders\' embers are back (nothing removed): ' + f.embers);
+  ok(f.embers === v.embers && f.lockedBuildings === v.lockedBuildings && f.lockedEmbers === 0,
+    'skipping tutorial changed locked buildings or mission markers: ' + JSON.stringify({ before: v, after: f }));
+  medidas.beforeAfter = { visit: { embers: v.embers, locked: v.lockedBuildings, lockedEmbers: v.lockedEmbers },
+    skip: { embers: f.embers, locked: f.lockedBuildings, lockedEmbers: f.lockedEmbers } };
+  medidas.legacy = Object.fromEntries(Object.entries(seen).map(([k,x]) => [k,x.legacy]));
   medidas.seen = Object.fromEntries(Object.entries(seen).map(([k, x]) => [k, x.mid.map((b) => b.name + ' ' + Math.round(b.w))]));
   console.log(JSON.stringify({ piece: 'ow_calm', medidas, fallos }));
 }

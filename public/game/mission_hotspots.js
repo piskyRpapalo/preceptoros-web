@@ -55,7 +55,8 @@
     var k = V.G.k, ink = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.ink)), paper = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.paper));
     var hot = V.H.css(V.H.rgbOf(V.H.T.FRONT_DOOR['PROPUESTA.base'])), fs = Math.round(12 * dpr);
     g.save(); g.font = '800 ' + fs + 'px ui-rounded, system-ui, sans-serif'; g.textBaseline = 'middle'; g.textAlign = 'left';
-    spots(V.world.markList).forEach(function (s) {
+    // An ember on a locked foundation would make an unearned building look open.
+    spots(V.world.markList).filter(function (s) { return !C || !C.locked || !C.locked(s.m); }).forEach(function (s) {
       var m = s.m, cell = V.world.cells.at[m.q + ',' + m.r], h0 = V.P(m.q, m.r), p = V.turn(h0.x, h0.y);
       // A gold ember with the count on the roof's right shoulder (2026-11-15: the «N missions» pills covered the names).
       var x = V.G.cx + p.x * k + 14 * k, y = V.G.cy + p.y * k - (cell ? V.height(cell) * V.HSTEP : 0) * k - 26 * k;

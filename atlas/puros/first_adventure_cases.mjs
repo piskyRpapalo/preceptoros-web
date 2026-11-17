@@ -15,11 +15,12 @@ test('after a loss, Later goes to explore without the town step (nothing opened)
   assert.equal(A.step({ ...full, wins: 0, later: 1 }), 'explore');
   assert.equal(C.state({ town: true, id: 'workshop' }, 'visit', 0, []), 'locked');
 });
-test('the town opens 3 with the first win, one more each win, all when free; doctor never locked', () => {
+test('the town opens 3 with the first win, one more each win; doctor never locked; no phase shortcut', () => {
   const open = (w) => C.ORDER.filter((id) => C.state({ town: true, id }, 'visit', w, []) === 'available');
   assert.deepEqual([0, 1, 2, 5].map((w) => open(w).length), [0, 3, 4, 7]);
   assert.equal(C.state({ town: true, id: 'doctor' }, 'arrive', 0, []), 'available');
-  assert.ok(C.ORDER.every((id) => C.state({ town: true, id }, 'free', 0, []) === 'available'));
+  // No 'free' phase: even with 0 wins, phase never unlocks everything
+  assert.ok(C.ORDER.every((id) => C.state({ town: true, id }, 'visit', 0, []) === 'locked'));
 });
 test('four states never mixed: built from this device, accredited only from a signed list, a win is not ownership', () => {
   assert.equal(C.state({ town: true, id: 'lottery', own: true }, 'visit', 0, []), 'built');

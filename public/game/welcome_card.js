@@ -16,7 +16,7 @@
     liveStatus.textContent = (data.ok ? 'Live nodes: ' + data.live + '.' : 'Live nodes: NO_DATA · ' + (data.cause || 'publisher unavailable') + '.') +
       ' Live visitors: NO_DATA · no shared count is available.';
   });
-  var TUTORIAL = 'Play the tutorial by walking to the beacon, or press Skip tutorial.';
+  var TUTORIAL = 'Your visit is active. Walk with the crab stick to explore.';
   function close() { card.hidden = true; }
   function next(test) { return new Promise(function (ok) { function on(e) { if (test(e.detail || {})) { play.removeEventListener('visitor:render', on); ok(e.detail); } } play.addEventListener('visitor:render', on); }); }
   function press(id) { var b = doc.getElementById(id); if (!b || b.disabled) { throw new Error(id + ' is not available'); } b.click(); }
