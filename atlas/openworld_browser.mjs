@@ -71,6 +71,33 @@ async function main() {
   await command('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   await command('Page.navigate', { url: origin + '/openworld/?colony=alone' }); await wait(2000);
 
+  // F0: these newly mounted scripts must do useful browser work, not just appear in HTML.
+  const firstJourney = JSON.parse(await evaluate(`JSON.stringify((() => {
+    const el = document.getElementById('fa');
+    return { loaded: typeof window.AtlasFirstAdventure?.step === 'function',
+      stages: window.AtlasFirstAdventure?.IDS?.length || 0,
+      step: el?.dataset.step, status: el?.querySelector('.fa-line')?.getAttribute('role'),
+      skip: !!document.getElementById('fa-skip') };
+  })())`));
+  ok(firstJourney.loaded && firstJourney.stages === 8 && firstJourney.step === 'play' &&
+     firstJourney.status === 'status' && firstJourney.skip,
+     'first adventure did not mount an accessible eight-step visitor card: ' + JSON.stringify(firstJourney));
+
+  const talkingHead = JSON.parse(await evaluate(`JSON.stringify((() => {
+    const api = window.AtlasTalkHead, text = 'Only a received result can be spoken.';
+    if (!api || typeof api.show !== 'function') return {loaded:false};
+    const target = document.createElement('p'); target.textContent = text; document.body.appendChild(target);
+    const handle = api.show(target, text); handle.skip();
+    const state = { loaded:true, full:target.textContent === text,
+      said:handle.el?.dataset.state === 'said',
+      hidden:handle.el?.querySelector('.th-art')?.getAttribute('aria-hidden') === 'true',
+      spoken:handle.el?.querySelector('.th-says')?.dataset.t === text };
+    handle.el.remove(); target.remove(); return state;
+  })())`));
+  ok(talkingHead.loaded && talkingHead.full && talkingHead.said &&
+     talkingHead.hidden && talkingHead.spoken,
+     'talk head did not preserve a complete accessible received message: ' + JSON.stringify(talkingHead));
+
   const initial = JSON.parse(await evaluate(`JSON.stringify((() => {
     const map = document.getElementById('map'), stage = document.getElementById('stage'), canvas = document.getElementById('surface');
     const voices = document.getElementById('voices'), chat = document.getElementById('chat'), bar = map.querySelector('.cats');
