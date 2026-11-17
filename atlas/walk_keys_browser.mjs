@@ -89,8 +89,13 @@ async function main() {
   ok(retiro.pad === false, 'the six-direction pad is still on the page');
   ok(retiro.dataDirections === 0, 'direction buttons are still on the page: ' + retiro.dataDirections);
   ok(retiro.skipHeight >= 44, 'the skip tutorial button is under 44 px: ' + retiro.skipHeight);
-  const joystick = JSON.parse(await ev(`JSON.stringify((() => { const g = document.querySelector('#gamepad #view-joystick'); const bs = [...document.querySelectorAll('#map .view-joy button')]; return { present: !!g, onStage: !!g && g.parentElement === document.getElementById('gamepad'), mode: !!document.getElementById('view-stick-mode'), buttons: bs.length, minHeight: bs.length ? Math.min(...bs.map(b=>b.getBoundingClientRect().height)) : 0 }; })())`));
+  // Close the Welcome panel: ow_calm.css deliberately folds the sticks while a panel is open.
+  await ev(`(() => { const b = document.querySelector('.cats [data-cat=Welcome][aria-pressed="true"]'); if (b) b.click(); return true; })()`);
+  // Measure the real camera and character controls only when their map mode is visible.
+  ok(await hasta(`(() => { const g = document.getElementById('gamepad'); const bs = g ? [...g.querySelectorAll('.view-joy button')] : []; return bs.length >= 2 && bs.every(b => b.getBoundingClientRect().height >= 44); })()`, 10000), 'gamepad joysticks not ready at 44 px');
+  const joystick = JSON.parse(await ev(`JSON.stringify((() => { const g = document.querySelector('#gamepad #view-joystick'); const bs = [...document.querySelectorAll('#gamepad .view-joy button')]; return { present: !!g, onStage: !!g && g.parentElement === document.getElementById('gamepad'), mode: !!document.getElementById('view-stick-mode'), buttons: bs.length, minHeight: bs.length ? Math.min(...bs.map(b=>b.getBoundingClientRect().height)) : 0 }; })())`));
   medidas.joystick = joystick;
+
   // gamepad (2026-11-07): the pan joystick now sits in the gamepad under the map, not over the stage.
   ok(joystick.present && joystick.onStage, 'the view joystick is not in the map gamepad: ' + JSON.stringify(joystick));
   // Decree 2026-11-07, fulfilled 2026-11-08: the camera stick and the character stick, each at least 44 px.
