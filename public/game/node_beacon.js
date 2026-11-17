@@ -87,7 +87,7 @@
       if (x < -60 || x > s.width + 60 || y < -80 || y > s.height + 80) { return; }
       var TP = root.AtlasTownPlan;
       if (talk && TP && TP.hall) { // the node that talks is the town hall on its own cell (town_plan.js), the crab at its door
-        var e1 = V.P(n.q + 1, n.r), p1 = V.turn(e1.x, e1.y), step = Math.max(8, Math.hypot(p1.x - p.x, p1.y - p.y) * V.G.k), cx = x - 30 * k, cy = y - 0.5 * step * Math.min(1, 0.866 * (V.G.tilt || 1));
+        var e1 = V.P(n.q + 1, n.r), step = Math.max(8, Math.abs(e1.x - h0.x) * V.G.k), cx = x - 30 * k, cy = y - 0.5 * step * Math.min(1, 0.866 * (V.G.tilt || 1)); // stable hex pitch BEFORE orbit/tilt; only zoom changes size
         var hb = TP.hall(g, cx, cy, step, Math.min(1, 0.866 * (V.G.tilt || 1)), H, live);
         var t0 = label(n), f0 = Math.round(13 * dpr); g.save(); g.font = '800 ' + f0 + 'px ui-rounded, system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineWidth = Math.max(1.5, 2.2 * k); g.strokeStyle = ink;
         var w0 = g.measureText(t0).width + 20 * dpr, h0 = f0 + 14 * dpr, ly0 = hb.y0 - h0 / 2 - 6 * dpr, lx0 = Math.max(w0 / 2 + 4, Math.min(s.width - w0 / 2 - 4, cx));
