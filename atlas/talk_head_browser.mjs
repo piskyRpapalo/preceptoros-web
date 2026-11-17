@@ -16,7 +16,7 @@ function sirve(raiz) {
     try {
       let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
-      let cuerpo = readFileSync(f); if (SAB && ruta === '/game/talk_head.js') { cuerpo = Buffer.from(String(cuerpo).replace(SABS[SAB][0], SABS[SAB][1])); } res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
+      let cuerpo = readFileSync(f); if (SAB && SABS[SAB] && ruta === '/game/talk_head.js') { cuerpo = Buffer.from(String(cuerpo).replace(SABS[SAB][0], SABS[SAB][1])); } res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
   });
   return new Promise((r) => s.listen(0, '127.0.0.1', () => r(s)));
@@ -101,7 +101,23 @@ async function main() {
     const o={veiled:line.classList.contains('th-veiled'), text:line.textContent, head:!!box.querySelector('.th')};
     [...box.querySelectorAll('.pt-row button')].find(b=>b.textContent==='OK').click(); await w(30);
     o.after=!box.querySelector('.th') && !line.classList.contains('th-veiled'); return JSON.stringify(o); })()`));
-  ok(n.veiled && n.head && n.text === 'Your squad wins after 3 rounds.' && n.after, 'the preceptor\'s news is not spoken by the head, or OK leaves it behind: ' + JSON.stringify(n));
+  ok(!n.veiled && !n.head && n.text === 'Your squad wins after 3 rounds.' && n.after, 'the lower result must remain a plain, accessible receipt; OK must clear it: ' + JSON.stringify(n));
+  // P0: The adventure owns the only preceptor bust. A resource/battle notification below
+  // never creates a second head, whether or not the adventure is visible.
+  const duo = JSON.parse(await ev(`JSON.stringify((()=>{
+    const fa=document.getElementById('fa'), pt=document.getElementById('preceptor-talk'), v=document.getElementById('voices');
+    if (v) v.hidden=true; fa.hidden=false;
+    const ln=fa.querySelector('.fa-line'); if (!fa.querySelector('.th')) AtlasTalkHead.show(ln,'First adventure speaks from the top.');
+    AtlasPreceptorTalk.view.news('A result appears underneath.','Duel');
+    if (${SAB === 'duo'}) AtlasTalkHead.show(pt.querySelector('.pt-line [aria-live]'),'A result appears underneath.');
+    function visible(el){if(!el||el.hidden)return false;for(let p=el;p;p=p.parentElement){let c=getComputedStyle(p),r=p.getBoundingClientRect();if(c.display==='none'||c.visibility==='hidden'||!r.width||!r.height)return false;}return true;}
+    const top=fa.querySelector('.th-face'), low=pt.querySelector('.th-face'), result={upper:visible(top),lower:visible(low),extraHead:!!low,text:pt.querySelector('.pt-line [aria-live]').textContent,ok:[...pt.querySelectorAll('button')].some(x=>x.textContent==='OK')};
+    fa.hidden=true; result.afterUpperHidden=!pt.querySelector('img.th-face');
+    return result;
+  })())`));
+  medidas.duo=duo;
+  ok(duo.upper && !duo.lower && !duo.extraHead && duo.afterUpperHidden && duo.ok && duo.text.includes('A result appears underneath.'),
+    'second bust below or missing result/OK: '+JSON.stringify(duo));
   console.log(JSON.stringify({ piece: 'talk_head', sabotage: SAB || null, medidas, fallos }));
 }
 main().catch(e=>{fallos.push(String(e));console.log(JSON.stringify({fallos}));}).finally(()=>{try{ws?.close();}catch{}ch?.close();srv?.close();process.exitCode=fallos.length?1:0;});

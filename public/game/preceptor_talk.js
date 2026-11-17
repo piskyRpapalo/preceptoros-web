@@ -76,11 +76,12 @@
       box.style.left = Math.round(left) + 'px'; box.style.top = Math.round(top) + 'px';
       box.style.setProperty('--tail', Math.round(Math.max(18, Math.min(w - 18, cx - left))) + 'px'); box.classList.toggle('pt-under', !up && !dock);
     }
-    // news(text, who): a line that cites a result (the duel's winner from the motor's own sentence); OK goes back.
+    // news(text, who): an observed result/resource notice, not a second talking character.
+    // The adventure owns the speaking bust; this notification keeps its original text, aria-live and OK.
     function news(text, who, open) {
       // The resting bubble is gone from the map (Sovereign, 2026-11-14: it covered the world). Only a result that was
       // asked for (a fogged building, a duel) shows here, open, until OK; then nothing rests on the map again.
-      var back = at; void open; box.classList.add('pt-news'); box.classList.remove('pt-min', 'pt-new'); who0.setAttribute('aria-expanded', 'true'); unhead(); line.textContent = text; who0.textContent = who; row.textContent = ''; if (win.AtlasTalkHead) { win.AtlasTalkHead.show(line, text); }
+      var back = at; void open; box.classList.add('pt-news'); box.classList.remove('pt-min', 'pt-new'); who0.setAttribute('aria-expanded', 'true'); unhead(); line.textContent = text; who0.textContent = who; row.textContent = ''; // A result is a receipt, not a second preceptor face.
       var b = doc.createElement('button'); b.type = 'button'; b.textContent = 'OK';
       b.addEventListener('click', function () { box.classList.remove('pt-news'); box.classList.add('pt-min'); who0.setAttribute('aria-expanded', 'false'); who0.textContent = 'Preceptor'; at = back; draw(); place(); });
       row.appendChild(b); place();
