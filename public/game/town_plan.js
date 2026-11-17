@@ -16,8 +16,46 @@
   function ring(R) { var out = [], c = [DIRS[4][0] * R, DIRS[4][1] * R]; for (var i = 0; i < 6; i++) { for (var j = 0; j < R; j++) { out.push([c[0], c[1]]); c = [c[0] + DIRS[i][0], c[1] + DIRS[i][1]]; } } return out; }
   // Pure: slots(n) → n hexes of the ring, evenly spaced (index round(i·6R/n)).
   function slots(n) { var r = ring(RING), L = r.length; return Array.from({ length: n }, function (_, i) { return r[Math.round(i * L / n) % L]; }); }
+  // One-Nexo proposal mode (explicit, OFF until integrated after browser gates).
+  // Node 0 keeps exactly the central hall. The four tutorial sites are NPC-held
+  // outside its territory, not extra owned buildings. No local "built" data
+  // can silently promote another building into the node's territory.
+  var TUTORIAL = ['hostel', 'coliseum', 'doctor', 'workshop'];
+  function nexoPlan(world, KINDS, mixHash) {
+    var at = world.cells.at, marks = {}, list = [], occupied = [];
+    var candidates = world.cells.list.filter(function (c) {
+      var d = hexDist(c, [0, 0]);
+      return c[3] !== 'water' && d > TERR + 1 && d <= TERR + 7;
+    });
+    candidates.sort(function (a, b) {
+      return hexDist(a, [0, 0]) - hexDist(b, [0, 0]) ||
+        mixHash(a[0], a[1]) - mixHash(b[0], b[1]) || a[0] - b[0] || a[1] - b[1];
+    });
+    TUTORIAL.forEach(function (kind) {
+      var k = KINDS.find(function (row) { return row[0] === kind; });
+      if (!k) { return; }
+      var c = candidates.find(function (spot) {
+        return at[spot[0] + ',' + spot[1]] && occupied.every(function (o) { return hexDist(spot, o) >= SPACE; });
+      });
+      if (!c) { return; } // NO_DATA(tutorial_site_not_available), never invent a hex
+      occupied.push(c);
+      var m = { q: c[0], r: c[1], id: k[0], roof: k[1], tone: k[2],
+        fog: true, town: false, tutorial: true, own: false };
+      marks[c[0] + ',' + c[1]] = m;
+      list.push(m);
+    });
+    var city = {};
+    world.cells.list.forEach(function (c) {
+      if (c[3] !== 'water' && hexDist(c, [0, 0]) <= SQUARE) { city[c[0] + ',' + c[1]] = 1; }
+    });
+    return { marks: marks, markList: list, city: city,
+      nexo: { id: 'nexo', q: 0, r: 0, count: 1, status: 'PROPOSED' },
+      tutorialMissing: TUTORIAL.filter(function (k) { return !list.some(function (m) { return m.id === k; }); }) };
+  }
+
   // Pure: plan(world, KINDS, mixHash, built) → { marks, markList, city }. KINDS rows: [id, roof, tone].
   function plan(world, KINDS, mixHash, built) {
+    if (world && world.singleNexo === true) { return nexoPlan(world, KINDS, mixHash); }
     var marks = {}, list = [], at = world.cells.at;
     slots(KINDS.length).forEach(function (c, i) { var k = KINDS[i]; if (!at[c[0] + ',' + c[1]]) { return; }
       var m = { q: c[0], r: c[1], id: k[0], roof: k[1], tone: k[2], fog: false, town: true }; marks[c[0] + ',' + c[1]] = m; list.push(m); });
@@ -82,7 +120,7 @@
     edges(TERR).forEach(function (e) { var A = P(e[0][0], e[0][1]), B = P(e[1][0], e[1][1]), p = m(A, B, P(e[2][0], e[2][1])), q = m(A, B, P(e[3][0], e[3][1])); g.moveTo(p[0], p[1]); g.lineTo(q[0], q[1]); });
     g.stroke(); g.restore();
   }
-  var api = { edges: edges, wall: wall, TERR: TERR, RING: RING, SQUARE: SQUARE, ring: ring, slots: slots, plan: plan, hall: hall, hexDist: hexDist };
+  var api = { edges: edges, wall: wall, TERR: TERR, RING: RING, SQUARE: SQUARE, TUTORIAL: TUTORIAL, ring: ring, slots: slots, plan: plan, hall: hall, hexDist: hexDist };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasTownPlan = api;
 })(typeof window !== 'undefined' ? window : globalThis);
