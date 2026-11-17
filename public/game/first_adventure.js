@@ -46,6 +46,9 @@
   }
   var api = { TOUR: TOUR, STEPS: STEPS, IDS: IDS, step: step, say: say, target: target, index: index };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
+  // One journey per page: a second script load must never install another card,
+  // marker, listener, timer or independent progress state.
+  if (root.AtlasFirstAdventure && root.document && root.document.getElementById('fa')) { return; }
   root.AtlasFirstAdventure = api;
   var doc = root.document, stage = doc.getElementById('stage'), play = doc.getElementById('visitor-play');
   if (!stage || !play) { return; }

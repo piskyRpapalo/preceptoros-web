@@ -198,6 +198,7 @@ jobs:
             node atlas/map_wide_browser.mjs
             node atlas/gamepad_browser.mjs
             node atlas/dock_native_browser.mjs
+            node atlas/journey_single_mount_browser.mjs
             node atlas/building_sheet_browser.mjs
             node atlas/first_joy_browser.mjs
             node atlas/acho_claim_browser.mjs
@@ -206,6 +207,7 @@ jobs:
             node atlas/dark_terminals_browser.mjs
             node atlas/classroom_chat_browser.mjs
             node atlas/map_chat_draft_browser.mjs
+            node atlas/talk_head_browser.mjs
             node atlas/sw_first_load_browser.mjs
             node atlas/live_heartbeat_cases.mjs
             node atlas/a11y_filler_browser.mjs
