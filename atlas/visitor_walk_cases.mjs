@@ -16,15 +16,22 @@ test('acepta suelo: seis pasos al este desde la cabaña, cada uno dicho en ingl�
   const w = V.create(cells);
   let s;
   for (let i = 1; i <= 6; i++) { s = w.step('east'); assert.equal(s.ok, true); assert.equal(s.q, i); }
-  assert.equal(s.sentence, 'You walk east to 6,0 · moss · step 6');
-  assert.equal(s.h, 2);
+  // The current baked cabin is flat floor (height=1) for all six steps.
+  assert.deepEqual(cells.at['6,0'], [6, 0, 1, 'floor']);
+  assert.equal(s.sentence, 'You walk east to 6,0 · sand · step 6');
+  assert.equal(s.h, 1);
 });
 
 test('rechaza el agua y no se mueve', () => {
-  const w = V.create(cells, [6, 0]);
+  // Baked 7,0 is now floor: test water with an explicit synthetic water cell,
+  // rather than pretending an actual signed chunk contains water.
+  assert.deepEqual(cells.at['7,0'], [7, 0, 1, 'floor']);
+  const at = { ...cells.at, '7,0': [7, 0, 0, 'water'] };
+  const w = V.create({ at }, [6, 0]);
   const s = w.step('east');
   assert.equal(s.ok, false); assert.equal(s.q, 6);
   assert.equal(s.sentence, 'NO_DATA: water blocks the way east');
+  assert.deepEqual([w.here().q, w.here().r], [6, 0]);
 });
 
 test('rechaza keepout y fuera de las celdas cargadas', () => {

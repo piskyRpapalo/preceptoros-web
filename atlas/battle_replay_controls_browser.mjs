@@ -73,7 +73,7 @@ async function main() {
   await ev(`(async()=>{const V=AtlasMapPainter.view(),mk=V.world.markList.find(m=>m.fog);window.retado=mk;AtlasBuildingSheet.open(mk.id);await new Promise(r=>setTimeout(r,400));document.getElementById('surface').dataset.sel=mk.q+','+mk.r;for(let i=0;i<40&&!document.getElementById('bs-challenge');i++)await new Promise(r=>setTimeout(r,100));document.getElementById('bs-challenge').click();return 1})()`) /* C2: challenge a grey NPC building from its card (fog-and-conquest.md) */;
   ok(await hasta('!!document.getElementById("visitor-battle-result")', 10000), 'battle opens over the map');
   await espera(300);
-  const status = () => ev(`document.querySelector('dialog[open] [role=status]').textContent`);
+  const status = () => ev(`document.querySelector('dialog[open] > p[role=status]').textContent`);
   const inicio = await status();
   ok(inicio === 'PLAYING · ×1', 'replay starts playing at ×1: ' + inicio);
 

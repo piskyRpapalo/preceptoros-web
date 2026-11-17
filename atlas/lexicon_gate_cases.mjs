@@ -8,12 +8,12 @@ import { join } from 'node:path';
 import { escanea, compara } from './lexicon_gate.mjs';
 
 const LISTA = JSON.stringify({ palabras: ['monta', 'sinredireccion', 'cria'] });
-function arbol(archivos, permitidas = []) {
+function arbol(archivos, permitidas = [], por_fichero = {}) {
   const raiz = mkdtempSync(join(tmpdir(), 'lexicon-'));
   mkdirSync(join(raiz, 'public', 'game'), { recursive: true });
   mkdirSync(join(raiz, 'atlas'), { recursive: true });
   writeFileSync(join(raiz, 'atlas', 'lexicon_es.json'), LISTA);
-  writeFileSync(join(raiz, 'atlas', 'lexicon_allowed.json'), JSON.stringify({ palabras: permitidas }));
+  writeFileSync(join(raiz, 'atlas', 'lexicon_allowed.json'), JSON.stringify({ palabras: permitidas, por_fichero }));
   for (const [ruta, texto] of Object.entries(archivos)) writeFileSync(join(raiz, 'public', ruta), texto);
   return raiz;
 }
@@ -46,6 +46,20 @@ test('una URL con una palabra española NO cuenta', () => {
 test('una excepcion declarada (lista blanca) permite la palabra', () => {
   const r = arbol({ 'game/arte.js': 'const cria = 2;' }, ['cria']);
   try { assert.deepEqual(escanea(r), {}); } finally { rmSync(r, { recursive: true, force: true }); }
+});
+
+test('excepciones de protocolo son por ruta exacta: otra copia sigue roja', () => {
+  const r = arbol({
+    'game/legacy.js': 'const monta = 1;',
+    'game/new.js': 'const monta = 1;'
+  }, [], { 'public/game/legacy.js': ['monta'] });
+  try {
+    const found = escanea(r);
+    assert.equal(found['public/game/legacy.js'], undefined, 'the scoped legacy exception is honored');
+    assert.deepEqual(found['public/game/new.js'], ['monta'], 'same Spanish word in another file is still detected');
+    const { nuevos } = compara(found, {});
+    assert.equal(nuevos.length, 1, 'global exemption would silently weaken the ratchet');
+  } finally { rmSync(r, { recursive: true, force: true }); }
 });
 
 test('sabotaje: la base no puede quedar por encima de lo medido (ratchet hacia abajo)', () => {

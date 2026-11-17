@@ -81,7 +81,8 @@ async function main() {
   ok(llegada.look && llegada.ancho <= 390, 'no «Look around first» or sideways scroll: ' + JSON.stringify(llegada));
   await foto('dos-clics-welcome.png');
   await clic('#welcome-play', true); await espera(1500);
-  await ev("document.querySelector('.cats [data-cat=Welcome]').click()");
+  // Close Welcome only when open: ow_calm.css intentionally folds both joysticks behind active panels.
+  await ev("(() => { const b = document.querySelector('.cats [data-cat=Welcome]'); if (b && b.getAttribute('aria-pressed') === 'true') b.click(); return true; })()");
   // Ojo del Doogee (2026-11-02): after «Play now» the map stays in view, the summon buttons say place and cost in words, the map
   // carries only the labelled pan joystick (the character's joystick is born with the character), and the place names on the map are legible (>= 12 CSS px) and never collide.
   const ojo = JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('surface'), m = c.getBoundingClientRect();
