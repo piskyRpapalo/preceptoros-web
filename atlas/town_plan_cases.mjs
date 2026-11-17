@@ -5,6 +5,35 @@ const req = createRequire(import.meta.url), T = req('../public/game/town_plan.js
 const cells = []; for (let q = -20; q <= 20; q++) for (let r = -20; r <= 20; r++) if (T.hexDist([q, r], [0, 0]) <= 20) cells.push([q, r, 0, 'floor']);
 const world = () => ({ cells: { list: cells, at: Object.fromEntries(cells.map((c) => [c[0] + ',' + c[1], c])) } });
 const mix = (q, r) => { let h = (q * 73856093) ^ (r * 19349663) ^ 20261108; h = (h ^ (h >>> 13)) * 1274126177; return (h ^ (h >>> 16)) >>> 0; };
+test('proposal mode: exactly one Nexo, with tutorial NPC buildings outside Node 0', () => {
+  const w = world();
+  w.singleNexo = true;
+  const p = T.plan(w, MC.KINDS, mix, []);
+  assert.deepEqual(p.nexo, { id: 'nexo', q: 0, r: 0, count: 1, status: 'PROPOSED' });
+  assert.equal(p.markList.filter((m) => m.own || m.town || !m.fog).length, 0);
+  assert.equal(p.markList.length, 4);
+  assert.deepEqual(p.markList.map((m) => m.id), T.TUTORIAL);
+  assert.ok(p.markList.every((m) => T.hexDist([m.q, m.r], [0, 0]) > T.TERR + 1 && m.tutorial && m.fog));
+  assert.deepEqual(p.tutorialMissing, []);
+  assert.deepEqual(Object.keys(p.city).length, 7); // the Nexo central paved hex and its six neighbours
+  assert.deepEqual(T.plan(w, MC.KINDS, mix, []).markList, p.markList);
+  MC.landmarks(w);
+  assert.deepEqual(w.nexo, p.nexo);
+  assert.deepEqual(w.tutorialMissing, []);
+  assert.equal(w.markList.filter((m) => m.own || m.town).length, 0);
+});
+test('proposal mode ignores old local multi-building data and reports missing tutorial locations', () => {
+  const w = world();
+  w.singleNexo = true;
+  const a = T.plan(w, MC.KINDS, mix, [{q:1,r:1,id:'lottery',own:true}]);
+  assert.equal(a.nexo.count, 1);
+  assert.equal(a.markList.some((m) => m.id === 'lottery'), false);
+  const small = {cells:{list:[[0,0,0,'floor']], at:{'0,0':[0,0,0,'floor']}},singleNexo:true};
+  const b = T.plan(small, MC.KINDS, mix, []);
+  assert.deepEqual(b.tutorialMissing, T.TUTORIAL);
+  assert.equal(b.markList.length,0);
+  assert.equal(b.nexo.status,'PROPOSED');
+});
 test('ring(R) has 6R distinct hexes, all at distance R; slots spread evenly', () => {
   for (const R of [1, 3, 4]) { const r = T.ring(R); assert.equal(r.length, 6 * R); assert.ok(r.every((c) => T.hexDist(c, [0, 0]) === R)); assert.equal(new Set(r.map(String)).size, 6 * R); }
   const s = T.slots(10); assert.equal(new Set(s.map(String)).size, 10);

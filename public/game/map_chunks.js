@@ -64,6 +64,7 @@
     var built = []; try { built = JSON.parse(root.localStorage.getItem('preceptoros.built') || '[]'); } catch (e) {}
     var p = TP.plan(world, KINDS, mixHash, built);
     world.marks = p.marks; world.markList = p.markList; world.city = CITY = p.city;
+    if (world.singleNexo === true) { world.nexo = p.nexo; world.tutorialMissing = p.tutorialMissing; }
     return p.marks;
   }
   // oval(g, …): an ellipse arc as a polygon (any 2D context, even the test double).
