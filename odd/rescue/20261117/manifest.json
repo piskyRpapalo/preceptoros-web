@@ -1,0 +1,158 @@
+{
+  "schema": "preceptoros.web-untracked-rescue/1",
+  "source": "local_shared_worktree",
+  "base_sha": "dd10c778208159138cf9ed00c151e7789239e318",
+  "status": "RECOVERY_ONLY_UNREVIEWED",
+  "files": [
+    {
+      "path": "atlas/app_release_cases.mjs",
+      "sha256": "5abf1a24fde59d5016939d21086cefd0ec824ec9a641e468a23ea7a565711f9c",
+      "state": "recovery_only"
+    },
+    {
+      "path": "atlas/hex_route_cases.mjs",
+      "sha256": "64e42a73b8e92f6b14ff637e91ebcd605886006fd17ddf705b413d96482b85f5",
+      "state": "recovery_only"
+    },
+    {
+      "path": "atlas/puros/app_release_contract.js",
+      "sha256": "432477e3bf309fd577a9c234319302c15a59a0cf34eb73be54f297143761db99",
+      "state": "recovery_only"
+    },
+    {
+      "path": "atlas/puros/response_correlation.js",
+      "sha256": "124ef606b6ec7add929756985e4a045ea77e8b5b49e30fd750af0bd0fbb8871e",
+      "state": "recovery_only"
+    },
+    {
+      "path": "atlas/puros/tutorial_journey.js",
+      "sha256": "936df7a62d1ca31dc6e35967f8f50a312cc995dbb0727bbc1ac9a36cae3cc711",
+      "state": "already_in_origin_main"
+    },
+    {
+      "path": "atlas/response_correlation_cases.mjs",
+      "sha256": "48504d9136194dcc4124a70cd55563bc6dc1ee1ed5d7cafd27a7421f9f69d2c9",
+      "state": "recovery_only"
+    },
+    {
+      "path": "atlas/tutorial_isolation_cases.mjs",
+      "sha256": "92e311be0e44543a845b21b445ac86731460a891299f18e8f112d60070dcbc25",
+      "state": "recovery_only"
+    },
+    {
+      "path": "atlas/tutorial_journey_cases.mjs",
+      "sha256": "f6539724b5c0b221d5ea7494491c6d85bd53ba3626839a923337b6a66c385180",
+      "state": "already_in_origin_main"
+    },
+    {
+      "path": "atlas/tutorial_parity_cases.mjs",
+      "sha256": "b701d0ee664c72e4738f1618d864310b9029b7ab4dd14f6d0a21a1761b5b83a9",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/comision-de-dia_PARA_LA_MESA.md",
+      "sha256": "369f30b5c3b4ad83e78984ce5a23eed7130f65bf490122cdbd230e4178a32377",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/handoff/first-journey-for-clause.md",
+      "sha256": "3e3bc21ab552967df5cf780c9fa58448ab4560c49a815c630931c6f2d2e3cf38",
+      "state": "already_in_origin_main"
+    },
+    {
+      "path": "odd/recibo/comision-de-dia.md",
+      "sha256": "4cebaa06716ee78db0e2f45da0fde954292aefd1dead676310234abd87372c81",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/recibo/jewels/app-release-contract.md",
+      "sha256": "d90583753efafa7ae7ed3612c9911ff6cdf3a5dd5433340b9144933ce1559764",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/recibo/jewels/app_release_contract.js",
+      "sha256": "432477e3bf309fd577a9c234319302c15a59a0cf34eb73be54f297143761db99",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/recibo/jewels/first-journey-contract.md",
+      "sha256": "e008bb1ca4d39cfd7fb147d27c4c85d841b90d462256942d85ade43e47208928",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/recibo/jewels/first-journey-for-clause.md",
+      "sha256": "3e3bc21ab552967df5cf780c9fa58448ab4560c49a815c630931c6f2d2e3cf38",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/recibo/jewels/hex_route_cases.mjs",
+      "sha256": "64e42a73b8e92f6b14ff637e91ebcd605886006fd17ddf705b413d96482b85f5",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/recibo/jewels/response-correlation-contract.md",
+      "sha256": "0f6d47170ad8ed59d94d281fb91ddeea359a0969d2ba7b304ae733d3ec9ff954",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/recibo/jewels/response_correlation.js",
+      "sha256": "124ef606b6ec7add929756985e4a045ea77e8b5b49e30fd750af0bd0fbb8871e",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/recibo/jewels/response_correlation_cases.mjs",
+      "sha256": "48504d9136194dcc4124a70cd55563bc6dc1ee1ed5d7cafd27a7421f9f69d2c9",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/recibo/jewels/sha256.txt",
+      "sha256": "ab38c5342548197c4e0805b54a2ff8cd1eb59011804c21ad229f5b46790e8048",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/recibo/jewels/tutorial_isolation_cases.mjs",
+      "sha256": "92e311be0e44543a845b21b445ac86731460a891299f18e8f112d60070dcbc25",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/recibo/jewels/tutorial_journey.js",
+      "sha256": "936df7a62d1ca31dc6e35967f8f50a312cc995dbb0727bbc1ac9a36cae3cc711",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/recibo/jewels/tutorial_journey_cases.mjs",
+      "sha256": "f6539724b5c0b221d5ea7494491c6d85bd53ba3626839a923337b6a66c385180",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/recibo/jewels/tutorial_parity_cases.mjs",
+      "sha256": "b701d0ee664c72e4738f1618d864310b9029b7ab4dd14f6d0a21a1761b5b83a9",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/recibo/ultima-guardia-t3.md",
+      "sha256": "3107e83f5eb049de4d49df4a2674ace930345ed73060e486780eba791ee3bd98",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/recibo/ultima-guardia.md",
+      "sha256": "b698b33557f06e180b8d71c34c76ce3ef59cdf40840645929bd0e6504abe4f36",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/tasks/app-release-contract.md",
+      "sha256": "d90583753efafa7ae7ed3612c9911ff6cdf3a5dd5433340b9144933ce1559764",
+      "state": "recovery_only"
+    },
+    {
+      "path": "odd/tasks/first-journey-contract.md",
+      "sha256": "e008bb1ca4d39cfd7fb147d27c4c85d841b90d462256942d85ade43e47208928",
+      "state": "already_in_origin_main"
+    },
+    {
+      "path": "odd/tasks/response-correlation-contract.md",
+      "sha256": "0f6d47170ad8ed59d94d281fb91ddeea359a0969d2ba7b304ae733d3ec9ff954",
+      "state": "recovery_only"
+    }
+  ]
+}
