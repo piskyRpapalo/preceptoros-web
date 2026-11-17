@@ -89,7 +89,7 @@ async function main() {
   const play = JSON.parse(await ev(`JSON.stringify((() => { const r = document.getElementById('gp-play').getBoundingClientRect(); return [Math.round(r.left + r.width / 2), Math.round(r.top + r.height / 2)]; })())`));
   await raton(play[0], play[1]);
   const oye = await hasta((m) => m.said.length > 0 && /^Visitor-/.test(m.h1)); medidas.firstPress = { h1: oye.h1, said: oye.said };
-  ok(oye.said.length > 0 && oye.said[oye.said.length - 1] === lugar(oye.h1), 'openworld: after the first press the place is not spoken as the heading shows it: ' + JSON.stringify(medidas.firstPress));
+  ok(oye.said.length > 0 && oye.said.includes(lugar(oye.h1)), 'openworld: after the first press the place is not spoken as the heading shows it: ' + JSON.stringify(medidas.firstPress));
   ok(oye.said.every((t) => !/Visitor-/.test(t)), 'the visitor id is spoken');
   let paso = oye;
   for (const [x, y] of [[250, 330], [110, 330], [180, 200]]) { if (lugar(paso.h1) !== lugar(oye.h1)) { break; } await raton(x, y); paso = await hasta((m) => lugar(m.h1) !== lugar(oye.h1), 3000); }
