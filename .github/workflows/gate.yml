@@ -197,6 +197,7 @@ jobs:
             node atlas/map_drag_browser.mjs
             node atlas/map_wide_browser.mjs
             node atlas/gamepad_browser.mjs
+            node atlas/dock_native_browser.mjs
             node atlas/building_sheet_browser.mjs
             node atlas/first_joy_browser.mjs
             node atlas/acho_claim_browser.mjs
