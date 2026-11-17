@@ -46,8 +46,8 @@
 <h2 id="update-existing-h">Update your existing PreceptorOS app</h2>
 <p>The public WEB cannot inspect or silently update an APP running on another device or origin. The Android APK above updates only <strong>OpenWorld</strong>, not the nine-panel PreceptorOS APP.</p>
 <ol>
-<li>On the device with your installed APP, reconnect its existing trusted SSH tunnel if it normally uses one. No public rack port is required.</li>
-<li>Open <a href="http://127.0.0.1:8742/app" id="local-app-update-link">the local PreceptorOS APP at 127.0.0.1:8742/app</a> <strong>only if your own tunnel forwards this address to your APP</strong>. Otherwise, open the original APP address already installed on your device; do not guess another server.</li>
+<li>On the device with your installed APP, use its existing shortcut or browser profile. Keep the original site data and identity keys; no public rack port is required.</li>
+<li>Reconnect your existing trusted tunnel, if you use one, and open the PreceptorOS APP from the original address saved on your own device. This public website cannot discover your local APP address or access your private node. Do not guess another server.</li>
 <li>In the APP, choose <strong>Settings → This app · install and update → Check for update</strong>. Compare the offline version and the version served by the rack. If the APP says the update is ready, choose <strong>Reload to use the update</strong>.</li>
 <li>If the control is absent, the installed browser copy may be older than this feature. Reopen the <em>same trusted APP origin</em> in your browser and check again. If it still does not appear, record <code>NO_DATA(old_app_update_unavailable)</code> instead of clearing app storage or identity keys.</li>
 </ol>

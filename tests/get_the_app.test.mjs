@@ -125,11 +125,13 @@ test('Homepage has exactly four actions (PWA, Download App, Update App, Create C
   if (ids.join(',') !== 'ta-pwa,ta-app,ta-update,fa-companion') { throw new Error('the homepage must keep exactly four main actions: ' + ids.join(',')); }
   const route = '/get-the-app/' + apk.nombre;
   if (!js.includes("var APK = '" + route + "'")) { throw new Error('Android choice does not target the published release'); }
-  if (apk.sha256 && (js.split(apk.sha256).length - 1) !== 2) { throw new Error('Android get and update must show the published SHA-256'); }
+  if (apk.sha256 && (js.split(apk.sha256).length - 1) !== 1) { throw new Error('Android OpenWorld download must show the published SHA-256 exactly once'); }
+  if (!js.includes("link: ['/get-the-app/#update-existing-app', 'Open the PreceptorOS APP update instructions']") ||
+      !js.includes('It cannot update your nine-panel APP')) { throw new Error('the real APP update must not point to the OpenWorld APK'); }
   // Each download names what it installs; the OpenWorld APK is never the APP, and nothing public promises Hexelion.
   if (!js.includes('It is not the PreceptorOS APP and has no model inside')) { throw new Error('home presents the OpenWorld APK as the APP'); }
   if (!js.includes("'Download OpenWorld (APK)'") || !js.includes("'Download the APP installer (install.sh)'")) { throw new Error('a download does not say what it installs'); }
   if (/hexelion/i.test(js)) { throw new Error('the public base product must not promise Hexelion'); }
-  if (!js.includes('cannot see which version your phone has')) { throw new Error('update must not claim to detect an installed app'); }
+  if (!js.includes('The public website cannot inspect an APP on another origin')) { throw new Error('update must not claim to detect an installed app'); }
   if (!/\.ta-btn:focus-visible/.test(home)) { throw new Error('missing visible keyboard focus'); }
 });
