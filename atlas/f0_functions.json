@@ -399,7 +399,7 @@
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "Welcome must show the next step without opening Communication"
+     "text": "Welcome must keep the gamepad Play visible and the old Guide retired without opening Communication"
     },
     {
      "file": "atlas/openworld_browser.mjs",
