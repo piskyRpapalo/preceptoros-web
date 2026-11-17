@@ -13,6 +13,15 @@ body:not(:has(#log .turn.them.pending)) #gamepad:has(#gp-play[hidden]):not(:has(
 #gamepad .gp-mid :is(.gp-b,.cats button),
 html[data-ow-phase=arrive] #gamepad #gp-play:not([hidden]),
 body:has(#log .turn.them.pending) #gamepad:has(#gp-play[hidden]) .cats [data-cat=Communication]:not([hidden]){background-color:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}}
+/* Forced colors erase the yellow fill. Keep exactly one contextual primary
+   distinguishable by a visible Highlight outline, not by color alone. */
+@media (forced-colors:active){
+#gamepad #gp-play:not([hidden]),
+body:not(:has(#log .turn.them.pending)) #gamepad:has(#gp-play[hidden]) .gp-mid [data-fa-next]:not([hidden]),
+body:has(#log .turn.them.pending) #gamepad:has(#gp-play[hidden]) .cats [data-cat=Communication]:not([hidden]),
+body:not(:has(#log .turn.them.pending)) #gamepad:has(#gp-play[hidden]):not(:has(.gp-mid [data-fa-next]:not([hidden]))) .cats [data-cat=Communication]:not([hidden]){
+  border-width:3px;outline:3px solid Highlight;outline-offset:-3px;
+}}
 
 #gamepad .gp-mid button[data-name]::before{inset:3px 11px 17px}
 #gamepad .gp-mid button[data-name]::after{content:attr(data-name);position:absolute;left:0;right:0;bottom:4px;text-align:center;font:800 9px/1 ui-rounded,system-ui,sans-serif;color:var(--a1d1b26);white-space:nowrap}
