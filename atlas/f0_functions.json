@@ -623,6 +623,22 @@
      "text": "openworld: a walk does not speak the new place"
     }
    ]
+  },
+  {
+   "id": "first-journey",
+   "scripts": ["/game/first_adventure.js"],
+   "globals": ["AtlasFirstAdventure"],
+   "guards": [
+    {"file": "atlas/openworld_browser.mjs", "text": "first adventure did not mount an accessible eight-step visitor card"}
+   ]
+  },
+  {
+   "id": "talking-preceptor",
+   "scripts": ["/game/talk_head.js"],
+   "globals": ["AtlasTalkHead"],
+   "guards": [
+    {"file": "atlas/openworld_browser.mjs", "text": "talk head did not preserve a complete accessible received message"}
+   ]
   }
  ],
  "retiradas": [
