@@ -87,6 +87,12 @@
       if (tools) { tools.setAttribute('aria-expanded', String(cat === 'Tools')); }
       Array.prototype.forEach.call(voices.querySelectorAll('[data-speaker]'), function (li) { li.style.display = li.dataset.cat === cat ? '' : 'none'; });
       Object.keys(buttons).forEach(function (name) { buttons[name].setAttribute('aria-pressed', String(name === cat)); });
+      // The existing composer lives inside the Radio player. Bring it into the
+      // open sheet instead of leaving it below the mobile viewport.
+      if (cat === 'Communication') {
+        var entry = doc.getElementById('entry');
+        if (entry) { entry.scrollIntoView({ block: 'nearest', inline: 'nearest' }); }
+      }
     }
     CATS.forEach(function (c) {
       if (!c.button) { return; }

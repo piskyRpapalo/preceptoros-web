@@ -3,7 +3,7 @@
 // - before Explore, the map keeps its measured half (this is the starting point, not a law);
 // - the Explore button and the view bar are retired (Sovereign, 2026-11-07): the map carries only the two joysticks;
 // - openworld_page.js stays under 20 KiB and openworld/index.html under 8 KiB; map_wide.js stays under 4 KiB.
-// Sabotage: SABOTAJE=sin-ancho serves map_wide.js without its CSS ⇒ the canvas keeps its half ⇒ red.
+// Sabotage: SABOTAJE=sin-composer removes the UI scroll that keeps Send visible on a narrow screen; the same geometry gate must turn red.
 // Uso: node atlas/map_wide_browser.mjs [carpeta-captura]
 import { createServer } from 'node:http';
 import { readFileSync, writeFileSync, statSync, existsSync } from 'node:fs';
@@ -25,7 +25,7 @@ function sirve(raiz) {
       let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
       let cuerpo = readFileSync(f);
-      if (ruta === '/game/map_wide.js' && SAB === 'sin-ancho') { cuerpo = Buffer.from(String(cuerpo).replace('st.textContent = CSS;', '')); }
+      if (ruta === '/game/terminal_panel.js' && SAB === 'sin-composer') { cuerpo = Buffer.from(String(cuerpo).replace("entry.scrollIntoView({ block: 'nearest', inline: 'nearest' });", '')); }
       res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
   });
