@@ -9,7 +9,7 @@ const PUBLIC=fileURLToPath(new URL('../public/',import.meta.url)), wait=ms=>new 
 const ok=(b,m)=>{if(!b)failures.push(m)};
 let srv,ch,ws,n=0;const pend=new Map();
 async function main(){
- srv=createServer((req,res)=>{try{let p=new URL(req.url,'http://local').pathname;if(p.endsWith('/'))p+='index.html';const f=resolve(PUBLIC,'.'+p);if(!f.startsWith(PUBLIC))throw Error('path');const bytes=readFileSync(f);res.writeHead(200,{'Content-Type':{'.js':'text/javascript','.html':'text/html','.css':'text/css','.json':'application/json','.webmanifest':'application/manifest+json'}[extname(f)]||'application/octet-stream','Cache-Control':'no-store'});res.end(bytes)}catch{res.writeHead(404);res.end()}});
+ srv=createServer((req,res)=>{try{let p=new URL(req.url,'http://local').pathname;if(p.endsWith('/'))p+='index.html';const f=resolve(PUBLIC,'.'+p);if(!f.startsWith(PUBLIC))throw Error('path');let bytes=readFileSync(f);if(process.env.SABOTAJE==='forced-outline'&&p==='/game/ow_calm.css')bytes=Buffer.from(String(bytes).replace('outline:3px solid Highlight','outline:0 solid Highlight'));res.writeHead(200,{'Content-Type':{'.js':'text/javascript','.html':'text/html','.css':'text/css','.json':'application/json','.webmanifest':'application/manifest+json'}[extname(f)]||'application/octet-stream','Cache-Control':'no-store'});res.end(bytes)}catch{res.writeHead(404);res.end()}});
  await new Promise(r=>srv.listen(0,'127.0.0.1',r));ch=launchChrome(0);let list=null;
  for(let i=0;i<70&&!list&&!ch.failure();i++){await wait(200);try{list=await(await fetch('http://127.0.0.1:'+await ch.debugPort()+'/json')).json()}catch{}}
  if(!list)throw Error(ch.diagnostic());ws=new WebSocket(list.find(e=>e.type==='page').webSocketDebuggerUrl);
@@ -25,7 +25,7 @@ async function main(){
   const forced=matchMedia('(forced-colors:active)').matches;
   const v=document.createElement('i');v.style.color='var(--affe58a)';document.body.appendChild(v);const yellow=getComputedStyle(v).color;v.remove();
   return {phase:document.documentElement.dataset.owPhase,primary:buttons.filter(b=>{
-   const s=getComputedStyle(b);return parseFloat(s.borderTopWidth)>=3&&(forced||s.backgroundColor===yellow);
+   const s=getComputedStyle(b);return forced ? parseFloat(s.outlineWidth)>=3 && s.outlineStyle!=='none' : parseFloat(s.borderTopWidth)>=3 && s.backgroundColor===yellow;
   }).map(b=>b.id||b.dataset.cat), buttons:buttons.map(b=>({id:b.id||b.dataset.cat,w:b.getBoundingClientRect().width,h:b.getBoundingClientRect().height,aria:b.getAttribute('aria-label')})),
    mask:getComputedStyle(maskEl,'::before').maskImage,ledge:c.boxShadow,outline:c.borderTopWidth,
    hscroll:document.documentElement.scrollWidth>innerWidth+1,forced};
@@ -56,7 +56,7 @@ async function main(){
   ok(pending.primary.join()==='Communication','pending reply did not win over next: '+JSON.stringify(pending.primary));
   data.push({viewport:[w,h],arrival:arrival.primary,fallback:fallback.primary,next:next.primary,pending:pending.primary,buttons:arrival.buttons.length});
  }
- // Forced color: the same controls use native Canvas and a 3px border instead of relying on yellow alone.
+ // Forced color: one contextual primary uses a 3px Highlight outline; yellow is unavailable.
  await cmd('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
  await cmd('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'},{name:'forced-colors',value:'active'}]});
  await cmd('Page.navigate',{url:'http://127.0.0.1:'+srv.address().port+'/openworld/?colony=alone'});
