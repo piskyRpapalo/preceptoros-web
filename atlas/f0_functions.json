@@ -335,12 +335,16 @@
    "scripts": [
     "/game/map_chart.js",
     "/game/map_chunks.js",
+    "/game/town_plan.js",
+    "/game/land_art.js",
     "/game/place_name.js",
     "/game/map_painter.js"
    ],
    "globals": [
     "AtlasMapCarta",
     "AtlasMapChunks",
+    "AtlasTownPlan",
+    "AtlasLandArt",
     "AtlasPlaceName",
     "AtlasMapPainter"
    ],
