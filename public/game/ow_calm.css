@@ -1,4 +1,19 @@
 /* OpenWorld, calm (ow_calm.js): the middle buttons say their names; before a visit, Play is the one primary action. */
+/* DOCK-NATIVE-01: one native Acho dock and one contextual primary; no new controls.
+   Play before a visit; Talk on pending reply; else the gamepad button marked by
+   First Adventure [data-fa-next], with Talk as the honest visible fallback. */
+#gamepad .gp-mid :is(.gp-b,.cats button){background-color:var(--afffaf0);border-color:var(--a1d1b26);box-shadow:0 4px 0 var(--a1d1b26);font-weight:900}
+#gamepad #gp-play:not([hidden]),
+body:not(:has(#log .turn.them.pending)) #gamepad:has(#gp-play[hidden]) .gp-mid [data-fa-next]:not([hidden]),
+body:has(#log .turn.them.pending) #gamepad:has(#gp-play[hidden]) .cats [data-cat=Communication]:not([hidden]),
+body:not(:has(#log .turn.them.pending)) #gamepad:has(#gp-play[hidden]):not(:has(.gp-mid [data-fa-next]:not([hidden]))) .cats [data-cat=Communication]:not([hidden]){background-color:var(--affe58a);border-width:3px;box-shadow:0 4px 0 var(--a1d1b26);font-weight:900}
+#gamepad .gp-mid :is(.gp-b,.cats button):active{box-shadow:0 1px 0 var(--a1d1b26)}
+#gamepad .gp-mid :is(.gp-b,.cats button):disabled{opacity:.55}
+@media (forced-colors:active){
+#gamepad .gp-mid :is(.gp-b,.cats button),
+html[data-ow-phase=arrive] #gamepad #gp-play:not([hidden]),
+body:has(#log .turn.them.pending) #gamepad:has(#gp-play[hidden]) .cats [data-cat=Communication]:not([hidden]){background-color:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}}
+
 #gamepad .gp-mid button[data-name]::before{inset:3px 11px 17px}
 #gamepad .gp-mid button[data-name]::after{content:attr(data-name);position:absolute;left:0;right:0;bottom:4px;text-align:center;font:800 9px/1 ui-rounded,system-ui,sans-serif;color:var(--a1d1b26);white-space:nowrap}
 html[data-ow-phase=arrive] #gamepad #gp-play{background:var(--affe58a);border:3px solid var(--a1d1b26);box-shadow:0 3px 0 var(--a1d1b26),0 0 0 3px var(--affe58a)}
