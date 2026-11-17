@@ -15,9 +15,10 @@
       get: { lines: ['OpenWorld for Android 1.0.1 (APK, 1.3 MB): the shared world, this web, installed as an app. It is not the PreceptorOS APP and has no model inside.',
         'The PreceptorOS APP for Android: NO_DATA, not released (moving the installed package to it is not verified yet). Today: install the APP on your computer and open it from your phone’s browser; the model runs where you choose.'],
         link: [APK, 'Download OpenWorld (APK)'], sha: '8db3176a20ed973dab1f28642972bb97ab1ccd70ddbc7cf95f7a44affc7c4d8b', download: true },
-      update: { lines: ['OpenWorld for Android: newest is 1.0.1, signed with the certificate published in /.well-known/assetlinks.json.',
-        'This page cannot see which version your phone has: look in Settings › Apps › PreceptorOS. If yours is older, install this file over it: same signature, so your data stays.'],
-        link: [APK, 'Download OpenWorld 1.0.1 (APK)'], sha: '8db3176a20ed973dab1f28642972bb97ab1ccd70ddbc7cf95f7a44affc7c4d8b', download: true }
+      update: { lines: ['Two different Android app forms exist: the public APK updates OpenWorld only. It cannot update your nine-panel APP installed from a trusted rack browser origin.',
+        'For the real APP, reconnect its original trusted tunnel, open that APP, then Settings › This app · install and update › Check for update › Reload if offered. Never clear site data or identity keys to force an update.',
+        'The public website cannot inspect an APP on another origin or install a service worker on its behalf. If the APP update control is missing: NO_DATA(old_app_update_unavailable).'],
+        link: ['/get-the-app/#update-existing-app', 'Open the PreceptorOS APP update instructions'] }
     },
     ubuntu: {
       name: 'Ubuntu',

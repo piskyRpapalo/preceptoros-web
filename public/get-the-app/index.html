@@ -33,6 +33,7 @@
 <h3>B · The PreceptorOS app</h3>
 <p><code>NO_DATA(public_app_web_runtime_not_published)</code></p>
 <p>The real app, with its nine panels, runs on your own machine today. A hosted copy on this site does not exist yet, so there is no open button here.</p>
+<p><a href="#update-existing-app">Already have the APP? Open the update steps</a>.</p>
 </article>
 <article class="door" id="door-install" data-door="install">
 <h3>C · Install the PreceptorOS app</h3>
@@ -40,6 +41,19 @@
 <p><b>Windows:</b> the installer is <a href="#windows">below</a>. Its real installation has NOT been accepted yet: NO_DATA.</p>
 <p><b>Android:</b> nothing installs the PreceptorOS app on Android yet. The file in door A is OpenWorld.</p>
 </article>
+</section>
+<section id="update-existing-app" class="gate" aria-labelledby="update-existing-h">
+<h2 id="update-existing-h">Update your existing PreceptorOS app</h2>
+<p>The public WEB cannot inspect or silently update an APP running on another device or origin. The Android APK above updates only <strong>OpenWorld</strong>, not the nine-panel PreceptorOS APP.</p>
+<ol>
+<li>On the device with your installed APP, reconnect its existing trusted SSH tunnel if it normally uses one. No public rack port is required.</li>
+<li>Open <a href="http://127.0.0.1:8742/app" id="local-app-update-link">the local PreceptorOS APP at 127.0.0.1:8742/app</a> <strong>only if your own tunnel forwards this address to your APP</strong>. Otherwise, open the original APP address already installed on your device; do not guess another server.</li>
+<li>In the APP, choose <strong>Settings → This app · install and update → Check for update</strong>. Compare the offline version and the version served by the rack. If the APP says the update is ready, choose <strong>Reload to use the update</strong>.</li>
+<li>If the control is absent, the installed browser copy may be older than this feature. Reopen the <em>same trusted APP origin</em> in your browser and check again. If it still does not appear, record <code>NO_DATA(old_app_update_unavailable)</code> instead of clearing app storage or identity keys.</li>
+</ol>
+<p><strong>Linux source installations:</strong> run the existing, reviewed installer again to request a fast-forward of the checked-out source. This is a different update mechanism from a browser service worker. Do not reinstall an Android OpenWorld APK to update a Linux or rack-hosted APP.</p>
+<p><strong>Node creation:</strong> after updating, look in the APP's World panel for <em>Create a node (proposal)</em>. It creates a pending proposal, not a remote server. A verified remote node trial and signed public admission are separate steps: <code>NO_DATA(remote_node_deployment_not_verified)</code>.</p>
+<p role="status">No automatic local-network scan, install, credentials request, remote execution, or grant occurs on this page.</p>
 </section>
 <section class="gate" aria-labelledby="gate-h">
 <h2 id="gate-h">In one or two clicks</h2>
