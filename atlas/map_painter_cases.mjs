@@ -7,6 +7,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { createHash } from 'node:crypto';
 const M = createRequire(import.meta.url)('../public/game/map_painter.js');
+const LM = createRequire(import.meta.url)('../public/game/map_chunks.js');
 const dir = new URL('../public/map/chunks/', import.meta.url);
 const chunks = Object.fromEntries(readdirSync(dir).map((f) => { const c = JSON.parse(readFileSync(new URL(f, dir), 'utf8')); return [c.c.join('_'), c]; }));
 const bytes = (o) => new TextEncoder().encode(JSON.stringify(o)).length;
@@ -76,9 +77,11 @@ test('suelo liso primero (Soberano 2026-11-08): la arena es un solo color, sin t
   assert.equal(sand.pattern, 'solid');
   const fills = new Set(), calls = { arc: 0, n: 0 };   // a top is moveTo + 5 lineTo; a side face is moveTo + 3
   const g = { canvas: { width: 400, height: 400 }, save() {}, restore() {}, beginPath() { calls.n = 0; }, moveTo() {}, lineTo() { calls.n++; }, closePath() {}, stroke() {},
-    quadraticCurveTo() {}, arc() { calls.arc++; }, fill() { if (calls.n === 5) { fills.add(this.fillStyle); } }, lineJoin: '', fillStyle: '', strokeStyle: '', lineWidth: 1 };
+    quadraticCurveTo() {}, rect() {}, arc() { calls.arc++; }, fill() { if (calls.n === 5) { fills.add(this.fillStyle); } }, lineJoin: '', fillStyle: '', strokeStyle: '', lineWidth: 1 };
   const flat = chunks['0_0'];
-  const world = { cells: { list: flat.cells.filter((c) => c[3] !== 'water' && c[2] === 1), at: {} } };
+  // Reset the prior scene's town palette before checking unadorned sand material.
+  LM.landmarks({ cells: { list: [], at: {} } });
+  const world = { marks: {}, cells: { list: flat.cells.filter((c) => c[3] !== 'water' && c[2] === 1), at: {} } }; // Isolate sand material: building overlays have independent geometry and colours.
   world.cells.list.forEach((c) => { world.cells.at[c[0] + ',' + c[1]] = c; });
   for (const c of flat.cells) { if (c[2] > 1) { world.cells.at[c[0] + ',' + c[1]] = c; } }   // taller neighbours stay, but do not shade the sand
   const drawn = M.floor(g, { k: 1.4, cx: 200, cy: 200 }, world, 0, true);
