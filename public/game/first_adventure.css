@@ -10,6 +10,9 @@
 #fa #fa-skip{margin-left:auto;background:transparent;border-style:dashed;font-weight:700}
 #fa-bang{position:absolute;z-index:40;width:24px;height:24px;border:3px solid var(--a1d1b26);border-radius:50%;background:var(--affe58a);color:var(--a1d1b26);font:900 15px/18px ui-rounded,system-ui,sans-serif;text-align:center;pointer-events:none;animation:fa-hop 1.2s ease-in-out 2}
 #fa-bang[hidden]{display:none}
+/* The map's dense button bar has 6px gaps: point to its target by highlighting that control, not by covering its neighbours. */
+#gamepad [data-fa-next="1"]{outline:3px solid var(--a1d1b26);outline-offset:-3px;box-shadow:inset 0 0 0 3px var(--affe58a)}
+@media (forced-colors:active){#gamepad [data-fa-next="1"]{outline-color:Highlight;box-shadow:none}}
 @keyframes fa-hop{50%{transform:translateY(-4px)}}
 @media (prefers-reduced-motion:reduce){#fa-bang{animation:none}}
 @media (forced-colors:active){#fa,#fa .fa-row button,#fa-bang{border-color:CanvasText;background:Canvas;color:CanvasText}}

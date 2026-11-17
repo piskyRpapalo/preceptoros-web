@@ -3,7 +3,7 @@
 // - before Explore, the map keeps its measured half (this is the starting point, not a law);
 // - the Explore button and the view bar are retired (Sovereign, 2026-11-07): the map carries only the two joysticks;
 // - openworld_page.js stays under 20 KiB and openworld/index.html under 8 KiB; map_wide.js stays under 4 KiB.
-// Sabotage: SABOTAJE=sin-composer removes the UI scroll that keeps Send visible on a narrow screen; the same geometry gate must turn red.
+// Sabotages: sin-composer removes the scroll needed by Talk; sin-highlight restores the overlapping floating ! on Play. Both must turn red.
 // Uso: node atlas/map_wide_browser.mjs [carpeta-captura]
 import { createServer } from 'node:http';
 import { readFileSync, writeFileSync, statSync, existsSync } from 'node:fs';
@@ -26,6 +26,7 @@ function sirve(raiz) {
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
       let cuerpo = readFileSync(f);
       if (ruta === '/game/terminal_panel.js' && SAB === 'sin-composer') { cuerpo = Buffer.from(String(cuerpo).replace("entry.scrollIntoView({ block: 'nearest', inline: 'nearest' });", '')); }
+      if (ruta === '/game/first_adventure.js' && SAB === 'sin-highlight') { cuerpo = Buffer.from(String(cuerpo).replace("bang.hidden = !!el.closest('#gamepad'); if (!bang.hidden) { place(el); }", "bang.hidden = false; place(el);")); }
       res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
   });
@@ -78,6 +79,23 @@ async function main() {
 
   // 1 · the starting point, measured: the map has about half the window.
   const a = await caja();
+  // In a dense gamepad the tutorial's Play target is highlighted in place; the floating ! must stay hidden.
+  const badge = JSON.parse(await ev(`JSON.stringify((() => {
+    const b = document.getElementById('fa-bang'), target = document.querySelector('[data-fa-next]');
+    if (!b || !target) return { missing: true };
+    const x = b.getBoundingClientRect(), t = target.getBoundingClientRect();
+    const rect = r => ({ left: Math.round(r.left), top: Math.round(r.top), right: Math.round(r.right), bottom: Math.round(r.bottom) });
+    const intersects = (a, z) => Math.min(a.right, z.right) > Math.max(a.left, z.left) && Math.min(a.bottom, z.bottom) > Math.max(a.top, z.top);
+    const collisions = [...document.querySelectorAll('button,a,input,textarea,[role="button"]')].filter(e => {
+      if (!e.getClientRects().length || e.closest('[hidden]')) return false;
+      const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+      return s.visibility !== 'hidden' && s.display !== 'none' && r.width >= 8 && r.height >= 8 && intersects(x,r);
+    }).map(e => e.id || e.getAttribute('aria-label') || e.textContent.trim().slice(0,35));
+    return { visible: !b.hidden, target: target.id, bounds: rect(x), targetBounds: rect(t), highlight: parseFloat(getComputedStyle(target).outlineWidth), collisions };
+  })())`));
+  medidas.badge = badge;
+  ok(!badge.missing && !badge.visible && badge.target === 'gp-play' && badge.highlight >= 3 && badge.collisions.length === 0,
+    'tutorial ! obscures a gamepad control or Play has no visible highlight: ' + JSON.stringify(badge));
   medidas.antes = { alto_mapa: a.h, ventana: a.alto, fraccion: +(a.h / a.alto).toFixed(2) };
   // Sovereign order 2026-11-07: the view bar (and with it the Explore button) is gone; only the two joysticks float over the map.
   ok(!a.boton && !a.barra, 'the map still carries a view bar or an Explore button: ' + JSON.stringify([a.boton, a.barra]));
