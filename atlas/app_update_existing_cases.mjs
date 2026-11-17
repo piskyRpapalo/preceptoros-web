@@ -32,10 +32,14 @@ test('WEB update never claims a cross-origin update, automatic network scan or g
   assert.match(android, /cannot inspect an APP on another origin/);
 });
 
-test('user must explicitly open their own trusted local origin', () => {
-  assert.match(html, /href="http:\/\/127\.0\.0\.1:8742\/app"/);
-  assert.match(html, /only if your own tunnel forwards this address/);
-  assert.match(html, /the original APP address already installed/);
+test('user must explicitly open their own trusted origin, with no public private-address link', () => {
+  assert.match(html, /open the PreceptorOS APP from the original address saved on your own device/);
+  assert.match(html, /This public website cannot discover your local APP address/);
+  assert.doesNotMatch(html, /href="http:\/\/(?:127\.0\.0\.1|localhost|192\.168\.[0-9.]+|10\.[0-9.]+)[^\"]*"/);
+  const injected = html.replace('This public website cannot discover your local APP address',
+    '<a href="http://127.0.0.1:8742/app">Open another private node</a>');
+  assert.notEqual(injected, html, 'the private-address sabotage must change the page');
+  assert.match(injected, /href="http:\/\/127\.0\.0\.1:8742\/app"/, 'the injected private link must be detectable');
 });
 
 test('PWA update and reload must be user-driven and lossless', () => {
