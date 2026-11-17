@@ -54,7 +54,7 @@ async function main() {
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   const hasta = async (e, ms) => { for (let t = 0; t < ms; t += 250) { if (await ev(e)) { return true; } await espera(250); } return false; };
   // The accessible Welcome leaf exposes a real button for each place; never synthesize an invisible hit target.
-  const clicNodo = async () => { await ev("(() => { const b=document.querySelector('.cats [data-cat=Welcome]'); if(b.getAttribute('aria-pressed')!=='true')b.click(); })()"); await espera(100); return ev(`(() => { const b=document.querySelector('#map-node-list [data-node=home]'); if(!b || b.getBoundingClientRect().height<44)return false; b.click(); return true; })()`); };
+  const clicNodo = async () => { await ev("(() => { const b=document.querySelector('.cats [data-cat=Welcome]'); if(b.getAttribute('aria-pressed')!=='true')b.click(); })()"); ok(await hasta(`document.querySelector('#map-node-list [data-node=home]') && document.querySelector('#map-node-list [data-node=home]').getBoundingClientRect().height>=44`, 5000), 'node button visible before clicking'); return ev(`(() => { const b=document.querySelector('#map-node-list [data-node=home]'); if(!b || b.getBoundingClientRect().height<44)return false; b.click(); return true; })()`); };
   // Click the first button whose text matches; the page's own handler runs.
   const pulsa = (texto) => ev(`(() => { const b = [...document.querySelectorAll('button')].find(x => x.textContent.trim() === ${JSON.stringify(texto)}); if (!b) { return false; } b.click(); return true; })()`);
   const pulsaId = (idb) => ev(`(() => { const b = document.getElementById(${JSON.stringify(idb)}); if (!b || b.disabled) { return false; } b.click(); return true; })()`);
@@ -68,6 +68,7 @@ async function main() {
   // W-5: the first node is entered by walking there: a click on its hex.
   ok(await hasta("document.getElementById('state-tech').textContent.includes('Colony:')", 15000), 'colony drawn before the first-node click');
   if (VACIA) {
+    ok(await hasta("document.getElementById('state').textContent && !document.getElementById('state').textContent.includes('checking') && !document.getElementById('state').textContent.includes('Loading')", 10000), 'state text stabilized in empty colony');
     const linea = await ev("document.getElementById('state').textContent");
     ok(/NO_DATA: no node is alive yet \(the colony is empty\)/.test(linea), 'empty colony says NO_DATA with its cause: ' + linea);
     ok(!(await ev("!!document.querySelector('#map-node-list [data-node]')")), 'empty colony offers no node place');
