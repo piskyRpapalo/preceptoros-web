@@ -25,7 +25,9 @@ export function violations(html, js) {
   if (!js.three.includes("var APK = '/get-the-app/PreceptorOS-android-1.0.1.apk'")) out.push('Download App does not point at the published file');
   if (!js.companion.includes("e.key === 'Escape'")) out.push('Create Companion cannot be closed with Escape');
   if (!js.three.includes('It is not the PreceptorOS APP and has no model inside')) out.push('the OpenWorld file is not said to be not the app');
-  if (js.three.split(APK_SHA).length - 1 !== 2) out.push('the Android SHA-256 is not shown in both Download and Update');
+  if (js.three.split(APK_SHA).length - 1 !== 1) out.push('Android download must show its published SHA-256 exactly once');
+  if (!js.three.includes("link: ['/get-the-app/#update-existing-app', 'Open the PreceptorOS APP update instructions']") ||
+      !js.three.includes('It cannot update your nine-panel APP')) out.push('Android APP update is routed as APK instead of trusted APP instructions');
   if (/hexelion/i.test(html + js.three + js.companion)) out.push('the public product promises Hexelion');
   if (/Not measured yet/.test(html)) out.push('the old "Not measured yet" block is still on the homepage');
   return out;
@@ -48,6 +50,9 @@ test('sabotage: a fifth main action, a public /app link, a network call and a fa
   const net = { ...js, companion: js.companion + '\nfetch("https://example.invalid/x");' };
   const lie = js.companion.replace('Nothing was sent.', 'Nothing was sent. Your companion is registered.');
   const claim = { ...js, companion: lie, companion_text: lie };
+  const wrongUpdate = { ...js, three: js.three.replace("link: ['/get-the-app/#update-existing-app', 'Open the PreceptorOS APP update instructions']", "link: [APK, 'Update OpenWorld (APK)']") };
+  assert.notEqual(wrongUpdate.three, js.three, 'the update sabotage must change the route');
+  assert.ok(violations(html, wrongUpdate).some((v) => /APP update is routed as APK/.test(v)), 'wrong APK update route not caught');
   assert.ok(violations(fifth, js).some((v) => /four/.test(v)), 'fifth action not caught');
   assert.ok(violations(link, js).some((v) => /public \/app/.test(v)), 'public /app link not caught');
   assert.ok(violations(html, net).some((v) => /network/.test(v)), 'network call not caught');
