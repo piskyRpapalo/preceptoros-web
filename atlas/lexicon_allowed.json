@@ -18,5 +18,40 @@
   "nodo_dormido": "2026-11-03 · token del contrato de cable preceptoros.chat/1 de la aduana (src/chat.js, aduana#19): causa o campo que viaja por la red y la web lee para traducirlo a una frase inglesa; el visitante nunca lo ve como texto (P3, odd/tasks/chat-del-aula.md)",
   "respuesta_fuera_de_ley": "2026-11-03 · token del contrato de cable preceptoros.chat/1 de la aduana (src/chat.js, aduana#19): causa o campo que viaja por la red y la web lee para traducirlo a una frase inglesa; el visitante nunca lo ve como texto (P3, odd/tasks/chat-del-aula.md)",
   "sello": "2026-11-03 · token del contrato de cable preceptoros.chat/1 de la aduana (src/chat.js, aduana#19): causa o campo que viaja por la red y la web lee para traducirlo a una frase inglesa; el visitante nunca lo ve como texto (P3, odd/tasks/chat-del-aula.md)"
+ },
+ "por_fichero": {
+  "public/assets/radio_message_log.js": [
+   "huella",
+   "huellaen"
+  ],
+  "public/game/bb_radio.js": [
+   "huella"
+  ],
+  "public/game/combat_acho.js": [
+   "registro"
+  ],
+  "public/game/crab_presence_acho.js": [
+   "faro"
+  ],
+  "public/game/crab_presence_client.js": [
+   "accion",
+   "faro"
+  ],
+  "public/game/first_adventure.js": [
+   "arrecife"
+  ],
+  "public/game/visitor_account.js": [
+   "accion",
+   "faro"
+  ]
+ },
+ "causas_por_fichero": {
+  "public/assets/radio_message_log.js": "2026-11-17 · existing main, huellaEn internal radio fingerprint renderer and BBRadio.huella exported API; not UI wording. Keep technical export stable until an audited migration.",
+  "public/game/bb_radio.js": "2026-11-17 · existing main, BBRadio.huella is a public JavaScript API called by radio_message_log; renaming would break currently served radio sound+visual mapping.",
+  "public/game/combat_acho.js": "2026-11-17 · existing main, comment refers to combat.registro from existing game contract; code is served but no Spanish displayed to user.",
+  "public/game/crab_presence_acho.js": "2026-11-17 · existing main, event k=faro from signed atlas.coop/1 beacon cooperation packets; voice projects an English sentence.",
+  "public/game/crab_presence_client.js": "2026-11-17 · existing main, accion/faro are field and value of signed atlas.coop/1 packet; changes require separate protocol migration.",
+  "public/game/first_adventure.js": "2026-11-17 · existing main, arrecife is a stable internal game biome key mapped to English reef guards; renaming requires saved-state migration.",
+  "public/game/visitor_account.js": "2026-11-17 · existing main, verifies the signed atlas.coop/1 packet fields accion/faro; changes would reject current valid records."
  }
 }

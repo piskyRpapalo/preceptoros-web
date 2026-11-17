@@ -34,10 +34,15 @@ function cargaLista(raiz, nombre, por) {
 // Devuelve { fichero: [palabras] } para cada fichero servido con palabra española no permitida.
 export function escanea(raiz = RAIZ_POR_DEFECTO) {
   const lista = cargaLista(raiz, 'lexicon_es.json', { palabras: [] });
-  const permitidas = new Set(cargaLista(raiz, 'lexicon_allowed.json', { palabras: [] }).palabras.map((w) => w.toLowerCase()));
+  const excepciones = cargaLista(raiz, 'lexicon_allowed.json', { palabras: [], por_fichero: {} });
+  const permitidas = new Set((excepciones.palabras || []).map((w) => w.toLowerCase()));
+  const porFichero = excepciones.por_fichero || {};
   const negra = new Set(lista.palabras);
   const hallazgos = {};
   for (const f of ficheros(join(raiz, 'public'))) {
+    const ruta = relative(raiz, f);
+    // Exact file+word exceptions for existing protocol identifiers, never global or wildcard.
+    const locales = new Set(Array.isArray(porFichero[ruta]) ? porFichero[ruta].map((w) => w.toLowerCase()) : []);
     const texto = readFileSync(f, 'utf8').replace(/https?:\/\/[^\s'"`)]+/g, '');
     const toks = texto.match(/[A-Za-zÁÉÍÓÚáéíóúÑñ][A-Za-zÁÉÍÓÚáéíóúÑñ_-]*/g) || [];
     const hallados = new Set();
@@ -45,9 +50,9 @@ export function escanea(raiz = RAIZ_POR_DEFECTO) {
       const bajo = t.toLowerCase();
       const partes = t.split(/(?=[A-Z])|[_-]/).map((x) => x.toLowerCase()).filter(Boolean);
       const cae = negra.has(bajo) || negra.has(partes.join('')) || partes.some((p) => p.length > 2 && negra.has(p));
-      if (cae && !permitidas.has(bajo)) hallados.add(bajo);
+      if (cae && !permitidas.has(bajo) && !locales.has(bajo)) hallados.add(bajo);
     }
-    if (hallados.size) hallazgos[relative(raiz, f)] = [...hallados].sort();
+    if (hallados.size) hallazgos[ruta] = [...hallados].sort();
   }
   return hallazgos;
 }
