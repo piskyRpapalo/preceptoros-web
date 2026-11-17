@@ -173,9 +173,10 @@ async function main() {
       const composer=document.getElementById('entry').getBoundingClientRect().height>0; b.click(); return {cat,visible,over,composer};});
     return results; })())`));
   ok(categories.length === 2 && categories.every((row) => row.visible && row.over && row.composer === (row.cat === 'Communication')), 'Welcome and Communication leaves are broken: ' + JSON.stringify(categories));
-  const start = JSON.parse(await evaluate(`JSON.stringify((() => { const b=document.querySelector('.cats [data-cat=Welcome]'); b.click(); const p=document.getElementById('play-now');
-    const answer={play:!!p && p.getBoundingClientRect().height>=44,formClosed:document.getElementById('entry').getBoundingClientRect().height===0}; b.click(); return answer; })())`));
-  ok(start.play && start.formClosed, 'Welcome must show the next step without opening Communication');
+  // The old #play-now lived inside the retired Guide block (#next); the current native Play belongs to #gamepad.
+  const start = JSON.parse(await evaluate(`JSON.stringify((() => { const b=document.querySelector('.cats [data-cat=Welcome]'); b.click(); const p=document.getElementById('gp-play'), old=document.getElementById('next');
+    const answer={play:!!p && !p.hidden && p.getBoundingClientRect().height>=44,guideRetired:!!old && old.hidden,formClosed:document.getElementById('entry').getBoundingClientRect().height===0}; b.click(); return answer; })())`));
+  ok(start.play && start.guideRetired && start.formClosed, 'Welcome must keep the gamepad Play visible and the old Guide retired without opening Communication');
 
   const more = JSON.parse(await evaluate(`JSON.stringify((() => { const b=document.querySelector('.cats [data-cat=Communication]'); b.click();
     const d=document.getElementById('more'), select=document.querySelector('#more-look select');

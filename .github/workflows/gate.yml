@@ -141,6 +141,7 @@ jobs:
             node --test atlas/f0_functions_cases.mjs
             node --test atlas/map_zoom_colony_cases.mjs
             node --test atlas/map_orbit_cases.mjs
+            node --test atlas/node_hall_scale_cases.mjs
             node --test atlas/hitl_walkers_cases.mjs
             node --test atlas/motor_35d_cases.mjs
             node atlas/hex_projection_gate.mjs
@@ -188,6 +189,7 @@ jobs:
             node atlas/combat_screen_browser.mjs
             node atlas/landing_doors_browser.mjs
             node atlas/openworld_browser.mjs
+            node atlas/node_hall_scale_browser.mjs
             node atlas/live_invocation_browser.mjs
             node atlas/two_clicks_browser.mjs
             node atlas/eye_carbon_browser.mjs
