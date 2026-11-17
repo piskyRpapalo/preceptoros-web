@@ -88,7 +88,9 @@ async function main() {
   medidas.retiro = retiro;
   ok(retiro.pad === false, 'the six-direction pad is still on the page');
   ok(retiro.dataDirections === 0, 'direction buttons are still on the page: ' + retiro.dataDirections);
-  ok(retiro.skipHeight >= 44, 'the skip tutorial button is under 44 px: ' + retiro.skipHeight);
+  // The Soberano retired the legacy #joy UI in WEB-MAP-CONTINUITY-01 (#875).
+  // Its button stays in the DOM for consumers, but it must no longer occupy screen space.
+  ok(retiro.skipHeight === 0, 'the retired Skip tutorial row reappeared: ' + retiro.skipHeight);
   // Close the Welcome panel: ow_calm.css deliberately folds the sticks while a panel is open.
   await ev(`(() => { const b = document.querySelector('.cats [data-cat=Welcome][aria-pressed="true"]'); if (b) b.click(); return true; })()`);
   // Measure the real camera and character controls only when their map mode is visible.

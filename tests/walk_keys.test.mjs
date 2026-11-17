@@ -15,6 +15,7 @@ test('the pad and arrow-walk are retired; the view joystick stays; Enter walks o
   assert.deepEqual(out.medidas.botones, ['Skip tutorial']);
   assert.equal(out.medidas.retiro.pad, false);
   assert.equal(out.medidas.retiro.dataDirections, 0);
+  assert.equal(out.medidas.retiro.skipHeight, 0); // the legacy tutorial is hidden after #875, not a visible 44px control
   assert.equal(out.medidas.retiro.arrowsWalk, false);
   assert.equal(out.medidas.joystick.present, true);
   assert.equal(out.medidas.joystick.buttons, 2); // decree 2026-11-07, fulfilled 2026-11-08: the crab is born, its stick lives
