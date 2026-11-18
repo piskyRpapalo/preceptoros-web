@@ -13,6 +13,7 @@ const {mkdirSync}=require('node:fs');
 const path=require('node:path');
 const {chromium}=require('playwright-core');
 const publicRoot=path.resolve(__dirname,'../public');
+const SECURITY=import('../worker/security_headers.js');
 let upgradeMode=false;
 const requested=[];
 const contentTypes={'.html':'text/html','.js':'text/javascript','.css':'text/css',
@@ -25,8 +26,8 @@ const server=createServer(async(req,res)=>{
    res.writeHead(200,{'content-type':'text/html'});return res.end('<!doctype html><title>WEB scope probe</title>');
  }
  if(name==='/app'){res.writeHead(308,{location:'/app/'+u.search});return res.end();}
- if(name==='/app/' || name==='/')name+='index.html';
- if(name==='/openworld/')name+='index.html';
+ // Mirror the canonical directory-index mapping of Cloudflare static assets.
+ if(name.endsWith('/'))name+='index.html';
  const asset=path.resolve(publicRoot,'.'+name);
  if(!asset.startsWith(publicRoot+path.sep)){res.writeHead(403);return res.end();}
  try{
@@ -38,8 +39,15 @@ const server=createServer(async(req,res)=>{
    if(after===before)throw Error('missing SW version');
    bytes=Buffer.from(after);
   }
-  res.writeHead(200,{'content-type':contentTypes[path.extname(name)]||'application/octet-stream',
-    'cache-control':'no-store'});
+  const type=contentTypes[path.extname(name)]||'application/octet-stream';
+  const headers={'content-type':type,'cache-control':'no-store'};
+  // Use WEB's actual route policy; the MINI cannot boot without the one
+  // exact APP-owned script hash and must not enable unsafe-inline globally.
+  if(type==='text/html'){
+   const {policyForPath}=await SECURITY;
+   headers['Content-Security-Policy']=policyForPath(u.pathname);
+  }
+  res.writeHead(200,headers);
   return res.end(bytes);
  }catch(e){if(name==='/sw.js'||name==='/sw-listas.js')console.error('SW_SERVER_404',name,String(e));res.writeHead(404);return res.end();}
 });
@@ -63,7 +71,8 @@ async function rootInstall(page,upgrade){
 async function appOpen(page,base){
  const result=await page.goto(base+'/app/',{waitUntil:'domcontentloaded',timeout:20000});
  assert.equal(result.status(),200);
- await waitFor(page,()=>!!window.PreceptorMiniProjectGuide &&
+ await waitFor(page,()=>window.PreceptorMiniBrowserEnabled===true &&
+   window.PreceptorProfile==='personal' && !!window.PreceptorMiniProjectGuide &&
    document.querySelectorAll('[role="tab"]').length===4);
  await waitFor(page,async()=>{
    const regs=await navigator.serviceWorker.getRegistrations();

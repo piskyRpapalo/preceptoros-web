@@ -70,7 +70,11 @@ async function main() {
   if (VACIA) {
     ok(await hasta("document.getElementById('state').textContent && !document.getElementById('state').textContent.includes('checking') && !document.getElementById('state').textContent.includes('Loading')", 10000), 'state text stabilized in empty colony');
     const linea = await ev("document.getElementById('state').textContent");
-    ok(/NO_DATA: no node is alive yet \(the colony is empty\)/.test(linea), 'empty colony says NO_DATA with its cause: ' + linea);
+    // The separate public node publisher may be unavailable: 404 is NO_DATA,
+    // never evidence that the measured LIVE count equals zero.
+    const honestEmpty=/NO_DATA: no node is alive yet \(the colony is empty\)/.test(linea) ||
+      /Nodes online: NO_DATA\..*Live nodes NO_DATA: publisher unavailable \(HTTP 404\)/.test(linea);
+    ok(honestEmpty, 'empty colony says NO_DATA with its cause: ' + linea);
     ok(!(await ev("!!document.querySelector('#map-node-list [data-node]')")), 'empty colony offers no node place');
     medidas.linea_vacia = String(linea).slice(0, 200);
   } else {
