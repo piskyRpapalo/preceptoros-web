@@ -2,9 +2,10 @@
 // un gate que no puede ponerse rojo no demuestra nada.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
+import { createHash } from 'node:crypto';
 import { escanea, compara } from './lexicon_gate.mjs';
 
 const LISTA = JSON.stringify({ palabras: ['monta', 'sinredireccion', 'cria'] });
@@ -75,4 +76,28 @@ test('la base real del repo cuadra con lo medido hoy', () => {
   const base = JSON.parse(JSON.stringify(escanea(raizReal)));
   const { nuevos, resueltos } = compara(escanea(raizReal), base);
   assert.deepEqual([nuevos, resueltos], [[], []]);
+});
+
+test('MVP-A0: Spanish internal APP identifiers are file-scoped and hash-pinned', () => {
+  const root = resolve(new URL('..', import.meta.url).pathname);
+  const allowed = JSON.parse(readFileSync(join(root,'atlas/lexicon_allowed.json'), 'utf8'));
+  const manifest = JSON.parse(readFileSync(join(root,'public/app/package-manifest.json'), 'utf8'));
+  assert.equal(manifest.source_head, 'cde2d0034d9d107ced9e16b88c095136d07ab37d');
+  const paths = Object.keys(allowed.por_fichero).filter(f => f.startsWith('public/app/')).sort();
+  assert.deepEqual(paths, [
+    'public/app/app.css','public/app/index.html',
+    'public/app/node_registration.js','public/app/offline_mini.js'
+  ]);
+  for(const file of paths) {
+    const asset = file.slice('public/app/'.length);
+    const digest = createHash('sha256').update(readFileSync(join(root,file))).digest('hex');
+    assert.equal(digest, manifest.files[asset], 'APP-owned exact asset hash: '+file);
+    assert.ok(allowed.causas_por_fichero[file].includes(digest), 'exception provenance: '+file);
+    assert.ok(allowed.causas_por_fichero[file].includes(manifest.source_head), 'source anchor: '+file);
+    for (const token of allowed.por_fichero[file])
+      assert.ok(!allowed.palabras.includes(token), 'no global exception for '+token);
+  }
+  const baseline = JSON.parse(readFileSync(join(root,'atlas/lexicon_base.json'), 'utf8'));
+  assert.deepEqual(compara(escanea(root),baseline),{nuevos:[],resueltos:[]},
+    'the existing English ratchet remains closed outside audited APP identifiers');
 });

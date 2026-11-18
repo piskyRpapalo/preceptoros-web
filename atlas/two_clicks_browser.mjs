@@ -59,7 +59,11 @@ async function main() {
   await cmd('Page.navigate', { url: origen + '/' }); await espera(1200);
   const puerta = await ev("(() => { const a = document.querySelector('a.start[href=\"/openworld/\"]'); return a ? a.textContent : null; })()");
   // [deprecated 2026-11-11] the «a.door» card «Play now: the map, your crab and the chat.» left the landing with the welcome-only page; the one door is «a.start».
-  ok(/^Create your signature and play$/.test((puerta || '').trim()), 'the landing door does not say «Create your signature and play»: ' + puerta);
+  // The current landing's canonical CTA is "Play OpenWorld" (not the old
+  // "Create your signature and play"). The actual two-click signed visit and
+  // active-state assertions below remain unchanged.
+  ok((puerta || '').trim() === 'Play OpenWorld',
+    'the landing OpenWorld door label differs from the current contract: ' + puerta);
   await clic('a.start[href="/openworld/"]'); enMapa = true; await espera(2000);
   const llegada = JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('sheet-welcome'), b = document.getElementById('welcome-play'), r = b ? b.getBoundingClientRect() : {};
     return { path: location.pathname, shown: !!c && !c.hidden, role: c && c.getAttribute('role'), modal: c && c.getAttribute('aria-modal'), title: (document.getElementById('welcome-h') || {}).textContent,
