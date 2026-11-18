@@ -85,6 +85,8 @@ jobs:
             node --test atlas/puros/hatch_stats_cases.mjs
             node --test atlas/puros/quests_cases.mjs
             node --test atlas/puros/map_taps_cases.mjs
+            # Existing pure suites registered explicitly to keep the census honest.
+            node --test atlas/puros/building_skins_cases.mjs atlas/puros/combat_acho_cases.mjs atlas/puros/first_adventure_cases.mjs atlas/puros/guardian_pressure_cases.mjs atlas/puros/guide_next_cases.mjs atlas/puros/haptics_cases.mjs atlas/puros/holdings_map_cases.mjs atlas/puros/openworld_experience_cases.mjs atlas/puros/ow_calm_cases.mjs atlas/puros/way_by_ear_cases.mjs atlas/puros/worm_panels_cases.mjs
             node --test atlas/puros/preceptor_talk_cases.mjs
             node --test atlas/puros/near_label_cases.mjs
             node --test atlas/puros/guardian_patrol_cases.mjs
