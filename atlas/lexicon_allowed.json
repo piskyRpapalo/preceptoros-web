@@ -1,61 +1,106 @@
 {
- "esquema": "preceptoros.lexicon-permitidas/1",
- "palabras": [
-  "exzqvspbleenx",
-  "leecr",
-  "valores",
-  "atlasvalores",
-  "nodo_dormido",
-  "respuesta_fuera_de_ley",
-  "sello"
- ],
- "motivo": "excepciones con causa; vacia al nacer",
- "causas": {
-  "exzqvspbleenx": "2026-11-01 · fragmentos de una cadena base64 dentro de public/vendor/wllama/wllama.js (runtime MIT fijado por sha en models/web-node/manifest.json); no son palabras",
-  "leecr": "2026-11-01 · fragmentos de una cadena base64 dentro de public/vendor/wllama/wllama.js (runtime MIT fijado por sha en models/web-node/manifest.json); no son palabras",
-  "valores": "2026-11-03 · nombre propio del fichero servido /game/values.js (y su global AtlasValores), anterior a la ley del lexicon; world_feed.js lo carga a demanda como dependencia del motor de ondas (gacha.js) en la terminal basica. Medido: sin esta entrada el gate da ROJO (pieza 2 · mapa vivo)",
-  "atlasvalores": "2026-11-03 · nombre propio del fichero servido /game/values.js (y su global AtlasValores), anterior a la ley del lexicon; world_feed.js lo carga a demanda como dependencia del motor de ondas (gacha.js) en la terminal basica. Medido: sin esta entrada el gate da ROJO (pieza 2 · mapa vivo)",
-  "nodo_dormido": "2026-11-03 · token del contrato de cable preceptoros.chat/1 de la aduana (src/chat.js, aduana#19): causa o campo que viaja por la red y la web lee para traducirlo a una frase inglesa; el visitante nunca lo ve como texto (P3, odd/tasks/chat-del-aula.md)",
-  "respuesta_fuera_de_ley": "2026-11-03 · token del contrato de cable preceptoros.chat/1 de la aduana (src/chat.js, aduana#19): causa o campo que viaja por la red y la web lee para traducirlo a una frase inglesa; el visitante nunca lo ve como texto (P3, odd/tasks/chat-del-aula.md)",
-  "sello": "2026-11-03 · token del contrato de cable preceptoros.chat/1 de la aduana (src/chat.js, aduana#19): causa o campo que viaja por la red y la web lee para traducirlo a una frase inglesa; el visitante nunca lo ve como texto (P3, odd/tasks/chat-del-aula.md)"
- },
- "por_fichero": {
-  "public/assets/radio_message_log.js": [
-   "huella",
-   "huellaen"
+  "esquema": "preceptoros.lexicon-permitidas/1",
+  "palabras": [
+    "exzqvspbleenx",
+    "leecr",
+    "valores",
+    "atlasvalores",
+    "nodo_dormido",
+    "respuesta_fuera_de_ley",
+    "sello"
   ],
-  "public/game/bb_radio.js": [
-   "huella"
-  ],
-  "public/game/combat_acho.js": [
-   "registro"
-  ],
-  "public/game/crab_presence_acho.js": [
-   "faro"
-  ],
-  "public/game/crab_presence_client.js": [
-   "accion",
-   "faro"
-  ],
-  "public/game/first_adventure.js": [
-   "arrecife"
-  ],
-  "public/game/node_beacon.js": [
-   "aduana"
-  ],
-  "public/game/visitor_account.js": [
-   "accion",
-   "faro"
-  ]
- },
- "causas_por_fichero": {
-  "public/assets/radio_message_log.js": "2026-11-17 · existing main, huellaEn internal radio fingerprint renderer and BBRadio.huella exported API; not UI wording. Keep technical export stable until an audited migration.",
-  "public/game/bb_radio.js": "2026-11-17 · existing main, BBRadio.huella is a public JavaScript API called by radio_message_log; renaming would break currently served radio sound+visual mapping.",
-  "public/game/combat_acho.js": "2026-11-17 · existing main, comment refers to combat.registro from existing game contract; code is served but no Spanish displayed to user.",
-  "public/game/crab_presence_acho.js": "2026-11-17 · existing main, event k=faro from signed atlas.coop/1 beacon cooperation packets; voice projects an English sentence.",
-  "public/game/crab_presence_client.js": "2026-11-17 · existing main, accion/faro are field and value of signed atlas.coop/1 packet; changes require separate protocol migration.",
-  "public/game/first_adventure.js": "2026-11-17 · existing main, arrecife is a stable internal game biome key mapped to English reef guards; renaming requires saved-state migration.",
-  "public/game/node_beacon.js": "2026-11-18 · Aduana is the established proper name of the canonical trust gateway; this occurrence is source-comment provenance in the LIVE-only node projection, never public UI copy. Exception limited to this exact file, not a new word or a ratchet baseline increase.",
-  "public/game/visitor_account.js": "2026-11-17 · existing main, verifies the signed atlas.coop/1 packet fields accion/faro; changes would reject current valid records."
- }
+  "motivo": "excepciones con causa; vacia al nacer",
+  "causas": {
+    "exzqvspbleenx": "2026-11-01 · fragmentos de una cadena base64 dentro de public/vendor/wllama/wllama.js (runtime MIT fijado por sha en models/web-node/manifest.json); no son palabras",
+    "leecr": "2026-11-01 · fragmentos de una cadena base64 dentro de public/vendor/wllama/wllama.js (runtime MIT fijado por sha en models/web-node/manifest.json); no son palabras",
+    "valores": "2026-11-03 · nombre propio del fichero servido /game/values.js (y su global AtlasValores), anterior a la ley del lexicon; world_feed.js lo carga a demanda como dependencia del motor de ondas (gacha.js) en la terminal basica. Medido: sin esta entrada el gate da ROJO (pieza 2 · mapa vivo)",
+    "atlasvalores": "2026-11-03 · nombre propio del fichero servido /game/values.js (y su global AtlasValores), anterior a la ley del lexicon; world_feed.js lo carga a demanda como dependencia del motor de ondas (gacha.js) en la terminal basica. Medido: sin esta entrada el gate da ROJO (pieza 2 · mapa vivo)",
+    "nodo_dormido": "2026-11-03 · token del contrato de cable preceptoros.chat/1 de la aduana (src/chat.js, aduana#19): causa o campo que viaja por la red y la web lee para traducirlo a una frase inglesa; el visitante nunca lo ve como texto (P3, odd/tasks/chat-del-aula.md)",
+    "respuesta_fuera_de_ley": "2026-11-03 · token del contrato de cable preceptoros.chat/1 de la aduana (src/chat.js, aduana#19): causa o campo que viaja por la red y la web lee para traducirlo a una frase inglesa; el visitante nunca lo ve como texto (P3, odd/tasks/chat-del-aula.md)",
+    "sello": "2026-11-03 · token del contrato de cable preceptoros.chat/1 de la aduana (src/chat.js, aduana#19): causa o campo que viaja por la red y la web lee para traducirlo a una frase inglesa; el visitante nunca lo ve como texto (P3, odd/tasks/chat-del-aula.md)"
+  },
+  "por_fichero": {
+    "public/app/app.css": [
+      "aduana",
+      "firma",
+      "firma-acciones",
+      "firma-estado",
+      "firma-mark",
+      "firma-red",
+      "firma-retarget",
+      "firma-sign",
+      "firma-titulo",
+      "lee"
+    ],
+    "public/app/index.html": [
+      "nodo"
+    ],
+    "public/app/node_registration.js": [
+      "aduana",
+      "aduanaadapter",
+      "aduanastate",
+      "canonicaladuana",
+      "cedula-nodo",
+      "createaduanarequest",
+      "cédula",
+      "firma",
+      "firma_ssh",
+      "firmassh",
+      "invalid_firma_ssh",
+      "nodo",
+      "recibo",
+      "recibo-cedula",
+      "recibo_sha",
+      "verifyaduanareceipt"
+    ],
+    "public/app/offline_mini.js": [
+      "abre",
+      "crea",
+      "escribe",
+      "firma",
+      "nodo",
+      "nodos"
+    ],
+    "public/assets/radio_message_log.js": [
+      "huella",
+      "huellaen"
+    ],
+    "public/game/bb_radio.js": [
+      "huella"
+    ],
+    "public/game/combat_acho.js": [
+      "registro"
+    ],
+    "public/game/crab_presence_acho.js": [
+      "faro"
+    ],
+    "public/game/crab_presence_client.js": [
+      "accion",
+      "faro"
+    ],
+    "public/game/first_adventure.js": [
+      "arrecife"
+    ],
+    "public/game/node_beacon.js": [
+      "aduana"
+    ],
+    "public/game/visitor_account.js": [
+      "accion",
+      "faro"
+    ]
+  },
+  "causas_por_fichero": {
+    "public/app/app.css": "2026-11-18 · MVP-A0: identical official APP #345 public ZIP source_head cde2d0034d9d107ced9e16b88c095136d07ab37d, app.css SHA256 8a0093ef67c89d38f5365b814332a970f96c3a75b8e624df34983064d74f86b4. Exact protocol identifier / class / deterministic-intent words inherited from APP, not new Spanish WEB copy. This file+word exception is scoped and audited by tests/public_mini_web.test.mjs and lexicon ratchet; never global.",
+    "public/app/index.html": "2026-11-18 · MVP-A0: identical official APP #345 public ZIP source_head cde2d0034d9d107ced9e16b88c095136d07ab37d, index.html SHA256 be7269b211c6ab24987f2a9b761ee7fd3c4ca730cb45f7b1bdb9fb04c62d0bd5. Exact protocol identifier / class / deterministic-intent words inherited from APP, not new Spanish WEB copy. This file+word exception is scoped and audited by tests/public_mini_web.test.mjs and lexicon ratchet; never global.",
+    "public/app/node_registration.js": "2026-11-18 · MVP-A0: identical official APP #345 public ZIP source_head cde2d0034d9d107ced9e16b88c095136d07ab37d, node_registration.js SHA256 330e0f21473374b801ef90dcbc5b7dfef02b0a9267c43cd93d435d6c90d11cc1. Exact protocol identifier / class / deterministic-intent words inherited from APP, not new Spanish WEB copy. This file+word exception is scoped and audited by tests/public_mini_web.test.mjs and lexicon ratchet; never global.",
+    "public/app/offline_mini.js": "2026-11-18 · MVP-A0: identical official APP #345 public ZIP source_head cde2d0034d9d107ced9e16b88c095136d07ab37d, offline_mini.js SHA256 3fc11dea7d2dad97c37e18696fe65133e59e877ded68d00b4b403c599875353f. Exact protocol identifier / class / deterministic-intent words inherited from APP, not new Spanish WEB copy. This file+word exception is scoped and audited by tests/public_mini_web.test.mjs and lexicon ratchet; never global.",
+    "public/assets/radio_message_log.js": "2026-11-17 · existing main, huellaEn internal radio fingerprint renderer and BBRadio.huella exported API; not UI wording. Keep technical export stable until an audited migration.",
+    "public/game/bb_radio.js": "2026-11-17 · existing main, BBRadio.huella is a public JavaScript API called by radio_message_log; renaming would break currently served radio sound+visual mapping.",
+    "public/game/combat_acho.js": "2026-11-17 · existing main, comment refers to combat.registro from existing game contract; code is served but no Spanish displayed to user.",
+    "public/game/crab_presence_acho.js": "2026-11-17 · existing main, event k=faro from signed atlas.coop/1 beacon cooperation packets; voice projects an English sentence.",
+    "public/game/crab_presence_client.js": "2026-11-17 · existing main, accion/faro are field and value of signed atlas.coop/1 packet; changes require separate protocol migration.",
+    "public/game/first_adventure.js": "2026-11-17 · existing main, arrecife is a stable internal game biome key mapped to English reef guards; renaming requires saved-state migration.",
+    "public/game/node_beacon.js": "2026-11-18 · Aduana is the established proper name of the canonical trust gateway; this occurrence is source-comment provenance in the LIVE-only node projection, never public UI copy. Exception limited to this exact file, not a new word or a ratchet baseline increase.",
+    "public/game/visitor_account.js": "2026-11-17 · existing main, verifies the signed atlas.coop/1 packet fields accion/faro; changes would reject current valid records."
+  }
 }

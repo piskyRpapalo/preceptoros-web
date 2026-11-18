@@ -6,6 +6,7 @@
  "chrome": "360+420, both SW orders, offline project/document x2, zero private API",
  "date": "2026-11-18",
  "files": 16,
+ "lexicon": "4 exact APP files SHA-pinned; 0 new Spanish WEB words x2",
  "phase": "CI phase equivalent local x2",
  "phone": "NO_DATA(external_device_not_observed)",
  "public": "NO_DATA(pending_exact_head_HITL_and_deploy)",
