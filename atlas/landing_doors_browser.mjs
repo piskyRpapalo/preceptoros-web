@@ -100,14 +100,15 @@ async function main() {
     return {buttonReady:!button.disabled,formAction:form.getAttribute('action'),data:text.value,
       visible:!text.hidden,download:!file.hidden&&file.download==='BUILDING_PROPOSAL.md'&&file.href.startsWith('blob:'),
       status:status.textContent,links:[...document.querySelectorAll('.dayd-path a')].map(x=>x.getAttribute('href')),
-      feedback:document.getElementById('building-draft').textContent.includes("Feedback stays only on the node owner's device")};
+      feedback:document.getElementById('building-draft').textContent.includes("Feedback stays only on the node owner's device"),
+      shipDoor:(()=>{const d=document.getElementById('doors');return !!d && d.getBoundingClientRect().height>44 && !!d.querySelector('#door-install a[href="#steps"]')})()};
   })())`));
   ok(!medida.daydDraft.missing && medida.daydDraft.buttonReady && medida.daydDraft.visible &&
     medida.daydDraft.download && medida.daydDraft.data.includes('Status: DRAFT_ONLY') &&
     medida.daydDraft.data.includes('NO_DATA(world_publication_not_verified)') &&
     medida.daydDraft.status.includes('nothing was sent or registered') &&
     medida.daydDraft.links.join()==='#dayd-building-form,/openworld/,#doors' &&
-    medida.daydDraft.feedback && !medida.daydDraft.formAction,
+    medida.daydDraft.feedback && medida.daydDraft.shipDoor && !medida.daydDraft.formAction,
     'Day D building draft not safely downloadable: '+JSON.stringify(medida.daydDraft));
   ok(medida.guia.ancho <= medida.guia.vista, '/get-the-app/ scrolls sideways: ' + medida.guia.ancho + ' > ' + medida.guia.vista);
   ok(medida.guia.bajas >= 3 && medida.guia.huellas >= 2 && medida.guia.filas >= 4, '/get-the-app/ lost downloads, fingerprints or the test table');

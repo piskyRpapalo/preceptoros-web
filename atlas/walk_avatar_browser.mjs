@@ -1,5 +1,5 @@
-// W-3 in a real browser: the avatar walks the map. The page is served with two LIVE nodes; the Welcome leaf's visible
-// actions enter them without invisible canvas targets. Empty-hex taps still obey the free-walk law. Uso: node atlas/walk_avatar_browser.mjs
+// W-3 in a real browser: node route walking and empty hex NO_DATA. W-4 retired
+// the Free walk checkbox; modern visitor Play/crab has a separate Journey gate. Uso: node atlas/walk_avatar_browser.mjs
 // (Chrome headless por CDP). Prints one JSON line; exit 1 on failure.
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
@@ -107,10 +107,18 @@ async function main() {
   ok(/terminal: basic/.test(llegada), 'arrival anchors the terminal: ' + llegada.slice(0, 140));
   ok(/beacon skipped · NO_DATA/.test(llegada) || /next step is at home/.test(llegada) || /tutorial:/.test(llegada), 'arrival reports the tutorial: ' + llegada.slice(0, 180));
 
-  // 3 · with free walk off (the W-4 node law), a click on an empty hex walks nowhere and says NO_DATA.
-  // With free walk on (compact terminal, 2026-11-02: the pad is retired), the same tap steps the crab one cell toward it.
-  const libre = (on) => ev(`(() => { const f = document.getElementById('free-walk'); if (f && f.checked !== ${on}) { f.click(); } return !!f; })()`);
-  await libre(false);
+  // 3 · retired W-4 Free walk is deliberately NOT a visible switch. An empty-hex
+  // tap remains fail-closed; Play starts the current visitor path (separately
+  // verified by journey_single_mount_browser). Never click hidden controls.
+  const legacy = await ev(`(() => { const f=document.getElementById('free-walk');
+    return { exists:!!f, visible:!!(f&&f.getBoundingClientRect().height>0), checked:!!(f&&f.checked) }; })()`);
+  ok(legacy.exists && !legacy.visible,
+    'retired Free walk checkbox must stay hidden: ' + JSON.stringify(legacy));
+  medidas.legacy = legacy;
+  // Test-only negative control: the visitor still walks through the gamepad, but
+  // an empty hex must say NO_DATA whenever free walk is explicitly disabled.
+  const switchedOff = await ev("(() => {const f=document.getElementById('free-walk');if(f.checked)f.click();return !f.checked})()");
+  ok(switchedOff, 'test fixture could not disable free walk');
   const vacio = await anclaDe('home');
   // an empty hex near home: no building, guardian or node under it (the town ring of town_plan.js now stands around home)
   const off = await ev(`(() => { const MP = window.AtlasMapPainter, F = window.AtlasMapFog, B = window.AtlasNodeBeacon, s = document.getElementById('surface');
@@ -131,16 +139,12 @@ async function main() {
   const vacia = await estado();
   ok(!/walking to/.test(vacia), 'an empty hex does not start a walk');
   ok(/NO_DATA: no visible node on that hex/.test(vacia), 'an empty hex says NO_DATA: ' + vacia.slice(0, 120));
-  ok(await libre(true), 'the free-walk checkbox is missing');
-  await cierra();
-  // A slow runner (CI, 2026-11-09) read the line before the step landed, or its first tap only closed a late panel:
-  // wait for the line to change, and tap once more if the first tap was consumed.
-  let paso = '';
-  for (let t = 0; t < 2 && !/^You walk/.test(paso); t++) {
-    await clicEn(vacio.x + off[0], vacio.y + off[1]);
-    for (let w = 0; w < 15 && !/^You walk/.test(paso = await estado()); w++) { await espera(100); }
-  }
-  ok(/^You walk (east|south-east|south-west|west|north-east|north-west) to /.test(paso), 'with free walk on, a tap off any node does not step the crab: ' + paso.slice(0, 120));
+  // The current accessible crab path is Play now; the retired checkbox is
+  // not the visitor's movement control. Its end-to-end route has its own gate.
+  if (legacy.checked) await ev("document.getElementById('free-walk').click()"); // restore the input state for the page
+  const startReady = await ev("!!document.getElementById('visitor-start')");
+  ok(startReady, 'current visitor Play control is unavailable');
+  medidas.visitorStartReady = startReady;
 
   console.log(JSON.stringify({ piece: 'W-3', medidas, fallos }));
 }

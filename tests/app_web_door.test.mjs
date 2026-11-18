@@ -24,6 +24,7 @@ export function violations(html, apkBytes) {
   if (order.some((i, k) => k && i < order[k - 1])) out.push('doors out of order');
   const b = door('door-app');
   if (!b.includes('NO_DATA(public_app_web_runtime_not_published)')) out.push('app door does not state its NO_DATA cause');
+  if (/\b(?:Open the app now|Available now|PreceptorOS APP is available now)\b/i.test(b)) out.push('public app availability claimed');
   if (/href="\/app(\.html)?\/?"/.test(b) || /href="\/app(\.html)?\/?"/.test(html)) out.push('a link to a public /app exists');
   if (/<a [^>]*>[^<]*(open the app|open preceptoros app)/i.test(html)) out.push('an open-the-app control exists');
   if (PRIVATE.test(html.replace(/<script[\s\S]*?<\/script>/g, ''))) out.push('a private address or API route is in the page');
@@ -57,11 +58,13 @@ test('the file on disk is the one published (size and fingerprint)', () => {
 });
 
 test('sabotage: a fake public app link or an availability claim is rejected', () => {
-  const fake = html.replace('A hosted copy on this site does not exist yet, so there is no open button here.',
+  const fake = html.replace('A hosted copy on this site is not verified;',
     'Open the app now.');
   const bad1 = html.replace('</h3>\n<p><code>NO_DATA', '</h3>\n<p><a href="/app/">Open the app</a></p>\n<p><code>NO_DATA');
-  const bad2 = html.replace('<p>The real app, with its nine panels', '<p>Available at <a href="http://127.0.0.1:8740/app">this address</a>. The real app, with its nine panels');
+  const bad2 = html.replace('The real APP runs on your own machine.', 'Available at <a href="http://127.0.0.1:8740/app">this address</a>. The real APP runs on your own machine.');
   assert.notEqual(fake, html, 'the sabotage must change the page');
+  assert.ok(violations(fake, apk).includes('public app availability claimed'), 'false app availability was not rejected');
+  assert.notEqual(bad2, html, 'the private-address sabotage must change the page');
   assert.ok(violations(bad1, apk).some((v) => /public \/app|open-the-app/.test(v)), 'fake /app link not caught');
   assert.ok(violations(bad2, apk).some((v) => /private address/.test(v)), 'private address not caught');
   assert.ok(violations(html.replace('NO_DATA(public_app_web_runtime_not_published)', 'available'), apk).length > 0, 'a missing NO_DATA cause not caught');
