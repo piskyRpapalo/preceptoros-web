@@ -59,7 +59,16 @@ async function main() {
   const LEER = `JSON.stringify((() => { const b = document.getElementById('gp-letters'); if (!b) return null; const r = b.getBoundingClientRect();
     const fs = (s) => { const e = document.querySelector(s); return e ? Math.round(e.getBoundingClientRect().height * 10) / 10 : null; };
     return { label: b.getAttribute('aria-label'), w: r.width, h: r.height, inMid: !!b.closest('#gamepad .gp-mid'), acho: b.classList.contains('gp-acho') && !!b.style.getPropertyValue('--gp'),
-      step: document.documentElement.dataset.letters, h1: (() => { const e = [...document.querySelectorAll('#voices *')].find((x) => x.children.length === 0 && /\S/.test(x.textContent) && x.getBoundingClientRect().height > 0); return e ? Math.round(e.getBoundingClientRect().height * 10) / 10 : 0; })(), map: Math.round(document.getElementById('stage').getBoundingClientRect().width),
+      step: document.documentElement.dataset.letters, h1: (() => {
+        // The colony may legitimately have no visible voices when its publisher
+        // is unavailable. The Settings status is visible, truthful owner text,
+        // and lives in the same --letters scaled surface (.bs-sheet).
+        const sheet = document.getElementById('settings-sheet');
+        const visible = sheet && !sheet.hidden ? sheet.querySelector('.bs-line') : null;
+        const e = visible && visible.getBoundingClientRect().height > 0 ? visible
+          : [...document.querySelectorAll('#voices *')].find((x) => x.children.length === 0 && /\S/.test(x.textContent) && x.getBoundingClientRect().height > 0);
+        return e ? Math.round(e.getBoundingClientRect().height * 10) / 10 : 0;
+      })(), map: Math.round(document.getElementById('stage').getBoundingClientRect().width),
       saved: (() => { try { return localStorage.getItem('preceptoros.letters'); } catch (e) { return 'NO_DATA'; } })(), state: (document.getElementById('state') || {}).textContent || '', said: (document.querySelector('#settings-sheet .bs-line') || {}).textContent || '' }; })())`;
   for (const [W, H, n] of [[420, 642, '420'], [360, 740, '360']]) {
     await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });
@@ -74,11 +83,14 @@ async function main() {
     // The letters live inside the settings sheet (Sovereign, 2026-11-08): the gear opens it, «Letters size» steps them.
     await ev(`document.getElementById('gp-letters').click()`); await espera(600);
     ok(await ev(`!!document.getElementById('set-letters') && !document.getElementById('settings-sheet').hidden`), n + ': the gear does not open the settings sheet with Letters size');
+    const baseline = JSON.parse(await ev(LEER));
+    ok(baseline.h1 > 0, n + ': no actual visible Settings text to measure at 100%');
     const pasos = [];
     for (let i = 0; i < 4; i++) { await ev(`document.getElementById('set-letters').click()`); await espera(250); pasos.push(JSON.parse(await ev(LEER))); }
     medidas['pasos' + n] = pasos.map((p) => [p.label, p.h1, p.map]);
     ok(pasos.map((p) => p.step).join(',') === '1.15,1.3,1.5,1', n + ': Letters size does not cycle the four steps: ' + pasos.map((p) => p.step));
-    ok(pasos[2].h1 > a.h1 * 1.4 && pasos[3].h1 === a.h1, n + ': the reading panel letters do not grow with the step: ' + JSON.stringify([a.h1, pasos.map((p) => p.h1)]));
+    ok(pasos[2].h1 > baseline.h1 * 1.4 && pasos[3].h1 === baseline.h1,
+      n + ': visible Settings letters do not scale with the step: ' + JSON.stringify([baseline.h1, pasos.map((p) => p.h1)]));
     ok(pasos.every((p) => p.map === a.map), n + ': the map changed size with the letters');
     ok(/Letters 115%/.test(pasos[0].said), n + ': the step is not said in the settings line: ' + pasos[0].said);
     // The step stays for the next visit.
