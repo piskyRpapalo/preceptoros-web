@@ -76,7 +76,7 @@ try {
   const sinColonia = await puerta('');
   // The web without nodes (#695, 2026-11-07): the tutorial cabin is retired, so the live door declares
   // an empty colony with its cause instead of drawing anything. NO_DATA is the honest value, never a zero.
-  ok(/Colony: NO_DATA · no node declared alive/.test(sinColonia) && !/SYNTHETIC/.test(sinColonia) && !/Colony: \d+ nodes/.test(sinColonia), 'door, live state: the empty colony says NO_DATA with its cause (' + sinColonia.slice(-90) + ')');
+  ok(/Colony: NO_DATA · no measured LIVE node/.test(sinColonia) && !/SYNTHETIC/.test(sinColonia) && !/Colony: \d+ nodes/.test(sinColonia), 'door, live state: only authenticated LIVE nodes enter the colony; an empty publisher says NO_DATA with a cause (' + sinColonia.slice(-90) + ')');
 
   const conFixture = await puerta('?fixture=sintetica');
   ok(/Colony: 9 nodes · 6 buildings · 9 bots with faces/.test(conFixture) && /SYNTHETIC fixture, not a live colony/.test(conFixture),
