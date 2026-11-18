@@ -1,6 +1,7 @@
 // Shared crabs on the real page: two clients on /openworld/, one TEST authority with the real baked floor (Mesa #34).
 // The two clients are two separate Chromium processes on this machine, or — with PHONES="serialA,serialB" — the
-// Chrome of two physical phones reached over adb (the page and the authority travel to them by `adb reverse`; this
+// Chrome of two physical phones reached over adb, or PHONES=<one-serial> for Beelink Chromium + Android.
+// The page and authority travel to Android by `adb reverse`; this
 // harness drives and reads their tabs through the phone's own DevTools socket). Identities are ephemeral visit keys
 // made in each browser. Nobody else is connected and nothing is published.
 // Proved: A walks → the authority accepts → B's page holds A at the authority's cell AND draws it; B answers and A
@@ -21,12 +22,17 @@ import { authority, realFloor } from './crab_presence_authority.mjs';
 
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
 const SAB = process.env.SABOTAJE || '', PHONES = (process.env.PHONES || '').split(',').filter(Boolean);
+// PHONES=<one-serial> uses one isolated Beelink Chromium plus that physical Android.
+// PHONES=<serialA,serialB> retains the existing two-Android test.
 const num = (k, d) => { const n = Number(process.env[k]); return Number.isSafeInteger(n) && n > 0 ? n : d; };
 const TICK_MS = num('TICK_MS', 500), POLL_MS = num('POLL_MS', 300), BEAT_MS = num('BEAT_MS', 1000);
 const LAW = { stale_after: num('STALE_AFTER', 6), gone_after: num('GONE_AFTER', 12), max_visits: num('MAX_VISITS', 8), beat_gap: 1 };
 const WEB_PORT = num('WEB_PORT', PHONES.length ? 8811 : 0), AUTH_PORT = num('AUTH_PORT', PHONES.length ? 8812 : 0);
+const VIEWPORT_W = process.env.VIEWPORT_W ? num('VIEWPORT_W', 0) : 0;
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
-const fallos = [], medidas = { clients: PHONES.length ? 'two physical phones over adb' : 'two Chromium processes on this machine',
+const fallos = [], medidas = { clients: PHONES.length === 2 ? 'two physical phones over adb'
+  : PHONES.length === 1 ? 'one Chromium on Beelink and one physical Android over adb'
+    : 'two Chromium processes on this machine',
   experiment: { tick_ms: TICK_MS, poll_ms: POLL_MS, beat_ms: BEAT_MS, law: LAW } };
 const ok = (c, que) => { if (!c) { fallos.push(que); } return !!c; };
 const tipos = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json', '.wasm': 'application/wasm' };
@@ -86,8 +92,20 @@ async function main() {
   const webPort = srv.address().port, url = `http://127.0.0.1:${webPort}/openworld/?colony=alone&presence=${authPort}&poll=${POLL_MS}&beat=${BEAT_MS}`;
   medidas.url = url;
   if (PHONES.length === 2) { A = await phone(PHONES[0], 9601, url, [webPort, authPort]); B = await phone(PHONES[1], 9602, url, [webPort, authPort]); }
+  else if (PHONES.length === 1) { const base = 9500 + (process.pid % 80);
+    [A, B] = await Promise.all([local(base, url), phone(PHONES[0], 9602, url, [webPort, authPort])]); }
   else { const base = 9500 + (process.pid % 80); [A, B] = await Promise.all([local(base, url), local(base + 1, url)]); }
   medidas.devices = [A.name, B.name];
+  if (VIEWPORT_W) {
+    ok([360, 420].includes(VIEWPORT_W), 'only the specified 360 and 420 CSS-pixel canaries are supported');
+    for (const t of [A, B]) {
+      await t.cmd('Emulation.setDeviceMetricsOverride', { width: VIEWPORT_W, height: VIEWPORT_W === 360 ? 640 : 680,
+        deviceScaleFactor: 1, mobile: true });
+    }
+    medidas.viewports = await Promise.all([A, B].map(async t => ({ client: t.name,
+      requested: VIEWPORT_W, observed: await until(t, 'window.innerWidth === ' + VIEWPORT_W + ' && window.innerWidth', 3000) })));
+    ok(medidas.viewports.every(v => v.observed === VIEWPORT_W), 'both clients must use the requested CSS viewport: ' + JSON.stringify(medidas.viewports));
+  }
 
   // Each client enters as its own ephemeral crab, then consents to share it.
   const SPY = `(() => { window.__acho = []; document.addEventListener('acho:event', (e) => window.__acho.push({ id: e.detail.id, r: e.detail.frame.atoms[0].r, sound: e.detail.frame.sound, news: e.detail.news }));
