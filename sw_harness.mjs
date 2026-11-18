@@ -30,7 +30,7 @@ const ORIGEN = 'https://preceptoros.org';
 class CacheFalso {
   constructor(){ this.m = new Map(); }
   async match(req){ const k = typeof req==='string'?req:req.url; 
-    for (const [u,v] of this.m) if (u===k || u===new URL(k).pathname) return v;
+    for (const [u,v] of this.m) if (u===k || u===new URL(k, ORIGEN).pathname) return v;
     return undefined; }
   async put(req,res){ this.m.set(typeof req==='string'?req:req.url, res); }
   async add(u){ const r = await entorno.fetch(new URL(u,ORIGEN).href); 
@@ -49,6 +49,9 @@ const entorno = {
     registro.pedidasARed.push(new URL(u,ORIGEN).pathname);
     if (u.includes('/no-existe')) return { ok:false, status:404, clone(){return this} };
     if (entorno.SIN_RED) throw new Error('sin red');
+    if (entorno.FALLA_RUTA_CRITICA &&
+        new URL(u,ORIGEN).pathname === '/openworld/')
+      return {ok:false,status:503,clone(){return this}};
     /* CLOUDFLARE PAGES REDIRIGE TODO `.html` A SU RUTA SIN EXTENSION (307), y
        `fetch` sigue el salto: lo que vuelve trae `redirected: true`. Sin esto
        el arnes no podia ver la averia del 2026-09-08 -- daba 21/21 con el
@@ -304,13 +307,20 @@ ok('declara --panel-bg y --panel-fg', txt.includes('--panel-bg') && txt.includes
 ok('un POST pasa de largo',
    await pedir(ORIGEN+'/api','cors','POST') === 'PASA_DE_LARGO');
 
-// activate limpia versiones viejas
-almacen.set('shell-viejo', new CacheFalso());
+// Root WEB cleanup only owns the root shell/obra cache families.
+almacen.set('shell-preceptoros-2026-25-old', new CacheFalso());
+almacen.set('obra-preceptoros-2026-25-old', new CacheFalso());
+almacen.set('preceptoros-public-mini-ba3802be6db9', new CacheFalso());
+almacen.set('foreign-site-cache', new CacheFalso());
 esperas=[]; entorno.handlers.activate({ waitUntil: p => esperas.push(p) });
 await Promise.all(esperas);
 ok('install no deja al worker nuevo esperando a que cierren las pestanas',
    entorno.saltosDeEspera === 1, entorno.saltosDeEspera + ' llamadas a skipWaiting');
-ok('activate borra el cache de la version anterior', !almacen.has('shell-viejo'));
+ok('activate borra el cache root anterior', !almacen.has('shell-preceptoros-2026-25-old') && !almacen.has('obra-preceptoros-2026-25-old'));
+ok('activate preserva cache del MINI y ajenos',
+   almacen.has('preceptoros-public-mini-ba3802be6db9') && almacen.has('foreign-site-cache'));
+ok('fetch /app/ fuera del root SW', await pedir(ORIGEN+'/app/','navigate') === 'PASA_DE_LARGO');
+ok('fetch /app/sw.js fuera del root SW', await pedir(ORIGEN+'/app/sw.js','cors') === 'PASA_DE_LARGO');
 
 /* LA AVERIA DEL 2026-09-08 · el sitio entero caido en Chrome con ERR_FAILED.
    Un worker no puede responder a una NAVEGACION con una respuesta que lleve la
@@ -343,6 +353,18 @@ const sh3 = almacen.get([...almacen.keys()].find(k=>k.startsWith('shell-')));
 ok('el refresco por detras tampoco guarda la marca',
    [...sh3.m.values()].every(r => !r.redirected));
 entorno.REDIRIGE = false;
+
+// Sabotage a required offline route: the new SW must NOT skipWaiting,
+// leaving the older installed worker alive instead of shipping a 503.
+const oldSkipWaiting=entorno.saltosDeEspera;
+almacen.clear();
+entorno.FALLA_RUTA_CRITICA=true;
+esperas=[]; entorno.handlers.install({waitUntil:p=>esperas.push(p)});
+const failingInstall=await Promise.allSettled(esperas);
+ok('fail-closed: missing OpenWorld shell blocks replacement',
+  failingInstall.length===1 && failingInstall[0].status==='rejected' &&
+  entorno.saltosDeEspera===oldSkipWaiting);
+entorno.FALLA_RUTA_CRITICA=false;
 
 let fallos=0;
 for (const [e,n,d] of prueba){ if(e==='FALLA') fallos++; console.log(`${e==='PASA'?'  ok':'FALLA'}  ${n}${d?'  ('+d+')':''}`); }

@@ -1,0 +1,26 @@
+/* APP four-zone public projection. Existing APP CSS provides theme. */
+*{box-sizing:border-box}
+body.public-mini{max-width:56rem;min-width:0;margin:0 auto;padding:1rem;background:#f7f8f7;color:#152c38}
+.public-mini .mini-head{padding:1rem;border-bottom:1px solid #9baeb9;position:relative}
+.public-mini h1{margin:.2rem 0 .7rem;font-size:clamp(1.4rem,4vw,2rem)}
+.public-mini .pestanas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.25rem;margin:1rem 0}
+.public-mini .pestanas button{min-width:0;white-space:normal;min-height:3rem;padding:.55rem .2rem;background:#e8f1f5;color:#123}
+.public-mini .pestanas button[aria-selected=true]{background:#1b5068;color:white;outline:2px solid #15445d;outline-offset:1px}
+.public-mini .panel{position:static!important;height:auto!important;overflow:visible!important;max-height:none!important;padding:.5rem 0 7rem;display:block}
+.public-mini .panel[hidden]{display:none!important}
+.public-mini .tarjeta{max-width:none;padding:1rem;border:1px solid #c2d0d8;border-radius:.5rem;margin:.8rem 0;background:#fff}
+.public-mini button,.public-mini input,.public-mini textarea,.public-mini select{font:inherit}
+.public-mini input:not([type=checkbox]),.public-mini textarea,.public-mini select{width:100%;max-width:100%;padding:.7rem;min-height:2.75rem;margin:.2rem 0 .8rem}
+.public-mini button{min-height:2.75rem;border-radius:.3rem;padding:.45rem .7rem;cursor:pointer}
+.public-mini label{display:block;font-weight:600;margin-top:.5rem}
+.public-mini button:focus-visible,.public-mini a:focus-visible,.public-mini input:focus-visible,.public-mini textarea:focus-visible{outline:3px solid #ab5e00;outline-offset:2px}
+.public-mini .mini-guide-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}
+.public-mini .mini-compose{position:sticky;bottom:0;background:#f7f8f7;border-top:2px solid #c1d1d7;padding:.6rem;z-index:2}
+.public-mini .mini-compose textarea{min-height:2.8rem;max-height:6rem}
+.public-mini .hilo{min-height:3rem;max-height:22rem;overflow:auto;list-style:none;padding:.25rem}
+.public-mini pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:25rem;overflow:auto;background:#edf2f5;padding:.75rem}
+.public-mini [data-state=NO_DATA]{font-style:italic}
+.public-mini details,.public-mini fieldset{max-width:100%}
+.public-mini .owner-models-grid{display:grid;grid-template-columns:1fr;gap:1rem}
+@media (min-width:720px){.public-mini .owner-models-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:390px){body.public-mini{padding:.4rem}.public-mini .pestanas button{font-size:.82rem}}

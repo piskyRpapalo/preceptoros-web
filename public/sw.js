@@ -1,4 +1,4 @@
-const VERSION = 'preceptoros-2026-25-ji';
+const VERSION = 'preceptoros-2026-25-jj';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -23,9 +23,17 @@ function precachear(cache, rutas) {
     .catch(() => null)));
 }
 
+// A partial new cache must not replace an older offline-capable WEB version.
+// Other optional assets may fail individually, but these navigations are critical.
+function comprobarShellCritico(cache) {
+  return Promise.all(['/', '/openworld/', '/get-the-app/'].map(r =>
+    cache.match(r).then(res => {
+      if (!res || !res.ok) throw new Error('FAIL_CLOSED(root_shell_missing:' + r + ')');
+    })));
+}
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(SHELL)
-    .then(c => precachear(c, rutasDelShell()))
+    .then(c => precachear(c, rutasDelShell()).then(() => comprobarShellCritico(c)))
     .then(() => self.skipWaiting()));
 });
 
@@ -33,7 +41,9 @@ self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
       .then(ks => Promise.all(
-        ks.filter(k => k !== SHELL && k !== OBRA).map(k => caches.delete(k))))
+        ks.filter(k => k !== SHELL && k !== OBRA &&
+          (k.startsWith('shell-preceptoros-') || k.startsWith('obra-preceptoros-')))
+          .map(k => caches.delete(k))))
       .then(() => self.clients.claim()));
 });
 
@@ -148,6 +158,8 @@ self.addEventListener('fetch', e => {
 
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
+  // The official four-zone MINI has its own more-specific /app/ controller/cache.
+  if (url.pathname === '/app' || url.pathname.startsWith('/app/')) return;
   if (url.pathname === '/api/world-state') return;
 
   if (RED_PRIMERO.indexOf(url.pathname) >= 0) { e.respondWith(redPrimero(e)); return; }

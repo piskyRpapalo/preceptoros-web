@@ -18,6 +18,34 @@ from urllib.request import urlopen
 RAIZ = Path(__file__).resolve().parent
 PUBLICO = RAIZ / "public"
 
+def app_mini_fichero_oficial(p):
+    """APP-owned exact byte-mapped projection. No generic exemption for /app/."""
+    try:
+        rel = p.relative_to(PUBLICO / "app").as_posix()
+        m = json.loads((PUBLICO / "app" / "package-manifest.json").read_text(encoding="utf-8"))
+        return (m["schema"] == "preceptoros.public-mini-package/1"
+                and m["source_head"] == "cde2d0034d9d107ced9e16b88c095136d07ab37d"
+                and m["source_repository"] == "piskyRpapalo/preceptoros-app"
+                and m["no_rack_connection"] is True
+                and m["no_model_download"] is True
+                and rel in m["files"]
+                and hashlib.sha256(p.read_bytes()).hexdigest() == m["files"][rel])
+    except (ValueError, KeyError, OSError, json.JSONDecodeError):
+        return False
+
+def app_mini_valida():
+    """Only a complete, official APP projection may have a separate PWA."""
+    try:
+        m = json.loads((PUBLICO / "app" / "package-manifest.json").read_text(encoding="utf-8"))
+        paths = set(m["files"])
+        expected = {p.relative_to(PUBLICO / "app").as_posix() for p in (PUBLICO / "app").rglob("*")
+                    if p.is_file() and p.name != "package-manifest.json"}
+        return (len(paths) == 15 and paths == expected
+                and all(app_mini_fichero_oficial(PUBLICO / "app" / r) for r in paths))
+    except (OSError, ValueError, KeyError, json.JSONDecodeError):
+        return False
+
+
 
 def sin_comentarios(texto):
     """Fuera los comentarios ANTES de mirar si una regla existe.
@@ -370,7 +398,12 @@ class Estructura(unittest.TestCase):
         for p in PUBLICO.rglob("*.html"):
             t = p.read_text(encoding="utf-8")
             with self.subTest(fichero=str(p.relative_to(RAIZ))):
-                self.assertIn('rel="icon"', t, "pagina sin favicon")
+                if p == PUBLICO / "app" / "index.html" and app_mini_fichero_oficial(p):
+                    # MINI has its own verified manifest/icons; do not rewrite APP bytes.
+                    manifest = json.loads((PUBLICO / "app" / "manifest.webmanifest").read_text())
+                    self.assertTrue(any(x["sizes"] == "192x192" for x in manifest["icons"]))
+                else:
+                    self.assertIn('rel="icon"', t, "pagina sin favicon")
             if "og:title" not in t:
                 continue
             con_tarjeta += 1
@@ -628,6 +661,12 @@ class Estructura(unittest.TestCase):
             if p.stem in LICENCIAS or p.resolve() in A_DEMANDA:
                 continue    # A_DEMANDA: no viaja en la primera carga; solo tras el consentimiento del visitante
             comprimido = len(gzip.compress(p.read_bytes(), 9))
+            if p == PUBLICO / "app" / "app.css" and app_mini_fichero_oficial(p):
+                # APP's immutable stylesheet is 12.9 KB gzip, a measured exception
+                # only at its exact known digest, not a raised WEB-wide budget.
+                with self.subTest(fichero=str(p.relative_to(RAIZ))):
+                    self.assertLessEqual(comprimido, 14 * 1024)
+                continue
             with self.subTest(fichero=str(p.relative_to(RAIZ))):
                 self.assertLessEqual(
                     comprimido, medio_viaje,
@@ -1141,10 +1180,14 @@ class PWA(unittest.TestCase):
                 t = p.read_text(encoding="utf-8")
                 self.assertIn('rel="manifest"', t,
                               "sin <link rel=manifest> no se puede instalar")
-                if p != PUBLICO / "index.html":
-                    # El selector es ruteo puro y carga sin javascript a
-                    # proposito; el worker lo registra cualquiera de las
-                    # otras diecinueve en cuanto se entra en un idioma.
+                if p == PUBLICO / "app" / "index.html" and app_mini_fichero_oficial(p):
+                    # The child MINI registers its /app/ SW through public-boot.js.
+                    self.assertTrue(app_mini_valida(), "official APP MINI asset digests invalid")
+                    self.assertIn('./public-boot.js', t, "MINI boot missing")
+                    boot = (PUBLICO / "app" / "public-boot.js").read_text()
+                    self.assertIn('serviceWorker.register', boot, "MINI SW not registered")
+                    self.assertIn('./sw.js', boot, "MINI worker must stay in child scope")
+                elif p != PUBLICO / "index.html":
                     self.assertIn("/assets/pwa.js", t,
                                   "la pagina no registra el service worker")
 
@@ -1176,7 +1219,11 @@ class PWA(unittest.TestCase):
             meta = re.search(r'<meta name="theme-color" content="([^"]+)"', t)
             with self.subTest(pagina=str(p.relative_to(PUBLICO))):
                 self.assertIsNotNone(meta, "la pagina no declara theme-color")
-                self.assertEqual(m["theme_color"].lower(), meta.group(1).lower(),
+                current = m
+                if p == PUBLICO / "app" / "index.html" and app_mini_fichero_oficial(p):
+                    current = json.loads((PUBLICO / "app" / "manifest.webmanifest").read_text())
+                    self.assertEqual(current["scope"], "/app/")
+                self.assertEqual(current["theme_color"].lower(), meta.group(1).lower(),
                                  "el manifiesto y la pagina discrepan del color")
 
     def test_un_icono_maskable_no_puede_ser_el_mismo_que_el_normal(self):
@@ -2303,7 +2350,21 @@ class WebLimpia(unittest.TestCase):
             por_hash.setdefault(hashlib.sha256((PUBLICO / f).read_bytes()).hexdigest(), []).append(f)
         conocidos = {tuple(sorted(g)) for g in self.prop["duplicados"]}
         nuevos = [g for g in por_hash.values() if len(g) > 1 and tuple(sorted(g)) not in conocidos]
-        self.assertEqual(nuevos, [], "ficheros identicos byte a byte en public/")
+        # Icons in the signed APP projection are identical to WEB public icons by design.
+        # Exception is restricted to an exact pair and verified APP-owned hash.
+        app_legacy = {
+            "app/assets/icono-192.png": "assets/icon-192.png",
+            "app/assets/icono-512.png": "assets/icon-512.png",
+            "app/assets/icono-512-maskable.png": "assets/icon-512-maskable.png"}
+        seguros = []
+        for group in nuevos:
+            if len(group) == 2:
+                app_path = next((x for x in group if x in app_legacy
+                                 and app_legacy[x] in group), None)
+                if app_path and app_mini_fichero_oficial(PUBLICO / app_path):
+                    continue
+            seguros.append(group)
+        self.assertEqual(seguros, [], "ficheros identicos byte a byte en public/")
 
     def test_ningun_enlace_interno_roto(self):
         rutas = set()

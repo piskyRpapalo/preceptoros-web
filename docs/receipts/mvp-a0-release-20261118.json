@@ -1,0 +1,17 @@
+{
+ "app_bundle_source": "cde2d0034d9d107ced9e16b88c095136d07ab37d",
+ "app_main": "d90647a0aad8e7f2fefd8f05c5a56334474bcc8a",
+ "base": "aa938f5e00cdd516160782eb16c65bea31397476",
+ "chrome": "360+420, both SW orders, offline project/document x2, zero private API",
+ "date": "2026-11-18",
+ "files": 16,
+ "phone": "NO_DATA(external_device_not_observed)",
+ "public": "NO_DATA(pending_exact_head_HITL_and_deploy)",
+ "rollback": "NO_DATA(no_versioned_worker_rollback_procedure)",
+ "schema": "preceptoros.web-mvp-a0/1",
+ "sw": "preceptoros-2026-25-jj",
+ "sw_harness": "28/28 x2, negative installation gate",
+ "target_tests": "21/21 x2",
+ "web_tests": "83 run, 1 skipped, 0 failed x2",
+ "zip_sha256": "e9074a88b7b8e00847ea0d789241fe95d62536d3bb84963028ab85dc003d50da"
+}

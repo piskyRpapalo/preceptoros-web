@@ -87,11 +87,15 @@ def sueltas():
     juego = ["play/"] if (PUBLICO / "play" / "index.html").is_file() else []
     # La guia de la app (Norte D1, 2026-10-26): contenido en ingles, escrito desde release.json.
     guia = ["get-the-app/"] if (PUBLICO / "get-the-app" / "index.html").is_file() else []
+    # The existing public chat page remains a discoverable content route.
+    chat = ["chat/"] if (PUBLICO / "chat" / "index.html").is_file() else []
+    # The official four-zone APP MINI is a real /app/ content route, distinct from OpenWorld.
+    mini = ["app/"] if (PUBLICO / "app" / "index.html").is_file() else []
     # /aduana/ (Norte N2, 2026-10-26): crear un nodo, observante.
     aduana = ["aduana/"] if (PUBLICO / "aduana" / "index.html").is_file() else []
     # OpenWorld (NORTE 7 · PR 2, 2026-10-28): el mapa global y el chat; la cabana del tutorial siempre, nodos solo si estan vivos.
     mundo = ["openworld/"] if (PUBLICO / "openworld" / "index.html").is_file() else []
-    return sorted(raiz + cara + juego + guia + aduana + mundo)
+    return sorted(raiz + cara + juego + guia + chat + mini + aduana + mundo)
 
 
 def url(loc, alternativas=()):

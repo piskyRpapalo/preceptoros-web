@@ -1,0 +1,27 @@
+{
+  "files": {
+    "app.css": "8a0093ef67c89d38f5365b814332a970f96c3a75b8e624df34983064d74f86b4",
+    "assets/icono-192.png": "d9f5a1a248611948c8949bbe269122505e107fef7eb216225294b3f8a2e902d2",
+    "assets/icono-512-maskable.png": "031e8e4e99e8fb69cb448b62fa73af4cca345c0c08f71124c7f83959e7388b64",
+    "assets/icono-512.png": "0ac14a6dc2df4d2b94957e04bbbeefd9c23366f29b34d344893f5671e911f185",
+    "companion_onboarding.js": "d523268f123d0e3a6c11e05b4194d8e810f4465a87cbc500681aba9301b14444",
+    "documents.js": "98cb89bccb074c4c6f605294fb1063ab6d559c7ac8b119c858ae040208700d00",
+    "index.html": "be7269b211c6ab24987f2a9b761ee7fd3c4ca730cb45f7b1bdb9fb04c62d0bd5",
+    "manifest.webmanifest": "971ae6f6d3a4313df5d378551dad1df45371ba969d7140e716096302da9bebe5",
+    "mini_project_guide.js": "e759a64a01ba2a602a153a49bdc94d8a16b92ddee764260cb1320ce5e398a8c5",
+    "node_registration.js": "330e0f21473374b801ef90dcbc5b7dfef02b0a9267c43cd93d435d6c90d11cc1",
+    "offline_mini.js": "3fc11dea7d2dad97c37e18696fe65133e59e877ded68d00b4b403c599875353f",
+    "owner_model_slots.js": "6c358d2c6624bb20ab17175e3254ec11e3dc96a172e6618fa0c6a16f8b6a428b",
+    "public-boot.js": "65cb483cfff4c1aec0ef3e780edb6998147bbb741206adc5d532d6945b6d04df",
+    "public-mini.css": "5d520b00b8a80390d44b6c39a2c1f16786276afe59fc45063840cca755e179e6",
+    "sw.js": "e86f6b0fbb1cb5cd817afb3e53c49112ec3dcf61574380125f35daaefc9fc250"
+  },
+  "mode": "FOUR_ZONE_DETERMINISTIC_ONLY",
+  "no_model_download": true,
+  "no_rack_connection": true,
+  "public_entry": "/app/",
+  "redirect_required": "/app -> /app/",
+  "schema": "preceptoros.public-mini-package/1",
+  "source_head": "cde2d0034d9d107ced9e16b88c095136d07ab37d",
+  "source_repository": "piskyRpapalo/preceptoros-app"
+}
