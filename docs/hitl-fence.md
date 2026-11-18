@@ -51,6 +51,10 @@ code failed. The independent `gate` and `phase` checks describe technical readin
 The required `hitl` check stays **unsuccessful** until the Sovereign's exact-head
 signature is registered. GitHub may display it in red, but no test failure or
 negative judgment about a preceptor should be inferred from that alone.
+DRAFT is a review state, not terminal delivery: the default destination for
+measured-green WEB work is `main` after exact-head human FIRMO and required
+checks. Review completion is not an authorization to auto-merge or deploy.
+Publishing the public service worker remains an independent human gate.
 
 The `hitl` job now writes a short Actions summary with the exact head, the
 observed cause, and a **clearly unsigned** suggested register line. This does not

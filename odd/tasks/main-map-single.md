@@ -86,4 +86,4 @@ None.
 
 ## Next step
 
-MM-1 and the FIRMO of this plan. Nothing is built before that signature.
+MM-1 and verification of this plan's authorized scope (including any applicable standing decision). A missing exact-head merge signature does not halt independently authorized implementation or tests; it blocks landing that HEAD. New permission for heartbeats, node admission or publication remains outside this plan.
