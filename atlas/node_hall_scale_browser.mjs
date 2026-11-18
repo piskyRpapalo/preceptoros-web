@@ -1,5 +1,5 @@
 // Camera orbit regression: Node 0's hall must not resize when the user rotates the map.
-// Uses the page's real Canvas2D painter, HexProjection, camera and NodeBeacon (fixture is local).
+// Uses the page's real Canvas2D painter, HexProjection, camera and NodeBeacon (SYNTHETIC LIVE geometry fixture only; no public heartbeat).
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
 import { resolve, extname } from 'node:path';
@@ -24,7 +24,7 @@ async function main(){
  if(ready){
   const r=JSON.parse(await ev(`JSON.stringify((()=>{
    const sf=document.getElementById('surface'), B=AtlasNodeBeacon,TP=AtlasTownPlan,Z=sf.mapZoom;
-   B.use({colonia:{nodes:[{id:'primer-ancla',q:0,r:0,alive:true,seal:'STALE',since:'2026-11-17'}]}});
+   B.use({colonia:{nodes:[{id:'primer-ancla',q:0,r:0,alive:true,seal:'LIVE',since:'2026-11-17'}]}});
    const original=TP.hall, result=[], angles=[0,30,60,90,120,180,270,359,0]; let captured=null;
    TP.hall=function(g,x,y,step,sq,H,live){captured={step,sq,boxX:step*1.6};return original.apply(this,arguments)};
    try{Z.reset();let current=0;for(const a of angles){

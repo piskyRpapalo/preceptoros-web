@@ -23,7 +23,8 @@ function fakeCanvas() {
  return g;
 }
 function pitch(angle,tilt,zoom) {
- const P0=globalThis.AtlasTownPlan, data={colonia:{nodes:[{id:'primer-ancla',q:0,r:0,alive:true,seal:'STALE',since:'2026-11-17'}]}};
+ // This geometry fixture intentionally represents a SYNTHETIC LIVE node. A STALE node is never drawn by the real projection.
+ const P0=globalThis.AtlasTownPlan, data={colonia:{nodes:[{id:'primer-ancla',q:0,r:0,alive:true,seal:'LIVE',since:'2026-11-17'}]}};
  let observed=null;
  globalThis.AtlasTownPlan={hall(_g,x,y,step,sq){ observed={x,y,step,sq};return {x0:x-step,x1:x+step,y0:y-step*3,y1:y+step}}};
  try{
@@ -48,4 +49,14 @@ test('zoom, and only zoom, scales the hall consistently across angles',()=>{
  }
  const one=pitch(0,1,1).step, two=pitch(0,1,1.7).step;
  assert.ok(Math.abs(two/one-1.7)<1e-9,'zoom must scale 1.7x');
+});
+
+test('historical STALE Node 0 never draws a town hall, even when alive is true', () => {
+ const before=globalThis.AtlasTownPlan; let drawn=0;
+ globalThis.AtlasTownPlan={hall(){drawn++;return {x0:0,x1:0,y0:0,y1:0};}};
+ try {
+  B.use({colonia:{nodes:[{id:'primer-ancla',q:0,r:0,alive:true,seal:'STALE',since:'2026-11-17'}]}});
+  B.draw(fakeCanvas(), makeView(0,1,1), {width:390,clientWidth:390,height:844});
+  assert.equal(drawn,0, 'STALE must remain historical; never draw Node 0 as LIVE');
+ } finally { if(before===undefined)delete globalThis.AtlasTownPlan;else globalThis.AtlasTownPlan=before; }
 });
