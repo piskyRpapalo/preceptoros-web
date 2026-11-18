@@ -1,7 +1,7 @@
 // IC7-S2 · state file of /openworld/, schema v2. Pure: no random numbers, no clock reads, no network.
 // v1 (`{ esquema, nodes: [] }`) carries no colony. v2 carries `colonia` with nodes that declare their own seal and date:
-// `{ id, q, r, alive, seal, since, mana? }`, and buildings `{ id, node }`. Only a node that is alive AND sealed LIVE or STALE
-// is drawn; the rest is counted as hidden, never invented. A LIVE seal without a dated measurement is refused.
+// `{ id, q, r, alive, seal, since, mana? }`, and buildings `{ id, node }`. Only a node that is alive AND sealed LIVE
+// is drawn. STALE stays in the measured source/seal ledger, not on the map; a LIVE seal needs its dated measurement.
 // The geometry is checked by colony_state.js (IC1): at most one building per node, unique ids, no dangling references.
 (function (root) {
   'use strict';
@@ -9,7 +9,7 @@
   var colony = common ? require('./colony_state.js') : root.colony;
 
   var SEALS = ['LIVE', 'STALE', 'STATIC', 'SIMULATED', 'NO_DATA', 'ERROR'];
-  var SHOWN = ['LIVE', 'STALE'];
+  var SHOWN = ['LIVE']; // Visible colony only; historical STALE seals remain in `seals`.
   var V1 = 'preceptoros.openworld-estado/1', V2 = 'preceptoros.openworld-estado/2';
   var DATE = /^\d{4}-\d{2}-\d{2}$/;
   var LOOKS = ['basic', 'ocean', 'flat'];   // IC7-S4 (D11): the node's own face and colour family; default basic
@@ -38,7 +38,7 @@
   }
 
   // leer(estado) → { version, colonia, seals, hidden }. colonia is null for v1, and otherwise the IC1 colony of
-  // the nodes that are alive and sealed LIVE or STALE, with their buildings. Nothing else is drawn.
+  // the nodes that are alive and sealed LIVE, with their buildings. Historical STALE remains in `seals`.
   function leer(estado) {
     var e = estado && typeof estado === 'object' ? estado : {};
     if (e.esquema === undefined || e.esquema === V1) {

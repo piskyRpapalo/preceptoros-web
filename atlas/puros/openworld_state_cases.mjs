@@ -35,10 +35,13 @@ test('v2: alive LIVE nodes are drawn, with their buildings', () => {
   assert.equal(r.hidden, 0);
 });
 
-test('STALE is drawn too: it is shown with its own seal, not as LIVE', () => {
-  const r = S.leer(v2([alive('doggee-a', 1, 0, 'STALE', '2026-10-01')]));
-  assert.equal(r.colonia.nodes.length, 1);
+test('STALE history remains in the publisher seal ledger but never enters the visible colony', () => {
+  const r = S.leer(v2([alive('doggee-a', 1, 0, 'STALE', '2026-10-01')],
+    [{ id: 'historical-building', node: 'doggee-a' }]));
+  assert.equal(r.colonia.nodes.length, 0);
+  assert.deepEqual(r.colonia.buildings, []);
   assert.equal(r.seals['doggee-a'], 'STALE');
+  assert.equal(r.hidden, 1);
 });
 
 test('a node that is not alive, or sealed NO_DATA or ERROR, is never drawn; it is counted as hidden', () => {

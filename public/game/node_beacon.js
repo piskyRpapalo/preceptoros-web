@@ -14,21 +14,24 @@
   var DAY = 86400000;
   function nameOf(n) { return NAMES[n.id] || n.id; }
   // Pure: label(n) → the words on the node's pill: a speech mark when it can talk, its name, then live or asleep + day.
-  function label(n) { return (TALKS[n.id] ? '💬 ' : '') + nameOf(n) + (n.seal === 'LIVE' ? ' · live' : ' · asleep ' + (n.since ? n.since.slice(5) : 'NO_DATA')); }
+  function label(n) { return (TALKS[n.id] ? '💬 ' : '') + nameOf(n) + (n.seal === 'LIVE' ? ' · LIVE · measured day ' + (n.since || 'NO_DATA') : ' · asleep ' + (n.since ? n.since.slice(5) : 'NO_DATA')); }
   // Pure: age(since, today) → whole days between the last heartbeat day and today (YYYY-MM-DD), or null.
   function age(since, today) { var a = Date.parse(since + 'T00:00:00Z'), b = Date.parse(today + 'T00:00:00Z'); return isNaN(a) || isNaN(b) ? null : Math.max(0, Math.round((b - a) / DAY)); }
   // Pure: describe(n, today) → the sentence the ear hears and the screen reader reads: state, its cause and age, and talk.
   function describe(n, today) {
     var nm = /^Node\b/.test(nameOf(n)) ? nameOf(n) : nameOf(n) + ' node', t = TALKS[n.id], d = age(n.since, today), s; // «Node 0», never «Node 0 node»
-    if (n.seal === 'LIVE') { s = nm + ', live: its heartbeat arrived in the last 5 minutes.'; }
+    if (n.seal === 'LIVE') { s = nm + ', LIVE: its heartbeat arrived in the last 5 minutes; last reported measurement day ' + (n.since || 'NO_DATA') + '.'; }
     else { s = nm + ', asleep: no heartbeat in the last 5 minutes; the last one was ' + (n.since ? n.since + (d === null ? '' : d === 0 ? ', today' : ', ' + d + (d === 1 ? ' day' : ' days') + ' ago') : 'never measured (NO_DATA)') + '.'; }
     return s + (t ? (t === nameOf(n) ? ' It answers through the gateway (the Hexelion model): press to talk.' : ' Its chatbot, ' + t + ', answers through the gateway: press to talk.') : ' It declares no chatbot (NO_DATA).');
   }
-  // Pure: pick(data) → the nodes a map can show: well formed, alive, with an integer cell; any seal but LIVE is STALE.
+  // Pure: only measured LIVE rows from Aduana are map doors. Pending admission and STALE stay in the publisher's
+  // historical state; a missing measurement never becomes a visible node or inherited chatbot.
   function pick(d) {
     var list = d && d.colonia && Array.isArray(d.colonia.nodes) ? d.colonia.nodes : [];
-    return list.filter(function (n) { return n && typeof n.id === 'string' && n.alive && Number.isInteger(n.q) && Number.isInteger(n.r); })
-      .map(function (n) { return { id: n.id, q: n.q, r: n.r, seal: n.seal === 'LIVE' ? 'LIVE' : 'STALE', since: n.since || '' }; });
+    return list.filter(function (n) { return n && typeof n.id === 'string' && n.id !== '' && n.alive === true &&
+      n.seal === 'LIVE' && Number.isSafeInteger(n.q) && Number.isSafeInteger(n.r) &&
+      typeof n.since === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(n.since); })
+      .map(function (n) { return { id: n.id, q: n.q, r: n.r, seal: 'LIVE', since: n.since }; });
   }
   // Pure: frame(n, today) → the machine's view of the same truth (an Acho frame under 1,024 bytes).
   function frame(n, today) {
