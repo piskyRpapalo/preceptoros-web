@@ -1,0 +1,58 @@
+{
+ "360_heights_pass2": [
+  [
+   "Settings",
+   23.2,
+   344
+  ],
+  [
+   "Settings",
+   26.2,
+   344
+  ],
+  [
+   "Settings",
+   30.2,
+   344
+  ],
+  [
+   "Settings",
+   20.1,
+   344
+  ]
+ ],
+ "420_heights_pass2": [
+  [
+   "Settings",
+   23.2,
+   404
+  ],
+  [
+   "Settings",
+   26.2,
+   404
+  ],
+  [
+   "Settings",
+   30.2,
+   404
+  ],
+  [
+   "Settings",
+   20.1,
+   404
+  ]
+ ],
+ "base": "62f8a14c6572bbd8c99795d8dda11f91ca7c6245",
+ "effects": "no WEB source/UI/CSS/APP/SW/deploy changed",
+ "negative": "SABOTAJE=sin-zoom returned ROJO at 360/420; flat metrics",
+ "pass1": "Chrome real 360/420 PASS",
+ "pass2": "Chrome real 360/420 PASS",
+ "schema": "preceptoros.web-mvp-a0-letters-gate/1",
+ "scope": "test-only: atlas/type_scale_browser.mjs",
+ "source": "public/assets/openworld.css zoom:var(--letters,1); settings_sheet.js .bs-line",
+ "widths": [
+  360,
+  420
+ ]
+}
