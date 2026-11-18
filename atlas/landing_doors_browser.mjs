@@ -67,7 +67,7 @@ async function main() {
     feedback: [...document.querySelectorAll('.welcome-card p')].some(x=>/Feedback stays only on the node owner's device/.test(x.textContent))
   })`));
   ok(medida.daydHome.building==='/get-the-app/#building-draft' && medida.daydHome.download==='/get-the-app/#doors' &&
-    medida.daydHome.paths.length===2 && medida.daydHome.feedback,
+    medida.daydHome.paths.join()==='/get-the-app/#building-draft,/get-the-app/#doors,/get-the-app/#companion-path' && medida.daydHome.feedback,
     'Day D home path or feedback copy missing: '+JSON.stringify(medida.daydHome));
   ok(medida.restos.length === 0 && medida.tras === 0, 'old landing text is back under the welcome card: ' + JSON.stringify(medida.restos) + ' · after the card: ' + medida.tras);
   ok(!/\bundefined\b|\bNaN\b/.test(medida.texto), 'missing value shown on the landing');
@@ -107,7 +107,7 @@ async function main() {
     medida.daydDraft.download && medida.daydDraft.data.includes('Status: DRAFT_ONLY') &&
     medida.daydDraft.data.includes('NO_DATA(world_publication_not_verified)') &&
     medida.daydDraft.status.includes('nothing was sent or registered') &&
-    medida.daydDraft.links.join()==='#dayd-building-form,/openworld/,#doors' &&
+    medida.daydDraft.links.join()==='/openworld/,#doors,#companion-path' &&
     medida.daydDraft.feedback && medida.daydDraft.shipDoor && !medida.daydDraft.formAction,
     'Day D building draft not safely downloadable: '+JSON.stringify(medida.daydDraft));
   ok(medida.guia.ancho <= medida.guia.vista, '/get-the-app/ scrolls sideways: ' + medida.guia.ancho + ' > ' + medida.guia.vista);

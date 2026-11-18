@@ -135,3 +135,22 @@ test('Homepage has exactly four actions (PWA, Download App, Update App, Create C
   if (!js.includes('The public website cannot inspect an APP on another origin')) { throw new Error('update must not claim to detect an installed app'); }
   if (!/\.ta-btn:focus-visible/.test(home)) { throw new Error('missing visible keyboard focus'); }
 });
+
+// Lisbon table: a visitor can reach every honest door without mistaking an accepted PR for a LIVE node.
+test('LISBON · three visitor doors, Companion docs and mapped/online distinction', () => {
+  const home = leer('public/index.html');
+  const app = leer('public/get-the-app/index.html');
+  const CP = createRequire(import.meta.url)('../public/game/colony_page.js');
+  const statement = CP.voz({nodes:3, edificios:0, bots:[]}, 0, false)[0];
+  if (!home.includes('id="dayd-companion" href="/get-the-app/#companion-path"')) throw new Error('Companion not directly reachable from homepage');
+  for (const href of ['/openworld/', '#doors', '#companion-path']) {
+    if (!app.includes('href="'+href+'"')) throw new Error('missing get-app door: '+href);
+  }
+  for (const href of [
+    'https://github.com/piskyRpapalo/preceptoros-companion/blob/main/CONTRIBUTING.md',
+    'https://github.com/piskyRpapalo/preceptoros-companion/tree/main/companions/template'
+  ]) if (!app.includes('href="'+href+'"')) throw new Error('missing deep link '+href);
+  if (!app.includes('NO_DATA(world_publication_not_verified)')) throw new Error('docs-only PR wrongly implies world publication');
+  if (!home.includes('rack is not a feedback mailbox') || !app.includes('rack is not a mailbox')) throw new Error('feedback must stay on the owner device');
+  if (!statement.includes('3 nodes mapped') || !statement.includes('LIVE/STALE') || /places are awake/i.test(statement)) throw new Error('mapped nodes misrepresented as LIVE: '+statement);
+});
