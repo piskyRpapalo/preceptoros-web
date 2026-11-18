@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#152c38">
+<meta name="description" content="PreceptorOS · private, deterministic four-zone MINI. No model or account required.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="stylesheet" href="./app.css">
+<link rel="stylesheet" href="./public-mini.css">
+<title>PreceptorOS · MINI</title>
+</head>
+<body class="public-mini">
+<header class="mini-head">
+  <h1>PreceptorOS · MINI</h1>
+  <p>Start locally. Your projects and documents stay in this browser. No account, downloaded model or Hexelion rack required.</p>
+  <p id="mini-offline-badge" role="status" aria-live="polite" data-state="DETERMINISTIC_ONLY" data-acho="DETERMINISTIC_ONLY">DETERMINISTIC_ONLY · local guide ready</p>
+  <nav class="pestanas" role="tablist" aria-label="Four MINI zones">
+    <button id="tab-conversacion" type="button" role="tab" aria-controls="panel-conversacion" aria-selected="true">Talk</button>
+    <button id="tab-documentos" type="button" role="tab" aria-controls="panel-documentos" aria-selected="false">Documents</button>
+    <button id="tab-lab" type="button" role="tab" aria-controls="panel-lab" aria-selected="false">Lab</button>
+    <button id="tab-ajustes" type="button" role="tab" aria-controls="panel-ajustes" aria-selected="false">My node</button>
+  </nav>
+</header>
+<main id="public-mini-main">
+<section class="panel" id="panel-conversacion" role="tabpanel" aria-labelledby="tab-conversacion" tabindex="0">
+  <h2>Talk · your deterministic guide</h2>
+  <p>Ask MINI: “help”, “open Documents”, “status”. For project-specific questions use the verified local guide below.</p>
+  <button id="mini-start-project" type="button" class="probar">Create project</button>
+  <section class="tarjeta" aria-labelledby="mini-guide-heading">
+    <h3 id="mini-guide-heading">Ask how this MINI works</h3>
+    <form id="mini-guide-form">
+      <label for="mini-guide-ask">Question about projects, sources, documents, models or deployment</label>
+      <input id="mini-guide-ask" maxlength="240" autocomplete="off" required>
+      <button type="submit">Ask from local sources</button>
+    </form>
+    <p id="mini-guide-answer" role="status" aria-live="polite" data-state="NO_DATA" data-acho="NO_DATA">Local sources are in the APP code and the referenced publications, not an LLM.</p>
+  </section>
+  <ol class="hilo" id="hilo" aria-live="polite" aria-label="Local MINI conversation"></ol>
+</section>
+<section class="panel" id="panel-documentos" role="tabpanel" aria-labelledby="tab-documentos" tabindex="0" aria-label="Documents" hidden>
+    <header class="panel-cabecera">
+      <h2 class="sr" id="h-documentos">Documents</h2>
+      <p class="pie" id="documentos-estado" role="status" aria-live="polite">Your documents stay local until you explicitly share them.</p>
+      <button type="button" class="refrescar" data-refrescar="documentos" aria-label="Refresh Documents" title="Refresh Documents">↻</button>
+    </header>
+    <section class="documentos-acciones" aria-labelledby="documentos-acciones-titulo">
+      <h3 id="documentos-acciones-titulo">Actions</h3>
+      <input type="file" id="documentos-importar" accept=".txt,.md,.json,.csv,.html,.xml" multiple aria-label="Import a document" hidden>
+      <button type="button" id="documentos-importar-btn" class="probar" aria-controls="documentos-importar">Import document</button>
+      <button type="button" id="documentos-nuevo-btn" class="probar">New document</button>
+    </section>
+    <section class="documentos-editor" id="documentos-editor" aria-labelledby="documentos-editor-titulo" hidden>
+      <h3 id="documentos-editor-titulo">Editor</h3>
+      <p class="pie" id="documentos-editor-estado" role="status" aria-live="polite" data-state="draft" data-acho="waiting">Draft in memory. Not saved yet.</p>
+      <label for="documentos-titulo" data-i18n="documentos_titulo">Title</label>
+      <input type="text" id="documentos-titulo" autocomplete="off" maxlength="80" aria-describedby="documentos-editor-estado">
+      <label for="documentos-contenido" data-i18n="documentos_contenido">Content</label>
+      <textarea id="documentos-contenido" rows="12" aria-describedby="documentos-editor-estado"></textarea>
+      <div class="documentos-botones">
+        <button type="button" id="documentos-guardar" class="probar" disabled>Save locally</button>
+        <button type="button" id="documentos-descargar" class="probar" disabled>Download</button>
+        <button type="button" id="documentos-cancelar" class="probar">Cancel</button>
+      </div>
+    </section>
+    <section class="documentos-lista" id="documentos-lista" aria-labelledby="documentos-lista-titulo">
+      <h3 id="documentos-lista-titulo">Your documents</h3>
+      <p class="pie" id="documentos-lista-vacio" role="status" aria-live="polite">No documents yet. Import or create one to get started.</p>
+      <ul id="documentos-items" aria-label="Document list"></ul>
+    </section>
+    <p class="pie documentos-privacidad" role="note" aria-label="Privacy notice">
+      ⚠ Documents are stored in your browser's localStorage, which has no encryption.
+      Do not store passwords, keys, or other sensitive material here.
+      Use Download to keep a safe copy outside the browser.
+    </p>
+  </section>
+<section class="panel" id="panel-lab" role="tabpanel" aria-labelledby="tab-lab" tabindex="0" hidden>
+  <h2>Lab · create your project</h2>
+  <p>Follow the six steps. Each project is editable; source links are references only, not downloaded or indexed documents.</p>
+  <section class="tarjeta" id="mini-project-guide">
+    <h3>Create project → Describe purpose → Add documents → Review project → Configure AI → My node</h3>
+    <label for="mini-project-template">Optional editable example</label>
+    <select id="mini-project-template">
+      <option value="custom">My own project</option>
+      <option value="law">European AI &amp; Software Law</option>
+      <option value="fairness">Digital Fairness Observatory</option>
+    </select>
+    <form id="mini-project-form">
+      <label for="mini-project-title">Project name</label>
+      <input id="mini-project-title" required maxlength="80" autocomplete="off">
+      <label for="mini-project-purpose">Purpose</label>
+      <textarea id="mini-project-purpose" required maxlength="600" rows="3"></textarea>
+      <label for="mini-project-description">Description</label>
+      <textarea id="mini-project-description" required maxlength="3000" rows="4"></textarea>
+      <button type="submit" id="mini-project-save">Save project locally</button>
+    </form>
+    <p id="mini-project-status" role="status" aria-live="polite" data-state="DRAFT_ONLY" data-acho="DRAFT_ONLY">No project saved yet.</p>
+    <ol id="mini-project-steps" aria-label="Your six project steps"></ol>
+    <div class="mini-guide-actions">
+      <button id="mini-to-documents" type="button">Add documents</button>
+      <button id="mini-project-refresh" type="button">Refresh progress</button>
+      <button id="mini-project-review" type="button" disabled>Review project</button>
+      <button id="mini-project-export" type="button" disabled>Export project and documents</button>
+      <button id="mini-to-node" type="button">My node</button>
+    </div>
+    <p id="mini-model-status" role="status" aria-live="polite" data-state="DETERMINISTIC_ONLY" data-acho="DETERMINISTIC_ONLY">DETERMINISTIC_ONLY</p>
+    <pre id="mini-project-review-text" tabindex="0" aria-label="Local project review"></pre>
+    <details><summary>Sources and limitations</summary>
+      <p>Sources are versioned links to official publications. No remote document is fetched without your action.</p>
+      <ul>
+      <li><a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng" target="_blank" rel="noopener noreferrer">AI Act · 2024 original OJ</a></li>
+      <li><a href="https://eur-lex.europa.eu/eli/reg/2022/2065/oj/eng" target="_blank" rel="noopener noreferrer">Digital Services Act · 2022 original OJ</a></li>
+      <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52024SC0245" target="_blank" rel="noopener noreferrer">Commission Digital Fairness fitness check · 2024</a></li>
+      </ul>
+      <p>Legal interpretation: NO_DATA(model_not_verified). LAB DFA benchmark receipts: NO_DATA(not_bundled).</p>
+    </details>
+  </section>
+</section>
+<section class="panel" id="panel-ajustes" role="tabpanel" aria-labelledby="tab-ajustes" tabindex="0" hidden>
+  <h2>My node · owner choices</h2>
+  <p>Configure a model later. A saved name is never evidence that an AI answered or that the rack granted access.</p>
+  <div id="owner-model-slots-mount"></div>
+  <section class="tarjeta" aria-labelledby="node-registration-title">
+      <h3 id="node-registration-title" data-i18n="node_registration_title">Create a node (proposal)</h3>
+      <p data-i18n="node_registration_help">Sign deployment submits a preliminary review request only after your consent. It never signs a Sovereign credential, grants rack access, or creates a LIVE node.</p>
+      <form id="node-registration-form">
+        <label for="node-registration-name" data-i18n="node_registration_name">Proposed node name</label>
+        <input id="node-registration-name" name="node" required maxlength="48" pattern="nodo\.[0-9]{1,6}\.[a-z0-9][a-z0-9-]{0,30}" autocomplete="off">
+        <label for="node-registration-purpose">Purpose of your node</label>
+        <textarea id="node-registration-purpose" name="purpose" required maxlength="512" rows="3" autocomplete="off"></textarea>
+        <button type="submit" class="probar" data-i18n="node_registration_preview">Preview deployment request</button>
+        <label class="fila-switch" for="node-registration-consent">
+          <input type="checkbox" id="node-registration-consent" disabled>
+          <span data-i18n="node_registration_consent">I consent to send this preliminary request for human review. An approved and signed node is a separate step.</span>
+        </label>
+        <button type="button" class="probar" id="node-registration-submit" disabled data-i18n="node_registration_submit">Sign deployment · request review</button>
+      </form>
+      <p id="node-registration-signer" role="status" aria-live="polite" data-i18n="node_registration_signer_pending">The phone creates a review request; only the Sovereign may sign the final admission.</p>
+      <p id="node-registration-status" role="status" aria-live="polite" data-i18n="node_registration_draft">Draft only. Nothing has been sent.</p>
+      <pre id="node-registration-preview" data-i18n-aria="node_registration_preview_aria" aria-label="Canonical pending credential preview"></pre>
+    </section>
+  <p role="note">Sign deployment is a preliminary review request only. The public browser cannot submit it without a verified, consented Android transport and the BRAIN inbox. NO_DATA(native_intake_not_connected).</p>
+</section>
+</main>
+<div class="mini-compose">
+<form class="redactar redactar-anclado" id="form-chat" aria-describedby="insertor-instrucciones">
+  <p class="sr" id="insertor-instrucciones" data-i18n="insertor_instrucciones">Ask the deterministic MINI about these four zones. No downloaded language model or rack connection is required.</p>
+  <label class="sr" for="dicho" data-i18n="lo_que_dices">Your message</label>
+  <textarea id="dicho" rows="2" maxlength="600" data-i18n-ph="ph_dicho" placeholder="Ask MINI locally…"></textarea>
+  <button class="enviar" id="enviar" type="submit" data-i18n="dilo">Send</button>
+</form>
+</div>
+<script>window.PreceptorMiniBrowserEnabled=true;window.PreceptorProfile='personal';</script>
+<script src="./companion_onboarding.js"></script>
+<script src="./documents.js"></script>
+<script src="./owner_model_slots.js"></script>
+<script src="./node_registration.js"></script>
+<script src="./mini_project_guide.js"></script>
+<script src="./offline_mini.js"></script>
+<script src="./public-boot.js"></script>
+</body>
+</html>

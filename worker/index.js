@@ -24,6 +24,11 @@ export default {
     if (PLAY.test(url.pathname)) {
       return Response.redirect(url.origin + '/openworld/' + url.search, 301);
     }
+    if (url.pathname === '/app') {
+      // /app/ is the canonical app URL; never redirect it to itself.
+      url.pathname = '/app/';
+      return Response.redirect(url.toString(), 308);
+    }
     if (url.pathname === '/api/world-state') return worldState(request, env);
     return withSecurity(await env.ASSETS.fetch(request));
   },

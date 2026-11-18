@@ -1,6 +1,6 @@
 // APP-WEB-DOOR R2: /get-the-app/ separates OpenWorld, the PreceptorOS app and its installation, and promises nothing
 // it has not measured. Offline and deterministic: it reads the page and the file on disk; no network, no credentials.
-// The pure checker is `violations(html, apkBytes)`; the sabotage proves the checker rejects a fake public app link.
+// The pure checker is `violations(html, apkBytes)`; negative tests reject fake MINI availability and private transport.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, statSync } from 'node:fs';
@@ -23,10 +23,12 @@ export function violations(html, apkBytes) {
   const order = ['door-openworld', 'door-app', 'door-install'].map((id) => html.indexOf(`id="${id}"`));
   if (order.some((i, k) => k && i < order[k - 1])) out.push('doors out of order');
   const b = door('door-app');
-  if (!b.includes('NO_DATA(public_app_web_runtime_not_published)')) out.push('app door does not state its NO_DATA cause');
-  if (/\b(?:Open the app now|Available now|PreceptorOS APP is available now)\b/i.test(b)) out.push('public app availability claimed');
-  if (/href="\/app(\.html)?\/?"/.test(b) || /href="\/app(\.html)?\/?"/.test(html)) out.push('a link to a public /app exists');
-  if (/<a [^>]*>[^<]*(open the app|open preceptoros app)/i.test(html)) out.push('an open-the-app control exists');
+  if (!b.includes('href="/app/" id="mini-app-entry"')) out.push('official /app/ MINI link missing');
+  if (!b.includes('NO_DATA(external_phone_install_not_measured)')) out.push('external phone still not measured');
+  if (!b.includes('Install app') || !b.includes('Add to Home screen')) out.push('honest Android PWA steps missing');
+  if (!b.includes('No model is included')) out.push('unverified model implied');
+  if (/\b(?:a local AI is included|node is live|registered remotely)\b/i.test(b)) out.push('public app availability claimed');
+  if (b.includes('NO_DATA(public_app_web_runtime_not_published)')) out.push('stale public MINI claim');
   if (PRIVATE.test(html.replace(/<script[\s\S]*?<\/script>/g, ''))) out.push('a private address or API route is in the page');
   const a = door('door-openworld');
   if (!/does not contain the PreceptorOS app/.test(a) || !/does not contain a local model/.test(a)) out.push('OpenWorld door does not say the APK is not the app or has no model');
@@ -57,15 +59,14 @@ test('the file on disk is the one published (size and fingerprint)', () => {
   assert.equal(createHash('sha256').update(apk).digest('hex'), APK_SHA);
 });
 
-test('sabotage: a fake public app link or an availability claim is rejected', () => {
-  const fake = html.replace('A hosted copy on this site is not verified;',
-    'Open the app now.');
-  const bad1 = html.replace('</h3>\n<p><code>NO_DATA', '</h3>\n<p><a href="/app/">Open the app</a></p>\n<p><code>NO_DATA');
-  const bad2 = html.replace('The real APP runs on your own machine.', 'Available at <a href="http://127.0.0.1:8740/app">this address</a>. The real APP runs on your own machine.');
-  assert.notEqual(fake, html, 'the sabotage must change the page');
-  assert.ok(violations(fake, apk).includes('public app availability claimed'), 'false app availability was not rejected');
-  assert.notEqual(bad2, html, 'the private-address sabotage must change the page');
-  assert.ok(violations(bad1, apk).some((v) => /public \/app|open-the-app/.test(v)), 'fake /app link not caught');
+test('sabotage: wrong MINI path, fake model or private link are rejected', () => {
+  const fake = html.replace('No model is included', 'A local AI is included');
+  const bad1 = html.replace('href="/app/" id="mini-app-entry"', 'href="/app-404/" id="mini-app-entry"');
+  const bad2 = html.replace('No model is included', 'Available at <a href="http://127.0.0.1:8740/app">the private rack</a>. No model is included');
+  assert.notEqual(fake, html, 'false claim sabotage must change the page');
+  assert.ok(violations(fake, apk).includes('public app availability claimed'), 'model availability lie was not rejected');
+  assert.notEqual(bad1, html, 'wrong MINI link sabotage must change the page');
+  assert.ok(violations(bad1, apk).includes('official /app/ MINI link missing'), 'wrong /app link not caught');
+  assert.notEqual(bad2, html, 'private-address sabotage must change the page');
   assert.ok(violations(bad2, apk).some((v) => /private address/.test(v)), 'private address not caught');
-  assert.ok(violations(html.replace('NO_DATA(public_app_web_runtime_not_published)', 'available'), apk).length > 0, 'a missing NO_DATA cause not caught');
 });

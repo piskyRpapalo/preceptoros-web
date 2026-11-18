@@ -1,0 +1,10 @@
+{
+  "app_package_zip_sha256": "e9074a88b7b8e00847ea0d789241fe95d62536d3bb84963028ab85dc003d50da",
+  "files": 16,
+  "import": "COPY_BYTES_UNCHANGED",
+  "model_required": false,
+  "publication": "HITL_REQUIRED",
+  "remote_smoke": "NO_DATA(not_published)",
+  "schema": "preceptoros.web-mini-import/1",
+  "source_app_head": "cde2d0034d9d107ced9e16b88c095136d07ab37d"
+}

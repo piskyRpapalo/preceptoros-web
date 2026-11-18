@@ -1,0 +1,1061 @@
+/* Type scale: the mini window reads 20% smaller (Sovereign, 2026-11-07). One knob: every rem follows;
+   touch targets (44px) and icon glyphs (px) keep their size. */
+html { font-size: 80%; }
+/* PreceptorOS · cara premium. Mobile-first, los tokens de privacy_toggle.css. */
+
+:root {
+  /* The web's cream (Sovereign, 2026-11-08: «los mismos colores crema que tiene la web»): measured on the web's
+     controller shell (#f4ecda → #e6dbc3), its ink #1d1b26 and its paper #fffdf6, so the app and its map tab fit. */
+  --ink: #1d1b26;  --ink-soft: #5e5547; --line: #e2d5b8;
+  --paper: #fffdf6; --ground: #f4ecda;
+  --ok: #1f7a4d;   --ok-soft: #e7f4ed;
+  --warn: #8a5b00; --warn-soft: #fdf3e0;
+  --stop: #a3242b; --stop-soft: #fbeced;
+  --acento: #6d5ae0;
+  --acento-tenue: #efecff;
+  --halo-alto: #fff3c4;
+  --halo-bajo: #e6dbc3;
+  --radio: 12px;
+}
+/* Always cream, like the web (Sovereign, 2026-11-08, with a photo of the mini window in dark mode): the web's
+   controller and map are cream in every scheme, so the app no longer turns dark around them. */
+:root { color-scheme: light; }
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; color: var(--ink);
+  /* La misma tierra violeta que el tablero. Eran dos pantallas del mismo
+     producto pintadas por dos manos: el tablero con su halo y este panel en
+     gris de fabrica. Se cruza de una a otra por un enlace, y el salto se
+     notaba. */
+  background:
+    radial-gradient(130% 40% at 50% -5%,  var(--halo-alto) 0%, transparent 68%),
+    radial-gradient(120% 35% at 50% 105%, var(--halo-bajo) 0%, transparent 70%),
+    var(--ground);
+  font: 1rem/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  display: flex; flex-direction: column;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+           env(safe-area-inset-bottom) env(safe-area-inset-left);
+  -webkit-text-size-adjust: 100%;
+}
+.sr {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+.barra { display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: .35rem 0 0; }
+.barra { position: relative; z-index: 5; }
+.identidad { min-width: 0; flex: 0 0 auto; position: relative; padding: .3rem 1rem .15rem; }
+.barra h1 { margin: 0; font-size: 1.15rem; letter-spacing: -.01em;
+            font-weight: 800; }
+.estado { margin: .15rem 0 0; font-size: .8rem; color: var(--ink-soft); }
+.estado-fila { display: flex; align-items: center; gap: .3rem; min-width: 0; }
+.estado-fila .estado { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.modelos-toggle {
+  display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px;
+  min-width: 44px; min-height: 44px; padding: 0; color: var(--ink-soft);
+  background: var(--paper); border: 1px solid var(--line); border-radius: 999px; cursor: pointer;
+}
+.modelos-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
+.modelos-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+.modelos-toggle:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+.modelos-menu {
+  position: absolute; z-index: 30; inset-inline-start: 0; top: calc(100% + .4rem);
+  width: min(92vw, 30rem); max-height: min(70vh, 36rem); overflow: auto;
+  padding: .8rem; color: var(--ink); background: var(--paper);
+  border: 1px solid var(--line); border-radius: var(--radio);
+  box-shadow: 0 .6rem 2rem rgba(0, 0, 0, .22);
+}
+.modelos-menu[hidden] { display: none; }
+.modelos-menu h2 { margin: 0 0 .5rem; font-size: 1rem; }
+.modelos-menu p { overflow-wrap: anywhere; }
+.modelos-menu .turnos { max-height: 48vh; overflow: auto; }
+
+.pestanas {
+  /* Nine 44px targets fit 420px (Sovereign, 2026-11-07): spread evenly, no side padding. */
+  display: flex; gap: 0; justify-content: space-evenly; padding: .5rem 0 .6rem;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto; overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+}
+.pestanas::-webkit-scrollbar { display: none; }
+.pestanas button {
+  display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px;
+  padding: 0; font: inherit; font-size: 0; line-height: 0;
+  color: var(--ink-soft); background: transparent;
+  border: 1px solid transparent; border-radius: var(--radio); cursor: pointer;
+  /* 44px de alto minimo: un objetivo tactil mas pequeno se falla con el pulgar */
+  min-height: 44px;
+}
+.pestanas button[aria-selected="true"] {
+  color: var(--ink); background: var(--paper); border-color: var(--acento);
+  font-weight: 700;
+}
+.pestanas button { font-weight: 600; }
+.pestanas button::before { font-size: 20px; line-height: 1; }
+.pestanas button[data-panel="mando"]::before { content: "⌖"; }
+.pestanas button[data-panel="conversacion"]::before { content: "▱"; }
+.pestanas button[data-panel="gobierno"]::before { content: "⛨"; }
+.pestanas button[data-panel="cuaderno"]::before { content: "▤"; }
+.pestanas button[data-panel="lab"]::before { content: "⚗"; }
+.pestanas button[data-panel="harness"]::before { content: "⌁"; }
+.pestanas button[data-panel="puerta"]::before { content: "⌂"; }
+.pestanas button[data-panel="modelos"]::before { content: "▦"; }
+.pestanas button[data-panel="ajustes"]::before { content: "⚙"; }
+
+.carril { flex: 1; min-height: 0; overflow: hidden; position: relative; }
+.panel {
+  position: absolute; inset: 0; overflow-y: auto;
+  padding: 1rem; display: flex; flex-direction: column; gap: .8rem;
+  -webkit-overflow-scrolling: touch;
+}
+.panel[hidden] { display: none; }
+#panel-modelos { padding: .5rem; gap: .5rem; }
+#openworld-frame { display: block; flex: 1 1 auto; width: 100%; min-height: 16rem; border: 0; background: var(--paper); }
+#openworld-frame[hidden] { display: none; }
+#openworld-status { margin: 0; padding: .3rem .5rem; overflow-wrap: anywhere; }
+#openworld-retry { min-height: 44px; flex: 0 0 auto; }
+.openworld-fallback { align-self: flex-start; min-height: 44px; display: inline-flex; align-items: center; padding: .35rem .6rem; }
+/* While the frame is shown, the map is one fixed piece: it fills the whole gap between the header and
+   the composer (measured 420x447 in the 420x680 mini window). The status stays for screen readers
+   (aria-live), the fallback link returns with Retry when the frame fails and is hidden. */
+#panel-modelos:has(#openworld-frame:not([hidden])) { padding: 0; gap: 0; overflow: hidden; }
+#panel-modelos:has(#openworld-frame:not([hidden])) #openworld-status {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* The link stays under the frame: a blocked frame looks blank and the browser does not say why, so the way out must remain. */
+#panel-modelos:has(#openworld-frame:not([hidden])) #openworld-frame { min-height: 0; height: 100%; }
+
+/* --- hilo --- */
+.hilo { list-style: none; margin: 0; padding: 0; display: flex;
+        flex-direction: column; gap: .55rem; flex: 1; }
+.hilo li {
+  max-width: 88%; padding: .6rem .75rem; border-radius: var(--radio);
+  background: var(--paper); border: 1px solid var(--line);
+  white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.hilo li.mio { align-self: flex-end; background: var(--acento); color: #fff;
+               border-color: transparent; }
+.hilo li.espera { color: var(--ink-soft); font-style: italic; }
+.hilo li.malo { border-color: var(--stop); color: var(--stop); }
+/* One conversation (app router piece 01): each message names its voice in words; the edge only repeats it. */
+.hilo li.hilo-msg { display: flex; flex-direction: column; gap: .2rem; border-left-width: 4px; }
+.hilo .quien { font-size: .75rem; font-weight: 600; letter-spacing: .01em; }
+.hilo .hilo-meta, .hilo .hilo-fuente { font-size: .72rem; opacity: .8; }
+.hilo li.hilo-meta { align-self: center; background: transparent; border: 0; }
+.hilo li:has(.quien-private) { border-left-color: var(--acento); }
+.hilo li:has(.quien-rack-cli) { border-left-color: #348ea2; border-left-style: double; border-left-width: 6px; }
+.hilo li:has(.quien-sensor) { border-left-style: dashed; }
+.hilo li:has(.quien-door) { border-left-style: dashed; border-left-color: var(--stop); }
+.hilo li:has(.quien-unknown) { border-left-style: dotted; border-left-color: var(--stop); }
+.conv-destinos { margin: 0 0 .4rem; font-size: .75rem; }
+
+/* Keep composition visible while the conversation itself scrolls. */
+#panel-conversacion { overflow: hidden; }
+#panel-conversacion .hilo { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+#panel-conversacion textarea { max-height: 160px; }
+/* An empty MVP Talk has no messages to scroll. Do not stretch the empty
+   thread into a full-screen gap between "Write a plan" and the composer.
+   When the first message arrives the existing anchored chat layout returns. */
+#panel-conversacion .hilo:empty { display: none; }
+body:has(#panel-conversacion:not([hidden]) .hilo:empty) .carril {
+  flex: 0 0 auto;
+  height: auto;
+  overflow: visible;
+}
+body:has(#panel-conversacion:not([hidden]) .hilo:empty) #panel-conversacion {
+  position: relative;
+  inset: auto;
+  overflow: visible;
+}
+
+.redactar { display: flex; gap: .5rem; align-items: flex-end; }
+#form-chat.redactar-anclado {
+  flex: 0 0 auto; z-index: 4; padding: .5rem 1rem;
+  border-top: 1px solid var(--line); background: var(--ground);
+}
+#form-chat textarea { max-height: 160px; }
+.ayuda-efimera { flex: 0 0 auto; max-height: 24vh; overflow: auto; padding: .5rem 1rem; border-top: 1px solid var(--line); background: var(--paper); }
+.ayuda-efimera[hidden] { display: none; }
+.ayuda-efimera-cabecera { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.ayuda-efimera h2, .ayuda-efimera p { margin: 0; font-size: .9rem; }
+.ayuda-efimera ul { margin: .3rem 0; padding-inline-start: 1.2rem; }
+#ayuda-efimera-cerrar { min-width: 44px; min-height: 44px; flex: 0 0 44px; }
+textarea {
+  flex: 1; font: inherit; padding: .6rem .7rem; color: var(--ink);
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: var(--radio); resize: vertical; min-height: 44px;
+}
+button.enviar, button.probar {
+  font: inherit; font-weight: 600; min-height: 44px; padding: .6rem 1rem;
+  color: #fff; background: var(--acento); border: 0;
+  border-radius: var(--radio); cursor: pointer;
+}
+button:disabled { opacity: .5; cursor: not-allowed; }
+.pie { margin: 0; font-size: .8rem; color: var(--ink-soft); font-weight: 500; }
+
+/* --- frontera --- */
+.tarjeta {
+  background: var(--paper);
+  border: 1px solid var(--line); border-left: 3px solid var(--acento);
+  border-radius: var(--radio); padding: .9rem; display: flex;
+  flex-direction: column; gap: .7rem;
+}
+.tarjeta.is-off { opacity: .82; }
+.tarjeta.is-blocked { border-color: var(--stop); }
+.fila-switch { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.switch {
+  position: relative; width: 40px; height: 24px; flex: none; padding: 0;
+  background: var(--line); border: 0; border-radius: 999px; cursor: pointer;
+}
+.switch i {
+  position: absolute; top: 3px; left: 3px; width: 18px; height: 18px;
+  background: var(--paper); border-radius: 50%; transition: transform .15s;
+}
+.switch.is-on { background: var(--ok); }
+.switch.is-on i { transform: translateX(16px); }
+.switch-label { font-weight: 700; }
+.insignia { margin-left: auto; padding: .18rem .5rem; border-radius: 999px;
+            font-size: .75rem; font-weight: 600; }
+.insignia-ok   { background: var(--ok-soft);   color: var(--ok); }
+.insignia-warn { background: var(--warn-soft); color: var(--warn); }
+.insignia-stop { background: var(--stop-soft); color: var(--stop); }
+
+.hallazgos { list-style: none; margin: 0; padding: 0; }
+.hallazgos li {
+  display: flex; justify-content: space-between; gap: 1rem;
+  padding: .45rem 0; border-top: 1px solid var(--line);
+}
+.hallazgos li:first-child { border-top: 0; }
+.policy { font-family: ui-monospace, monospace; font-size: .85rem; }
+.count { font-variant-numeric: tabular-nums; font-weight: 600; }
+.vacio { margin: 0; color: var(--ink-soft); }
+.bloqueado { margin: 0; color: var(--stop); font-weight: 600; }
+.payload-caja summary { font-size: .8rem; color: var(--ink-soft); cursor: pointer; }
+.payload {
+  margin: .5rem 0 0; padding: .6rem; overflow-x: auto;
+  background: var(--acento-tenue); border: 1px solid var(--line);
+  border-radius: 8px; font-size: .78rem;
+}
+
+/* --- cuaderno --- */
+.turnos { list-style: none; margin: 0; padding: 0; display: flex;
+          flex-direction: column; gap: .6rem; }
+.turnos li {
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: var(--radio); padding: .7rem; display: flex;
+  flex-direction: column; gap: .4rem;
+}
+.turnos .p { font-size: .85rem; color: var(--ink-soft); overflow-wrap: anywhere; }
+.turnos .r { overflow-wrap: anywhere; }
+.acciones { display: flex; gap: .5rem; align-items: center; }
+.acciones button {
+  font: inherit; font-size: .82rem; min-height: 40px; padding: .35rem .75rem;
+  border-radius: 999px; border: 1px solid var(--line);
+  background: transparent; color: var(--ink); cursor: pointer;
+}
+.acciones button.si  { border-color: var(--ok);   color: var(--ok); }
+.acciones button.no  { border-color: var(--stop); color: var(--stop); }
+.marca { margin-left: auto; font-size: .75rem; font-weight: 600; }
+.marca.si { color: var(--ok); }
+.marca.no { color: var(--ink-soft); }
+
+@media (min-width: 720px) {
+  .barra, .pestanas, .panel { max-width: 780px; margin-inline: auto; width: 100%; }
+}
+
+/* --- la aduana con salida ------------------------------------------------
+   El bloque que convierte la frontera en un paso y no en un espejo. Estaba
+   todo hecho menos esto: se comprobaba el texto, se enseñaba lo que se iba a
+   tachar, y ahí se acababa el camino.
+
+   Nace oculto (`hidden` en el marcado) y solo lo destapa una llamada al filtro
+   que haya vuelto bien. Un botón de guardar visible antes de haber mirado el
+   texto invita a guardar sin mirar, que es justo lo que este panel existe para
+   impedir. */
+.anidar-caja {
+  margin-top: .9rem; padding-top: .9rem;
+  border-top: 1px dashed var(--linea, rgba(255,255,255,.18));
+}
+.anidar-caja[hidden] { display: none; }
+.anidar-titulo {
+  margin: 0 0 .4rem; font-size: .8rem; font-weight: 700;
+  letter-spacing: .01em; opacity: .85;
+}
+/* El texto tachado, en monoespaciada y con los saltos de línea que traiga.
+   Se lee como una cita del servidor, no como algo editable: si se pudiera
+   escribir encima, la persona estaría anidando algo que el filtro no vio. */
+.anidar-vista {
+  margin: 0 0 .6rem; padding: .55rem .7rem; max-height: 8.5rem;
+  overflow: auto; white-space: pre-wrap; word-break: break-word;
+  font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+  border-radius: 8px; background: rgba(0,0,0,.28);
+  border: 1px solid var(--linea, rgba(255,255,255,.14));
+}
+.anidar-caja input {
+  width: 100%; margin-bottom: .55rem; padding: .5rem .6rem;
+  border-radius: 8px; font: inherit; font-size: .85rem;
+  color: inherit; background: rgba(0,0,0,.22);
+  border: 1px solid var(--linea, rgba(255,255,255,.14));
+}
+button.anidar {
+  width: 100%; min-height: 44px; border-radius: 9px; cursor: pointer;
+  font: 700 .88rem/1 inherit; color: #0f1117;
+  background: var(--vena, #a78bfa); border: none;
+}
+button.anidar:disabled { opacity: .45; cursor: default; }
+button.anidar:focus-visible { outline: 2px solid var(--vena, #a78bfa); outline-offset: 2px; }
+.anidar-dicho {
+  margin: .55rem 0 0; font-size: .8rem; font-weight: 600;
+  color: var(--vena, #a78bfa);
+}
+.anidar-dicho[hidden] { display: none; }
+
+/* Proyección decorativa de la transición; nunca captura puntero ni foco. */
+.gusano-transicion {
+  position: fixed; inset: 0; z-index: 20; width: 100vw; height: 100vh;
+  pointer-events: none;
+}
+
+/* Dial de Mando (2026-11-03). Su hoja se archivó en legacy/ y nada activo pintaba el SVG: sectores y rótulos caían
+   al negro por defecto, ilegibles (medido en el Beelink y el Doogee). Las placas usan los degradados del propio SVG;
+   cada rótulo lleva un halo oscuro bajo su relleno claro, así se lee igual sobre oro, verde, violeta o pizarra. */
+#compass-svg-hueco svg { width: 100%; height: auto; display: block; }
+#compass-svg-hueco .sector { stroke: #5b4720; stroke-width: .8; }
+#compass-svg-hueco .sector.completado { fill: url(#gema-oro); }
+#compass-svg-hueco .sector.en_progreso { fill: url(#gema-verde); }
+#compass-svg-hueco .sector.bloqueado { fill: url(#pizarra); }
+#compass-svg-hueco .sector.activo { fill: url(#gema-violeta); }
+#compass-svg-hueco .sector.no_medible { fill: url(#pizarra); opacity: .45; stroke: var(--ink-soft); stroke-dasharray: 3 2.5; }
+#compass-svg-hueco .etiqueta, #compass-svg-hueco .simbolo {
+  fill: #f4e6c4; stroke: #16181d; stroke-width: 2px; paint-order: stroke fill; stroke-linejoin: round;
+  font-family: Georgia, "Times New Roman", serif; pointer-events: none;
+}
+#compass-svg-hueco .etiqueta { font-size: 8.5px; }
+
+/* Equipo · the team in the Harness tab (mini window first: 420×437 panel, 44 px targets) */
+.team { display: grid; gap: .6rem; }
+.team-spectrum { width: 96px; height: 96px; justify-self: center; }
+.team-spectrum path, .agent-spectrum path { fill: none; stroke: var(--agente, var(--acento)); stroke-width: .07; stroke-linejoin: round; }
+.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: .5rem; }
+.agent { position: relative; display: grid; justify-items: center; gap: .1rem; min-height: 96px; padding: .5rem .4rem;
+  border: 1px solid transparent; border-radius: 14px; background: color-mix(in srgb, var(--agente) 12%, transparent);
+  color: inherit; font: inherit; cursor: pointer; }
+.agent[aria-checked="true"] { border-color: var(--agente); background: color-mix(in srgb, var(--agente) 24%, transparent); }
+.agent:focus-visible { outline: 2px solid var(--agente); outline-offset: 2px; }
+.agent-spectrum { width: 44px; height: 44px; }
+.agent-glyph { position: absolute; top: .5rem; left: 50%; translate: -50% 0; width: 44px; height: 44px;
+  display: grid; place-items: center; font-size: 1.15rem; color: var(--agente); }
+.agent strong { font-size: .95rem; }
+.agent-form { font-size: .8rem; opacity: .8; }
+.team-actions { display: flex; flex-wrap: wrap; gap: .4rem; }
+.team-actions button, .team-options button { min-height: 44px; min-width: 44px; border-radius: 12px; }
+.team-actions button { padding: 0 .9rem; border: 1px solid var(--acento-tenue); background: color-mix(in srgb, var(--acento) 10%, transparent); color: inherit; font: inherit; font-weight: 600; cursor: pointer; }
+.team-actions button:hover, .team-actions button:focus-visible { border-color: var(--acento); }
+.team-editor { display: grid; gap: .45rem; padding: .6rem; border: 1px solid var(--acento-tenue); border-radius: 14px; }
+.team-editor label { display: grid; gap: .2rem; }
+.team-options { display: flex; flex-wrap: wrap; gap: .3rem; }
+.team-options button[aria-checked="true"] { outline: 2px solid var(--agente, var(--acento)); }
+.team-options button[style] { background: var(--agente); }
+.harness-motor summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; }
+.agent-badge { --agente: var(--acento); min-width: 44px; min-height: 44px; border-radius: 50%;
+  border: 1px solid var(--agente); background: color-mix(in srgb, var(--agente) 18%, transparent); color: var(--ink); font-size: 1.1rem; }
+/* The glyph is the button's visible label: ink on the agent's tint (measured ≥ 4.5:1); the colour stays in border and tint. */
+@media (prefers-reduced-motion: reduce) { .agent, .team-spectrum path { transition: none; } }
+@media (forced-colors: active) { .agent, .agent-badge { border-color: CanvasText; } }
+
+/* Acho options · every option in every panel wears its spectrum, colour and gesture (acho_motion.js) */
+.acho-mark { width: 1.15em; height: 1.15em; flex: none; vertical-align: -.22em; margin-inline-end: .4em; }
+.acho-mark path { fill: none; stroke: var(--agente, var(--acento)); stroke-width: .13; stroke-linejoin: round; }
+.panel button.acho-option { border-radius: 14px; border: 1px solid color-mix(in srgb, var(--agente) 45%, transparent);
+  background: color-mix(in srgb, var(--agente) 13%, transparent); color: inherit; }
+.panel button.acho-option:hover, .panel button.acho-option:focus-visible { border-color: var(--agente); }
+.panel .turnos > li.acho-option { border-inline-start: 3px solid color-mix(in srgb, var(--agente) 70%, transparent); padding-inline-start: .55rem; }
+@media (forced-colors: active) { .panel button.acho-option { border-color: ButtonText; } .acho-mark path { stroke: CanvasText; } }
+
+/* Panel crests and the Lab as the team's sibling: rows become soft Acho cards */
+.acho-crest { display: block; width: 72px; height: 72px; margin: .2rem auto .6rem; }
+.acho-crest path { fill: none; stroke: var(--agente); stroke-width: .07; stroke-linejoin: round; }
+#panel-lab .turnos > li.acho-option, #panel-cuaderno .turnos > li.acho-option { border: 1px solid color-mix(in srgb, var(--agente) 40%, transparent);
+  border-radius: 14px; background: color-mix(in srgb, var(--agente) 9%, transparent); padding: .55rem .7rem; margin-block: .4rem; }
+/* Compass guide */
+.compass-guide { margin-top: .8rem; }
+.compass-guide summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+.compass-guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: .5rem; }
+.compass-card { display: flex; flex-direction: column; align-items: flex-start; gap: .25rem; min-height: 44px; padding: .6rem; text-align: start;
+  border-radius: 14px; border: 1px solid color-mix(in srgb, var(--agente) 45%, transparent); background: color-mix(in srgb, var(--agente) 12%, transparent);
+  color: inherit; font: inherit; cursor: pointer; }
+.compass-card span { font-size: .82em; opacity: .85; }
+.compass-card-mark { width: 30px; height: 30px; }
+.compass-card-mark path { fill: none; stroke: var(--agente); stroke-width: .12; }
+.acho-focus { filter: drop-shadow(0 0 5px #eacb56) drop-shadow(0 0 2px #eacb56); outline: 2px solid #eacb56; outline-offset: 2px; }
+@media (forced-colors: active) { .compass-card { border-color: ButtonText; } .acho-focus { outline-color: Highlight; filter: none; } }
+
+/* Pending signatures · Acho cards at the top of Command */
+.firmas-caja summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+.firmas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: .5rem; }
+.firma { display: flex; flex-direction: column; gap: .25rem; padding: .6rem; border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--agente) 45%, transparent); background: color-mix(in srgb, var(--agente) 11%, transparent); }
+.firma-mark { width: 28px; height: 28px; } .firma-mark path { fill: none; stroke: var(--agente); stroke-width: .12; }
+.firma-estado { margin: 0; font-size: .78em; font-weight: 700; letter-spacing: .02em; }
+.firma-red .firma-estado { color: #e36a5a; } .firma-sign .firma-estado, .firma-retarget .firma-estado { color: var(--agente); }
+.firma-titulo { font-size: .85em; }
+.firma-acciones { display: flex; gap: .4rem; align-items: center; flex-wrap: wrap; }
+.firma-acciones button, .firma-acciones a { min-height: 44px; min-width: 44px; padding: 0 .8rem; border-radius: 12px; display: inline-flex; align-items: center;
+  border: 1px solid var(--agente); background: transparent; color: inherit; font: inherit; font-weight: 600; cursor: pointer; }
+@media (forced-colors: active) { .firma { border-color: CanvasText; } }
+
+/* Foldable groups (Lab, Notebook, 3DFabrik, the public gate in Settings): one tap opens, the heading is the handle. */
+details.grupo { border: 1px solid var(--line); border-radius: 12px; margin: 10px 0; background: var(--paper); }
+details.grupo > summary { min-height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 12px; cursor: pointer; font-weight: 600; list-style: none; }
+details.grupo > summary::-webkit-details-marker { display: none; }
+details.grupo > summary::before { content: "+"; width: 1em; text-align: center; }
+details.grupo[open] > summary::before { content: "\2212"; }
+details.grupo > summary h3 { margin: 0; font-size: 1rem; }
+details.grupo > summary:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+details.grupo > :not(summary) { margin-left: 12px; margin-right: 12px; }
+details.grupo > .turnos { margin-bottom: 12px; }
+button.ir { min-height: 44px; margin: 6px 0 12px; }
+.ir-fila { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* The tab rail with its two arrows: the arrows never shrink the tabs; the rail scrolls between them. */
+.carril-pestanas { display: flex; align-items: stretch; gap: 4px; min-width: 0; }
+.carril-pestanas > .pestanas { flex: 1 1 auto; min-width: 0; }
+.flecha { flex: 0 0 44px; min-width: 44px; min-height: 44px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); color: var(--ink); font-size: 20px; line-height: 1; cursor: pointer; }
+.flecha:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.flecha[aria-disabled="true"] { opacity: .45; cursor: default; }
+@media (forced-colors: active) { .flecha { border: 2px solid ButtonText; } .flecha[aria-disabled="true"] { border-style: dashed; opacity: 1; } }
+
+/* Notebook operativo · read-only projections from local receipts, not an agent controller. */
+#panel-cuaderno .notebook-heading, #panel-cuaderno .notebook-section {
+  display: grid; gap: .55rem; margin: 0;
+}
+#panel-cuaderno .notebook-heading h2, #panel-cuaderno .notebook-section h3 { margin: 0; }
+#panel-cuaderno .notebook-heading .probar { justify-self: start; min-height: 44px; }
+#panel-cuaderno .notebook-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: .65rem; }
+#panel-cuaderno .notebook-card {
+  min-width: 0; padding: .8rem; background: var(--paper); border: 1px solid var(--line);
+  border-radius: var(--radio); display: grid; gap: .4rem;
+}
+#panel-cuaderno .notebook-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: start; gap: .5rem; }
+#panel-cuaderno .notebook-card h4 { margin: 0; font-size: 1rem; overflow-wrap: anywhere; }
+#panel-cuaderno .notebook-status { border: 1px solid var(--line); border-radius: .3rem; padding: .15rem .4rem;
+  font: 600 .72rem/1.5 ui-monospace, monospace; overflow-wrap: anywhere; }
+#panel-cuaderno .notebook-status[data-status="NO_DATA"], #panel-cuaderno .notebook-status[data-status="STALE"] {
+  border-color: var(--warn); color: var(--ink); }
+#panel-cuaderno .notebook-fact { margin: 0; font-size: .85rem; overflow-wrap: anywhere; line-height: 1.5; }
+#panel-ajustes #captura-consent { display: block; }
+#panel-ajustes #captura-consent > summary { cursor: pointer; padding: .5rem 0; min-height: 44px; }
+#panel-ajustes #captura-consent > .pie { margin: .5rem 0; }
+
+/* Common panel header (2026-11-12): title, one status line read aloud, and ↻ where the panel reads a source.
+ * The same three parts in every panel; a hidden title still names the panel for a screen reader. */
+.panel-cabecera { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
+  gap: .15rem .5rem; margin: 0 0 .5rem; padding-bottom: .35rem; border-bottom: 1px solid var(--line); }
+.panel-cabecera h2 { grid-column: 1; margin: 0; font-size: 1.05rem; }
+.panel-cabecera [role="status"] { grid-column: 1; margin: 0; }
+.panel-cabecera .refrescar { grid-column: 2; grid-row: 1; min-width: 44px; min-height: 44px; padding: 0;
+  border-radius: 999px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); font-size: 1.1rem; cursor: pointer; }
+.panel-cabecera .refrescar:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+#panel-cuaderno .notebook-heading.panel-cabecera { grid-template-columns: minmax(0, 1fr); }
+
+/* «?» Hexelion commands (2026-11-12): a native disclosure at the top of Talk; each command writes itself in the box. */
+#panel-conversacion .panel-cabecera { grid-template-columns: minmax(0, 1fr) auto auto; position: relative; }
+.comandos { grid-column: 3; grid-row: 1; }
+.comandos > summary { display: grid; place-items: center; list-style: none; font-weight: 700; }
+.comandos > summary::-webkit-details-marker { display: none; }
+.comandos[open] > summary { background: var(--acento); color: var(--paper); }
+.comandos-lista { position: absolute; top: 100%; left: 0; right: 0; z-index: 5; padding: .5rem;
+  background: var(--paper); border: 1px solid var(--line); border-radius: var(--radio); }
+.comandos-lista ul { list-style: none; margin: .25rem 0 0; padding: 0; }
+.comandos-lista button { width: 100%; min-height: 44px; text-align: left; padding: .35rem .5rem; margin: 2px 0;
+  border: 1px solid var(--line); border-radius: var(--radio); background: var(--paper); color: var(--ink); cursor: pointer; }
+.comandos-lista button:focus-visible { outline: 3px solid var(--acento); outline-offset: 1px; }
+
+/* Evidence chip (evidence_chip.js). Shape + word + colour; the border keeps the chip visible when colour is
+ * removed (forced-colors, greyscale). Static: no motion, so reduced-motion needs nothing here. */
+.evidence-chip { display: inline-flex; align-items: center; gap: .3rem; padding: .05rem .45rem;
+  border: 1.5px solid currentColor; border-radius: 999px; font-weight: 600; font-size: .7rem; letter-spacing: .02em;
+  line-height: 1.4; vertical-align: baseline; }
+.evidence-chip .evidence-glyph { font-size: .8em; line-height: 1; }
+.evidence-chip.evidence-ok { color: var(--ok); background: var(--ok-soft); }
+.evidence-chip.evidence-warn { color: var(--warn); background: var(--warn-soft); }
+.evidence-chip.evidence-quiet { color: var(--ink-soft); background: transparent; border-style: dashed; }
+.evidence-chip.evidence-stop { color: var(--stop); background: var(--stop-soft); }
+@media (forced-colors: active) {
+  .evidence-chip { forced-color-adjust: none; color: CanvasText; background: Canvas; border-color: CanvasText; }
+}
+
+/* Participant state (evidence_chip.js PreceptorEstado): one grammar for Talk, Lab, Notebook and Command.
+ * Glyph + word + tone + border line (solid, double, dashed, dotted); the word is always on screen. Only WORKING
+ * moves (a slow breath of the glyph), and nothing moves under prefers-reduced-motion. */
+.part-estado { display: inline-flex; align-items: center; gap: .3rem; padding: .1rem .5rem .1rem .35rem; min-height: 1.5rem;
+  border: 2px solid currentColor; border-radius: 999px; font-weight: 700; font-size: .7rem; letter-spacing: .03em;
+  line-height: 1.2; white-space: nowrap; vertical-align: middle; }
+.part-estado[data-line="double"] { border-style: double; border-width: 3px; }
+.part-estado[data-line="dashed"] { border-style: dashed; }
+.part-estado[data-line="dotted"] { border-style: dotted; }
+.part-estado .estado-glyph { position: relative; display: inline-grid; place-items: center; width: 1.05rem; height: 1.05rem; font-size: .85rem; line-height: 1; }
+.part-estado .estado-mark { position: absolute; inset: -.15rem; width: calc(100% + .3rem); height: calc(100% + .3rem); opacity: .35; }
+.part-estado .estado-mark path { fill: none; stroke: currentColor; stroke-width: .12; }
+.part-estado.estado-ok { color: var(--ok); background: var(--ok-soft); }
+.part-estado.estado-warn { color: var(--warn); background: var(--warn-soft); }
+.part-estado.estado-stop { color: var(--stop); background: var(--stop-soft); }
+.part-estado.estado-quiet { color: var(--ink-soft); background: transparent; }
+.part-estado.estado-working .estado-glyph { animation: part-estado-breath 2.4s ease-in-out infinite; }
+@keyframes part-estado-breath { 0%, 100% { transform: scale(1); } 50% { transform: scale(.82); } }
+@media (prefers-reduced-motion: reduce) { .part-estado .estado-glyph { animation: none !important; } }
+@media (forced-colors: active) {
+  .part-estado { forced-color-adjust: none; color: CanvasText; background: Canvas; border-color: CanvasText; }
+}
+/* Talk: who is here, each preceptor with its state. Wraps on a phone; never scrolls sideways. */
+.conv-estados { list-style: none; margin: .35rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .3rem .5rem; }
+.conv-estados li { display: inline-flex; align-items: center; gap: .3rem; font-size: .75rem; }
+.conv-estados .conv-estado-nombre { font-weight: 600; }
+/* Command: what needs a human decision, each with a way to its evidence. */
+.mando-decide { margin: .5rem 0; padding: .5rem .6rem; border: 1px solid var(--line); border-radius: .5rem; }
+.mando-decide ul { list-style: none; margin: .35rem 0 0; padding: 0; display: grid; gap: .35rem; }
+.mando-decide li { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
+.mando-decide button.ir { min-height: 44px; }
+
+/* Acho state expression (acho_motion.js express): line pattern + form + tone; never colour alone. */
+.acho-estado { width: 1.6rem; height: 1.6rem; flex: none; display: inline-grid; place-items: center; }
+.acho-estado svg { width: 100%; height: 100%; }
+.acho-estado path { fill: none; stroke-width: .12; stroke-linejoin: round; stroke: var(--ink-soft); }
+.acho-estado[data-tone="ok"] path { stroke: var(--ok); }
+.acho-estado[data-tone="warn"] path { stroke: var(--warn); }
+.acho-estado[data-tone="stop"] path { stroke: var(--stop); }
+.acho-estado[data-line="double"] path { stroke-width: .2; }
+.acho-estado[data-line="dashed"] path { stroke-dasharray: .28 .18; }
+.acho-estado[data-line="dotted"] path { stroke-dasharray: .04 .16; stroke-linecap: round; }
+:is(#panel-cuaderno, .panel) .notebook-card[data-acho="ok"] { border-inline-start: 4px double var(--ok); }
+:is(#panel-cuaderno, .panel) .notebook-card[data-acho="needs_you"] { border-inline-start: 4px solid var(--warn); }
+:is(#panel-cuaderno, .panel) .notebook-card[data-acho="uncertain"] { border-inline-start: 4px dashed var(--warn); }
+:is(#panel-cuaderno, .panel) .notebook-card[data-acho="fence"], :is(#panel-cuaderno, .panel) .notebook-card[data-acho="exec_fail"] { border-inline-start: 4px solid var(--stop); }
+:is(#panel-cuaderno, .panel) .notebook-card[data-acho="empty"], :is(#panel-cuaderno, .panel) .notebook-card[data-acho="unanswered"], :is(#panel-cuaderno, .panel) .notebook-card[data-acho="bridge_down"] { border-inline-start: 4px dotted var(--ink-soft); }
+@media (forced-colors: active) { .acho-estado path { stroke: CanvasText; } :is(#panel-cuaderno, .panel) .notebook-card[data-acho] { border-inline-start-color: CanvasText; } }
+
+/* Where am I (Claude, 2026-11-15, «what the carbon feels»): the rail shows its icons only; the selected one now wears
+   its name under it, the rail's edges fade instead of cutting an icon in half, and a pressed tab gives under the thumb. */
+.carril-pestanas > .pestanas {
+  padding-bottom: 1.15rem;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+}
+.pestanas button { position: relative; transition: transform .12s ease, background-color .2s ease; }
+.pestanas button:active { transform: scale(.9); }
+.pestanas button[aria-selected="true"]::before { color: var(--acento); }
+.pestanas button[aria-selected="true"]::after {
+  content: attr(aria-label); position: absolute; top: calc(100% + 2px); left: 50%; transform: translateX(-50%);
+  font-size: 10.5px; line-height: 1.2; font-weight: 800; letter-spacing: .01em; white-space: nowrap; color: var(--ink);
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) { .pestanas button { transition: none; } .pestanas button:active { transform: none; } }
+@media (forced-colors: active) { .carril-pestanas > .pestanas { -webkit-mask-image: none; mask-image: none; } .pestanas button[aria-selected="true"]::after { color: CanvasText; } }
+.pestanas button:first-child[aria-selected="true"]::after { left: 0; transform: none; }
+.pestanas button:last-child[aria-selected="true"]::after { left: auto; right: 0; transform: none; }
+/* Four primary zones always have a visible name. Icons alone make the
+   Documents and Lab steps between Talk and My node look like empty slots. */
+.pestanas button:not([data-mvp="advanced"]) {
+  flex: 1 1 64px;
+  width: auto;
+  min-width: 64px;
+  max-width: 155px;
+}
+.pestanas button:not([data-mvp="advanced"])::after {
+  content: attr(aria-label);
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  color: var(--ink-soft);
+  font-size: 10.5px;
+  line-height: 1.2;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.pestanas button:not([data-mvp="advanced"])[aria-selected="true"]::after {
+  color: var(--ink);
+  font-weight: 800;
+}
+.pestanas:has([data-mvp="advanced"]:not([hidden])) {
+  justify-content: flex-start;
+  gap: .25rem;
+}
+
+/* The Talk cabin: the Brain band of Talk. Which brain answers, the choice, the heads (NO_DATA until their
+   contract exists) and how many signatures Boundary has read. Ink on paper; nothing here moves. */
+.cabina-brain { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .5rem; margin: 0 0 .4rem; padding: .4rem .55rem;
+  border: 2px solid var(--ink); border-radius: var(--radio); background: var(--paper); box-shadow: 0 3px 0 var(--ink); }
+.cabina-brain .brain-uso { flex: 1 1 100%; margin: 0; font-size: .8rem; font-weight: 600; overflow-wrap: anywhere; }
+.cabina-brain .brain-opciones { display: flex; gap: .3rem; }
+.cabina-brain .brain-op, .cabina-brain .brain-firmas { min-height: 44px; min-width: 44px; padding: 0 .8rem; border: 2px solid var(--ink);
+  border-radius: 999px; background: var(--ground); color: var(--ink); font: inherit; font-size: .8rem; font-weight: 600; }
+.cabina-brain .brain-op[aria-checked="true"] { background: var(--ink); color: var(--paper); }
+.cabina-brain .brain-op[aria-checked="true"]::before { content: "● "; }
+.cabina-brain .brain-op:disabled { border-style: dashed; opacity: .6; }
+.cabina-brain .brain-heads { margin: 0; font-size: .75rem; }
+.cabina-brain .brain-firmas { margin-left: auto; }
+.cabina-brain .brain-firmas[data-waiting="1"] { background: var(--warn-soft); border-color: var(--warn); color: var(--warn); }
+.hilo .hilo-prov { font-weight: 600; }
+@media (forced-colors: active) { .cabina-brain { border-color: CanvasText; box-shadow: none; }
+  .cabina-brain .brain-op[aria-checked="true"] { background: Highlight; color: HighlightText; } }
+
+/* Fleet (Harness): six sides, six facts. Thick = measured on, thin = measured off, dashed = NO_DATA. The list under
+   the picture says the same in words; the picture is decoration for the eye. Nothing moves. */
+.fleet-zona h3 { margin: .2rem 0; font-size: 1rem; }
+.fleet-svg { display: block; width: 100%; max-width: 240px; max-height: 40vh; height: auto; margin: 0 auto; }
+.fleet-face { fill: var(--paper); stroke: none; }
+.fleet-cell { cursor: pointer; }
+.fleet-cell.is-synthetic .fleet-face { fill: var(--ground); }
+.fleet-side { stroke: var(--ink); stroke-linecap: round; }
+.fleet-side.side-on { stroke-width: 6; }
+.fleet-side.side-off { stroke-width: 2; }
+.fleet-side.side-nodata { stroke-width: 2; stroke-dasharray: 3 5; stroke: var(--ink-soft); }
+.fleet-label { font: 700 13px system-ui, sans-serif; fill: var(--ink); }
+.fleet-list { list-style: none; margin: .4rem 0; padding: 0; display: grid; gap: .3rem; }
+.fleet-list summary { min-height: 44px; display: flex; align-items: center; flex-wrap: wrap; gap: .3rem; font-weight: 600; cursor: pointer; }
+.fleet-list details[data-state="SYNTHETIC"] { border: 2px dashed var(--ink-soft); border-radius: var(--radio); padding: 0 .5rem; }
+.fleet-syn { font-size: .75rem; letter-spacing: .04em; }
+.fleet-facts { margin: 0 0 .4rem; font-size: .8rem; }
+.fleet-facts .fact-on::marker { content: "▬ "; }
+.fleet-facts .fact-off::marker { content: "─ "; }
+.fleet-facts .fact-nodata::marker { content: "┄ "; }
+@media (forced-colors: active) { .fleet-side { stroke: CanvasText; } .fleet-face { fill: Canvas; } .fleet-label { fill: CanvasText; } }
+/* Plans in the panels (plan_panels.js): the plan's stages in Talk, per-task decisions in Command, cards elsewhere.
+   A SYNTHETIC drawing wears a dashed frame and a banner. Buttons keep the 44 px target. */
+.talk-plan { margin: .4rem 0; padding: .5rem .7rem; border: 1px solid var(--line); border-radius: var(--radio); background: var(--paper); }
+.talk-plan .plan-line, .talk-plan .plan-next-title { margin: 0 0 .3rem; font-weight: 600; }
+.talk-plan .plan-next { margin: 0 0 .3rem; padding-left: 1.2rem; }
+.talk-plan .plan-grounds, .talk-plan .plan-next-note { color: var(--ink-soft); font-size: .9em; }
+.plan-escribir textarea { box-sizing: border-box; width: 100%; min-height: 8rem; font: inherit; padding: .5rem; resize: vertical;
+  color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: var(--radio); }
+.plan-guardar, .plan-decidir button { min-height: 44px; min-width: 44px; padding: 0 .9rem; font: inherit; cursor: pointer;
+  color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 999px; }
+.plan-decidir button:disabled { cursor: not-allowed; opacity: .6; }
+.plan-decidir { list-style: none; margin: .3rem 0 .8rem; padding: 0; display: grid; gap: .4rem; }
+.plan-decidir li { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
+.plan-decidir li > span:not(.part-estado) { flex: 1 1 100%; min-width: 0; overflow-wrap: anywhere; order: -1; }
+.plan-decidir li > .part-estado { order: -2; }
+[data-synthetic="true"] { outline: 2px dashed var(--ink-soft); outline-offset: 3px; }
+.plan-synthetic { margin: 0 0 .4rem; font-weight: 600; color: var(--ink-soft); }
+.plan-agentes ul { margin: .2rem 0; padding-left: 1.2rem; }
+.plan-agentes li, .plan-task .notebook-fact { overflow-wrap: anywhere; }
+@media (forced-colors: active) { [data-synthetic="true"] { outline-color: CanvasText; } }
+/* Talk · storing a plan (plan_composer.js): the title field and the read-back keep the 44 px target and never scroll
+   the page sideways; the stored text wraps. data-state on #plan-escribir carries the state for Acho and the machine. */
+.plan-escribir input[type="text"] { box-sizing: border-box; width: 100%; min-height: 44px; margin: .2rem 0 .5rem; padding: 0 .6rem; font: inherit;
+  color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: var(--radio); }
+.plan-guardar:disabled { cursor: not-allowed; opacity: .6; }
+.plan-escribir[data-state="stored"] > #plan-guardar-estado { color: var(--ok); font-weight: 600; }
+.plan-escribir[data-state="refused"] > #plan-guardar-estado, .plan-escribir[data-state="blocked"] > #plan-guardar-estado { color: var(--stop); font-weight: 600; }
+.plan-leido { max-height: 40vh; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; margin: .3rem 0; padding: .5rem;
+  background: var(--paper); border: 1px solid var(--line); border-radius: var(--radio); }
+
+/* Settings · Your private memory (memory_onboarding.js). The state sentence is the same for eye and reader;
+   data-state carries it for Acho and the machine. Every control keeps the 44 px target. */
+.memoria-inicio[data-state="hitl"] { border-color: var(--warn); }
+.memoria-inicio[data-state="done"] { border-color: var(--ok); }
+.memoria-inicio[data-state="blocked"], .memoria-inicio[data-state="refused"] { border-color: var(--stop); }
+.memoria-inicio .memoria-lugar code { overflow-wrap: anywhere; }
+.memoria-inicio .memoria-entiendo { display: flex; align-items: center; gap: .6rem; min-height: 44px; margin: .4rem 0; }
+.memoria-inicio .memoria-entiendo input { width: 1.4rem; height: 1.4rem; flex: 0 0 auto; }
+.memoria-inicio input[type="text"] { box-sizing: border-box; width: 100%; min-height: 44px; margin: .3rem 0; padding: 0 .6rem; font: inherit;
+  color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: var(--radio); }
+.memoria-inicio button { min-height: 44px; }
+.memoria-inicio button:disabled { cursor: not-allowed; opacity: .6; }
+@media (forced-colors: active) { .memoria-inicio { border-color: CanvasText; } }
+
+/* Companion handoff: keep the same readable draft on narrow screens and in Acho. */
+.companion-draft { white-space: pre-wrap; overflow-wrap: anywhere; max-width: 100%; overflow-x: auto; }
+#companion-status { overflow-wrap: anywhere; }
+
+/* MVP: fewer navigation choices without dropping specialist functionality. */
+.pestanas [hidden] { display: none !important; }
+#mvp-start { display: grid; gap: .5rem; }
+#mvp-start .probar { min-height: 44px; justify-self: start; }
+#mvp-tools-status[data-state="HIDDEN"] { color: var(--ink); }
+
+/* Technical Options: always visible in header, never hidden inside hidden tools */
+.technical-options-close {
+  flex: 0 0 auto;
+  min-height: 44px;
+  max-width: 10rem;
+  padding: .35rem .55rem;
+  border: 1px solid var(--acento);
+  border-radius: var(--radio);
+  background: var(--paper);
+  color: var(--ink);
+  font: 700 .82rem/1.3 system-ui, sans-serif;
+  cursor: pointer;
+}
+.technical-options-close[hidden] { display: none !important; }
+.technical-options-close:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+@media (max-width: 420px) {
+  .technical-options-close { max-width: 7rem; padding: .25rem .35rem; }
+}
+@media (forced-colors: active) { .technical-options-close { border-color: ButtonText; } }
+.header-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 100;
+}
+.technical-options-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radio);
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--ink);
+}
+.technical-options-toggle:hover,
+.technical-options-toggle:focus-visible {
+  background: var(--hover);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.technical-options-menu {
+  position: absolute;
+  top: 3rem;
+  right: 0.5rem;
+  z-index: 101;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radio);
+  padding: 1rem;
+  max-width: 320px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.technical-options-menu h2 {
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
+}
+.technical-options-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.technical-options-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.technical-options-list li:last-child {
+  border-bottom: none;
+}
+.technical-options-list .ir {
+  min-height: 44px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: left;
+  padding: 0;
+}
+.technical-options-list .ir:hover,
+.technical-options-list .ir:focus-visible {
+  text-decoration: underline;
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.technical-options-list .pie {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* Chat Superbot: interlocutor header */
+.conv-interlocutor {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  min-height: 44px;
+}
+.conv-interlocutor-glyph {
+  font-size: 1.4rem;
+  width: 1.5rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+.conv-interlocutor-name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+.conv-interlocutor-type {
+  font-size: 0.8rem;
+  color: var(--muted);
+  padding: 0.2rem 0.5rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radio);
+}
+.conv-interlocutor[data-state="private"] .conv-interlocutor-glyph {
+  color: var(--ok);
+}
+.conv-interlocutor[data-state="personal"] .conv-interlocutor-glyph {
+  color: var(--warn);
+}
+.conv-interlocutor[data-state="no_data"] .conv-interlocutor-glyph {
+  color: var(--muted);
+}
+
+/* Documents panel */
+.documentos-acciones {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+.documentos-acciones .probar {
+  min-height: 44px;
+}
+.documentos-editor {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radio);
+}
+.documentos-editor label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.documentos-editor input[type="text"],
+.documentos-editor textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.5rem;
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radio);
+}
+.documentos-editor textarea {
+  min-height: 200px;
+  resize: vertical;
+}
+.documentos-botones {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.documentos-botones .probar {
+  min-height: 44px;
+}
+.documentos-lista {
+  margin: 1rem 0;
+}
+.documentos-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radio);
+  margin-bottom: 0.5rem;
+}
+.documentos-item-title {
+  font-weight: 600;
+}
+.documentos-item-meta {
+  font-size: 0.8rem;
+  color: var(--muted);
+  grid-column: 1 / -1;
+}
+.documentos-item-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+.documentos-item-actions .probar {
+  min-height: 44px;
+  padding: 0.25rem 0.75rem;
+}
+
+/* My node journey steps */
+.mvp-journey {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+}
+.mvp-step {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--line);
+  min-height: 44px;
+}
+.mvp-step:last-child {
+  border-bottom: none;
+}
+.mvp-step-glyph {
+  font-size: 1.2rem;
+  width: 1.5rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+.mvp-step[data-state="done"] .mvp-step-glyph {
+  color: var(--ok);
+}
+.mvp-step[data-state="working"] .mvp-step-glyph {
+  color: var(--warn);
+}
+.mvp-step[data-state="pending"] .mvp-step-glyph {
+  color: var(--muted);
+}
+.mvp-step[data-state="refused"] .mvp-step-glyph {
+  color: var(--stop);
+}
+
+/* Accessibility: forced colors mode */
+@media (forced-colors: active) {
+  .technical-options-toggle {
+    border-color: CanvasText;
+  }
+  .technical-options-menu {
+    border-color: CanvasText;
+  }
+  .documentos-editor {
+    border-color: CanvasText;
+  }
+  .documentos-item {
+    border-color: CanvasText;
+  }
+  .mvp-step {
+    border-color: CanvasText;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .technical-options-menu {
+    box-shadow: none;
+  }
+}
+
+/* Narrow screens: 360px and 420px */
+@media (max-width: 420px) {
+  .technical-options-menu {
+    max-width: 280px;
+    right: 0;
+  }
+  .documentos-item {
+    grid-template-columns: 1fr;
+  }
+  .documentos-item-actions {
+    justify-content: flex-start;
+  }
+  .header-actions {
+    top: 0.25rem;
+    right: 0.25rem;
+  }
+}
+/* Owner's two independent model slots are a single My node section, not
+   another panel. The browser can save names but cannot infer model readiness. */
+.owner-models { display: grid; gap: .6rem; min-width: 0; }
+.owner-models h3 { margin: 0; }
+.owner-models-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: .8rem; min-width: 0;
+}
+.owner-model-slot {
+  display: grid; align-content: start; gap: .4rem; min-width: 0;
+  padding: .8rem; border: 1px solid var(--line);
+  border-radius: var(--radio); background: var(--paper);
+}
+.owner-model-slot legend { padding: 0 .3rem; font-weight: 800; }
+.owner-model-slot label { font-weight: 650; }
+.owner-model-slot select, .owner-model-slot input {
+  display: block; width: 100%; min-width: 0; min-height: 44px;
+  border: 1px solid var(--line); border-radius: var(--radio);
+  padding: .5rem; background: #fff; color: var(--ink); font: inherit;
+}
+.owner-model-slot [data-state] { overflow-wrap: anywhere; }
+.owner-model-slot [data-state="NO_DATA"] { color: var(--ink-soft); }
+.owner-model-slot [data-state="DRAFT_ONLY"] { color: var(--warn); }
+.owner-model-buttons { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.owner-model-buttons button, #owner-model-export {
+  min-height: 44px; padding: .5rem .75rem; border-radius: var(--radio);
+  background: var(--paper); color: var(--ink); border: 1px solid var(--line);
+  font: 700 1rem/1.35 system-ui, sans-serif; cursor: pointer;
+}
+.owner-model-consent { display: flex; gap: .5rem; align-items: flex-start; }
+.owner-model-consent input { flex: 0 0 22px; width: 22px; height: 22px; margin: .15rem 0 0; }
+#owner-model-public-draft {
+  margin: 0; padding: .6rem; max-width: 100%; overflow-x: auto;
+  white-space: pre-wrap; overflow-wrap: anywhere;
+  color: var(--ink); background: var(--paper);
+  border: 1px solid var(--line); border-radius: var(--radio);
+}
+.owner-models button:focus-visible, .owner-model-slot input:focus-visible,
+.owner-model-slot select:focus-visible {
+  outline: 3px solid var(--acento); outline-offset: 2px;
+}
+@media (forced-colors: active) {
+  .owner-model-slot, #owner-model-public-draft, .owner-model-buttons button,
+  #owner-model-export { border-color: CanvasText; }
+}
+
+/* Day D · one-building local draft in My node. No new panel. */
+.room-building { display: grid; gap: .65rem; min-width: 0; }
+.room-building > h3 { margin: 0; }
+.room-building form { display: grid; gap: .5rem; min-width: 0; }
+.room-building label { font-weight: 700; }
+.room-building input, .room-building textarea {
+  display: block; width: 100%; min-width: 0; min-height: 44px;
+  padding: .6rem; border: 1px solid var(--line);
+  border-radius: var(--radio); font: inherit;
+  color: var(--ink); background: var(--paper);
+}
+.room-building button { min-height: 44px; max-width: 100%; }
+.room-building [data-state="NO_DATA"] { overflow-wrap: anywhere; }
+.room-building [data-state="DRAFT_ONLY"] { color: var(--warn); }
+#room-building-draft {
+  overflow-wrap: anywhere; white-space: pre-wrap;
+  max-width: 100%; max-height: 20rem; overflow-y: auto;
+}
+.room-building :is(input, textarea, button):focus-visible {
+  outline: 3px solid var(--acento); outline-offset: 2px;
+}
+@media (forced-colors: active) {
+  .room-building input, .room-building textarea { border-color: CanvasText; }
+}
+
+/* Day D mini: same offline router as Android, explicit browser opt-in. */
+.mini-mode-switch {
+  display: flex; align-items: center; flex-wrap: wrap; gap: .5rem;
+  padding: .55rem; border: 1px solid var(--line);
+  border-radius: var(--radio); min-width: 0;
+}
+#mini-local-toggle {
+  min-height: 44px; flex: 0 0 auto;
+  border: 1px solid var(--acento); border-radius: var(--radio);
+  padding: .35rem .6rem; background: var(--paper); color: var(--ink);
+  font: 700 .92rem/1.3 system-ui, sans-serif; cursor: pointer;
+}
+#mini-local-toggle[aria-pressed="true"] { border-width: 2px; }
+#mini-local-mode-status { margin: 0; flex: 1 1 15rem; overflow-wrap: anywhere; }
+#mini-local-toggle:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+@media (forced-colors: active) {
+  .mini-mode-switch, #mini-local-toggle { border-color: ButtonText; }
+}
