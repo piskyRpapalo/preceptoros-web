@@ -8,8 +8,10 @@ The law lives in `study` → `02-legislation.md` (Amendment · ODD routing ·
 ## Lifecycle
 
 A feature document is born when substantial authorized work starts and moves
-to `odd/done/` — same name, plus a `Status: landed` line — when the feature
-lands. Everything else stays as it was. `odd/tasks/` holds only live work.
+to `odd/done/` — same name, plus a `Status: landed` line — **only after
+verified integration on `main`**. DRAFT and green CI mean reviewable work,
+not landing; deployment is a separate human action. Everything else stays
+as it was. `odd/tasks/` holds only live work.
 
 ## Naming and language
 
@@ -42,8 +44,11 @@ Law: <the commission this work answers, with its receipt if any>
 - Checklist with stable IDs (`T1`, `T2`… or a feature prefix), one box per unit.
 - Verification evidence: measured values with their source; what is not
   measured is `NO_DATA` with cause.
-- Standing signature: the search that was done for a signature the work
-  needed, and its result. "None needed, cause: …" is a valid entry.
+- Standing signature: identify an attributable human standing/pre-FIRMO
+  decision and the exact scope it covers, or record
+  `NO_DATA(standing_signature_not_verified)` or "None needed, cause: …".
+  A standing signature can authorize building but never signs a later HEAD
+  automatically. Keep the new HEAD's exact-human-FIRMO requirement at merge.
 - Methodology relief (optional, decree 2026-10-28): any proposal to amend a
   standing law that made this work harder, delivered with the work.
 - Log: choices and chain decisions. Next step: exactly one.

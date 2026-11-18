@@ -73,14 +73,26 @@ Sovereign still signs.
   400 authored lines — advisory, never a cap or a forced split. A
   high-risk unit gets its own commit.
 - **Work never halts for a signature.** When a step would need a
-  signature, search the corpus for the standing signature first — the
-  signed book, ideas, examples, and jewels count as signed. Record the
-  modification and continue. The delivery gates (checks that can go red,
-  the receipt, `FIRMO` on the exact head) are never skipped: THE MARCH unblocks
-  the work, not the merge.
+  signature, search for a human-issued standing authorization in the
+  canonical signing book or an explicit, attributable Sovereign decision.
+  Ideas, examples, jewels and model outputs are sources, **not signatures**.
+  Record the applicable scope (or `NO_DATA(standing_signature_not_verified)`),
+  continue independently authorized building, and stop only an operation
+  that lacks authority. The delivery gates (checks that can go red, the
+  receipt, `FIRMO` on the exact head) are never skipped: THE MARCH unblocks
+  building, not merging.
 - **Unattended mode.** When no human can answer, chain the feature on a
   feature branch, record the choice in the feature document's `## Log`,
   and continue.
+- **Landing is the default, not eternal DRAFT.** The Sovereign's standing
+  direction is that measured-green WEB work is prepared to land on `main`.
+  Standing or pre-FIRMO covers the authorized class of *work*, not a future
+  commit automatically. DRAFT is a review state, not terminal delivery.
+  Finish independent tests and a receipt; seek human `FIRMO` for the **exact
+  current HEAD**; only a human-authorized orchestration lane may merge that
+  HEAD to `main`. A new HEAD needs a new exact-head decision. Merged source is
+  not a published site: public SW/Worker deployment is a **separate human
+  gate** unless a verified standing order expressly includes that deployment.
 
 ## Acho — the frame contract for contributors (Sovereign, 2026-11-02)
 

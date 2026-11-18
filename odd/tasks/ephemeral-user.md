@@ -1,7 +1,7 @@
 # ephemeral-user
 
 Date: 2026-10-31
-Law: Sovereign commission «EL USUARIO EFÍMERO» (Mesa web, carril claude, 2026-10-31): phases (1) functional ephemeral account, (2) army and gacha, (3) conquerable NPC buildings; phase «army de nodo» is not started. Plan first, no code before its FIRMA. Decree of the short tutorial route: ruta corta beelink + cabaña, Doggee out. Frozen heads re-evaluated after the pull to main `e466fe4`.
+Law: Sovereign commission «EL USUARIO EFÍMERO» (Mesa web, carril claude, 2026-10-31): phases (1) functional ephemeral account, (2) army and gacha, (3) conquerable NPC buildings; phase «army de nodo» is not started. Plan first; confirm an explicit or standing human authorization for implementation, and obtain exact-head FIRMO before merge (not before independently authorized building). Decree of the short tutorial route: ruta corta beelink + cabaña, Doggee out. Frozen heads re-evaluated after the pull to main `e466fe4`.
 
 ## Objective
 

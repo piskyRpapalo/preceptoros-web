@@ -6,6 +6,14 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 `wrangler.jsonc` names the Worker `preceptoros-web` and serves `./public` as static assets. `.github/workflows/deploy.yml` is `manual-worker-deploy`: `workflow_dispatch`, guarded to `refs/heads/main`, with the `production` environment. The Mesa measured that environment as requiring a reviewer; the approval policy is hosted in GitHub and is not represented in this checkout. The Sovereign triggers the workflow and supplies the human approval. Agents do not deploy.
 
+A standing direction to land measured-green WEB changes on `main` authorizes
+**preparing and reviewing** those changes; it is neither an automatic merge nor
+an automatic publish order. Each merge still needs the Sovereign's exact-head
+FIRMO and the required checks. A DRAFT PR is review state, not delivered
+source. `main` integration is the default delivery of source; public SW/Worker
+publication starts only after a separately authorized manual dispatch and
+production approval. A merge alone never certifies live parity.
+
 Current route-count receipt (measured with `python3 bin/count_routes.py`, 2026-11-18 from `c287d0a3` source; routes are the SW shell entries, not proof of a public deployment):
 
 Rutas precargadas por el shell: 181

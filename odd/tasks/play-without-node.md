@@ -1,6 +1,6 @@
 # Play without a node
 
-Status: PROPOSED · JN-1 · REQUIERE_FIRMA. Documentation only. Each implementation slice requires its own FIRMO before code and its own PR.
+Status: PROPOSED · JN-1 · REQUIERE_FIRMA. Documentation only. Each implementation slice requires verified human scope or standing coverage before construction, its own PR, and exact-head FIRMO before merge.
 Authority: Sovereign commission “JUGAR SIN NODO”.
 
 ## Contract and reuse
@@ -59,7 +59,7 @@ Closed schemas, bounded UTF-8 strings/list counts, finite coordinates, allowlist
 
 ## Signature decisions and gaps
 
-Plan review must cover territory eligibility, initialization entropy, phase/key binding and immutable adoption ownership. Later pieces separately require signed initial allocation, NPC definitions, victory rule and measured balance. Plan approval never substitutes for per-piece FIRMO. No code before those signatures.
+Plan review must cover territory eligibility, initialization entropy, phase/key binding and immutable adoption ownership. Later pieces separately require signed initial allocation, NPC definitions, victory rule and measured balance. Plan approval never substitutes for exact-head per-piece FIRMO to merge. Do not perform the separately scoped allocation, admission or ownership effects without the required explicit human decision. Independently authorized implementation and tests may proceed on a feature branch; a pending merge signature does not halt them.
 
 Maintenance proposal: make persistent evidence versus lost signing capability an explicit invariant. Before, storage could be mistaken for recoverable ownership; proposed after, fresh visits never gain authority over old records. Implementation evidence remains NO_DATA until JN-2.
 
