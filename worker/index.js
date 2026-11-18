@@ -30,6 +30,6 @@ export default {
       return Response.redirect(url.toString(), 308);
     }
     if (url.pathname === '/api/world-state') return worldState(request, env);
-    return withSecurity(await env.ASSETS.fetch(request));
+    return withSecurity(await env.ASSETS.fetch(request), url.pathname);
   },
 };
