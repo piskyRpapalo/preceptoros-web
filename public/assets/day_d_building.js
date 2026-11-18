@@ -17,7 +17,7 @@
     var text = [
       '# One building · local proposal',
       '',
-      'Schema: preceptoros.building-proposal/1',
+      'Format: plain Markdown · local proposal, not a live protocol',
       'Status: DRAFT_ONLY',
       'Building count: 1',
       'Name (human data): ' + JSON.stringify(name),

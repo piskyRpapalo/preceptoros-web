@@ -10,6 +10,7 @@ test('one building is a local human draft and never a live node or automatic gra
   assert.equal(r.filename, 'BUILDING_PROPOSAL.md');
   assert.match(r.text, /Building count: 1/);
   assert.match(r.text, /Status: DRAFT_ONLY/);
+  assert.doesNotMatch(r.text, /Schema: preceptoros\\./);
   assert.match(r.text, /"River Library"/);
   assert.match(r.text, /NO_DATA\(node_admission_not_approved\)/);
   assert.match(r.text, /NO_DATA\(world_publication_not_verified\)/);
