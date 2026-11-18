@@ -15,6 +15,17 @@
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#17131F">
 <link rel="stylesheet" href="/assets/landing.css">
+<style>
+.dayd-path{display:flex;flex-wrap:wrap;gap:.5rem;margin:12px 0}
+.dayd-path a,#dayd-building-make,#dayd-building-download{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 12px;border:2px solid currentColor;border-radius:12px;font:inherit;font-weight:700;text-decoration:none}
+#dayd-building-form{display:grid;gap:8px;max-width:38rem}
+#dayd-building-form label{font-weight:700}
+#dayd-building-form :is(input,textarea){width:100%;box-sizing:border-box;min-height:44px;padding:8px;border:2px solid currentColor;border-radius:8px;font:inherit;background:inherit;color:inherit}
+#dayd-building-form :is(button,a):focus-visible,.dayd-path a:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+#dayd-building-form [hidden]{display:none}
+main.guide code{overflow-wrap:anywhere;word-break:break-word}
+@media (forced-colors:active){.dayd-path a,#dayd-building-make,#dayd-building-download{background:Canvas;color:CanvasText;border-color:CanvasText}}
+</style>
 </head>
 <body>
 <a class="skip" href="#steps">Skip to the steps</a>
@@ -22,8 +33,28 @@
 <p><a href="/">← PreceptorOS</a></p>
 <h1>Get the app</h1>
 <p class="lead">The app is your own node, on your own machine: local memory and a local AI that stay with you. Release <b>v1.3</b> (2026-08-31).</p>
+<section class="gate" id="building-draft" aria-labelledby="dayd-h">
+<h2 id="dayd-h">Day D · propose one building first</h2>
+<p>Today: make a local building proposal and play as an ephemeral crab. At home: download the APP, connect your own model, and prepare a Companion. Hexelion stays on its owner's rack.</p>
+<nav class="dayd-path" aria-label="Three steps for visitors">
+<a href="#dayd-building-form">1 · Propose one building</a>
+<a href="/openworld/">2 · Play OpenWorld</a>
+<a href="#doors">3 · Download the APP for home</a>
+</nav>
+<form id="dayd-building-form" aria-label="Prepare a local one-building proposal">
+<label for="dayd-building-name">Building name</label>
+<input id="dayd-building-name" name="name" maxlength="60" required autocomplete="off">
+<label for="dayd-building-purpose">What will this building help visitors do?</label>
+<textarea id="dayd-building-purpose" name="purpose" maxlength="400" rows="3" required></textarea>
+<button type="submit" id="dayd-building-make" disabled>Prepare my local building draft</button>
+<p class="state" id="dayd-building-status" role="status" aria-live="polite">DRAFT_ONLY · JavaScript is required for local export; nothing has been submitted, registered or published. Do not enter passwords or keys.</p>
+<textarea id="dayd-building-output" rows="8" aria-label="Building draft text" readonly hidden></textarea>
+<a id="dayd-building-download" download="BUILDING_PROPOSAL.md" hidden>Download BUILDING_PROPOSAL.md</a>
+</form>
+<p><strong>Feedback stays only on the node owner's device</strong>, and only if that owner signs to open a channel. This WEB is not a shared feedback inbox.</p>
+</section>
 <section class="doors" aria-labelledby="doors-h">
-<h2 id="doors-h">Three different things</h2>
+<h2 id="doors-h">Download options · choose the right application</h2>
 <article class="door" id="door-openworld" data-door="openworld">
 <h3>A · OpenWorld</h3>
 <p>The shared public world: the map, its buildings and the people in it. Open it in your browser, or install this web as an app. The Android file below is OpenWorld. It does not contain the PreceptorOS app and it does not contain a local model.</p>
@@ -32,7 +63,7 @@
 <article class="door" id="door-app" data-door="app" data-estado="NO_DATA">
 <h3>B · The PreceptorOS app</h3>
 <p><code>NO_DATA(public_app_web_runtime_not_published)</code></p>
-<p>The real app, with its nine panels, runs on your own machine today. A hosted copy on this site does not exist yet, so there is no open button here.</p>
+<p>The real APP runs on your own machine. A hosted copy on this site is not verified; the Android file above remains OpenWorld only.</p>
 <p><a href="#update-existing-app">Already have the APP? Open the update steps</a>.</p>
 </article>
 <article class="door" id="door-install" data-door="install">
@@ -89,8 +120,8 @@
 </ol>
 <p>To run the full app (the local model and the node) on Android, the app's own guide, <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/INSTALACION_ANDROID.md">INSTALACION_ANDROID.md</a> (in Spanish), covers Termux.</p>
 <p class="get-app"><a href="/aduana/">Next: create a node</a></p>
-<h2 id="first-steps">First steps for collaborators</h2>
-<p><a href="https://github.com/piskyRpapalo/preceptoros-companion" target="_blank" rel="noopener noreferrer">Join as a Companion · bring your own project and agent</a>. Read the public GUIDE and CONTRIBUTING files, prepare a human-owned declaration with measurements (or NO_DATA), and submit a docs-only PR. No Hexelion account is required. An accepted declaration does not authenticate an agent, grant permissions, or publish a live OpenWorld node: <code>NO_DATA(world_publication_not_verified)</code>.</p>
+<h2 id="first-steps">Later at home · Companion and your own model</h2>
+<p><a href="https://github.com/piskyRpapalo/preceptoros-companion" target="_blank" rel="noopener noreferrer">Later at home: join as a Companion · bring your own project and agent</a>. Read the public GUIDE and CONTRIBUTING files, prepare a human-owned declaration with measurements (or NO_DATA), and submit a docs-only PR. No Hexelion account is required. An accepted declaration does not authenticate an agent, grant permissions, or publish a live OpenWorld node: <code>NO_DATA(world_publication_not_verified)</code>.</p>
 <p>Each link below opens one place of the map; in the Android app the same four are a long press on its icon. A link only opens and fills: you press Send or Play yourself.</p>
 <ul class="first-steps">
 <li><a href="/openworld/?go=help">Help and the missions waiting</a>: the embers beside buildings are missions; tap one to open its card.</li>
@@ -114,5 +145,6 @@
 <script src="/assets/pwa.js"></script>
 <script src="/game/launch_gate.js"></script>
 <script src="/assets/get_app_gate.js"></script>
+<script src="/assets/day_d_building.js"></script>
 </body>
 </html>

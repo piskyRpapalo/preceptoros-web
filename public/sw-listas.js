@@ -31,7 +31,7 @@ const JUEGO = [
 
 const PORTADA = [
   '/assets/auth.js', '/assets/send.js', '/assets/pwa.js', '/assets/landing.css', '/assets/landing_doors.js', '/assets/three_actions.js', '/assets/create_companion.js',
-  '/assets/intro.js', '/assets/landing_world.js', '/openworld/', '/assets/aduana_page.js', '/assets/get_app_gate.js',
+  '/assets/intro.js', '/assets/landing_world.js', '/openworld/', '/assets/aduana_page.js', '/assets/get_app_gate.js', '/assets/day_d_building.js',
   '/game/launch_gate.js', '/game/node_catalogue.js', '/assets/icon-192.png',
   '/assets/icon-512.png', '/assets/icon-512-maskable.png'
 ]

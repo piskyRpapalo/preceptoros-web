@@ -187,6 +187,7 @@ jobs:
             node atlas/front_door_browser.mjs
             node atlas/egg_reload_browser.mjs
             node atlas/combat_screen_browser.mjs
+            node --test atlas/day_d_building_cases.mjs
             node atlas/landing_doors_browser.mjs
             node atlas/openworld_browser.mjs
             node atlas/node_hall_scale_browser.mjs
