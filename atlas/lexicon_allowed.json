@@ -40,6 +40,9 @@
   "public/game/first_adventure.js": [
    "arrecife"
   ],
+  "public/game/node_beacon.js": [
+   "aduana"
+  ],
   "public/game/visitor_account.js": [
    "accion",
    "faro"
@@ -52,6 +55,7 @@
   "public/game/crab_presence_acho.js": "2026-11-17 · existing main, event k=faro from signed atlas.coop/1 beacon cooperation packets; voice projects an English sentence.",
   "public/game/crab_presence_client.js": "2026-11-17 · existing main, accion/faro are field and value of signed atlas.coop/1 packet; changes require separate protocol migration.",
   "public/game/first_adventure.js": "2026-11-17 · existing main, arrecife is a stable internal game biome key mapped to English reef guards; renaming requires saved-state migration.",
+  "public/game/node_beacon.js": "2026-11-18 · Aduana is the established proper name of the canonical trust gateway; this occurrence is source-comment provenance in the LIVE-only node projection, never public UI copy. Exception limited to this exact file, not a new word or a ratchet baseline increase.",
   "public/game/visitor_account.js": "2026-11-17 · existing main, verifies the signed atlas.coop/1 packet fields accion/faro; changes would reject current valid records."
  }
 }
