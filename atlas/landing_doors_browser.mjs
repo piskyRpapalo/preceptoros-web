@@ -59,6 +59,16 @@ async function main() {
     tras: (() => { const c = document.querySelector('.welcome-card'); let n = 0; for (let e = c && c.nextElementSibling; e; e = e.nextElementSibling) { n++; } return n; })(),
     texto: document.body.innerText })`));
   ok(medida.h1 === 'PreceptorOS' && medida.welcome === 'Welcome to OpenWorld' && medida.start === '/openworld/', 'the landing top changed: ' + JSON.stringify([medida.h1, medida.welcome, medida.start]));
+  // Day D: same public URL offers play, one building draft, and honest APP download; Companion is a later step.
+  medida.daydHome = JSON.parse(await ev(`JSON.stringify({
+    building: document.getElementById('dayd-building')?.getAttribute('href'),
+    download: document.getElementById('dayd-download')?.getAttribute('href'),
+    paths: [...document.querySelectorAll('.dayd-doors a')].map(x=>x.getAttribute('href')),
+    feedback: [...document.querySelectorAll('.welcome-card p')].some(x=>/Feedback stays only on the node owner's device/.test(x.textContent))
+  })`));
+  ok(medida.daydHome.building==='/get-the-app/#building-draft' && medida.daydHome.download==='/get-the-app/#doors' &&
+    medida.daydHome.paths.length===2 && medida.daydHome.feedback,
+    'Day D home path or feedback copy missing: '+JSON.stringify(medida.daydHome));
   ok(medida.restos.length === 0 && medida.tras === 0, 'old landing text is back under the welcome card: ' + JSON.stringify(medida.restos) + ' · after the card: ' + medida.tras);
   ok(!/\bundefined\b|\bNaN\b/.test(medida.texto), 'missing value shown on the landing');
   const world = JSON.parse(await ev(`(async()=>{const f=document.getElementById('landing-world');
@@ -78,6 +88,27 @@ async function main() {
   await cmd('Page.navigate', { url: origen + '/get-the-app/' }); await espera(1500);
   medida.guia = JSON.parse(await ev("JSON.stringify({ h1: (document.querySelector('h1') || {}).textContent, ancho: document.documentElement.scrollWidth, vista: innerWidth, bajas: document.querySelectorAll('a[href*=\"/releases/download/\"]').length, huellas: document.querySelectorAll('code.sha[data-asset]').length, filas: document.querySelectorAll('.pruebas tbody tr').length, texto: document.body.innerText })"));
   ok(medida.guia.h1 === 'Get the app', '/get-the-app/ did not load');
+  medida.daydDraft = JSON.parse(await ev(`JSON.stringify((()=>{
+    const form=document.getElementById('dayd-building-form'),name=document.getElementById('dayd-building-name'),
+      purpose=document.getElementById('dayd-building-purpose'),button=document.getElementById('dayd-building-make');
+    if(!form || !name || !purpose || !button) return {missing:true};
+    name.value='River Library'; purpose.value='Help visitors learn about local river ecology.';
+    name.dispatchEvent(new Event('input',{bubbles:true})); purpose.dispatchEvent(new Event('input',{bubbles:true}));
+    form.requestSubmit();
+    const status=document.getElementById('dayd-building-status'),text=document.getElementById('dayd-building-output'),
+      file=document.getElementById('dayd-building-download');
+    return {buttonReady:!button.disabled,formAction:form.getAttribute('action'),data:text.value,
+      visible:!text.hidden,download:!file.hidden&&file.download==='BUILDING_PROPOSAL.md'&&file.href.startsWith('blob:'),
+      status:status.textContent,links:[...document.querySelectorAll('.dayd-path a')].map(x=>x.getAttribute('href')),
+      feedback:document.getElementById('building-draft').textContent.includes("Feedback stays only on the node owner's device")};
+  })())`));
+  ok(!medida.daydDraft.missing && medida.daydDraft.buttonReady && medida.daydDraft.visible &&
+    medida.daydDraft.download && medida.daydDraft.data.includes('Status: DRAFT_ONLY') &&
+    medida.daydDraft.data.includes('NO_DATA(world_publication_not_verified)') &&
+    medida.daydDraft.status.includes('nothing was sent or registered') &&
+    medida.daydDraft.links.join()==='#dayd-building-form,/openworld/,#doors' &&
+    medida.daydDraft.feedback && !medida.daydDraft.formAction,
+    'Day D building draft not safely downloadable: '+JSON.stringify(medida.daydDraft));
   ok(medida.guia.ancho <= medida.guia.vista, '/get-the-app/ scrolls sideways: ' + medida.guia.ancho + ' > ' + medida.guia.vista);
   ok(medida.guia.bajas >= 3 && medida.guia.huellas >= 2 && medida.guia.filas >= 4, '/get-the-app/ lost downloads, fingerprints or the test table');
   ok(!/\bundefined\b|\bNaN\b/.test(medida.guia.texto), 'missing value shown on /get-the-app/');

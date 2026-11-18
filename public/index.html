@@ -16,6 +16,9 @@
 <meta name="theme-color" content="#17131F">
 <link rel="stylesheet" href="/assets/landing.css">
 <style>
+.dayd-doors{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin:8px 0}
+.dayd-doors a{min-width:0;padding:8px;font-size:.9rem;line-height:1.25}
+.welcome-card #sound-first{min-height:48px;padding:6px 10px;font-size:.82rem}
 :root{--wc-sun:#ffe58a;--wc-sun2:#fff3c4;--wc-ink:#1d1b26;--wc-paper:#fffdf6;--wc-sea:#0b5d9a;--wc-plum:#5b2fb0;--wc-go:#157a45;--wc-gold:#d49a1c}
 .welcome-card{display:grid;grid-template-columns:56px 1fr 56px;gap:8px;align-items:center;margin:18px 0;padding:18px 14px 20px;background:linear-gradient(180deg,var(--wc-sun2),var(--wc-sun));color:var(--wc-ink);border:3px solid var(--wc-ink);border-radius:28px;box-shadow:0 7px 0 var(--wc-gold)}
 .welcome-card svg{width:56px;height:56px;color:var(--wc-sea)}.welcome-card svg.r{color:var(--wc-plum)}.welcome-card>div{grid-column:1/-1}
@@ -85,9 +88,13 @@ body.landing-world>main{width:28rem;margin:0;max-height:calc(100dvh - 48px);bord
 <h2 id="welcome-title">Welcome to OpenWorld</h2>
 <svg class="r" viewBox="0 0 100 100" aria-hidden="true"><path d="M83 68L84 72L84 75L84 77L83 77L83 76L83 74L84 72L85 69L87 68L89 66L91 66L91 67L91 68L89 69L85 70L81 70L76 69L70 67L65 65L61 62L57 59L55 57L53 55L51 55L49 56L46 58L43 61L39 64L34 66L28 68L23 69L18 69L14 68L11 67L10 66L10 65L11 66L13 67L14 68L16 71L16 74L16 76L16 77L15 77L14 76L14 74L15 71L18 67L21 63L25 59L30 56L34 54L39 52L42 51L44 50L45 48L45 46L45 43L44 39L44 33L44 28L45 22L47 17L50 13L52 10L55 8L56 7L57 8L56 9L54 9L52 10L49 10L47 9L45 8L44 7L44 6L45 6L47 7L50 10L52 14L54 18L55 24L55 29L55 35L54 39L53 43L53 45L54 47L56 48L59 49L63 51L67 53L72 56L77 60L80 64L83 68Z"/></svg>
 <div>
-<p class="hi">Hello, traveller! Glad you are here.</p>
 <p class="go"><button type="button" id="sound-first" class="sound-first" aria-pressed="false">Sound off · press to hear the world</button></p>
-<p class="go"><a class="start" id="start" href="/openworld/">Create your signature and play</a></p>
+<p class="go"><a class="start" id="start" href="/openworld/">Play OpenWorld</a></p>
+<nav class="dayd-doors" aria-label="Day D · one clear path">
+<a class="ta-btn" id="dayd-building" href="/get-the-app/#building-draft">Propose building</a>
+<a class="ta-btn" id="dayd-download" href="/get-the-app/#doors">Download APP</a>
+</nav>
+<p class="ta-say">One building today; your own model and Companion later at home. Feedback stays only on the node owner's device after that owner opens the channel.</p>
 <p>A shared world drawn only in waves. Every building is a door to something real: a model you can run, a chat, a workshop, a duel. Each creature is computed from its own harmonics.</p>
 <ol aria-label="Your first minutes">
 <li>Create your signature on this device. The key never leaves it.</li>
@@ -95,7 +102,7 @@ body.landing-world>main{width:28rem;margin:0;max-height:calc(100dvh - 48px);bord
 <li>Talk to the guides and summon your first wave.</li>
 </ol>
 <section id="four-actions" class="three-actions four-actions" aria-labelledby="fa-title" hidden>
-<h3 id="fa-title">Get PreceptorOS</h3>
+<h3 id="fa-title">More options · install and Companion later at home</h3>
 <div class="ta-row" role="group" aria-label="Four actions">
 <button type="button" id="ta-pwa" class="ta-btn" aria-describedby="ta-pwa-say">PWA</button>
 <button type="button" id="ta-app" class="ta-btn" aria-expanded="false" aria-controls="ta-panel">Download App</button>
@@ -109,7 +116,7 @@ body.landing-world>main{width:28rem;margin:0;max-height:calc(100dvh - 48px);bord
 <label><input type="radio" name="ta-os" value="windows"> Windows</label>
 </fieldset><div id="ta-out" aria-live="polite"></div></div>
 <div id="fa-panel" hidden>
-<h4 id="fa-h">Create your Companion, on this device</h4>
+<h4 id="fa-h">At home later · create your Companion on this device</h4>
 <p class="ta-say">We prepare two drafts from your answers. Nothing is sent anywhere, and nothing is registered until a pull request is accepted in the companion repository. Blank measurements stay NO_DATA.</p>
 <label for="fa-name">Companion name (lowercase letters, digits, hyphens)</label>
 <input id="fa-name" autocomplete="off" spellcheck="false" maxlength="40">
