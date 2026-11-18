@@ -16,7 +16,9 @@ async function visit(args) {
 test('empty colony: the place steps are NO_DATA with their cause and the visit completes the rest', async () => {
   const out = await visit(['--empty']);
   assert.deepEqual(out.fallos, []);
-  assert.match(out.medidas.linea_vacia, /NO_DATA: no node is alive yet \(the colony is empty\)/);
+  assert.match(out.medidas.linea_vacia,
+    /NO_DATA: no node is alive yet \(the colony is empty\)|Nodes online: NO_DATA\..*Live nodes NO_DATA: publisher unavailable \(HTTP 404\)/,
+    'unknown publisher must be NO_DATA with the HTTP404 cause, not a fake LIVE count');
   assert.match(out.medidas.fin_visita, /played: none · skipped: key, beacon, node/);
 });
 

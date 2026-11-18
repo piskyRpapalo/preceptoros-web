@@ -20,12 +20,23 @@ export const POLICY = [
   "frame-ancestors 'self' http://127.0.0.1:8742 http://localhost:8742",
 ].join('; ');
 
-// withSecurity(response) → the same response with the policy, only for HTML documents (other files keep theirs).
-export function withSecurity(res) {
+// This exact script comes from APP #345 public-mini package, whose index.html
+// is independently sha256-verified by WEB's importer and source gates.
+// Only /app/ may execute it. No unsafe-inline and no permission for OpenWorld.
+export const MINI_INLINE_SCRIPT_HASH = "'sha256-xEKa+5N6sNmuMqEzA0jbhI0YhqO7PSA6qXrM3LCwtL8='";
+export function policyForPath(pathname = '') {
+  if (pathname !== '/app/' && pathname !== '/app/index.html') return POLICY;
+  return POLICY.replace("script-src 'self' blob: 'wasm-unsafe-eval'",
+    "script-src 'self' blob: 'wasm-unsafe-eval' " + MINI_INLINE_SCRIPT_HASH);
+}
+
+// withSecurity(response,pathname) → the same response with the route-scoped policy, for HTML only.
+
+export function withSecurity(res, pathname = '') {
   const type = res.headers.get('content-type') || '';
   if (!type.startsWith('text/html')) return res;
   const out = new Response(res.body, res);
-  out.headers.set('Content-Security-Policy', POLICY);
+  out.headers.set('Content-Security-Policy', policyForPath(pathname));
   out.headers.set('X-Content-Type-Options', 'nosniff');
   out.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   return out;
