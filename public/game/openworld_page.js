@@ -138,7 +138,7 @@
       nodes: nodes.filter(function (n) { return n && (n.id === 'hexelion' || n.id === 'second'); })
     };
     if (!entrada.nodes.some(function (n) { return n.id === selected; })) { selected = ''; }
-    // IC7-S3 (D7): the colony comes only from openworld_state.js; a node is drawn only when it is alive and sealed LIVE or STALE.
+    // IC7-S3 (D7): the colony comes only from openworld_state.js; a node is drawn only when it is alive and sealed LIVE.
     if (colonia_fuente !== 'fixture') try {
       colonia_error = '';
       var estado = raiz.AtlasOpenworldState.leer(data);
@@ -149,7 +149,7 @@
       colony_mana = estado.mana || {};
       colony_pending = estado.pending || {};
       colonia_ocultos = Number.isInteger(estado.hidden) ? estado.hidden : 0;
-      if (!colonia && estado.version === 2) { colonia_error = 'no node declared alive and sealed LIVE or STALE (' + estado.hidden + ' hidden)'; }
+      if (!colonia && estado.version === 2) { colonia_error = 'no measured LIVE node (' + estado.hidden + ' historical or unverified, hidden from map)'; }
     } catch (e) { colonia = null; colonia_error = e.message || 'the state is refused'; }
   }
   if (new URLSearchParams(raiz.location.search).get('fixture') === 'sintetica') { colonia = FIXTURE; colonia_fuente = 'fixture'; colony_looks = FIXTURE_LOOKS; colony_seals = {}; colony_mana = {}; }
