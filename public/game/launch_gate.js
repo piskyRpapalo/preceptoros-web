@@ -26,7 +26,7 @@
       peso: typeof pwa.peso_b === 'number' ? pwa.peso_b + ' B' : nd('size not measured')
     };
     var installer = os !== 'android' && os !== 'ios';
-    // A published Android APK is a signed web-shell (TWA), not a local model.
+    // Android can download the signed native APK through the single pinned same-origin redirect.
     // Only offer the direct download when its same-origin URL and digest are declared in release.json.
     var android = d.android || {}, apk = os === 'android' &&
       /^\/get-the-app\/[A-Za-z0-9._-]+\.apk$/.test(android.url || '') &&

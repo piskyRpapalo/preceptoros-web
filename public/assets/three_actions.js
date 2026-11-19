@@ -8,16 +8,17 @@
   var box = document.getElementById('four-actions');
   if (!box) return;
   var REL = 'https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/';
-  var APK = '/get-the-app/PreceptorOS-android-1.0.1.apk';
+  var APK = '/get-the-app/PreceptorOS-android-0.3.0-v7.apk';
   var P = {
     android: {
       name: 'Android',
-      get: { lines: ['OpenWorld for Android 1.0.1 (APK, 1.3 MB): the shared world, this web, installed as an app. It is not the PreceptorOS APP and has no model inside.',
-        'The PreceptorOS APP for Android: NO_DATA, not released (moving the installed package to it is not verified yet). Today: install the APP on your computer and open it from your phone’s browser; the model runs where you choose.'],
-        link: [APK, 'Download OpenWorld (APK)'], sha: '8db3176a20ed973dab1f28642972bb97ab1ccd70ddbc7cf95f7a44affc7c4d8b', download: true },
-      update: { lines: ['Two different Android app forms exist: the public APK updates OpenWorld only. It cannot update your nine-panel APP installed from a trusted rack browser origin.',
-        'For the real APP, reconnect its original trusted tunnel, open that APP, then Settings › This app · install and update › Check for update › Reload if offered. Never clear site data or identity keys to force an update.',
-        'The public website cannot inspect an APP on another origin or install a service worker on its behalf. If the APP update control is missing: NO_DATA(old_app_update_unavailable).'],
+      get: { lines: ['PreceptorOS Native Android 0.3.0 v7 (APK, 156 MB): six panels, the crab and a bundled experimental small local model.',
+        'The old OpenWorld 1.0.1 TWA (1.34 MB) is a separate legacy web wrapper. It is not the PreceptorOS APP and has no model inside.',
+        'Node joining requires your consent and Sovereign approval; installing alone is not LIVE.'],
+        link: [APK, 'Download PreceptorOS APP (APK, 156 MB)'], sha: '9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b', download: true },
+      update: { lines: ['The native v7 APK updates a compatible Android org.preceptoros.app installation after Android checks the existing signing certificate. VersionCode 7 is higher than the previous version 2.',
+        'The public website cannot inspect an APP on another origin. It cannot read local identity or silently install updates; never uninstall or clear data to force an upgrade.',
+        'Browser-only APP installations use their original trusted origin and separate update controls.'],
         link: ['/get-the-app/#update-existing-app', 'Open the PreceptorOS APP update instructions'] }
     },
     ubuntu: {

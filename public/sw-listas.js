@@ -21,7 +21,7 @@ const JUEGO = [
   '/game/comic_accents.js', '/game/acho_language.js', '/game/acho_light.js', '/game/acho_bestiary.js',
   '/game/acho_world.js', '/game/acho_letters.js', '/game/acho_icons.js',
   '/game/state_frames.js', '/game/brain_frame.js', '/game/brain_panel.js', '/game/hex_projection.js', '/game/colony_state.js', '/game/colony_buildings.js',
-  '/assets/openworld.css',
+  '/assets/openworld.css', '/assets/openworld_experience.css',
   '/game/palette_cycle.js', '/game/openworld_state.js', '/game/colony_page.js', '/game/colony_controls.js', '/game/hitl_walkers.js',
   '/game/tutorial-phases.css', '/face/', '/get-the-app/', '/aduana/', '/face/basic.html',
   '/face/face_openworld_terminal.js', '/game/army.html', '/game/face_canon.css', '/game/face_terminal.js',

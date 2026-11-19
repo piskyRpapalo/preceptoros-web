@@ -1,5 +1,5 @@
 // node_beacon_cases.mjs · the live node on the map (public/game/node_beacon.js, 2026-11-15): honest words, honest lamp.
-import { test } from 'node:test'; import assert from 'node:assert/strict'; import { createRequire } from 'node:module';
+import { test } from 'node:test'; import assert from 'node:assert/strict'; import { createRequire } from 'node:module'; import {runInNewContext} from 'node:vm'; import {readFileSync} from 'node:fs';
 const B = createRequire(import.meta.url)('../public/game/node_beacon.js');
 test('label: the Beelink host by its public name, Node 0; LIVE says live, STALE says asleep with its last heartbeat day', () => {
   assert.equal(B.label({ id: 'primer-ancla', seal: 'LIVE', since: '2026-11-15' }), '💬 Node 0 · LIVE · measured day 2026-11-15');
@@ -48,4 +48,16 @@ test('frame: the machine reads the same truth (status, source, age, talks) in un
   assert.equal(f.change[0], B.describe({ id: 'primer-ancla', seal: 'STALE', since: '2026-11-09' }, '2026-11-15'));
   assert.ok(new TextEncoder().encode(JSON.stringify(f)).length < 1024);
   assert.equal(B.frame({ id: 'doggee-s110', seal: 'STALE', since: '2026-11-09' }, '2026-11-15').talks, null);
+});
+
+test('airplane-mode node beacon refuses API traffic and does not keep stale LIVE nodes', () => {
+  const src = readFileSync(new URL('../public/game/node_beacon.js', import.meta.url), 'utf8');
+  let calls = 0;
+  const context = { module: { exports: {} }, Date, navigator: { onLine: false },
+    fetch: () => { calls++; return Promise.resolve({ok: false}); },
+    document: { getElementById: () => null } };
+  runInNewContext(src, context);
+  context.module.exports.draw({}, {}, {});
+  assert.equal(calls, 0, 'offline must attempt zero network calls');
+  assert.equal(context.module.exports.nodes().length, 0, 'offline must not retain old LIVE');
 });

@@ -34,8 +34,15 @@ async function main(){
   await cmd('Emulation.setDeviceMetricsOverride',{width:w,height:h,deviceScaleFactor:1,mobile:true});
   await cmd('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
   await cmd('Page.navigate',{url:'http://127.0.0.1:'+srv.address().port+'/openworld/?colony=alone'});
-  let ready=false;for(let j=0;j<90&&!ready;j++){ready=await ev("!!document.getElementById('gamepad')&&!!document.querySelector('#gamepad #gp-letters')&&!!document.querySelector('#gamepad .cats [data-cat=Communication]')");if(!ready)await wait(150)}
-  ok(ready,'gamepad did not load at '+w);if(!ready)continue;
+  // The DOM can exist before its <link> stylesheet has finished loading.
+  // Wait for the measured final primary and Acho mask, not an arbitrary sleep:
+  // a missing CSS asset stays RED after the bounded 90 × 150 ms gate.
+  let ready=false;
+  for(let j=0;j<90&&!ready;j++){
+    ready=await ev("(()=>{const p=document.getElementById('gp-play');return !!document.getElementById('gamepad')&&!!document.querySelector('#gamepad #gp-letters')&&!!document.querySelector('#gamepad .cats [data-cat=Communication]')&&!!p&&String(getComputedStyle(p,'::before').maskImage).includes('url(')&&parseFloat(getComputedStyle(p).borderTopWidth)>=3})()");
+    if(!ready)await wait(150);
+  }
+  ok(ready,'gamepad CSS and Acho mask not ready at '+w);if(!ready)continue;
   // Adversarial RED: a second yellow, thick-border primary must be caught by the same R1 assertion.
   if (process.env.SABOTAJE==='double-primary') await ev("(()=>{const s=document.createElement('style');s.textContent='#gamepad .cats [data-cat=Welcome]{background-color:var(--affe58a)!important;border-width:3px!important}';document.head.appendChild(s)})()");
   const arrival=JSON.parse(await measure());
@@ -60,7 +67,12 @@ async function main(){
  await cmd('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
  await cmd('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'},{name:'forced-colors',value:'active'}]});
  await cmd('Page.navigate',{url:'http://127.0.0.1:'+srv.address().port+'/openworld/?colony=alone'});
- for(let j=0;j<90&&!await ev("!!document.getElementById('gp-play')");j++)await wait(150);
+ let forcedReady=false;
+ for(let j=0;j<90&&!forcedReady;j++){
+   forcedReady=await ev("(()=>{const p=document.getElementById('gp-play');return !!p&&String(getComputedStyle(p,'::before').maskImage).includes('url(')&&parseFloat(getComputedStyle(p).outlineWidth)>=3})()");
+   if(!forcedReady)await wait(150);
+ }
+ ok(forcedReady,'forced-colors CSS or Acho mask never became ready');
  const forced=JSON.parse(await measure());
  ok(forced.forced&&forced.primary.join()==='gp-play','forced-color primary lost: '+JSON.stringify(forced));
  console.log(JSON.stringify({piece:'dock_native_browser',data,forced:{primary:forced.primary,outline:forced.outline},failures}));

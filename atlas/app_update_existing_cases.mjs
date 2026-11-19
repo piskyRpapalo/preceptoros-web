@@ -20,8 +20,11 @@ test('WEB offers update instructions as an ordinary accessible link', () => {
   assert.match(landing, /id="ta-update"/);
 });
 
-test('installed APP stays distinct from OpenWorld APK', () => {
-  assert.match(html, /APK above updates only <strong>OpenWorld<\/strong>/);
+test('native APP download stays distinct from the legacy OpenWorld TWA', () => {
+  assert.match(html, /The native Android v7 APK in door A has package <code>org.preceptoros.app<\/code>/);
+  assert.match(html, /Legacy OpenWorld 1\.0\.1/);
+  assert.match(html, /not PreceptorOS APP/);
+  assert.match(android, /Download PreceptorOS APP \(APK, 156 MB\)/);
   assert.match(android, /link: \['\/get-the-app\/#update-existing-app', 'Open the PreceptorOS APP update instructions'\]/);
   assert.doesNotMatch(android.slice(android.indexOf('      update:')), /link: \[APK,/);
 });
@@ -49,6 +52,8 @@ test('PWA update and reload must be user-driven and lossless', () => {
 });
 
 test('node proposal is not remote deployment or authority', () => {
-  assert.match(html, /Create a node \(proposal\)/);
-  assert.match(html, /NO_DATA\(remote_node_deployment_not_verified\)/);
+  assert.match(html, /My node → Node identity/);
+  assert.match(html, /NO_DATA\(production_admission_endpoint_not_verified\)/);
+  assert.match(html, /No automatic local-network scan/);
+  assert.match(html, /without fresh heartbeat/);
 });
