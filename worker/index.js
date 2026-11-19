@@ -29,6 +29,13 @@ export default {
       url.pathname = '/app/';
       return Response.redirect(url.toString(), 308);
     }
+    // One pinned APK release redirect: public GitHub asset, no credentials, no generic proxy.
+    // The old 1.34 MB TWA remains available separately. Never serve a 156 MB APK from assets.
+    if ((request.method === 'GET' || request.method === 'HEAD') &&
+        url.pathname === '/get-the-app/PreceptorOS-android-0.3.0-v7.apk') {
+      return withSecurity(Response.redirect(
+        'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk', 302), url.pathname);
+    }
     if (url.pathname === '/api/world-state') return worldState(request, env);
     return withSecurity(await env.ASSETS.fetch(request), url.pathname);
   },

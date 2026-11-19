@@ -63,13 +63,15 @@ test('root WEB SW preserves MINI caches and never intercepts /app/',()=>{
   assert.match(sw,/url\.pathname\.startsWith\('\/app\/'\)/);
   assert.doesNotMatch(sw,/ks\.filter\(k => k !== SHELL && k !== OBRA\)\.map/);
 });
-test('WEB public door points at official MINI and records mobile limitation',()=>{
+test('WEB public door prioritizes real Android v7, distinguishes static MINI and legacy OpenWorld',()=>{
   const door=read('public/get-the-app/index.html');
-  assert.match(door,/href="\/app\/" id="mini-app-primary"/);
-  assert.match(door,/href="\/app\/" id="mini-app-entry"/);
-  assert.match(door,/Add to Home screen/);
-  assert.match(door,/Install app/);
-  assert.match(door,/NO_DATA\(external_phone_install_not_measured\)/);
+  assert.match(door,/href="\/get-the-app\/PreceptorOS-android-0\.3\.0-v7\.apk" id="native-app-primary"/);
+  assert.match(door,/id="native-android-download"/);
+  assert.match(door,/Legacy OpenWorld 1\.0\.1/);
+  assert.match(door,/NO_DATA\(app_route_http_404\)/);
+  assert.match(door,/without uninstalling/);
+  assert.match(door,/Node identity/);
+  assert.doesNotMatch(door,/href="\/app\/" id="mini-app-primary"/);
 });
 test('Worker redirects exact /app while preserving parameters and serves /app/ unchanged',async()=>{
   const mod=await import('../worker/index.js');

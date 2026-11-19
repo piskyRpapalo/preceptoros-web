@@ -32,12 +32,13 @@ main.guide code{overflow-wrap:anywhere;word-break:break-word}
 <main class="guide">
 <p><a href="/">← PreceptorOS</a></p>
 <h1>Get the app</h1>
-<p class="lead">Start with the four-zone PreceptorOS MINI in your browser: local projects and documents, with no account or model required. Older native/source installers are listed separately below.</p>
-<p class="get-app"><a href="/app/" id="mini-app-primary">Start the sovereign MINI · no download required</a></p>
-<p id="mini-app-note" role="note">Android Chrome: after opening MINI, use the browser menu to select Install app, or Add to Home screen if offered. No model is preinstalled.</p>
+<p class="lead"><strong>PreceptorOS for Android is now available as a real native APP.</strong> It includes six panels, the walking crab and a small local model. It is not the legacy 1.34 MB OpenWorld web wrapper.</p>
+<p class="get-app"><a href="/get-the-app/PreceptorOS-android-0.3.0-v7.apk" id="native-app-primary" download type="application/vnd.android.package-archive">Download the native PreceptorOS APP · Android v7 (156 MB)</a></p>
+<p id="native-app-note" role="note">Android: open the signed APK and confirm installation. Previous versions with the same signing certificate can update without uninstalling. Save your node identity inside My node; requesting admission requires your consent and a separate Sovereign approval.</p>
+<p><a href="#update-existing-app">How to update without losing local data</a> · <a href="#door-openworld">Legacy OpenWorld web wrapper (not the APP)</a></p>
 <section class="gate" id="building-draft" aria-labelledby="dayd-h">
 <h2 id="dayd-h">Day D · propose one building first</h2>
-<p>Today: make a local building proposal and play as an ephemeral crab. At home: download the APP, connect your own model, and prepare a Companion. Hexelion stays on its owner's rack.</p>
+<p>Install the native Android APP first if you want your own Companion. You can also play as an ephemeral crab or draft a building here; visiting never registers or approves a node.</p>
 <nav class="dayd-path" aria-label="Three steps for visitors">
 <a href="/openworld/">1 · Play OpenWorld</a>
 <a href="#doors">2 · Get the APP / ship access</a>
@@ -57,43 +58,48 @@ main.guide code{overflow-wrap:anywhere;word-break:break-word}
 </section>
 <section class="doors" id="doors" aria-labelledby="doors-h">
 <h2 id="doors-h">Download options · choose the right application</h2>
-<article class="door" id="door-openworld" data-door="openworld">
-<h3>A · OpenWorld</h3>
-<p>The shared public world: the map, its buildings and the people in it. Open it in your browser, or install this web as an app. The Android file below is OpenWorld. It does not contain the PreceptorOS app and it does not contain a local model.</p>
-<p><a href="/openworld/">Open OpenWorld</a> · <a href="/get-the-app/PreceptorOS-android-1.0.1.apk" download type="application/vnd.android.package-archive">Android file: OpenWorld 1.0.1</a></p>
+<article class="door" id="door-native" data-door="native" data-estado="MEDIDO">
+<h3>A · Download PreceptorOS Native v7 · Android</h3>
+<p><strong>This is the PreceptorOS APP</strong> with six panels, onboarding, crab and the bundled small local SmolLM2-135M model. It is not the old 1.34 MB web wrapper. Compatible with Android 8+ ARM64 devices; native inference is experimental.</p>
+<p><a id="native-android-download" class="get-app" href="/get-the-app/PreceptorOS-android-0.3.0-v7.apk" download type="application/vnd.android.package-archive">Download PreceptorOS APP v7 (156 MB)</a></p>
+<p>Official GitHub Release: <a href="https://github.com/piskyRpapalo/preceptoros-app/releases/tag/android-mvp-v7-20261119">Android 0.3.0 · 19 Nov 2026</a>. Same signing certificate as the legacy Android 1.0.1 package; Android verifies the update. Do not uninstall or clear saved data to force an update.</p>
+<p>SHA-256: <code class="sha" data-asset="native-v7-apk">9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b</code> · 155,998,639 bytes. Certificate SHA-256: <code>16761a1e61376506acf4abdadfdddeb96ff18b4cc80a3d98205c91648e4c010f</code>.</p>
+<p role="status">Release: published and hash verified. Node registration requires explicit consent and human approval. <code>NO_DATA(node_admission_and_live_not_verified)</code>; installing alone does not register a node or send hidden requests.</p>
 </article>
-<article class="door" id="door-app" data-door="app" data-estado="MINI_STATIC_READY">
-<h3>B · PreceptorOS MINI · four-zone browser app</h3>
-<p><a href="/app/" id="mini-app-entry">Open PreceptorOS MINI</a> · projects, documents, deterministic Talk and My node stay on this device.</p>
-<p id="mini-install-steps"><strong>Android Chrome:</strong> open the MINI, then choose <strong>Install app</strong> from the browser menu if Chrome offers it. If not, choose <strong>Add to Home screen</strong>. Depending on your browser and device, this may create a shortcut rather than a standalone installation.</p>
-<p>The first opening requires internet. After its files are cached, the MINI can reopen offline. Its data is stored in this browser (not encrypted): exporting a copy is recommended before clearing browser storage or changing phones. Private browsing may not preserve it.</p>
-<p>No model is included, configured does not mean verified, and no public node deployment or LIVE status is implied. <code>NO_DATA(external_phone_install_not_measured)</code>.</p>
-<p><a href="#update-existing-app">Already have a different installed APP? See its update instructions</a>.</p>
+<article class="door" id="door-openworld" data-door="openworld">
+<h3>B · Legacy OpenWorld 1.0.1 · web wrapper (TWA)</h3>
+<p>This old 1.34 MB Android file only opens the public map. It contains no local model and is <strong>not PreceptorOS APP</strong>. It remains here solely as a separately labelled legacy option.</p>
+<p><a href="/openworld/">Open the map in your browser</a> · <a href="/get-the-app/PreceptorOS-android-1.0.1.apk" download type="application/vnd.android.package-archive">Legacy OpenWorld TWA (1.34 MB)</a></p>
+</article>
+<article class="door" id="door-app" data-door="app" data-estado="NO_DATA">
+<h3>C · Browser MINI · separate static projection</h3>
+<p>The browser-only MINI is a separate, deterministic preview; it does not include the Android Mini Orchestrator or model. Its former <code>/app/</code> route is not public: <code>NO_DATA(app_route_http_404)</code>. Use door A to install the native APP.</p>
 </article>
 <article class="door" id="door-install" data-door="install">
-<h3>C · Install the PreceptorOS app</h3>
+<h3>D · Install the PreceptorOS app</h3>
 <p><b>Linux:</b> tested end to end on Ubuntu 24.04 (install, menu entry, nine panels, data kept across update and uninstall). Use the steps <a href="#steps">below</a>. The installer fetches the current code of the app's main branch; its updates are not yet signed independently.</p>
 <p><b>Windows:</b> the installer is <a href="#windows">below</a>. Its real installation has NOT been accepted yet: NO_DATA.</p>
-<p><b>Android:</b> the four-zone MINI can be opened through <a href="/app/">the browser app</a> and added to the home screen when supported. This is not a native APK; the file in door A is OpenWorld only.</p>
+<p><b>Android:</b> use door A for the signed native APP v7. The old OpenWorld web wrapper is an explicitly separate legacy option in door B.</p>
 </article>
 </section>
 <section id="update-existing-app" class="gate" aria-labelledby="update-existing-h">
 <h2 id="update-existing-h">Update your existing PreceptorOS app</h2>
-<p>The public WEB cannot inspect or silently update an APP running on another device or origin. The Android APK above updates only <strong>OpenWorld</strong>, not the nine-panel PreceptorOS APP.</p>
+<p>The public WEB cannot inspect or silently update an APP on another device. The native Android v7 APK in door A has package <code>org.preceptoros.app</code>, versionCode 7 and the same signer as legacy Android 1.0.1; Android verifies update compatibility. Keep existing data and never uninstall just to force an update. Browser-origin APP updates follow a separate path below.</p>
 <ol>
-<li>On the device with your installed APP, use its existing shortcut or browser profile. Keep the original site data and identity keys; no public rack port is required.</li>
+<li><strong>Android native:</strong> download v7 above, open it in Android, confirm the installer and keep your existing app data. If Android rejects an update, do not clear data; report the message.</li>
+<li><strong>Browser/PC APP:</strong> on the device with your installed APP, use its existing shortcut or browser profile. Keep the original site data and identity keys; no public rack port is required.</li>
 <li>Reconnect your existing trusted tunnel, if you use one, and open the PreceptorOS APP from the original address saved on your own device. This public website cannot discover your local APP address or access your private node. Do not guess another server.</li>
 <li>In the APP, choose <strong>Settings → This app · install and update → Check for update</strong>. Compare the offline version and the version served by the rack. If the APP says the update is ready, choose <strong>Reload to use the update</strong>.</li>
 <li>If the control is absent, the installed browser copy may be older than this feature. Reopen the <em>same trusted APP origin</em> in your browser and check again. If it still does not appear, record <code>NO_DATA(old_app_update_unavailable)</code> instead of clearing app storage or identity keys.</li>
 </ol>
 <p><strong>Linux source installations:</strong> run the existing, reviewed installer again to request a fast-forward of the checked-out source. This is a different update mechanism from a browser service worker. Do not reinstall an Android OpenWorld APK to update a Linux or rack-hosted APP.</p>
-<p><strong>Node creation:</strong> after updating, look in the APP's World panel for <em>Create a node (proposal)</em>. It creates a pending proposal, not a remote server. A verified remote node trial and signed public admission are separate steps: <code>NO_DATA(remote_node_deployment_not_verified)</code>.</p>
+<p><strong>Node creation:</strong> in Android native v7 open <strong>My node → Node identity</strong>, enter your own details and choose <strong>Request admission</strong> with explicit consent. Aduana must answer with a verified receipt, then the Sovereign signs approval and provisions the node separately. <code>NO_DATA(production_admission_endpoint_not_verified)</code>; no LIVE claim without fresh heartbeat.</p>
 <p role="status">No automatic local-network scan, install, credentials request, remote execution, or grant occurs on this page.</p>
 </section>
 <section class="gate" aria-labelledby="gate-h">
 <h2 id="gate-h">In one or two clicks</h2>
 <ol class="gate-carriles" id="gate-carriles"><li>Without JavaScript, follow the steps below.</li></ol>
-<script type="application/json" id="gate-datos">{"version":"v1.3","pagina":"https://github.com/piskyRpapalo/PreceptorOS/releases/tag/v1.3","release":{"firmada":{}},"cerebros":[{"id":"mini","size_gb":1.36,"sha256":null,"maquina":"Vulkan \u00b7 Radeon 780M","fecha":"2026-09-07"}],"descargas":{},"android":{"version":"android-v1.0.1","url":"/get-the-app/PreceptorOS-android-1.0.1.apk","sha256":"8db3176a20ed973dab1f28642972bb97ab1ccd70ddbc7cf95f7a44affc7c4d8b","bytes":1340742}}</script>
+<script type="application/json" id="gate-datos">{"version":"v1.3","pagina":"https://github.com/piskyRpapalo/PreceptorOS/releases/tag/v1.3","release":{"firmada":{}},"cerebros":[{"id":"mini","size_gb":1.36,"sha256":null,"maquina":"Vulkan \u00b7 Radeon 780M","fecha":"2026-09-07"}],"descargas":{},"android":{"version":"android-mvp-v7-20261119","url":"/get-the-app/PreceptorOS-android-0.3.0-v7.apk","sha256":"9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b","bytes":155998639},"native":{"version":"android-mvp-v7-20261119","url":"/get-the-app/PreceptorOS-android-0.3.0-v7.apk","sha256":"9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b","bytes":155998639,"package":"org.preceptoros.app","versionCode":7,"publicado":true,"estado":"MEDIDO","causa":null},"legacy_android":{"version":"android-v1.0.1","url":"/get-the-app/PreceptorOS-android-1.0.1.apk","sha256":"8db3176a20ed973dab1f28642972bb97ab1ccd70ddbc7cf95f7a44affc7c4d8b","bytes":1340742}}</script>
 </section>
 <p class="aviso"><b>Five minutes?</b> Nobody has timed a clean install yet, so that figure is NO_DATA. The steps are short; how long they take on your machine is yours to measure.</p>
 <h2>Before you start</h2>
@@ -117,12 +123,14 @@ main.guide code{overflow-wrap:anywhere;word-break:break-word}
 <li>Check its fingerprint. <code>Get-FileHash install.ps1</code> must print<br><code class="sha" data-asset="install.ps1">b10d7b8ade7ea0f301fd325336ae97dba6fd954786956703a3c1c6a80641f19b</code></li>
 </ol>
 <h2>Android</h2>
+<h3>PreceptorOS APP v7 · recommended</h3>
 <ol>
-<li>Download <a href="/get-the-app/PreceptorOS-android-1.0.1.apk" download type="application/vnd.android.package-archive">PreceptorOS-android-1.0.1.apk</a> (1.3 MB), straight from this site. The same file is mirrored in the <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/download/android-v1.0.1/PreceptorOS-android-1.0.1.apk">app's release</a>. It is this web, installed as an app: it opens the world with no address bar and keeps nothing extra on the phone. Tested on an Android phone on 2026-11-09.</li>
-<li>Check its fingerprint. Its SHA-256 must be<br><code class="sha" data-asset="PreceptorOS-android-1.0.1.apk">8db3176a20ed973dab1f28642972bb97ab1ccd70ddbc7cf95f7a44affc7c4d8b</code></li>
-<li>Open the file and allow the install. The app's signing certificate is declared at <a href="/.well-known/assetlinks.json">/.well-known/assetlinks.json</a>.</li>
+<li><a href="/get-the-app/PreceptorOS-android-0.3.0-v7.apk" download type="application/vnd.android.package-archive">Download the native Android APK (156 MB)</a>. It is the same signed artifact published in the official GitHub Release, not a PWA.</li>
+<li>Compare its SHA-256 with <code class="sha" data-asset="native-v7-apk">9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b</code>. Android must accept its signing certificate. If updating an existing install, do not uninstall or clear data.</li>
+<li>Open Talk, then My node → Node identity. Save your own details and separately consent to a review request when Aduana is available. Approval and a verified heartbeat are required for a LIVE node.</li>
 </ol>
-<p>To run the full app (the local model and the node) on Android, the app's own guide, <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/INSTALACION_ANDROID.md">INSTALACION_ANDROID.md</a> (in Spanish), covers Termux.</p>
+<h3>Legacy OpenWorld web wrapper · optional, not PreceptorOS APP</h3>
+<p><a href="/get-the-app/PreceptorOS-android-1.0.1.apk" download type="application/vnd.android.package-archive">Download the legacy 1.34 MB web-wrapper APK</a>, SHA-256 <code class="sha" data-asset="PreceptorOS-android-1.0.1.apk">8db3176a20ed973dab1f28642972bb97ab1ccd70ddbc7cf95f7a44affc7c4d8b</code>. It opens the public map only.</p>
 <p class="get-app"><a href="/aduana/">Next: create a node</a></p>
 <h2 id="first-steps">Later at home · Companion and your own model</h2>
 <p id="companion-path"><strong>Create Companion · docs-only human-reviewed PR.</strong> <a href="https://github.com/piskyRpapalo/preceptoros-companion/blob/main/CONTRIBUTING.md">Read CONTRIBUTING</a> · <a href="https://github.com/piskyRpapalo/preceptoros-companion/tree/main/companions/template">Open the companion template</a>.</p>
@@ -144,8 +152,8 @@ main.guide code{overflow-wrap:anywhere;word-break:break-word}
 <li><a href="/openworld/?go=hexelion&amp;ask=Hello%20Hexelion%2C%20what%20can%20you%20do%3F">Hello Hexelion, what can you do?</a></li>
 </ul>
 <h2>What has been tested</h2>
-<table class="pruebas"><thead><tr><th>System</th><th>State</th><th>Detail</th></tr></thead><tbody><tr data-asset="install.sh" data-estado="PROBADO"><td>Linux</td><td>Tested</td><td>Run end to end on 2026-08-31 on the development node, with an isolated home.</td></tr><tr data-asset="install.sh" data-estado="NO_PROBADO"><td>macOS</td><td>Not tested</td><td>The Homebrew branch is written and reviewed, but there is no Mac in the rack.</td></tr><tr data-asset="install.ps1" data-estado="NO_PROBADO"><td>Windows</td><td>Not tested</td><td>Reviewed line by line, never run: there is no Windows machine in the rack.</td></tr><tr data-asset="INSTALACION_ANDROID.md" data-estado="NO_DATA"><td>Android · Termux</td><td>NO_DATA</td><td>The app&#x27;s own guide says Termux works today and the APK does not exist yet. Not measured here.</td></tr></tbody></table>
-<details class="tech"><summary>Technical details</summary><p>This page is written from the release card the web serves (<a href="/release.json">release.json</a>, measured 2026-09-13 · seal STALE: measured 2026-09-13; fingerprints re-checked 2026-10-26; install tests not re-run on a fleet device since). Its fingerprints match the live v1.3 release (re-checked 2026-10-26). Release page: <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/tag/v1.3">piskyRpapalo/PreceptorOS v1.3</a>. Manifest sha256: <code class="sha">75619007eb1b4c923f4299a754a436dcffa6e471f4d4f11b284351b752abaa7f</code></p></details>
+<table class="pruebas"><thead><tr><th>System</th><th>State</th><th>Detail</th></tr></thead><tbody><tr data-asset="install.sh" data-estado="PROBADO"><td>Linux</td><td>Tested</td><td>Run end to end on 2026-08-31 on the development node, with an isolated home.</td></tr><tr data-asset="install.sh" data-estado="NO_PROBADO"><td>macOS</td><td>Not tested</td><td>The Homebrew branch is written and reviewed, but there is no Mac in the rack.</td></tr><tr data-asset="install.ps1" data-estado="NO_PROBADO"><td>Windows</td><td>Not tested</td><td>Reviewed line by line, never run: there is no Windows machine in the rack.</td></tr><tr data-asset="INSTALACION_ANDROID.md" data-estado="NO_DATA"><td>Android · Termux</td><td>NO_DATA</td><td>The older Termux guide is separate; native Android v7 was installed and tested on one device. Four external Android installs remain NO_DATA.</td></tr></tbody></table>
+<details class="tech"><summary>Technical details</summary><p>This page is written from the release card the web serves (<a href="/release.json">release.json</a>, measured 2026-09-13 · seal STALE: measured 2026-09-13; fingerprints re-checked 2026-10-26; install tests not re-run on a fleet device since). Its fingerprints match the live v1.3 release (re-checked 2026-10-26). The native Android v7 release is verified separately on 2026-11-19; desktop v1.3 metadata remains historical. Release page: <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/tag/v1.3">piskyRpapalo/PreceptorOS v1.3</a>. Manifest sha256: <code class="sha">75619007eb1b4c923f4299a754a436dcffa6e471f4d4f11b284351b752abaa7f</code></p></details>
 </main>
 <script src="/assets/pwa.js"></script>
 <script src="/game/launch_gate.js"></script>

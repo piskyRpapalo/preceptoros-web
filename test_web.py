@@ -1492,6 +1492,16 @@ class Paginas(unittest.TestCase):
                 # Un href que empieza por "/" es relativo a la RAIZ DEL SITIO,
                 # que aqui es public/, no al sistema de ficheros. La primera
                 # version resolvia "/es/" contra / y daba nueve falsos rotos.
+                # The native APK is 156 MB and cannot be a static Cloudflare asset.
+                # ONE exact route is pinned by the reviewed Worker to the verified
+                # public GitHub Release. All other relative paths remain file gated.
+                if ruta == "/get-the-app/PreceptorOS-android-0.3.0-v7.apk":
+                    js = (RAIZ / "worker" / "index.js").read_text(encoding="utf-8")
+                    with self.subTest(pagina=str(p.relative_to(PUBLICO)), href=href):
+                        self.assertIn("url.pathname === '/get-the-app/PreceptorOS-android-0.3.0-v7.apk'", js)
+                        self.assertIn(
+                            "https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk", js)
+                    continue
                 base = PUBLICO if ruta.startswith("/") else p.parent
                 destino = (base / ruta.lstrip("/")).resolve()
                 if destino.is_dir():
@@ -2380,6 +2390,14 @@ class WebLimpia(unittest.TestCase):
                 if d.is_dir():
                     d = d / "index.html"
                 if not d.exists():
+                    # The sole native APK route is implemented as an exact
+                    # Worker redirect. Never accept arbitrary missing files.
+                    if u == "/get-the-app/PreceptorOS-android-0.3.0-v7.apk":
+                        worker = (RAIZ / "worker" / "index.js").read_text(encoding="utf-8")
+                        self.assertIn("url.pathname === '/get-the-app/PreceptorOS-android-0.3.0-v7.apk'",worker)
+                        self.assertIn(
+                            "https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk",worker)
+                        continue
                     self.fail(f"enlace interno sin destino: {f} -> {u}")
                 rutas.add("/" + d.relative_to(PUBLICO.resolve()).as_posix())
 

@@ -16,12 +16,57 @@ function juez(t, r) {
   // 2026-11-09: the Android app is its own release on the same card (r.android); its download and fingerprint are judged the same way.
   const and = r.android || { version: '', assets: [] }, baseA = `https://github.com/${r.repo}/releases/download/${and.version}/`;
   const shaA = Object.fromEntries(and.assets.map((a) => [a.nombre, a.sha256]));
+  // 2026-11-19: native v7 APK is declared in r.native with a separate data-asset key; include its SHA in the fingerprint map.
+  const nat = r.native || {};
+  const shaN = nat.sha256 ? { 'native-v7-apk': nat.sha256 } : {};
+  if (r.native) {
+    if (!/^[a-f0-9]{64}$/.test(nat.sha256 || '')) fallos.push('native APK hash not valid');
+    if (nat.url !== '/get-the-app/PreceptorOS-android-0.3.0-v7.apk' ||
+        nat.source_url !== 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk') {
+      fallos.push('native release URL differs from pinned route');
+    }
+    if (!t.includes('data-asset="native-v7-apk">' + nat.sha256 + '</code>')) {
+      fallos.push('native APK fingerprint differs from card');
+    }
+    const m = t.match(/<script type="application\/json" id="gate-datos">([^<]+)<\/script>/);
+    let embedded = null;
+    try { embedded = m ? JSON.parse(m[1]) : null; } catch {}
+    if (!embedded || !embedded.native || ['version','url','sha256','bytes','package','versionCode','publicado','estado','causa']
+        .some((key) => embedded.native[key] !== nat[key])) {
+      fallos.push('native embedded release card differs from release.json');
+    }
+    if (!embedded || !embedded.android ||
+        ['version','url','sha256','bytes'].some((key) => embedded.android[key] !== nat[key])) {
+      fallos.push('Android launch gate does not target the native APK');
+    }
+    const nativeDoor = (t.match(/<article class="door" id="door-native"[\s\S]*?<\/article>/) || [''])[0];
+    if (!nativeDoor || !nativeDoor.includes('href="' + nat.url + '"')) {
+      fallos.push('native download link absent or different');
+    }
+    if (t.indexOf('id="door-native"') >= t.indexOf('id="door-openworld"')) {
+      fallos.push('native APK is not the first Android door');
+    }
+    if (nat.publicado !== true || nat.estado !== 'MEDIDO' || nat.causa !== null) {
+      fallos.push('verified public release falsely marked unavailable');
+    }
+    const worker = leer('worker/index.js');
+    if (!worker.includes('url.pathname === \'/get-the-app/PreceptorOS-android-0.3.0-v7.apk\'') ||
+        !worker.includes(nat.source_url)) {
+      fallos.push('native same-origin redirect not pinned to release asset');
+    }
+    if (t.includes('github_release_draft_not_published') || /releases\/download\/untagged-[^/"]+/.test(t)) {
+      fallos.push('stale draft or untagged release URL leaked');
+    }
+  }
   const bajas = [...t.matchAll(/href="(https:\/\/github\.com\/[^"]+\/releases\/download\/[^"]+)"/g)].map((m) => m[1]);
-  if (bajas.length < 3) { fallos.push('fewer than 3 downloads: ' + bajas.length); }
+  const nativePinnedRoute = r.native && t.includes('href="' + r.native.url + '"') ? 1 : 0;
+  if (bajas.length + nativePinnedRoute < 3) {
+    fallos.push('fewer than 3 verified downloads: ' + (bajas.length + nativePinnedRoute));
+  }
   bajas.forEach((u) => { if (!(u.startsWith(base) && u.slice(base.length) in sha) && !(and.version && u.startsWith(baseA) && u.slice(baseA.length) in shaA)) { fallos.push('download not in the card: ' + u); } });
   const huellas = [...t.matchAll(/<code class="sha" data-asset="([^"]+)">([0-9a-f]{64})<\/code>/g)];
   if (huellas.length < 2) { fallos.push('fewer than 2 fingerprints'); }
-  huellas.forEach((m) => { if ((sha[m[1]] || shaA[m[1]]) !== m[2]) { fallos.push('fingerprint differs from the card: ' + m[1]); } });
+  huellas.forEach((m) => { if ((sha[m[1]] || shaA[m[1]] || shaN[m[1]]) !== m[2]) { fallos.push('fingerprint differs from the card: ' + m[1]); } });
   if (!t.includes(r.sha256_manifiesto)) { fallos.push('manifest sha missing'); }
   const filas = [...t.matchAll(/<tr data-asset="([^"]+)" data-estado="([^"]+)">/g)].map((m) => m[1] + ':' + m[2]);
   const carta = r.pruebas.map((p) => p.asset + ':' + p.estado);
@@ -81,18 +126,18 @@ test('SABOTAGE NORTE 5 a1 · an invented signed receipt or an invented sha256 tu
 // WEB-ANDROID-DOWNLOAD-01: the signed APK is real, the web install prompt is not the Android APK,
 // and no page may infer installed native version or report device telemetry without consent.
 test('Android release is offered as a one-click APK download and a distinct update action', () => {
-  const android = R.android;
-  const entry = android?.assets?.[0];
-  if (!entry || !/^[0-9a-f]{64}$/.test(entry.sha256) || entry.bytes <= 0) { throw new Error('no verified Android release'); }
+  const native = R.native;
+  if (!native || !/^[0-9a-f]{64}$/.test(native.sha256) || native.bytes !== 155998639 ||
+      native.publicado !== true) { throw new Error('native Android release unverified'); }
   const embedded = JSON.parse(PAGINA.match(/<script type="application\/json" id="gate-datos">([^<]+)<\/script>/)[1]);
-  if (embedded.android.url !== '/get-the-app/' + entry.nombre ||
-      embedded.android.sha256 !== entry.sha256 ||
-      embedded.android.version !== android.version ||
-      embedded.android.bytes !== entry.bytes) { throw new Error('embedded Android release drifted from the signed release card'); }
+  if (['url','sha256','version','bytes'].some((k) => embedded.android[k] !== native[k]) ||
+      embedded.legacy_android.sha256 !== R.android.assets[0].sha256) {
+    throw new Error('embedded Android release drifted from native or legacy card');
+  }
   const G = awaitGate();
   const d = { os: 'android', pwa: { instalable: false }, release: {}, android: embedded.android, cerebros: [] };
   const app = G.vista(d).carriles.find((x) => x.id === 'app');
-  if (!app.boton.activo || app.boton.etiqueta !== 'Download Android app' || app.clics !== 1 || app.sha256 !== entry.sha256) {
+  if (!app.boton.activo || app.boton.etiqueta !== 'Download Android app' || app.clics !== 1 || app.sha256 !== native.sha256) {
     throw new Error('Android must expose a one-click verified APK rather than a PWA');
   }
   const gate = leer('public/assets/get_app_gate.js');
@@ -114,26 +159,62 @@ test('SABOTAGE Android download: absent or fabricated hash keeps APK lane closed
 });
 
 
-test('Homepage has exactly four actions (PWA, Download App, Update App, Create Companion); its Android choice downloads the published APK (without claiming local AI)', () => {
-  // 2026-11-16 (APP-MESA-06): PWA | App (Android / Ubuntu / Windows) | Update App replaced the two APK links.
-  const apk = R.android.assets[0];
-  const home = leer('public/index.html');
-  const js = leer('public/assets/three_actions.js');
-  // WEB-FOUR-DOORS-01: exactly four main actions, in the one row of #four-actions; the panel's own buttons are not main actions.
+test('Homepage still has exactly four actions and Android now downloads the native APP (not legacy web wrapper)', () => {
+  const native = R.native;
+  const home = leer('public/index.html'), js = leer('public/assets/three_actions.js');
   const row = (home.match(/<div class="ta-row"[\s\S]*?<\/div>/) || [''])[0];
   const ids = [...row.matchAll(/<button type="button" id="([a-z-]+)" class="ta-btn"/g)].map((m) => m[1]);
-  if (ids.join(',') !== 'ta-pwa,ta-app,ta-update,fa-companion') { throw new Error('the homepage must keep exactly four main actions: ' + ids.join(',')); }
-  const route = '/get-the-app/' + apk.nombre;
-  if (!js.includes("var APK = '" + route + "'")) { throw new Error('Android choice does not target the published release'); }
-  if (apk.sha256 && (js.split(apk.sha256).length - 1) !== 1) { throw new Error('Android OpenWorld download must show the published SHA-256 exactly once'); }
-  if (!js.includes("link: ['/get-the-app/#update-existing-app', 'Open the PreceptorOS APP update instructions']") ||
-      !js.includes('It cannot update your nine-panel APP')) { throw new Error('the real APP update must not point to the OpenWorld APK'); }
-  // Each download names what it installs; the OpenWorld APK is never the APP, and nothing public promises Hexelion.
-  if (!js.includes('It is not the PreceptorOS APP and has no model inside')) { throw new Error('home presents the OpenWorld APK as the APP'); }
-  if (!js.includes("'Download OpenWorld (APK)'") || !js.includes("'Download the APP installer (install.sh)'")) { throw new Error('a download does not say what it installs'); }
-  if (/hexelion/i.test(js)) { throw new Error('the public base product must not promise Hexelion'); }
-  if (!js.includes('The public website cannot inspect an APP on another origin')) { throw new Error('update must not claim to detect an installed app'); }
-  if (!/\.ta-btn:focus-visible/.test(home)) { throw new Error('missing visible keyboard focus'); }
+  if (ids.join(',') !== 'ta-pwa,ta-app,ta-update,fa-companion') throw new Error('four-actions layout changed: '+ids.join(','));
+  if (!js.includes("var APK = '" + native.url + "'")) throw new Error('homepage Android source is legacy APK');
+  if ((js.split(native.sha256).length - 1) !== 1) throw new Error('Android native SHA must appear once in homepage action');
+  if (!js.includes("'Download PreceptorOS APP (APK, 156 MB)'") ||
+      !js.includes("'Download the APP installer (install.sh)'")) throw new Error('homepage download mislabelled');
+  if (!js.includes('It is not the PreceptorOS APP and has no model inside')) throw new Error('legacy wrapper not distinguished');
+  if (!js.includes('The public website cannot inspect an APP on another origin')) throw new Error('false automatic update claim');
+  if (/hexelion/i.test(js)) throw new Error('homepage must not promise Hexelion');
+  if (!/\.ta-btn:focus-visible/.test(home)) throw new Error('missing visible focus');
+});
+
+// Native v7 publicly published, source URL and SHA pinned, legacy TWA secondary.
+test('Native v7 · manifest and gate declare the real public native APK', () => {
+  const nat=R.native;
+  if (nat.version !== 'android-mvp-v7-20261119' || nat.sha256 !== '9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b' ||
+      nat.bytes !== 155998639 || nat.package !== 'org.preceptoros.app' || nat.versionCode !== 7 ||
+      nat.publicado !== true || nat.estado !== 'MEDIDO' || nat.causa !== null) throw new Error('native release contract mismatch');
+  if (nat.certificate_sha256 !== '16761a1e61376506acf4abdadfdddeb96ff18b4cc80a3d98205c91648e4c010f') throw new Error('native cert drift');
+  const embedded=JSON.parse(PAGINA.match(/<script type="application\/json" id="gate-datos">([^<]+)<\/script>/)[1]);
+  if (embedded.android.url !== nat.url || embedded.android.sha256 !== nat.sha256 ||
+      embedded.native.publicado !== true) throw new Error('native first-class Android gate missing');
+});
+
+test('Native v7 · first Android download is a real pinned redirect, not old TWA', async () => {
+  if (juez(PAGINA,R).length) throw new Error(juez(PAGINA,R).join(' | '));
+  if (PAGINA.indexOf('id="door-native"') > PAGINA.indexOf('id="door-openworld"')) throw new Error('legacy wrapper precedes native APP');
+  if (!PAGINA.includes('id="native-android-download"') || !PAGINA.includes('href="' + R.native.url + '"')) throw new Error('native download anchor missing');
+  const worker=(await import('../worker/index.js')).default;
+  let assetHits=0;
+  const env={ASSETS:{fetch:async()=>{assetHits++;return new Response('not an APK',{status:404});}}};
+  for(const method of ['GET','HEAD']){
+    const r=await worker.fetch(new Request('https://preceptoros.org'+R.native.url,{method}),env);
+    if (r.status !== 302 || r.headers.get('location') !== R.native.source_url || assetHits) {
+      throw new Error('pinned Worker redirect did not route '+method+' to GitHub release');
+    }
+  }
+  const missing=await worker.fetch(new Request('https://preceptoros.org/get-the-app/PreceptorOS-android-fake.apk'),env);
+  if(missing.status !== 404 || assetHits !== 1) throw new Error('arbitrary APK path could redirect');
+});
+
+test('SABOTAGE Native v7 · wrong hash, URL and release status all turn the judge red', () => {
+  const wrong=JSON.parse(JSON.stringify(R));wrong.native.sha256='f'.repeat(64);
+  if(!juez(PAGINA,wrong).some(e=>/fingerprint|release card/.test(e)))throw new Error('wrong digest stayed green');
+  const spoof=JSON.parse(JSON.stringify(R));spoof.native.source_url='https://example.invalid/evil.apk';
+  if(!juez(PAGINA,spoof).some(e=>/release URL|pinned/.test(e)))throw new Error('external source spoof stayed green');
+  const draft=JSON.parse(JSON.stringify(R));draft.native.publicado=false;
+  if(!juez(PAGINA,draft).some(e=>/unavailable|release card/.test(e)))throw new Error('published state mismatch stayed green');
+  if(!PAGINA.includes('/get-the-app/PreceptorOS-android-1.0.1.apk') ||
+     !PAGINA.includes('8db3176a20ed973dab1f28642972bb97ab1ccd70ddbc7cf95f7a44affc7c4d8b')) {
+     throw new Error('legacy wrapper history disappeared');
+  }
 });
 
 // Lisbon table: a visitor can reach every honest door without mistaking an accepted PR for a LIVE node.
