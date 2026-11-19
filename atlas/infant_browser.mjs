@@ -25,6 +25,9 @@ function sirve(raiz) {
       let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
       let cuerpo = readFileSync(f);
+      if (SAB === 'gear-mask' && ruta === '/game/talk.css') {
+        cuerpo = Buffer.from(String(cuerpo).replace(/#gamepad #gp-letters\{--ic:[^\n]+/, '#gamepad #gp-letters{--ic:none}'));
+      }
       res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
   });
@@ -64,14 +67,25 @@ async function main() {
     const p1 = largas(primera), dup = [...new Set(p1.filter((t, i) => p1.indexOf(t) !== i))];
     const tecnico = lineas.filter((t) => ${TECNICO.toString()}.test(t)).slice(0, 6);
     const ctl = [...document.querySelectorAll('button,[role=tab],summary,a[href]')].filter(vis);
-    const cortados = ctl.filter((e) => e.scrollWidth > e.clientWidth + 1).map((e) => e.textContent.trim().slice(0, 30));
+    const gear = document.getElementById('gp-letters');
+    const gearBox = gear && gear.getBoundingClientRect();
+    const gearStyle = gear && getComputedStyle(gear);
+    const gearMask = gear && getComputedStyle(gear, '::before').webkitMaskImage;
+    const gearReady = !!(gear && gearBox.width >= 44 && gearBox.height >= 44 &&
+      gear.getAttribute('aria-label') === 'Settings' && gearStyle.fontSize === '0px' &&
+      gearMask && gearMask !== 'none');
+    // Decorative source glyph has no painted text when the icon mask is present.
+    // Do not exclude it when the real Settings icon is absent.
+    const cortados = ctl.filter((e) => !(e === gear && gearReady) &&
+      e.scrollWidth > e.clientWidth + 1).map((e) => e.textContent.trim().slice(0, 30));
     const radio = [...document.querySelectorAll('#radio-chat-lista li')].map((li) => li.textContent);
-    return { dup, tecnico, cortados, chars: lineas.join(' ').length, radio: radio.length, radioCaminantes: radio.filter((t) => /walker of /.test(t)).map((t) => t.slice(0, 180)) };
+    return { dup, tecnico, cortados, gearReady, chars: lineas.join(' ').length, radio: radio.length, radioCaminantes: radio.filter((t) => /walker of /.test(t)).map((t) => t.slice(0, 180)) };
   })())`));
   medidas.infante = r;
   ok(r.dup.length === 0, 'R2 a line repeats on the first screen: ' + r.dup.slice(0, 3).join(' | '));
   ok(r.tecnico.length === 0, 'R3 technical text is visible: ' + r.tecnico.slice(0, 3).join(' | ').slice(0, 300));
   ok(r.radioCaminantes.length === 0, 'R3 the radio echoes the walkers: ' + r.radioCaminantes.join(' | '));
+  ok(r.gearReady === true, 'R4 Settings icon mask, accessible name, or 44px target missing');
   ok(r.cortados.length === 0, 'R4 cut at 360 px: ' + r.cortados.join(' | '));
   ok(r.chars < TECHO, 'the visible text is over ' + TECHO + ' chars: ' + r.chars);
   console.log(JSON.stringify({ piece: 'infante', publico: process.env.PUBLICO ? 'override' : 'branch', receipt: fallos.length ? 'ROJO' : 'VERDE', medidas, fallos }));
