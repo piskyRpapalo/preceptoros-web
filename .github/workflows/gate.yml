@@ -20,7 +20,9 @@ permissions:
 jobs:
   test_web:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # 19NOV P0: two complete passes ~7m24 each plus setup; 15m cancelled a still-green run.
+    # 18m preserves every gate and a bounded, measured allowance for runner variation.
+    timeout-minutes: 18
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
