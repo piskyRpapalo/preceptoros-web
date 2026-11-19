@@ -30,12 +30,15 @@ explicit FIRMO. Private keys never leave the visitor device.
 
 ## Hard limits (measured laws)
 
-- 1,024 bytes per reception-contract payload, strict UTF-8.
+- Strictly **fewer than 1,024 bytes** (at most **1,023 UTF-8 bytes**) per signed reception-contract payload. This matches the rejection at `>= 1024` in `public/game/node_reception_contract.js`.
 - 25 MiB per synthetic block (higher only by signed exception in
-  EXCEPCIONES.md). The byte-per-file ceiling was revoked on 2026-10-11; the
-  yardstick now is measured fps on the reference phone. The old game door
-  (gzip_juego_b) is NO_DATA with its cause since the theGame retirement
-  (corte D, 2026-10-28).
+  EXCEPCIONES.md). This budget does **not** authorize uploading private 25 MiB
+  knowledge packages through the public WEB. Proposed owner-consented blob
+  transport belongs to private Aduana with independent verification:
+  **NO_DATA(private_companion_R2_transfer_E2E_not_implemented)**.
+  The byte-per-file ceiling was revoked on 2026-10-11; the yardstick now is
+  measured fps on the reference phone. The old game door (gzip_juego_b)
+  remains NO_DATA with its cause since the theGame retirement (2026-10-28).
 - Service worker served with a measured fingerprint.
 - Review of the service-worker update path: NO_DATA with cause (review
   pending; not claimed done).
