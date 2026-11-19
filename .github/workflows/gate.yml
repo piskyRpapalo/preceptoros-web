@@ -67,6 +67,7 @@ jobs:
             node --test atlas/wave_duel_stall_cases.mjs
             node --test atlas/puros/caravan_cases.mjs
             node --test atlas/puros/building_doors_cases.mjs
+            node --test atlas/puros/access_evidence_cases.mjs
             node --test atlas/puros/acho_claim_cases.mjs
             node --test atlas/puros/sound_first_cases.mjs
             node --test atlas/puros/byte_budget_cases.mjs
