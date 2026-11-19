@@ -49,11 +49,13 @@ const fc = JSON.parse(await ev(`JSON.stringify((() => {
   const contraste = Math.round(((Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)) * 100) / 100;
   return { forced: matchMedia('(forced-colors: active)').matches, aplicadas, contraste, lienzo: AtlasComicAtoms.highContrast() };
 })())`));
-for (let i = 0; i < 40 && (await ev("document.activeElement.id")) !== 'play-now'; i++) { await tecla('Tab', 'Tab', 9); }
+// The current native dock has gp-play; play-now remains the legacy HTML control.
+// Stop tabbing at either *Play* control, never at unrelated Node/Settings buttons.
+for (let i = 0; i < 40 && !(await ev("['gp-play','play-now'].includes(document.activeElement.id)")); i++) { await tecla('Tab', 'Tab', 9); }
 fc.foco = await ev("(() => { const s = getComputedStyle(document.activeElement); return document.activeElement.id + ' ' + s.outlineStyle + ' ' + s.outlineWidth; })()");
 if (!fc.forced || fc.aplicadas < 5) { fallos.push('forced-colors rules applied: ' + fc.aplicadas); }
 if (fc.lienzo !== true) { fallos.push('canvas high-contrast path off'); }
-if (!/^play-now solid 3px/.test(fc.foco || '')) { fallos.push('focus ring under forced colours: ' + fc.foco); }
+if (!/^(gp-play|play-now) solid 3px$/.test(fc.foco || '')) { fallos.push('Play focus ring under forced colours: ' + fc.foco); }
 if (!(fc.contraste >= 7)) { fallos.push('panel text contrast ' + fc.contraste); }
 
 // 2 · Open the map panel; Tab reaches its visible first node button and Enter enters.
