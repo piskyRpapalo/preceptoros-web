@@ -86,7 +86,7 @@ async function main() {
   // North D1: the install guide, at phone width: nothing external, no sideways scroll, no missing value, the landing links it.
   // /get-the-app/ is reached from the map's Help and Settings now (settings_sheet.js, map_links.js), not from the landing.
   await cmd('Page.navigate', { url: origen + '/get-the-app/' }); await espera(1500);
-  medida.guia = JSON.parse(await ev("JSON.stringify({ h1: (document.querySelector('h1') || {}).textContent, ancho: document.documentElement.scrollWidth, vista: innerWidth, bajas: document.querySelectorAll('a[href*=\"/releases/download/\"]').length, huellas: document.querySelectorAll('code.sha[data-asset]').length, filas: document.querySelectorAll('.pruebas tbody tr').length, texto: document.body.innerText })"));
+  medida.guia = JSON.parse(await ev("JSON.stringify({ h1: (document.querySelector('h1') || {}).textContent, ancho: document.documentElement.scrollWidth, vista: innerWidth, bajas: document.querySelectorAll('a[href*=\"/releases/download/\"]').length, nativeRoute: document.getElementById('native-app-primary')?.getAttribute('href'), nativeDoorRoute: document.getElementById('native-android-download')?.getAttribute('href'), nativeSha: document.querySelector('[data-asset=\"native-v7-apk\"]')?.textContent, huellas: document.querySelectorAll('code.sha[data-asset]').length, filas: document.querySelectorAll('.pruebas tbody tr').length, texto: document.body.innerText })"));
   ok(medida.guia.h1 === 'Get the app', '/get-the-app/ did not load');
   medida.daydDraft = JSON.parse(await ev(`JSON.stringify((()=>{
     const form=document.getElementById('dayd-building-form'),name=document.getElementById('dayd-building-name'),
@@ -111,7 +111,14 @@ async function main() {
     medida.daydDraft.feedback && medida.daydDraft.shipDoor && !medida.daydDraft.formAction,
     'Day D building draft not safely downloadable: '+JSON.stringify(medida.daydDraft));
   ok(medida.guia.ancho <= medida.guia.vista, '/get-the-app/ scrolls sideways: ' + medida.guia.ancho + ' > ' + medida.guia.vista);
-  ok(medida.guia.bajas >= 3 && medida.guia.huellas >= 2 && medida.guia.filas >= 4, '/get-the-app/ lost downloads, fingerprints or the test table');
+  // The v7 APK cannot be hosted as a Cloudflare asset: two native links use
+  // one exact Worker redirect; GitHub links remain the other public downloads.
+  // Count it only when BOTH on-page paths and its SHA match the release contract.
+  const native = '/get-the-app/PreceptorOS-android-0.3.0-v7.apk';
+  const pinned = medida.guia.nativeRoute === native && medida.guia.nativeDoorRoute === native &&
+    medida.guia.nativeSha === '9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b';
+  ok(medida.guia.bajas + (pinned ? 1 : 0) >= 3 && medida.guia.huellas >= 2 && medida.guia.filas >= 4,
+    '/get-the-app/ lost native pinned redirect, GitHub downloads, fingerprints or test table');
   ok(!/\bundefined\b|\bNaN\b/.test(medida.guia.texto), 'missing value shown on /get-the-app/');
   if (CAPTURA) { const g = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }); writeFileSync(join(CAPTURA, 'get-the-app.png'), Buffer.from(g.result.data, 'base64')); }
   ok(externas.length === 0, 'external requests after /get-the-app/: ' + externas.slice(0, 3));
