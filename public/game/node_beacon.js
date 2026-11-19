@@ -74,6 +74,11 @@
   }
   function load() {
     var now = Date.now(); if (now - asked < 60000 || !root.fetch) { return; } asked = now;
+    // Do not make even an attempted request when Android/Chrome is in airplane mode.
+    // Last measured LIVE data has expired offline: announce NO_DATA instead.
+    if (root.navigator && root.navigator.onLine === false) {
+      nodes = []; cause = 'offline; no fresh verified heartbeat'; doors(); return;
+    }
     root.fetch(WS, { cache: 'no-store' }).then(function (r) { if (!r.ok) { cause = 'world-state answered ' + r.status; return null; } return r.json(); }).then(function (d) {
       if (d) { nodes = pick(d); cause = nodes.length ? '' : 'no node admitted in World'; nodes.forEach(tell); }
       doors(); var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(); if (ow && ow.redraw) { ow.redraw(); }
