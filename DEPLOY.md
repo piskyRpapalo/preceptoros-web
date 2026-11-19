@@ -16,8 +16,8 @@ production approval. A merge alone never certifies live parity.
 
 Current route-count receipt (measured with `python3 bin/count_routes.py`, 2026-11-18 from `c287d0a3` source; routes are the SW shell entries, not proof of a public deployment):
 
-Rutas precargadas por el shell: 181
-Rutas distintas del shell: 181
+Rutas precargadas por el shell: 182
+Rutas distintas del shell: 182
 
 The workflow runs exactly:
 
