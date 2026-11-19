@@ -70,11 +70,18 @@ test('unexpected fields, unsafe id, and oversized injected claims fail closed', 
   normal.access.source = 'a'.repeat(1200);
   assert.ok(A.validate(normal).includes('access_frame_over_1024'));
 });
-test('tampering a frame status or voice is detected', () => {
+test('tampering status, visual sentence, machine change, voice or source is detected', () => {
   const r = frame().frame; r.access.status = 'LIVE';
   assert.ok(A.validate(r).includes('access_status_or_id_mismatch'));
   r.access.status = 'REPORTED'; r.sound = 'ok';
   assert.ok(A.validate(r).includes('audio_claim_without_acho_waves'));
+  r.sound = 'NO_DATA: no waves declared for this state';
+  r.atoms[0].r = 'Access node.welcome: REPORTED · false_verified';
+  assert.ok(A.validate(r).includes('visual_machine_sentence_mismatch'));
+  r.atoms[0].r = r.change[0]; r.change[0] += ' forged';
+  assert.ok(A.validate(r).includes('visual_machine_sentence_mismatch'));
+  r.change[0] = r.atoms[0].r; r.access.source = '<script>';
+  assert.ok(A.validate(r).includes('source_invalid'));
 });
 test('no timers, random choices or network side effects; file within source budget', () => {
   const path = new URL('./access_evidence.js', import.meta.url);

@@ -83,10 +83,15 @@
     if (access.authority !== 'NO_DATA: independent_harness_proof_unverified') {
       problems.push('unverified_access_cannot_claim_authority');
     }
-    if (typeof access.source !== 'string' || !access.source.trim()) {
-      problems.push('source_required');
+    if (typeof access.source !== 'string' || !/^[a-zA-Z0-9_./: -]{1,96}$/.test(access.source)) {
+      problems.push('source_invalid');
     }
-    if (!frame.atoms || frame.atoms.length !== 1 || frame.atoms[0].r.indexOf('Access ' + access.door + ': ' + access.status + ' · ') !== 0) {
+    var note = result.status === 'FAIL' ? result.failures.join(',') :
+      result.status === 'NO_DATA' ? result.unknowns.join(',') : 'harness_proof_unverified';
+    var sentence = 'Access ' + access.door + ': ' + result.status + ' · ' + note;
+    if (!Array.isArray(frame.atoms) || frame.atoms.length !== 1 ||
+        !frame.atoms[0] || frame.atoms[0].r !== sentence ||
+        !Array.isArray(frame.change) || frame.change.length !== 1 || frame.change[0] !== sentence) {
       problems.push('visual_machine_sentence_mismatch');
     }
     if (frame.sound !== 'NO_DATA: no waves declared for this state') {
