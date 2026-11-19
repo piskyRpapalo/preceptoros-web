@@ -6,14 +6,14 @@ import { createRequire } from 'node:module';
 import { readFileSync, statSync } from 'node:fs';
 
 const require = createRequire(import.meta.url);
-const M = require('../public/game/mission_shelf.js');
+const M = require('../atlas/puros/mission_shelf.js');
 const SF = require('../public/game/state_frames.js');
 const MH = require('../public/game/mission_hotspots.js');
 
 // --- Source-verified constants ---
 
-test('SOURCE_REPO is the Public Mesa catalog', () => {
-  assert.equal(M.SOURCE_REPO, 'piskyRpapalo/preceptoros-public-mesa');
+test('SOURCE_REPO is the WEB-local hints (not the Public Mesa catalog)', () => {
+  assert.equal(M.SOURCE_REPO, 'piskyRpapalo/preceptoros-web');
 });
 
 test('SOURCE_SHA defaults to NO_DATA with a cause', () => {
@@ -37,7 +37,7 @@ test('LIMITE_BYTES is 1024', () => {
 
 test('shelfEntry produces a valid Acho frame for a known mission', () => {
   const frame = M.shelfEntry('H1');
-  assert.equal(frame.source_repo, 'piskyRpapalo/preceptoros-public-mesa');
+  assert.equal(frame.source_repo, 'piskyRpapalo/preceptoros-web');
   assert.ok(frame.source_sha.startsWith('NO_DATA:'));
   assert.ok(frame.generated_at.startsWith('NO_DATA:'));
   assert.equal(frame.id, 'shelf.H1');
@@ -56,15 +56,17 @@ test('shelfEntry for unknown mission reports NO_DATA', () => {
   assert.ok(frame.change[0].includes('NO_DATA: mission ZZ99 not in WAIT/WHAT'));
 });
 
-test('shelfEntry with overrides uses them', () => {
+test('shelfEntry with syntactically valid overrides carries NO_DATA authority', () => {
   const frame = M.shelfEntry('Y1', {
-    source_sha: 'abc123def456',
+    source_sha: 'a'.repeat(40),
     generated_at: '2026-11-15T00:00:00Z',
     note: 'test override'
   });
-  assert.equal(frame.source_sha, 'abc123def456');
+  assert.equal(frame.source_sha, 'a'.repeat(40));
   assert.equal(frame.generated_at, '2026-11-15T00:00:00Z');
   assert.ok(frame.change[0].includes('test override'));
+  assert.equal(frame.authority, 'NO_DATA');
+  assert.equal(frame.authority_cause, 'public_mesa_catalog_not_projected');
 });
 
 // --- shelfEntry: size constraint ---
@@ -187,8 +189,8 @@ test('validaShelf catches missing generated_at', () => {
 
 test('sabotage: frame with empty sentence is caught', () => {
   const frame = SF.stateFrame({ id: 'shelf.sabotage', sentence: '' });
-  frame.source_repo = 'piskyRpapalo/preceptoros-public-mesa';
-  frame.source_sha = 'abc123';
+  frame.source_repo = 'piskyRpapalo/preceptoros-web';
+  frame.source_sha = 'a'.repeat(40);
   frame.generated_at = '2026-11-15T00:00:00Z';
   const problems = M.validaShelf(frame);
   assert.ok(problems.some((p) => /no sentence/.test(p)), 'empty sentence must be reported');
@@ -207,32 +209,32 @@ test('sabotage: frame with no sound declaration is caught', () => {
   assert.ok(problems.some((p) => /sound/.test(p)), 'missing sound must be reported');
 });
 
-test('sabotage: source_sha set to forbidden term is still recorded (no filter, just data)', () => {
+test('sabotage: unverified digest cannot be passed off as exact Git SHA', () => {
   // The contract forbids these terms in UI/code names, but as data values they are just strings.
   // We verify the field is still a string and recorded.
-  const frame = M.shelfEntry('H1', { source_sha: 'oraculo' });
-  assert.equal(frame.source_sha, 'oraculo', 'data values are not censored, only UI labels');
+  const frame = M.shelfEntry('H1', { source_sha: 'not-a-digest' });
+  assert.ok(frame.source_sha.startsWith('NO_DATA:'), 'invalid digest may not claim provenance');
 });
 
 // --- Determinism ---
 
 test('determinism: same inputs produce identical frames', () => {
-  const a = M.shelfEntry('H1', { source_sha: 'abc', generated_at: '2026-11-01T00:00:00Z' });
-  const b = M.shelfEntry('H1', { source_sha: 'abc', generated_at: '2026-11-01T00:00:00Z' });
+  const a = M.shelfEntry('H1', { source_sha: 'c'.repeat(40), generated_at: '2026-11-01T00:00:00Z' });
+  const b = M.shelfEntry('H1', { source_sha: 'c'.repeat(40), generated_at: '2026-11-01T00:00:00Z' });
   assert.deepEqual(a, b, 'same inputs must produce identical frames');
 });
 
 test('determinism: shelfBatch is deterministic', () => {
   const ids = ['H1', 'J7', 'Y1'];
-  const a = M.shelfBatch(ids, { source_sha: 'abc', generated_at: '2026-11-01T00:00:00Z' });
-  const b = M.shelfBatch(ids, { source_sha: 'abc', generated_at: '2026-11-01T00:00:00Z' });
+  const a = M.shelfBatch(ids, { source_sha: 'c'.repeat(40), generated_at: '2026-11-01T00:00:00Z' });
+  const b = M.shelfBatch(ids, { source_sha: 'c'.repeat(40), generated_at: '2026-11-01T00:00:00Z' });
   assert.deepEqual(a, b);
 });
 
 // --- No forbidden terms in source ---
 
 test('mission_shelf.js source contains no forbidden H7 terms in code', () => {
-  const src = readFileSync(new URL('../public/game/mission_shelf.js', import.meta.url), 'utf8');
+  const src = readFileSync(new URL('../atlas/puros/mission_shelf.js', import.meta.url), 'utf8');
   const forbidden = ['oraculo', 'notario', 'depin', 'token', 'moneda', 'clearing', 'magia'];
   // Check for forbidden terms as identifiers (word-boundary match), excluding comments
   const lines = src.split('\n').filter((l) => !l.trim().startsWith('//'));
@@ -246,7 +248,7 @@ test('mission_shelf.js source contains no forbidden H7 terms in code', () => {
 // --- No network on load ---
 
 test('mission_shelf.js contains no fetch, XMLHttpRequest, or require of network modules', () => {
-  const src = readFileSync(new URL('../public/game/mission_shelf.js', import.meta.url), 'utf8');
+  const src = readFileSync(new URL('../atlas/puros/mission_shelf.js', import.meta.url), 'utf8');
   assert.ok(!src.includes('fetch('), 'must not use fetch');
   assert.ok(!src.includes('XMLHttpRequest'), 'must not use XMLHttpRequest');
   assert.ok(!src.includes('net.'), 'must not use net module');
@@ -256,7 +258,7 @@ test('mission_shelf.js contains no fetch, XMLHttpRequest, or require of network 
 // --- File size constraint ---
 
 test('mission_shelf.js source file is reasonable size', () => {
-  const size = statSync(new URL('../public/game/mission_shelf.js', import.meta.url)).size;
+  const size = statSync(new URL('../atlas/puros/mission_shelf.js', import.meta.url)).size;
   assert.ok(size < 8192, 'source file should be under 8 KiB, got ' + size);
 });
 
@@ -271,4 +273,19 @@ test('shelfEntry uses mission_hotspots WHAT for descriptions', () => {
 test('shelfEntry for a mission not in WHAT reports NO_DATA', () => {
   const frame = M.shelfEntry('NONEXISTENT');
   assert.ok(frame.change[0].includes('NO_DATA'), 'unknown mission must report NO_DATA');
+});
+
+test('sabotage: forged public-mesa authority is rejected', () => {
+  const f = M.shelfEntry('H1', { source_sha: 'a'.repeat(40) });
+  f.authority = 'LIVE';
+  assert.ok(M.validaShelf(f).some(p => /authority/.test(p)));
+});
+test('sabotage: different source path is rejected', () => {
+  const f = M.shelfEntry('H1');
+  f.source_path = 'other-repo/CATALOG.md';
+  assert.ok(M.validaShelf(f).some(p => /source path/.test(p)));
+});
+test('sabotage: bad generated_at may not appear measured', () => {
+  const f = M.shelfEntry('H1', { generated_at: 'sometime' });
+  assert.ok(f.generated_at.startsWith('NO_DATA:'));
 });

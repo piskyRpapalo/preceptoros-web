@@ -1,21 +1,23 @@
-// Mission shelf — readonly source-verified data contract (M2 pure, Mesa #50 CLAIM 7008064671).
+// Mission shelf — readonly WEB-local hints, NOT a verified Public Mesa mirror (M2 pure, Mesa #50 CLAIM 7008064671).
 // Every shelf entry is an Acho frame under 1,024 UTF-8 bytes. No network on load, no automatic sync,
-// no second map, no new HTML. Reuses mission_hotspots.js WAIT/WHAT without duplicating authority.
+// no second map, no new HTML. Reuses WEB mission_hotspots.js WAIT/WHAT only as local hints; Public Mesa is separate authority.
 // Fields: source_repo, source_sha, generated_at, plus cause-bearing NO_DATA and STALE (>30 days).
 // No forbidden terms (H7): oraculo, notario, depin, token, moneda, clearing, magia.
 (function (root) {
   'use strict';
   var common = typeof module === 'object' && module.exports;
-  var SF = common ? require('./state_frames.js') : root.AtlasStateFrames;
-  var MH = common ? require('./mission_hotspots.js') : root.AtlasMissionHotspots;
+  var SF = common ? require('../../public/game/state_frames.js') : root.AtlasStateFrames;
+  var MH = common ? require('../../public/game/mission_hotspots.js') : root.AtlasMissionHotspots;
 
   var LIMITE_BYTES = 1024;
   var STALE_DAYS = 30;
   var MS_PER_DAY = 86400000;
 
-  // Source provenance — the Public Mesa catalog is the mission authority.
-  var SOURCE_REPO = 'piskyRpapalo/preceptoros-public-mesa';
-  // source_sha is the exact HEAD at generation time; absent until a human records it.
+  // These human-readable hints belong to the WEB repo. They are NOT the
+  // authoritative Public Mesa catalog; no cross-repo sync has been measured.
+  var SOURCE_REPO = 'piskyRpapalo/preceptoros-web';
+  var SOURCE_PATH = 'public/game/mission_hotspots.js';
+  // The source HEAD remains NO_DATA until a reproducible input is supplied.
   var SOURCE_SHA = 'NO_DATA: no exact-head SHA recorded for this shelf generation';
 
   // generated_at is ISO 8601; absent until a human records it.
@@ -26,14 +28,23 @@
   // extra: optional { source_sha, generated_at, note } to override defaults.
   function shelfEntry(missionId, extra) {
     extra = extra || {};
-    var sha = extra.source_sha || SOURCE_SHA;
-    var gen = extra.generated_at || GENERATED_AT;
+    // A syntactically valid SHA only identifies a proposed source revision;
+    // this pure module never claims to have fetched or verified its bytes.
+    var sha = typeof extra.source_sha === 'string' && /^[a-f0-9]{40}$/.test(extra.source_sha)
+      ? extra.source_sha : SOURCE_SHA;
+    var gen = typeof extra.generated_at === 'string' &&
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(extra.generated_at) &&
+      Number.isFinite(Date.parse(extra.generated_at))
+        ? extra.generated_at : GENERATED_AT;
     var what = (MH && MH.WHAT && MH.WHAT[missionId]) ? MH.WHAT[missionId] : 'NO_DATA: mission ' + missionId + ' not in WAIT/WHAT';
     var note = extra.note || '';
     var sentence = missionId + ': ' + what + '; source ' + SOURCE_REPO + '; sha ' + sha + '; generated ' + gen;
     if (note) { sentence += '; ' + note; }
     var frame = SF.stateFrame({ id: 'shelf.' + missionId, sentence: sentence });
     frame.source_repo = SOURCE_REPO;
+    frame.source_path = SOURCE_PATH;
+    frame.authority = 'NO_DATA';
+    frame.authority_cause = 'public_mesa_catalog_not_projected';
     frame.source_sha = sha;
     frame.generated_at = gen;
     return frame;
@@ -62,6 +73,16 @@
     if (!frame.source_sha || typeof frame.source_sha !== 'string') {
       problemas.push('source_sha not declared');
     }
+    if (frame.authority !== 'NO_DATA' || frame.authority_cause !== 'public_mesa_catalog_not_projected') {
+      problemas.push('unverified Public Mesa content cannot claim authority');
+    }
+    if (frame.source_path !== SOURCE_PATH || frame.source_repo !== SOURCE_REPO) {
+      problemas.push('source path does not match WEB-local mission hints');
+    }
+    if (frame.source_sha && !frame.source_sha.startsWith('NO_DATA:') &&
+        !/^[a-f0-9]{40}$/.test(frame.source_sha)) {
+      problemas.push('source_sha is not an exact Git commit SHA');
+    }
     if (!frame.generated_at || typeof frame.generated_at !== 'string') {
       problemas.push('generated_at not declared');
     }
@@ -81,6 +102,7 @@
 
   var api = {
     SOURCE_REPO: SOURCE_REPO,
+    SOURCE_PATH: SOURCE_PATH,
     SOURCE_SHA: SOURCE_SHA,
     GENERATED_AT: GENERATED_AT,
     STALE_DAYS: STALE_DAYS,
