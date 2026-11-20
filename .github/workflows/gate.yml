@@ -142,6 +142,7 @@ jobs:
             node --test atlas/puros/crab_presence_cases.mjs
             node --test atlas/puros/crab_presence_acho_cases.mjs
             node --test atlas/puros/shared_crabs_cases.mjs
+            node --test atlas/puros/crab_presence_remote_cases.mjs
             node --test atlas/face_retirement_cases.mjs
             node --test atlas/retired_names_cases.mjs
             node --test atlas/f0_functions_cases.mjs
