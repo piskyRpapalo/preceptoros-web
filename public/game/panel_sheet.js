@@ -5,7 +5,7 @@
 // no voice in the browser the button says NO_DATA and stays disabled. Projection only: it reads, it never presses.
 (function (root) {
   'use strict';
-  var TITLES = { Welcome: 'Help', Communication: 'Communication', Profile: 'Your house', Tools: 'Tools' };
+  var TITLES = { Welcome: 'Help', Communication: 'Chat Live', Profile: 'Your house', Tools: 'Tools' };
   function clean(t) { return String(t || '').replace(/\s+/g, ' ').trim(); }
   function first(t) { var c = clean(t), m = c.match(/^.{1,160}?[.!?](\s|$)/); return m ? m[0].trim() : c.slice(0, 160); }
   // Pure: reading(title, cards) → the lines Listen says. cards: [{ who, head, text, buttons[] }] in screen order.
