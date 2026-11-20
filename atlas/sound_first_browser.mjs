@@ -28,6 +28,7 @@ function sirve(raiz) {
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
       let cuerpo = readFileSync(f);
       if (ruta === '/game/sound_first.js' && SAB === 'mudo') { cuerpo = Buffer.from(String(cuerpo).replace("if (isOn(s)) { doc.documentElement.dataset.audioOnly = 'on'; }", '')); }
+      if (ruta === '/game/sound_first.js' && SAB === 'stale-iframe') { cuerpo = Buffer.from(String(cuerpo).replace("win.addEventListener('storage',", "win.addEventListener('never-storage',")); }
       res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
   });
@@ -70,15 +71,31 @@ async function main() {
   const raton = async (x, y) => { for (const type of ['mousePressed', 'mouseReleased']) { await cmd('Input.dispatchMouseEvent', { type, x, y, button: 'left', clickCount: 1 }); } };
   const hasta = async (fn, ms = 4000) => { let m = await lee(); for (let t = 0; t < ms && !fn(m); t += 100) { await espera(100); m = await lee(); } return m; };
   const lugar = (h) => String(h || '').replace(/^Visitor-[0-9a-f]{8} · /, '');
+  const iframeAudio = async () => JSON.parse(await ev(`JSON.stringify((() => {
+    const d = document.getElementById('landing-world')?.contentDocument;
+    return { loaded: !!d?.getElementById('map-h'), root: d?.documentElement.dataset.audioOnly || null,
+      kept: d?.defaultView.localStorage.getItem('preceptoros.audio-only') || null, said: d?.defaultView.__said || [] };
+  })())`));
+  const untilIframe = async (test, ms = 1600) => {
+    let m = await iframeAudio();
+    for (let t = 0; t < ms && !test(m); t += 100) { await espera(100); m = await iframeAudio(); }
+    return m;
+  };
 
   // Landing: off, one press on (welcome spoken, choice kept).
   await ir('/');
+  const preloadedFrame = await untilIframe((m) => m.loaded, 3000); medidas.preloadedIframe = preloadedFrame;
+  ok(preloadedFrame.loaded && preloadedFrame.root === null && preloadedFrame.said.length === 0,
+    'landing: eager iframe was not ready and silent before opt-in: ' + JSON.stringify(preloadedFrame));
   const frio = await lee(); medidas.cold = frio.btn;
   ok(frio.btn && frio.btn.pressed === 'false' && !frio.btn.off && frio.btn.first && frio.btn.box[0] >= 44 && frio.btn.box[1] >= 44 && frio.kept !== 'on', 'landing: no 44 px sound switch, off, before the door: ' + JSON.stringify(frio.btn));
   await ev(`document.getElementById('sound-first').scrollIntoView({ block: 'center' })`); await espera(200);
   const xy = (await lee()).btn.xy; await raton(xy[0], xy[1]);
   const on = await hasta((m) => m.kept === 'on'); medidas.on = { pressed: on.btn.pressed, kept: on.kept, said: on.said };
   ok(on.btn.pressed === 'true' && on.kept === 'on' && on.said.length === 1 && /^Sound on\. Welcome to PreceptorOS\./.test(on.said[0]), 'landing: one press does not turn sound on and speak the welcome: ' + JSON.stringify(medidas.on));
+  const syncedFrame = await untilIframe((m) => m.root === 'on'); medidas.syncedIframe = syncedFrame;
+  ok(syncedFrame.loaded && syncedFrame.root === 'on' && syncedFrame.kept === 'on' && syncedFrame.said.length === 0,
+    'landing: preloaded iframe did not restore Sound after parent opted in: ' + JSON.stringify(syncedFrame));
   await foto('sound-first-landing.png');
 
   // OpenWorld: restored, silent until a gesture, then the place; after a walk, the new place.
@@ -132,6 +149,9 @@ async function main() {
   const xy2 = (await lee()).btn.xy; await raton(xy2[0], xy2[1]);
   const off = await hasta((m) => m.kept === 'off'); medidas.off = { pressed: off.btn.pressed, kept: off.kept, said: off.said };
   ok(off.btn.pressed === 'false' && off.kept === 'off' && off.said.length === 0, 'landing: a second press does not turn sound off: ' + JSON.stringify(medidas.off));
+  const mutedFrame = await untilIframe((m) => m.root === null); medidas.mutedIframe = mutedFrame;
+  ok(mutedFrame.loaded && mutedFrame.root === null && mutedFrame.kept === 'off',
+    'landing: preloaded iframe kept audio on after parent muted: ' + JSON.stringify(mutedFrame));
   await ir('/openworld/', 3000); await raton(play[0], play[1]); await espera(1200);
   const mudo = await lee(); medidas.silent = { root: mudo.root, said: mudo.said };
   ok(mudo.root === null && mudo.said.length === 0, 'openworld: with the choice off the world still speaks: ' + JSON.stringify(medidas.silent));

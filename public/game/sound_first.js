@@ -1,9 +1,4 @@
-// Sound from the first press (missions D10 «Audio only», K11, I7). The audio-only choice was kept but never read back.
-// Now: the landing has one switch before the door (its press is the gesture a browser needs, so the welcome is heard);
-// /openworld/ restores a kept choice and speaks the place heading when it changes; with sound on, the focused control
-// says its name and each visible message is said once when it changes, so Tab and Enter suffice to play by ear.
-// Hidden and technical panels stay silent. Same key as audio_only.js. No voice is said as NO_DATA, never faked.
-// No clock, no random numbers, no network.
+// Sound from first press (D10/K11/I7); one persisted choice for landing and OpenWorld.
 (function (root) {
   'use strict';
   var KEY = 'preceptoros.audio-only'; // the key of audio_only.js; atlas/puros/sound_first_cases.mjs holds them equal
@@ -65,6 +60,11 @@
   function world(doc, win, head) {
     var s = store(win), woke = false, last = '';
     if (isOn(s)) { doc.documentElement.dataset.audioOnly = 'on'; }
+    win.addEventListener('storage', function (event) {
+      if (event.key !== KEY && event.key !== null) { return; }
+      if (isOn(s)) { doc.documentElement.dataset.audioOnly = 'on'; }
+      else { delete doc.documentElement.dataset.audioOnly; }
+    });
     function say() {
       var t = said(head.textContent);
       if (!woke || !t || t === last || doc.documentElement.dataset.audioOnly !== 'on') { return; }
