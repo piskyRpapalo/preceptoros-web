@@ -101,9 +101,9 @@ async function main() {
       file=document.getElementById('dayd-building-download');
     return {buttonReady:!button.disabled,formAction:form.getAttribute('action'),data:text.value,
       visible:!text.hidden,download:!file.hidden&&file.download==='BUILDING_PROPOSAL.md'&&file.href.startsWith('blob:'),
-      status:status.textContent,links:[...document.querySelectorAll('.dayd-path a')].map(x=>x.getAttribute('href')),
+      status:status.textContent,links:[...document.querySelectorAll('#building-draft .dayd-path a')].map(x=>x.getAttribute('href')),
       feedback:document.getElementById('building-draft').textContent.includes("Feedback stays only on the node owner's device"),
-      shipDoor:(()=>{const d=document.getElementById('doors');return !!d && d.getBoundingClientRect().height>44 && !!d.querySelector('#door-install a[href="#steps"]')})()};
+      shipDoor:(()=>{const d=document.getElementById('doors');return !!d && d.getBoundingClientRect().height>44 && !!d.querySelector('nav.os-chooser a#os-ubuntu[href="#steps"]') && !!d.querySelector('nav.os-chooser a#os-windows[href="#windows"]')})()};
   })())`));
   ok(!medida.daydDraft.missing && medida.daydDraft.buttonReady && medida.daydDraft.visible &&
     medida.daydDraft.download && medida.daydDraft.data.includes('Status: DRAFT_ONLY') &&
