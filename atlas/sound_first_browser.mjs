@@ -110,6 +110,23 @@ async function main() {
   ok(tecnico.length === 0, 'by ear: a veiled technical panel is spoken: ' + JSON.stringify(tecnico));
   await ev(`document.getElementById('building-sheet').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))`); await espera(300);
 
+  // Embedded landing map: the parent's speech choice MUST reach this same-origin iframe.
+  // No voice is emitted until a real gesture inside the map.
+  await ir('/openworld/?landing=1', 3000);
+  const embedded = await lee();
+  medidas.embedded = { root: embedded.root, kept: embedded.kept, initialSaid: embedded.said };
+  ok(embedded.root === 'on' && embedded.kept === 'on' && embedded.said.length === 0,
+    'landing iframe did not inherit opt-in or spoke before gesture: ' + JSON.stringify(medidas.embedded));
+  const embeddedPlay = JSON.parse(await ev(`JSON.stringify((() => {
+    const r = document.getElementById('gp-play').getBoundingClientRect();
+    return [Math.round(r.left + r.width/2),Math.round(r.top + r.height/2)];
+  })())`));
+  await raton(embeddedPlay[0], embeddedPlay[1]);
+  const embeddedSaid = await hasta((m) => m.said.includes(lugar(m.h1)), 4500);
+  medidas.embedded.after = { place: lugar(embeddedSaid.h1), said: embeddedSaid.said };
+  ok(/^Visitor-/.test(embeddedSaid.h1) && embeddedSaid.said.includes(lugar(embeddedSaid.h1)),
+    'embedded OpenWorld failed to speak the visible place after Play: ' + JSON.stringify(medidas.embedded.after));
+
   // Off again: kept, and the world stays silent.
   await ir('/'); await ev(`document.getElementById('sound-first').scrollIntoView({ block: 'center' })`); await espera(200);
   const xy2 = (await lee()).btn.xy; await raton(xy2[0], xy2[1]);
