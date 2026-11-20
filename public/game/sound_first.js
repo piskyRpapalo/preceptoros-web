@@ -102,5 +102,5 @@
   root.AtlasSoundFirst = api;
   var doc = root.document, btn = doc && doc.getElementById('sound-first'), head = doc && doc.getElementById('map-h');
   if (btn) { landing(doc, root, btn); }
-  if (head && !/[?&]landing=1/.test(root.location.search)) { world(doc, root, head); }
+  if (head) { world(doc, root, head); }
 })(typeof window !== 'undefined' ? window : globalThis);

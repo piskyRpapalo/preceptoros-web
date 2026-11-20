@@ -16,6 +16,11 @@
    "version": "preceptoros-2026-25-jj",
    "by": "Codex-GPT6-WEB-MVP-A0",
    "cause": "Official APP MINI public projection, root SW scope coexistence regression, 2026-11-18"
+  },
+  {
+   "version": "preceptoros-2026-25-jo",
+   "by": "Rio-A",
+   "cause": "WEB-AUDIO-EMBED-01"
   }
  ]
 }
