@@ -62,7 +62,7 @@
     var seen = {}, first = true, net = win.fetch && win.fetch.bind(win), pending = false;
     if (!net) { if (status) { status.textContent = 'NO_DATA: public chat connection unavailable'; } return function () {}; }
     function look() {
-      if (doc.visibilityState === 'hidden' || pending) { return; }
+      if (doc.visibilityState === 'hidden' || pending || day.dataset.paused === 'true') { return; }
       pending = true;
       net(API + '/dia', { cache: 'no-store' }).then(function (r) {
         if (!r.ok) { throw new Error('public_chat_unavailable'); }
@@ -104,7 +104,17 @@
     var day = doc.createElement('ol'); day.className = 'ot-day'; day.setAttribute('role', 'log'); day.setAttribute('aria-label', 'Public messages of the last 24 hours');
     day.setAttribute('aria-live', 'off'); // Replacing the 24h list must not read all earlier messages again.
     var policy = doc.createElement('details'), summary = doc.createElement('summary');
-    summary.textContent = 'Files and public chat policy'; policy.append(summary, law, files);
+    summary.textContent = 'Files and public chat policy';
+    var pause = doc.createElement('button'); pause.type = 'button'; pause.textContent = 'Pause updates'; pause.setAttribute('aria-pressed', 'false');
+    pause.addEventListener('click', function () {
+      var paused = day.dataset.paused !== 'true';
+      day.dataset.paused = String(paused);
+      pause.textContent = paused ? 'Resume updates' : 'Pause updates';
+      pause.setAttribute('aria-pressed', String(paused));
+      st.textContent = paused ? 'Public chat updates paused.' : 'Public chat updates resumed.';
+      if (!paused && refresh) { refresh(); }
+    });
+    policy.append(summary, law, files, pause);
     li.append(h, pin, box, go, st, policy, day);
     // Y10 (2026-11-09): the live chat leads the Communication panel; the radio and the guide follow it.
     var radio = list.querySelector('[data-speaker="Radio"]'); if (radio) { list.insertBefore(li, radio); } else { list.appendChild(li); }
