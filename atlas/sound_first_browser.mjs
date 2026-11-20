@@ -96,6 +96,7 @@ async function main() {
   const syncedFrame = await untilIframe((m) => m.root === 'on'); medidas.syncedIframe = syncedFrame;
   ok(syncedFrame.loaded && syncedFrame.root === 'on' && syncedFrame.kept === 'on' && syncedFrame.said.length === 0,
     'landing: preloaded iframe did not restore Sound after parent opted in: ' + JSON.stringify(syncedFrame));
+  ok(on.said[0]?.includes(await ev("document.getElementById('acho-reel').getAttribute('aria-label')")), 'speech includes the simulated colony description');
   await foto('sound-first-landing.png');
 
   // OpenWorld: restored, silent until a gesture, then the place; after a walk, the new place.

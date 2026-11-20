@@ -52,7 +52,10 @@
       var on = !isOn(s);
       if (!keep(s, on)) { btn.textContent = 'Sound · NO_DATA · this device does not keep the choice'; return; }
       draw();
-      if (on) { speak(win, WELCOME); } else if (win.speechSynthesis) { win.speechSynthesis.cancel(); }
+      if (on) {
+        var reel = doc.getElementById('acho-reel');
+        speak(win, WELCOME + (reel ? ' ' + reel.getAttribute('aria-label') : ''));
+      } else if (win.speechSynthesis) { win.speechSynthesis.cancel(); }
     });
     draw();
   }
