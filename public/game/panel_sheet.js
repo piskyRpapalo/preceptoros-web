@@ -5,7 +5,7 @@
 // no voice in the browser the button says NO_DATA and stays disabled. Projection only: it reads, it never presses.
 (function (root) {
   'use strict';
-  var TITLES = { Welcome: 'Help', Communication: 'Talk', Profile: 'Your house', Tools: 'Tools' };
+  var TITLES = { Welcome: 'Help', Communication: 'Communication', Profile: 'Your house', Tools: 'Tools' };
   function clean(t) { return String(t || '').replace(/\s+/g, ' ').trim(); }
   function first(t) { var c = clean(t), m = c.match(/^.{1,160}?[.!?](\s|$)/); return m ? m[0].trim() : c.slice(0, 160); }
   // Pure: reading(title, cards) → the lines Listen says. cards: [{ who, head, text, buttons[] }] in screen order.
@@ -63,7 +63,7 @@
     function pan(s) { return { x: Number(s.dataset.panx) || 0, y: Number(s.dataset.pany) || 0 }; }
     return function (sheet, open) {
       var s = doc.getElementById('surface'), V = win.AtlasOpenworldView && win.AtlasOpenworldView();
-      if (!s || !V || !V.redraw || s.dataset.stage) { return; }
+      if (!s || !V || !V.redraw || s.dataset.stage || sheet.dataset.activeCategory === 'Communication') { return; }
       if (!open) { if (saved && set && pan(s).x === set.x && pan(s).y === set.y) { if (!lookWas) { delete s.dataset.look; } glide(s, V, set, saved); } saved = set = null; return; }
       var r = s.getBoundingClientRect(), sr = sheet.getBoundingClientRect(), k = r.width ? s.width / r.width : 1;
       var side = sr.left > r.left + r.width / 2; // a side sheet (wide screens) only shifts sideways

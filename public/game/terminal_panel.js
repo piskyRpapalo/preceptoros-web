@@ -64,7 +64,8 @@
   // The showcase has one map and three leaves. Tools opens from Welcome; Profile exists only during a visit.
   var CATS = [
     { name: 'Welcome', voices: ['Welcome', 'Guide', 'Map', 'Floor', 'Walkers', 'Zoom', 'Tutorial'], button: true },
-    { name: 'Profile', voices: ['House', 'Army'], button: true, visit: true },
+    { name: 'Profile', voices: ['House'], button: true, visit: true },
+    { name: 'Army', voices: ['Army'], button: true, visit: true },
     { name: 'Communication', voices: ['Radio'], button: true },
     { name: 'Tools', voices: ['Models'], button: false }
   ];
@@ -76,30 +77,49 @@
   function categories(doc, voices) {
     var map = doc.getElementById('map'), stage = doc.getElementById('stage');
     if (!map || !stage || map.querySelector(':scope > .cats')) { return null; }
-    var bar = doc.createElement('div'), buttons = {}, current = null, hasVisit = false, icons = { Welcome: '?', Profile: '♙', Communication: '◉' }, labels = { Welcome: 'Help' };
+    var bar = doc.createElement('div'), buttons = {}, current = null, hasVisit = false, icons = { Welcome: '?', Profile: '♙', Army: '♜', Communication: '◉' }, labels = { Welcome: 'Help', Profile: 'Crab' };
     bar.className = 'cats'; bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'OpenWorld panels');
     voices.classList.add('map-voices');
     stage.appendChild(voices);
-    function show(cat) {
-      if (cat === 'Profile' && !hasVisit) { cat = null; }
+    var top = doc.createElement('div'), channel = doc.createElement('select');
+    top.id = 'map-communication'; top.className = 'cats';
+    channel.setAttribute('aria-label', 'Communication destination');
+    [['public', 'Chat Live · public 24 h'], ['radio', 'Radio'], ['echoes', 'Echoes'], ['chat', 'Guide']].forEach(function (choice) {
+      var option = doc.createElement('option'); option.value = choice[0]; option.textContent = choice[1]; channel.append(option);
+    });
+    function selectChannel(value) {
+      channel.value = value; voices.dataset.channel = value; voices.scrollTop = 0;
+      var player = root.AtlasRadioChat;
+      if (value !== 'public' && player && doc.getElementById('radio-chat')) { player.alterna(true); player.canal(value); }
+    }
+    channel.addEventListener('change', function () { selectChannel(channel.value); });
+    function show(cat, destination) {
+      if ((cat === 'Profile' || cat === 'Army') && !hasVisit) { cat = null; }
       current = cat; voices.hidden = !cat;
       voices.dataset.activeCategory = cat || '';
       if (tools) { tools.setAttribute('aria-expanded', String(cat === 'Tools')); }
       Array.prototype.forEach.call(voices.querySelectorAll('[data-speaker]'), function (li) { li.style.display = li.dataset.cat === cat ? '' : 'none'; });
       Object.keys(buttons).forEach(function (name) { buttons[name].setAttribute('aria-pressed', String(name === cat)); });
-      // The existing composer lives inside the Radio player. Bring it into the
-      // open sheet instead of leaving it below the mobile viewport.
-      if (cat === 'Communication') {
-        var entry = doc.getElementById('entry');
-        if (entry) { entry.scrollIntoView({ block: 'nearest', inline: 'nearest' }); }
-      }
+      top.dataset.open = String(cat === 'Communication');
+      channel.hidden = cat !== 'Communication';
+      if (cat === 'Communication') { selectChannel(destination || 'chat'); }
+
     }
     CATS.forEach(function (c) {
       if (!c.button) { return; }
       var b = doc.createElement('button'); b.type = 'button'; b.textContent = icons[c.name]; b.dataset.cat = c.name; b.setAttribute('aria-label', labels[c.name] || c.name); b.title = labels[c.name] || c.name;
       b.setAttribute('aria-controls', 'voices'); b.hidden = !!c.visit;
-      b.addEventListener('click', function () { show(current === c.name ? null : c.name); });
-      buttons[c.name] = b; bar.appendChild(b);
+      b.addEventListener('click', function () {
+        show(current === c.name ? null : c.name, 'public');
+        if (current === 'Communication') {
+          var input = doc.getElementById('open-chat-text'); if (input) { input.focus({preventScroll:true}); }
+        }
+      });
+      buttons[c.name] = b;
+      if (c.name === 'Communication') {
+        b.textContent = 'Chat Live'; b.setAttribute('aria-label', 'Chat Live'); b.title = 'Chat Live';
+        top.append(b, channel); stage.appendChild(top);
+      } else { bar.appendChild(b); }
     });
     var tools = doc.getElementById('entry-tools');
     if (tools) { tools.setAttribute('aria-controls', 'voices'); tools.setAttribute('aria-expanded', 'false'); tools.addEventListener('click', function () { show(current === 'Tools' ? null : 'Tools'); }); }
@@ -110,7 +130,8 @@
     }); }
     function visit(on) {
       hasVisit = !!on; if (buttons.Profile) { buttons.Profile.hidden = !hasVisit; }
-      if (!hasVisit && current === 'Profile') { show('Welcome'); }
+      if (buttons.Army) { buttons.Army.hidden = !hasVisit; }
+      if (!hasVisit && (current === 'Profile' || current === 'Army')) { show('Welcome'); }
     }
     var visitor = doc.getElementById('visitor-play');
     if (visitor) {
@@ -123,7 +144,7 @@
     new root.MutationObserver(function (ch) {
       ch.forEach(function (c) {
         var n = c.target.nodeType === 1 ? c.target : c.target.parentNode, li = n && n.closest && n.closest('[data-cat]');
-        if (li && li.dataset.cat !== current && buttons[li.dataset.cat]) { buttons[li.dataset.cat].textContent = icons[li.dataset.cat] + ' •'; }
+        if (li && li.dataset.cat !== 'Communication' && li.dataset.cat !== current && buttons[li.dataset.cat]) { buttons[li.dataset.cat].textContent = icons[li.dataset.cat] + ' •'; }
       });
     }).observe(voices, { subtree: true, childList: true, characterData: true });
     doc.addEventListener('keydown', function (e) {

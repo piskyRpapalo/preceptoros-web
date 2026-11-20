@@ -15,7 +15,7 @@
 (function (root) {
   'use strict';
   var KEY = ['hostel', 'coliseum', 'doctor'], CLOSE = 3, TOUR = 'preceptoros.tour';
-  var NAMES = { 'gp-play': 'Play', Welcome: 'Help', Profile: 'Profile', Communication: 'Talk', 'gp-town': 'Node', 'gp-letters': 'Settings' };
+  var NAMES = { 'gp-play': 'Play', Welcome: 'Help', Profile: 'Crab', Army: 'Army', 'gp-town': 'Node', 'gp-letters': 'Settings' };
   // Pure: phase(visit, tour) → 'arrive' | 'visit'. Finishing or skipping the tutorial stays 'visit'; only real
   // conquests open buildings (state/wins). The tour value is no longer consulted for the phase.
   function phase(visit, tour) { return !visit ? 'arrive' : 'visit'; }

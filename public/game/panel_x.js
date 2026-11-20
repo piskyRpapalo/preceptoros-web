@@ -17,7 +17,8 @@
   function outside(open, id, moved) { return !!open && id === 'surface' && moved <= 10; }
   function openCat() { return doc.querySelector('#map .cats button[aria-pressed="true"]') || doc.querySelector('#entry-tools[aria-expanded="true"]'); }
   function anyOpen() {
-    return !!(openCat() || ['building-sheet', 'settings-sheet'].some(function (id) { var s = doc.getElementById(id); return s && !s.hidden; }));
+    var button = openCat();
+    return !!((button && button.dataset.cat !== 'Communication') || ['building-sheet', 'settings-sheet'].some(function (id) { var s = doc.getElementById(id); return s && !s.hidden; }));
   }
   function closeAll() {
     var b = openCat(); if (b) { b.click(); }
