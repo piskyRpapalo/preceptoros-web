@@ -50,5 +50,18 @@ caso('ordena no muta la lista recibida (determinista y sin efectos)', () => {
   const l = [{ col: 2, fila: 2 }, { col: 0, fila: 0 }], antes = JSON.stringify(l); I.ordena(l);
   return JSON.stringify(l) === antes;
 });
+caso('shared diamond edges belong to the higher grid coordinate, including negative cells', () => {
+  for (const col of [-4,-1,0,3]) for (const row of [-3,0,2]) {
+    for (const [dc,dr] of [[.5,0],[0,.5],[.5,.5]]) {
+      const p=I.proyecta(col+dc,row+dr,W), cell=I.celdaDe(p.x,p.y,W);
+      if (cell.col !== Math.floor(col+dc+.5) || cell.fila !== Math.floor(row+dr+.5)) return {col,row,dc,dr,cell};
+    }
+  }
+  return true;
+});
+caso('full painter ties preserve input order', () => {
+  const items=['last','first','middle'].map(n => ({n,col:-2,fila:1,huella:3,capa:2}));
+  return I.ordena(items).every((o,i) => o===items[i]);
+});
 console.log(JSON.stringify(casos, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;
