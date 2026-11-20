@@ -133,6 +133,8 @@ async function main() {
     await clicEn(vacio.x + off[0], vacio.y + off[1]); await espera(200);
     ok(!(await panel()) && !/walking to|^You walk/.test(await estado()), 'a tap on the map with a panel open closes the panel and walks nowhere');
   };
+  // Communication is a nonmodal overlay. Exercise outside-to-dismiss on the modal Help panel.
+  await ev("AtlasTerminalPanel.mounted.show('Welcome')");
   await cierra();
   await clicEn(vacio.x + off[0], vacio.y + off[1]);
   await espera(200);
