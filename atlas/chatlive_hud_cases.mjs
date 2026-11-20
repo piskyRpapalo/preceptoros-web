@@ -46,7 +46,9 @@ test('public history is navigable without 200 repeated announcements from pollin
   assert.match(chatSrc, /day\.setAttribute\('role', 'log'\)/);
   assert.match(chatSrc, /day\.setAttribute\('aria-live', 'off'\)/);
   assert.match(chatSrc, /var pending = false|pending = false/);
-  assert.match(chatSrc, /if \(doc\.visibilityState === 'hidden' \|\| pending\)/);
+  assert.match(chatSrc, /if \(doc\.visibilityState === 'hidden' \|\| pending \|\| day\.dataset\.paused === 'true'\)/);
+  assert.match(chatSrc, /pause\.textContent = 'Pause updates'/);
+  assert.match(chatSrc, /pause\.textContent = paused \? 'Resume updates'/);
   assert.match(chatSrc, /public_chat_history_unavailable|public chat history unavailable/);
 });
 
