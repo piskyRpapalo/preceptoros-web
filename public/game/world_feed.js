@@ -44,9 +44,9 @@
     return { ok: true, live: nodes.filter(function (n) { return n.alive && n.seal === 'LIVE'; }).length };
   }
   function follow(o) {
-    var win = o.win, doc = win.document, gen = 0, expiry = null, ok = false;
+    var win = o.win, doc = win.document, gen = 0, expiry = null, ok = false, latest = null;
     function tell(detail) { if (typeof win.CustomEvent === 'function' && doc.dispatchEvent) doc.dispatchEvent(new win.CustomEvent('world:summary', { detail: detail })); }
-    function fail(cause) { clearTimeout(expiry); ok = false; o.fail(cause); tell({ ok: false, cause: String(cause).slice(0, 80) }); }
+    function fail(cause) { clearTimeout(expiry); ok = false; latest = { cause: String(cause).slice(0, 80) }; o.fail(cause); tell({ ok: false, cause: String(cause).slice(0, 80) }); }
     // A failed read is retried too: an unattended buoy wears down in sight, it never freezes on its last good word.
     function later() { clearTimeout(expiry); expiry = setTimeout(function () { if (doc.visibilityState === 'hidden') fail('refresh required'); else now(); }, 60000); }
     async function now() {
@@ -60,8 +60,11 @@
         if (win.navigator && win.navigator.onLine === false) throw new Error('offline');
         var d = await read(win.fetch.bind(win));
         if (g !== gen) return;
+        var measured = summary(d);
+        if (!measured.ok) throw new Error(measured.cause);
         var m = merge(t, d);
-        o.live(m, d); ok = true; tell(summary(d));
+        latest = { data: d };
+        o.live(m, d); ok = true; tell(measured);
         if (record.nace === null) record.nace = record.t;
         record.cuidado = record.t;
         later();
@@ -72,7 +75,7 @@
     doc.addEventListener('visibilitychange', function () { if (doc.visibilityState === 'visible' && !ok) now(); });
     win.addEventListener('online', function () { if (!ok) now(); });
     if (o.button) o.button.addEventListener('click', now);
-    return {read: now};
+    return {read: now, latest: function () { return latest; }};
   }
   root.AtlasWorldFeed = {read: read, merge: merge, follow: follow, summary: summary, record: function () { return {t: record.t, nace: record.nace, cuidado: record.cuidado}; }};
   if (root.addEventListener && root.location && root.location.search.indexOf('landing=1') >= 0) {

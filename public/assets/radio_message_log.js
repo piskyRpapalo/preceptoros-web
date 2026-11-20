@@ -16,7 +16,7 @@
   // tone on, a short cue made from its seal's own terms. Off by default; a missing or refused tone says its cause.
   var oido = { on: false, ac: null };
   function marco() { return raiz.AtlasRadioFrame || null; }
-  function linea(m) { return { seal: sello(m), source: m.fuente, cycle: cicloValido(m.ciclo) ? m.ciclo : null, text: m.texto }; }
+  function linea(m) { return m.heartbeat || { seal: sello(m), source: m.fuente, cycle: cicloValido(m.ciclo) ? m.ciclo : null, text: m.texto }; }
   function selloDe(texto, pedido) {
     if (pedido) { return pedido; }
     if (/^\s*NO_DATA/.test(texto)) { return 'NO_DATA'; }
@@ -27,7 +27,7 @@
   // measurement, so the visitor reads only who spoke; the seal, the source and the cause stay folded in the title.
   function reloj() { var J = raiz.AtlasJuego; return !!(J && typeof J.instantanea === 'function'); }
   function edad(m) { var actual = ciclo(); return actual === null || !cicloValido(m.ciclo) || actual < m.ciclo ? null : actual - m.ciclo; }
-  function sello(m) { var edadN = edad(m); return m.sello === 'LIVE' && edadN === null ? 'NO_DATA' : (m.sello === 'LIVE' && edadN > VIEJO ? 'STALE' : m.sello); }
+  function sello(m) { if (m.heartbeat) { return m.heartbeat.seal; } var edadN = edad(m); return m.sello === 'LIVE' && edadN === null ? 'NO_DATA' : (m.sello === 'LIVE' && edadN > VIEJO ? 'STALE' : m.sello); }
 
   // Terminal familia (TF-1): the visitor reads words; the raw seal and the cycle Δ stay in the title (Technical details).
   var HUMANO = { LIVE: 'live', STALE: 'a while ago', NO_DATA: 'not measured yet', SIMULATED: 'simulated', EMULADO: 'emulated' };
@@ -65,8 +65,9 @@
     var texto = String(m.texto || '').trim();
     if (!texto) { return null; }
     var u = lista[lista.length - 1];
-    if (u && u.texto === texto && u.fuente === m.fuente) { return u; }
+    if (!m.heartbeat && u && !u.heartbeat && u.texto === texto && u.fuente === m.fuente) { return u; }
     var e = { quien: m.quien || 'Radio', sello: selloDe(texto, m.sello), fuente: m.fuente || 'web', ciclo: ciclo(), texto: texto };
+    if (m.heartbeat) { e.heartbeat = m.heartbeat; e.ciclo = m.heartbeat.cycle; }
     lista.push(e); if (lista.length > TOPE) { lista.shift(); }
     pinta();
     suena(e);
@@ -218,7 +219,7 @@
     R.tono = el('button', 'radio-chat-tab radio-chat-tono', T('tone_off', 'Tone: off')); R.tono.type = 'button'; R.tono.id = 'radio-chat-tono';
     R.tono.setAttribute('aria-pressed', 'false'); R.tono.title = T('tone_title', 'Each new radio line plays a short tone made from its seal');
     R.tono.addEventListener('click', function () { tono(); });
-    R.tonoNota = el('p', 'radio-chat-tono-nota'); R.tonoNota.id = 'radio-chat-tono-nota'; R.tonoNota.hidden = true;
+    R.tonoNota = el('p', 'radio-chat-tono-nota'); R.tonoNota.id = 'radio-chat-tono-nota'; R.tonoNota.hidden = true; R.tonoNota.setAttribute('role', 'status');
     R.caja.appendChild(R.boton); R.caja.appendChild(R.tabs); R.caja.appendChild(R.tono); R.caja.appendChild(R.tonoNota); R.caja.appendChild(R.noData); R.caja.appendChild(R.ecos); R.caja.appendChild(R.lista); canal('radio');
     if (raiz.AtlasWorldCreator && typeof raiz.AtlasWorldCreator.onEcho === 'function') { raiz.AtlasWorldCreator.onEcho(function () { if (R.canal === 'echoes') { canal('echoes'); } }); }
     capa.appendChild(R.caja);

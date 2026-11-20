@@ -44,6 +44,7 @@
 <li class="voice next" id="next" data-speaker="Guide" hidden><p id="next-step" aria-live="polite"><strong>Next:</strong> <span id="next-text">Press Play now.</span></p>
 <div class="acts"><button type="button" id="play-now">Play now</button></div></li>
 <li class="voice" data-speaker="Map"><p class="state" id="state" aria-live="polite">Nodes online: checking…</p>
+<div id="node-heartbeats" aria-label="Node heartbeats" data-radio="tecnico"></div>
 <details class="tech"><summary>Technical details</summary><p id="state-tech"></p></details></li>
 <li class="voice" data-speaker="Floor"><p class="state" id="floor-state" aria-live="polite">Loading the map…</p>
 <details class="tech"><summary>Technical details</summary><p id="floor-tech">Map floor: loading the 7 chunks around the centre.</p></details></li>
@@ -127,6 +128,8 @@
 <script src="/game/visitor_conquest.js"></script>
 <script src="/game/hatch_reveal.js"></script>
 <script src="/game/visitor_play.js"></script>
+<script src="/game/acho_math.js"></script>
+<script src="/game/acho_score.js"></script>
 <script src="/game/shared_crabs.js"></script>
 <script src="/game/talk_head.js"></script>
 <script src="/game/first_adventure.js"></script>

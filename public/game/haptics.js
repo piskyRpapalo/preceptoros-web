@@ -1,7 +1,7 @@
 // Felt in the hand (Sovereign 2026-11-15: «what the carbon feels, visual and functional»). On a phone that can vibrate
 // (Android Chrome; elsewhere nothing happens), the game answers the thumb: a tick for a key, a rising pattern for a won
 // battle, a double knock for a raid, one long pulse for a building lost, a little tune when a building becomes yours.
-// One choice in Settings («Vibration · on/off»), kept on this device only; off by default under reduced motion.
+// One choice in Settings («Vibration · on/off»), kept on this device only; off until explicitly enabled.
 // Presentation only: it reads events and never changes the visit.
 (function (root) {
   'use strict';
@@ -12,10 +12,15 @@
   function kindOf(e) {
     if (!e) { return null; }
     if (e.combat) { return e.practice ? null : e.combat.gana === 'asalto' ? 'win' : 'loss'; }
+    if (e.envelope && e.envelope.kind === 'node.state') {
+      if (e.frame.status === 'LIVE') { return 'tap'; }
+      if (e.frame.status === 'STALE') { return 'loss'; }
+      return null;
+    }
     var k = e.event && e.event.kind; return { 'holding.raid': 'raid', 'holding.lost': 'lost', 'holding.won': 'held', 'building.yours': 'yours' }[k] || null;
   }
   function read() { try { return root.localStorage.getItem(KEY); } catch (x) { return null; } }
-  function on() { var v = read(); if (v) { return v === 'on'; } return !(root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+  function on() { return read() === 'on'; }
   function buzz(kind) { var n = root.navigator; if (on() && n && typeof n.vibrate === 'function' && PATTERNS[kind]) { try { n.vibrate(PATTERNS[kind]); } catch (x) { /* not allowed yet */ } } }
   function card(doc, sheet) { // one card in Settings, added once
     if (!sheet || sheet.querySelector('#set-haptics')) { return; }

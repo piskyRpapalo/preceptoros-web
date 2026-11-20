@@ -22,6 +22,7 @@
   }
   function cycleOf(line) { return Number.isSafeInteger(line.cycle) && line.cycle >= 0 ? line.cycle : null; }
   function eventId(line) {
+    if (typeof line.eventId === 'string' && line.eventId) { return line.eventId; }
     var c = cycleOf(line);
     return 'radio.' + hex([line.source || '', line.seal || '', c === null ? 'NO_DATA' : c, line.text || ''].join('|'));
   }
@@ -40,7 +41,7 @@
     var seal = String(line && line.seal || ''), id = eventId(line || {}), frame = frameOf(seal), cause = '';
     var samples = new Float32Array(0);
     if (!frame) { cause = 'NO_DATA: seal ' + (seal || '(none)') + ' is not in the semantic table; no tone is invented'; }
-    else if (seal === 'NO_DATA') { cause = 'NO_DATA: this line is not measured, so it has no tone; its words say why'; }
+    else if (seal === 'NO_DATA') { cause = line.cause || 'NO_DATA: this line is not measured, so it has no tone; its words say why'; }
     else {
       samples = RADIO.pcm(frame);
       var perNote = RADIO.NOTA_TICKS * RADIO.MUESTRAS_TICK;
