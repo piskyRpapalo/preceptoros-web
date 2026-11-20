@@ -59,10 +59,9 @@ async function main() {
   await cmd('Page.navigate', { url: origen + '/' }); await espera(1200);
   const puerta = await ev("(() => { const a = document.querySelector('a.start[href=\"/openworld/\"]'); return a ? a.textContent : null; })()");
   // [deprecated 2026-11-11] the «a.door» card «Play now: the map, your crab and the chat.» left the landing with the welcome-only page; the one door is «a.start».
-  // The current landing's canonical CTA is "Play OpenWorld" (not the old
-  // "Create your signature and play"). The actual two-click signed visit and
-  // active-state assertions below remain unchanged.
-  ok((puerta || '').trim() === 'Play OpenWorld',
+  // Current Welcome/Sign HITL wording is verified in the real page;
+  // the actual two-click signed visit and semantic state remain exercised.
+  ok((puerta || '').trim() === 'Sign HITL, and take a piece',
     'the landing OpenWorld door label differs from the current contract: ' + puerta);
   await clic('a.start[href="/openworld/"]'); enMapa = true; await espera(2000);
   const llegada = JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('sheet-welcome'), b = document.getElementById('welcome-play'), r = b ? b.getBoundingClientRect() : {};
@@ -71,15 +70,18 @@ async function main() {
       viewport: [innerWidth,innerHeight], body: [document.body.getBoundingClientRect().width,document.body.getBoundingClientRect().height], map: (()=>{const x=document.getElementById('map')?.getBoundingClientRect();return x&&[x.width,x.height]})(), parent: (()=>{const x=frameElement?.getBoundingClientRect();return x&&[x.width,x.height]})() }; })())`));
   ok(llegada.path === '/openworld/', 'click 1 did not reach /openworld/: ' + llegada.path);
   ok(llegada.shown && llegada.role === 'dialog' && llegada.modal === 'false', 'the welcome card is not a dialog voice at the top of the panel: ' + JSON.stringify(llegada));
-  ok(llegada.title === 'Welcome to the sunken forest', 'the welcome title is wrong: ' + llegada.title);
+  ok(llegada.title === 'Welcome to OpenWorld', 'the welcome title is wrong: ' + llegada.title);
   const welcomeStatus = await ev(`(() => {
     const el=document.getElementById('welcome-live');
+    const initial=el.textContent;
     document.dispatchEvent(new CustomEvent('world:summary',{detail:{ok:true,live:2}}));
     const measured=el.textContent;
     document.dispatchEvent(new CustomEvent('world:summary',{detail:{ok:false,cause:'offline'}}));
-    return {measured,offline:el.textContent};
+    return {initial,measured,offline:el.textContent};
   })()`);
-  ok(welcomeStatus && welcomeStatus.measured.includes('Live nodes: 2.') && welcomeStatus.measured.includes('Live visitors: NO_DATA') && welcomeStatus.offline.includes('Live nodes: NO_DATA · offline'), 'Welcome must distinguish measured live nodes from unavailable counts');
+  ok(welcomeStatus && welcomeStatus.initial.includes('Live nodes: NO_DATA') &&
+    welcomeStatus.measured.includes('Live nodes: 2.') && welcomeStatus.measured.includes('Shared visitors: NO_DATA') &&
+    welcomeStatus.offline.includes('Live nodes: NO_DATA · offline'), 'Welcome must distinguish synthetic measured event from initial/offline NO_DATA');
   ok(llegada.focus === 'welcome-play', 'focus is not on «Play now»: ' + llegada.focus);
   ok(llegada.h >= 44 && llegada.w >= 44 && llegada.top >= 0 && llegada.bottom <= 844, 'the «Play now» button is below 44 px or off screen: ' + JSON.stringify(llegada));
   ok(llegada.look && llegada.ancho <= 390, 'no «Look around first» or sideways scroll: ' + JSON.stringify(llegada));
@@ -112,8 +114,8 @@ async function main() {
   ok(jugando.copper >= 100, 'after two clicks the copper is below 100: ' + jugando.copper);
   ok(jugando.summon, 'after two clicks the reef summon button is not enabled');
   ok(jugando.card === true && jugando.tab === 'true', 'the welcome card did not give way to the House voice of the panel: ' + JSON.stringify(jugando));
-  ok(/Visit started · signed on this device · 100 copper from the beacon · you can summon twice/.test(jugando.state), '#state does not announce the visit: ' + jugando.state);
-  ok(/Your visit is active. Walk with the crab stick to explore/.test(jugando.result), 'the active visit has no honest guidance: ' + jugando.result);
+  ok(/^Visit started · signed on this device · 100 copper · summon twice\. Visit active\. Walk the map with your crab\.$/.test(jugando.state), '#state does not announce the visit: ' + jugando.state);
+  ok(/^Visit active\. Walk the map with your crab\.$/.test(jugando.result), 'the active visit has no honest guidance: ' + jugando.result);
   await foto('dos-clics-playing.png');
   // «Look around first» and Escape: a fresh page, the card closes and the map is there.
   enMapa = false; await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(1500);
