@@ -63,11 +63,13 @@ async function main() {
   medida.daydHome = JSON.parse(await ev(`JSON.stringify({
     building: document.getElementById('dayd-building')?.getAttribute('href'),
     download: document.getElementById('dayd-download')?.getAttribute('href'),
+    update: document.getElementById('ta-update')?.getAttribute('href'),
     paths: [...document.querySelectorAll('.dayd-doors a')].map(x=>x.getAttribute('href')),
     feedback: [...document.querySelectorAll('.welcome-card p')].some(x=>/Feedback stays only on the node owner's device/.test(x.textContent))
   })`));
   ok(medida.daydHome.building==='/get-the-app/#building-draft' && medida.daydHome.download==='/get-the-app/#doors' &&
-    medida.daydHome.paths.join()==='/get-the-app/#building-draft,/get-the-app/#doors,/get-the-app/#companion-path' && medida.daydHome.feedback,
+    medida.daydHome.update==='/get-the-app/#update-existing-app' &&
+    medida.daydHome.paths.join()==='/get-the-app/#building-draft,/get-the-app/#doors,/get-the-app/#companion-path,/get-the-app/#update-existing-app' && medida.daydHome.feedback,
     'Day D home path or feedback copy missing: '+JSON.stringify(medida.daydHome));
   ok(medida.restos.length === 0 && medida.tras === 0, 'old landing text is back under the welcome card: ' + JSON.stringify(medida.restos) + ' · after the card: ' + medida.tras);
   ok(!/\bundefined\b|\bNaN\b/.test(medida.texto), 'missing value shown on the landing');
