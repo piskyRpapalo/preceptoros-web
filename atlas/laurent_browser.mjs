@@ -26,7 +26,8 @@ function once(source, old, replacement) {
 // Isolate sampling by keeping the original transformations, colors, halo and variable-width
 // algorithm. For Hermite, render each cubic with the original segment's chord-based width.
 function instrument(source) {
-  let s = once(source, 'P = puntos(A, n)', 'P = window.laurentPoints(A, n, k)');
+  let s = once(source, '  raiz.AtlasOnda = {', '  window.originalPoints = puntos;\n  raiz.AtlasOnda = {');
+  s = once(s, 'P = puntos(A, n)', 'P = window.laurentPoints(A, n, k)');
   s = once(s, "g[j ? 'lineTo' : 'moveTo'](px(P[j]), py(P[j]));", `if (j && P.curves?.length) {
     const c = P.curves[j-1]; g.bezierCurveTo(px(c[0]),py(c[0]),px(c[1]),py(c[1]),px(P[j]),py(P[j]));
   } else { g[j ? 'lineTo' : 'moveTo'](px(P[j]), py(P[j])); }`);
@@ -109,7 +110,7 @@ try {
   const results = await evaluate('expScene.summarize()');
   const fixture = await evaluate('({arms:expScene.arms,style:expScene.style,radius:expScene.radius,scale:expScene.scale,size:expScene.size})');
   const heap = {};
-  for (const method of Object.keys(results).filter(m => m !== 'original')) {
+  for (const method of Object.keys(results)) {
     await evaluate('window.heldContours = null');
     await page.send('HeapProfiler.collectGarbage');
     const before = await page.send('Runtime.getHeapUsage');
@@ -124,13 +125,13 @@ try {
       'atlas/laurent.mjs','atlas/laurent_browser.mjs','atlas/laurent_browser_scene.mjs'].map(path => [path,digest(read(path))])),
     rendererWithSamplingHookSha256:digest(modified), captureKind, captureSha256:digest(Buffer.from(image,'base64')),
     chrome:version.Browser, environment, fixture, elapsedSeconds, accessible, results, heap,
-    scope:'192x192 Canvas backing pixels, quality 2 with halo, no trail. Frame submission plus full CPU readback; timing is per-frame mean of four, excluding first seven batches. Heap delta retains 32 independent contours after GC. AX labels describe this lab scene only.'};
+    scope:'192x192 Canvas backing pixels, quality 2 with halo, no trail. Frame submission plus full CPU readback; per-frame timing excludes 28 warmup frames per method. Heap delta retains 32 independent contours after GC. AX labels describe this lab scene only.'};
   writeFileSync(prefix + '.json', JSON.stringify(receipt,null,2)+'\n');
   assert(results.original.union > 1000, 'Blank reference');
   assert.equal(accessible.length, 7, 'Missing public experiment image labels');
   for (const key of ['uniform','adaptive','hermite']) assert(results[key].maxErrorCanvasPx <= 0.5, 'Geometric budget exceeded: '+key);
   for (const key of ['direct','table','recurrence']) assert(results[key].changed === 0, key+' raster differs from original on golden scene');
-  console.log(JSON.stringify({prefix,chrome:version.Browser,elapsedSeconds,framesPerMethod:results.original.nBatches*4}));
+  console.log(JSON.stringify({prefix,chrome:version.Browser,elapsedSeconds,framesPerMethod:results.original.nFrames}));
 } finally {
   page?.close();
   if (target) await browser.send('Target.closeTarget',{targetId:target});

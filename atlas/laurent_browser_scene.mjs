@@ -82,26 +82,27 @@ export function installScene(contour, original, instrumented) {
   function sample(round) {
     for (let i = 0; i < methods.length; i++) {
       const key = methods[(i + round) % methods.length];
-      const start = performance.now();
       for (let f = 0; f < 4; f++) {
+        const start = performance.now();
         draw(key, scratch);
         pixels(scratch); // Includes synchronous readback. Distinct from display vsync.
+        trials[key].push(performance.now() - start);
       }
-      trials[key].push((performance.now() - start) / 4);
     }
   }
   function summarize() {
     return Object.fromEntries(methods.map(key => {
-      const times = trials[key].slice(7).sort((a, b) => a - b);
+      const times = trials[key].slice(28).sort((a, b) => a - b);
       const percentile = p => times[Math.ceil(times.length * p) - 1];
-      return [key, { coldMs: coldMs[key], nBatches: times.length, framesPerBatch: 4,
+      return [key, { coldMs: coldMs[key], nFrames: times.length,
         p50Ms: percentile(0.5), p95Ms: percentile(0.95), ...geometry[key] }];
     }));
   }
   function retain(key) {
     // Standalone cost of geometry data kept alive, not total process RSS or GPU memory.
-    window.heldContours = Array.from({ length: 32 }, () => contour(arms,
-      { method: key, scale, segments: 220, epsilon: 0.5 }));
+    window.heldContours = Array.from({ length: 32 }, () => key === 'original'
+      ? window.originalPoints(arms, 220)
+      : contour(arms, { method: key, scale, segments: 220, epsilon: 0.5 }));
   }
   return { sample, summarize, retain, methods, arms, style, radius, scale, size };
 }
