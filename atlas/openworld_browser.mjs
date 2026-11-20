@@ -68,6 +68,27 @@ async function main() {
   };
   await command('Runtime.enable'); await command('Page.enable'); await command('Network.enable');
   await command('Network.setBlockedURLs', { urls: ['https://api.preceptoros.org/*'] });
+  // CI is an offline-origin browser test. It must not send ANY request to a public API.
+  // Explicitly opening Chat Live asks for public 24h history; a synthetic empty reply is
+  // injected ONLY into this ephemeral Chrome page. All other fetches keep real behavior,
+  // and Network.requestWillBeSent still rejects every external-origin attempt.
+  await command('Page.addScriptToEvaluateOnNewDocument', { source: `
+    (() => {
+      if (location.hostname !== '127.0.0.1') return;
+      const realFetch = window.fetch.bind(window);
+      window.__chatHistoryFixtureReads = 0;
+      window.fetch = function(input, init) {
+        const url = typeof input === 'string' ? input : input && input.url;
+        if (url === 'https://api.preceptoros.org/api/v1/ingesta/dia' && (!init || !init.method || init.method === 'GET')) {
+          window.__chatHistoryFixtureReads++;
+          return Promise.resolve(new Response(JSON.stringify({ mensajes: [] }), {
+            status: 200, headers: { 'content-type': 'application/json' }
+          }));
+        }
+        return realFetch(input, init);
+      };
+    })();
+  ` });
   await command('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   await command('Page.navigate', { url: origin + '/openworld/?colony=alone' }); await wait(2000);
 
@@ -173,6 +194,10 @@ async function main() {
       const composer=document.getElementById('open-chat-text').getBoundingClientRect().height>0; b.click(); return {cat,visible,over,composer};});
     return results; })())`));
   ok(categories.length === 2 && categories.every((row) => row.visible && row.over && row.composer === (row.cat === 'Communication')), 'Welcome and Communication leaves are broken: ' + JSON.stringify(categories));
+  // The test must exercise the actual Chat Live read path, without outbound traffic.
+  const fixtureReads = await evaluate('window.__chatHistoryFixtureReads');
+  ok(Number.isSafeInteger(fixtureReads) && fixtureReads > 0,
+    'Chat Live did not use the test-only history fixture after a user opened Communication: ' + fixtureReads);
   // The old #play-now lived inside the retired Guide block (#next); the current native Play belongs to #gamepad.
   const start = JSON.parse(await evaluate(`JSON.stringify((() => { const b=document.querySelector('.cats [data-cat=Welcome]'); b.click(); const p=document.getElementById('gp-play'), old=document.getElementById('next');
     const answer={play:!!p && !p.hidden && p.getBoundingClientRect().height>=44,guideRetired:!!old && old.hidden,formClosed:document.getElementById('entry').getBoundingClientRect().height===0}; b.click(); return answer; })())`));
