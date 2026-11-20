@@ -109,7 +109,10 @@
       });
       top.dataset.open = String(cat === 'Communication');
       channel.hidden = cat !== 'Communication';
-      if (cat === 'Communication') { selectChannel(destination || 'public'); }
+      if (cat === 'Communication') {
+        if (buttons.Communication) { buttons.Communication.textContent = 'Chat Live'; buttons.Communication.setAttribute('aria-label', 'Chat Live'); }
+        selectChannel(destination || 'public');
+      }
 
     }
     CATS.forEach(function (c) {
@@ -127,6 +130,12 @@
         b.textContent = 'Chat Live'; b.setAttribute('aria-label', 'Chat Live'); b.title = 'Chat Live';
         top.append(b, channel); stage.appendChild(top);
       } else { bar.appendChild(b); }
+    });
+    // New public messages mark the existing Chat Live control; tutorial instructions are never displaced.
+    doc.addEventListener('openworld:chatlive-unread', function (event) {
+      var b = buttons.Communication, n = event.detail && Number(event.detail.count) || 0;
+      if (!b || current === 'Communication' || n < 1) { return; }
+      b.textContent = 'Chat Live •'; b.setAttribute('aria-label', 'Chat Live, new public messages');
     });
     var tools = doc.getElementById('entry-tools');
     if (tools) { tools.setAttribute('aria-controls', 'voices'); tools.setAttribute('aria-expanded', 'false'); tools.addEventListener('click', function () { show(current === 'Tools' ? null : 'Tools'); }); }
