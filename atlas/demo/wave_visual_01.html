@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="WAVE-VISUAL-01: a read-only prototype that names measured waves from their edge counts and shows the five crab invitations without spending or signing anything.">
+<title>WAVE-VISUAL-01 · wave identity and five invitations</title>
+<style>
+  :root { color-scheme: dark; --ink: #eaf6ff; --dim: #9fb3c8; --sea: #071018; --panel: #0d1a24; --line: #1f3a4c; --ok: #43f5a0; --warn: #ffb454; --bad: #ff7b8a; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--sea); color: var(--ink); font: 16px/1.5 ui-rounded, system-ui, sans-serif; }
+  body { padding: 24px 16px 64px; max-width: 1080px; margin: 0 auto; }
+  h1 { font-size: clamp(1.4rem, 4vw, 2rem); margin: 0 0 4px; }
+  h2 { font-size: 1.1rem; margin: 0 0 8px; }
+  p { margin: 0 0 12px; }
+  .dim { color: var(--dim); }
+  .waves { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 20px 0 28px; }
+  .wave { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+  .wave h3 { font-size: 1rem; margin: 0 0 2px; }
+  .wave canvas { display: block; width: 100%; height: 150px; }
+  .wave dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; margin: 8px 0 0; font-size: .82rem; }
+  .wave dt { color: var(--dim); }
+  .wave dd { margin: 0; }
+  .bar { display: grid; grid-template-columns: repeat(5, minmax(44px, 1fr)); gap: 8px; margin: 12px 0; }
+  .bar button { min-width: 44px; min-height: 44px; padding: 8px 4px; border: 2px solid var(--line); border-radius: 12px; background: #122736; color: var(--ink); font: 700 .8rem/1.2 ui-rounded, system-ui, sans-serif; cursor: pointer; }
+  .bar button:hover { border-color: #3d6d8c; }
+  .bar button[data-enabled="false"] { color: var(--dim); border-style: dashed; }
+  .bar button:focus-visible { outline: 3px solid var(--ok); outline-offset: 2px; }
+  .bar b { display: block; font-size: 1.05rem; }
+  .bar small { display: block; min-height: 1em; font-size: .6rem; letter-spacing: .04em; color: var(--warn); }
+  .sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  #log { min-height: 3em; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--ok); border-radius: 10px; padding: 10px 12px; }
+  #log[data-state="no"] { border-left-color: var(--bad); }
+  .motion { margin: 18px 0 0; padding: 12px; border: 1px solid var(--line); border-radius: 12px; }
+  .motion label { display: flex; align-items: center; gap: 10px; min-height: 44px; }
+  .motion input { width: 22px; height: 22px; }
+  footer { margin-top: 28px; color: var(--dim); font-size: .82rem; }
+  code { font-size: .85em; }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    .waves { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>WAVE-VISUAL-01</h1>
+  <p class="dim">Read-only prototype. Every wave below is rolled by the game's own <code>gacha.tirada</code> from a fixed seed.
+  The name is read from the measured edge count; nothing is re-rolled, written or spent.</p>
+</header>
+<main>
+  <section aria-label="Measured waves">
+    <h2>Measured waves</h2>
+    <div class="waves" id="waves"></div>
+  </section>
+  <section aria-label="Crab invocation">
+    <h2>Five invitations</h2>
+    <p class="dim" id="visit-line">Visit fixture: not a signed visit. Pressing a key only asks the pure controller what it would do.</p>
+    <div class="bar" id="bar" role="group" aria-label="Crab invocation, keys 1 to 5"></div>
+    <p id="log" role="status" aria-live="polite">Press 1–5.</p>
+  </section>
+  <section class="motion" aria-label="Motion">
+    <label><input type="checkbox" id="reduced"> Reduce motion <span class="dim">(also follows the system setting)</span></label>
+    <p class="dim" id="motion-state" style="margin:8px 0 0">Motion: measuring.</p>
+    <p class="dim" style="margin:8px 0 0">No audio: this prototype never creates an audio context, so nothing can sound before an explicit press.</p>
+  </section>
+</main>
+<footer id="foot">Measuring…</footer>
+
+<script src="../../public/game/values.js"></script>
+<script src="../../public/game/gacha.js"></script>
+<script src="../../public/game/wave_render.js"></script>
+<script src="../puros/wave_names.js"></script>
+<script src="../puros/crab_invoke.js"></script>
+<script>
+(function (root) {
+  'use strict';
+  var doc = root.document, N = root.AtlasWaveNames, C = root.AtlasCrabInvoke, G = root.AtlasGacha, O = root.AtlasOnda;
+  var box = doc.getElementById('waves'), bar = doc.getElementById('bar'), log = doc.getElementById('log');
+  var reducedBox = doc.getElementById('reduced'), motionLine = doc.getElementById('motion-state'), foot = doc.getElementById('foot');
+  var missing = [];
+  if (!N) { missing.push('wave_names'); } if (!C) { missing.push('crab_invoke'); } if (!G) { missing.push('gacha'); }
+  if (!O) { missing.push('wave_render'); }
+  if (missing.length) { foot.textContent = 'NO_DATA(' + missing.join(' + ') + '_unavailable)'; return; }
+
+  var tiers = ['tc1', 'tc2', 'tc3', 'tc4'];
+  // Four seeds measured once with gacha.tirada: 3, 5, 8 and 12 edges. The wave is still rolled here, never typed:
+  // if a seed changes, its edge count and its name follow the engine.
+  var SEEDS = {
+    tc1: '6c348ae47e431064c26439e73126cf836043e604577fd04f12f9bad4f325905d',
+    tc2: '70228025892b978d00e327f04565cb2d960e3cd0c83e0b0ebe896007125f83ac',
+    tc3: 'c072f39e5a782ce23b2330b1973646550dd889ae880c5b9665808f9a446e3cba',
+    tc4: 'de0cbef5061bf20f5f73e76fa0ff9262912d5e4564844b8bd00eaea77e064da2'
+  };
+  var waves = tiers.map(function (tc) { return G.tirada(SEEDS[tc], tc); });
+  var cards = [], frames = 0, raf = null, forced = false, drawing = false;
+
+  function still() {
+    return forced === true || !!(root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+  function draw(cv, w, t) {
+    var g = cv.getContext('2d'), dpr = Math.min(2, root.devicePixelRatio || 1);
+    var r = cv.getBoundingClientRect(), W = Math.max(1, Math.round(r.width * dpr)), H = Math.max(1, Math.round(r.height * dpr));
+    if (cv.width !== W) { cv.width = W; } if (cv.height !== H) { cv.height = H; }
+    g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H);
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    O.dibuja(g, w.armonicos, r.width / 2, r.height / 2, Math.min(r.width, r.height) * 0.34,
+      { color: O.tono(w), grosor: 2, brillo: 1, t: t || 0, respira: !still(), calidad: 2, alfa: 0.95 });
+  }
+  function paint(t) { cards.forEach(function (c) { draw(c.cv, c.w, t); }); }
+  function stop() { if (raf != null) { root.cancelAnimationFrame(raf); raf = null; } }
+  function tick(ts) { frames++; paint(ts); raf = root.requestAnimationFrame(tick); }
+  function sync() {
+    stop();
+    if (still()) { paint(0); motionLine.textContent = 'Motion: reduced. One static frame; no animation loop.'; }
+    else { raf = root.requestAnimationFrame(tick); motionLine.textContent = 'Motion: full. The wave breathes; names and edges never change.'; }
+  }
+  if (root.matchMedia) {
+    var mq = root.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mq.addEventListener) { mq.addEventListener('change', sync); }
+  }
+  reducedBox.addEventListener('change', function () { forced = reducedBox.checked; sync(); });
+
+  waves.forEach(function (w, i) {
+    var d = N.describe(w), card = doc.createElement('article'); card.className = 'wave';
+    var h = doc.createElement('h3'); h.textContent = N.nombre(w) || 'NO_DATA'; card.append(h);
+    var cv = doc.createElement('canvas'); cv.setAttribute('role', 'img');
+    cv.setAttribute('aria-label', (N.nombre(w) || 'Wave') + ', tier ' + w.tc + ', rarity ' + w.rareza);
+    card.append(cv);
+    var dl = doc.createElement('dl');
+    [['Tier', w.tc], ['Rarity', w.rareza], ['Edges', String(w.aristas)],
+     ['Prefix', d.prefix || '—'], ['Suffix', d.suffix || '—'], ['Seed', w.semilla.slice(0, 8) + '…']].forEach(function (kv) {
+      var dt = doc.createElement('dt'); dt.textContent = kv[0];
+      var dd = doc.createElement('dd'); dd.textContent = kv[1];
+      dl.append(dt, dd);
+    });
+    card.append(dl); box.append(card); cards.push({ cv: cv, w: w, i: i });
+  });
+  foot.textContent = 'Measured here: ' + waves.length + ' waves · names read from their own edge counts · ' +
+    cards.length + ' canvases · five keys · no audio surface.';
+
+  var state = { copper: 250, light: 120, step: 3, claimed: false, echoes: 0, echoCap: 4, busy: false,
+    eggs: [{ seq: 1, tc: 'tc1', ready: true }, { seq: 2, tc: 'tc2', ready: false }], troops: [waves[0]] };
+  var ctx = { consent: true, caps: { summon: true, hatch: true, sand: true }, state: state, costs: G.TCS,
+    tier: 'tc1', seq: 1, identity: true, troop: waves[1], stat: 'velocidad', stats: G.STATS };
+  doc.getElementById('visit-line').textContent = 'Visit fixture: ' + state.copper + ' copper · ' + state.light +
+    ' light · ' + state.eggs.length + ' eggs (' + state.eggs.filter(function (e) { return e.ready; }).length + ' ready) · not signed.';
+
+  function run(id) {
+    var p = C.plan(id, ctx);
+    log.textContent = p.say;
+    log.dataset.state = p.ok ? 'ready' : 'no';
+    var row = bar.querySelector('[data-action="' + id + '"]');
+    if (row) {
+      row.setAttribute('data-enabled', String(p.ok === true));
+      row.setAttribute('aria-disabled', String(p.ok !== true));
+      var why = row.querySelector('small');
+      if (why) { why.textContent = p.ok ? '' : 'NO_DATA'; }
+    }
+    return p;
+  }
+  C.bar(ctx).forEach(function (p) {
+    var a = p.action, b = doc.createElement('button');
+    b.type = 'button'; b.dataset.action = p.id; b.dataset.enabled = String(p.ok === true);
+    b.setAttribute('aria-disabled', String(p.ok !== true)); b.setAttribute('aria-keyshortcuts', a.key);
+    var k = doc.createElement('b'); k.textContent = a.key;
+    var why = doc.createElement('small'); why.textContent = p.ok ? '' : 'NO_DATA';
+    b.append(k, doc.createTextNode(' ' + a.name + ' '), why);
+    if (!p.ok) { var sr = doc.createElement('span'); sr.className = 'sr'; sr.textContent = ' unavailable: ' + p.cause; b.append(sr); }
+    b.addEventListener('click', function () { run(a.id); });
+    bar.append(b);
+  });
+  doc.addEventListener('keydown', function (e) {
+    var tag = e.target && e.target.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') { return; }
+    var id = C.keyOf(e);
+    if (!id) { return; }
+    e.preventDefault();
+    run(id);
+  });
+  root.addEventListener('resize', function () { if (still()) { paint(0); } });
+  sync();
+
+  root.__waveVisual01 = {
+    waves: waves.map(function (w) { return N.describe(w); }),
+    names: waves.map(function (w) { return N.nombre(w); }),
+    frames: function () { return frames; },
+    still: still,
+    setReduced: function (v) { forced = v === true; reducedBox.checked = forced; sync(); },
+    run: run,
+    plan: function (id) { return C.plan(id, ctx); },
+    state: state
+  };
+})(this);
+</script>
+</body>
+</html>
