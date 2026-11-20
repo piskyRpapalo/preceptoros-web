@@ -51,6 +51,16 @@
 .welcome-card .start{transition:transform .15s,box-shadow .15s}.welcome-card .start:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--wc-ink)}.welcome-card .start:active{transform:translateY(3px);box-shadow:0 2px 0 var(--wc-ink)}}
 @keyframes creature{to{transform:rotate(360deg)}}
 @media (forced-colors:active){.welcome-card,.welcome-card li,.welcome-card .start,.welcome-card .sound-first{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}.welcome-card ol li::before{background:CanvasText;color:Canvas}}
+
+.atlas-recovery{margin-top:12px;text-align:left}.atlas-recovery p{margin:8px 0;line-height:1.5}
+.atlas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:14px 0}
+.atlas-grid article{background:var(--wc-paper);border:2px solid var(--wc-ink);border-radius:14px;padding:12px;min-width:0;display:flex;flex-direction:column;gap:6px}
+.atlas-grid h3{font-size:1rem;margin:0}.atlas-grid p{font-size:.89rem;margin:0;flex:1}
+.atlas-recovery a{display:inline-flex;align-items:center;min-height:44px;font-weight:700}
+.atlas-faces{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.atlas-faces img{width:min(29%,110px);height:auto;aspect-ratio:1/1;object-fit:contain;background:var(--wc-paper);border:1px solid var(--wc-ink);border-radius:10px}
+.atlas-provenance{font-size:.86rem}
+@media(forced-colors:active){.atlas-grid article,.atlas-faces img{background:Canvas;color:CanvasText;border-color:CanvasText}}
 </style>
 </head>
 <body class="landing-world">
@@ -73,6 +83,26 @@
 <p>Your visit key stays in this browser tab. Walk the map, enter buildings and summon waves.</p>
 <p>Feedback stays on the owner’s device. The rack is not a feedback mailbox.</p>
 <nav aria-label="Installation and guides"><a id="dayd-download" href="/get-the-app/#doors">Installation and SHA-256</a> · <a id="ta-update" href="/get-the-app/#update-existing-app">Update my app</a> · <a id="dayd-companion" href="/get-the-app/#companion-path">Companion guide</a></nav>
+</details>
+<details class="honest atlas-recovery" id="visual-review">
+<summary>Atlas visual review · recovered pieces</summary>
+<p>Review the original parts before changing the world. This is a dated guide, not another application or a live hardware dashboard.</p>
+<p><strong>Astra V5.2:</strong> five crabs and four ghost guardians in the simulated 12-second reel above. <a href="/assets/landing-acho.webm">Watch the original reel</a> · <a href="/assets/landing-acho.webp">View the original poster</a>.</p>
+<div class="atlas-grid">
+<article><h3>Hex floor and movement</h3><p><strong>Built and tested.</strong> One integer projection, map zoom and joystick. Camera inertia announces its final position.</p><a href="/openworld/">Open the map</a></article>
+<article><h3>Waves and creatures</h3><p><strong>Built and tested.</strong> Harmonic forms, birth and summoning reuse the existing renderer. No second engine.</p><a href="/openworld/">Inspect the Reef</a></article>
+<article><h3>Combat and replay</h3><p><strong>Built and browser tested.</strong> The Coliseum uses the creature-wave face. Replay supports pause and ×1, ×2 and ×4.</p><a href="/openworld/">Open combat in the world</a></article>
+<article><h3>Acho and the radio</h3><p><strong>Partly verified.</strong> Shapes and words exist. Sound requires a user gesture. A unified signed heartbeat event is not yet proven.</p><a href="/openworld/">Inspect accessible controls</a></article>
+<article><h3>Luna Fourier</h3><p><strong>Preserved experiment.</strong> Browser proof exists, but this work is not a separate deployed renderer.</p><a href="https://github.com/piskyRpapalo/preceptoros-web/tree/rescue/luna-fourier-20261120-snapshot">See the original rescue</a></article>
+<article><h3>Luna heartbeat Acho</h3><p><strong>Preserved, not merged.</strong> The four-reading end-to-end event proof remains red. No invented LIVE state.</p><a href="https://github.com/piskyRpapalo/preceptoros-web/tree/rescue/luna-acho-20261120-snapshot">See the original rescue</a></article>
+</div>
+<p><strong>Existing preceptor speaking frames</strong> · real served assets, not proof that a model is speaking now:</p>
+<div class="atlas-faces">
+<img src="/assets/caras/preceptor-habla0-180.webp" loading="lazy" width="180" height="180" alt="Preceptor face, resting frame">
+<img src="/assets/caras/preceptor-habla1-180.webp" loading="lazy" width="180" height="180" alt="Preceptor face, speaking frame one">
+<img src="/assets/caras/preceptor-habla2-180.webp" loading="lazy" width="180" height="180" alt="Preceptor face, speaking frame two">
+</div>
+<p class="atlas-provenance">Evidence snapshot: 20 November 2026. <a href="https://github.com/piskyRpapalo/preceptoros-web/blob/a779e2ff8a9a3244558cd198d391b290ce1a05d0/odd/JOYAS.md">Original Joyero</a> · <a href="https://github.com/piskyRpapalo/preceptoros-web/blob/a779e2ff8a9a3244558cd198d391b290ce1a05d0/docs/canon-acho-math.md">Acho maths and known pulse conflict</a>. Hardware heartbeats require independent provenance; this visual preview is simulated.</p>
 </details>
 </section>
 </main>
