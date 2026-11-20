@@ -134,8 +134,8 @@
     var doc = root.document, d = describe(n, today()), SF = root.AtlasSoundFirst, nm = nameOf(n);
     motif(n.seal === 'LIVE'); if (spoken() && SF && SF.speak) { SF.speak(root, d, true); }
     if (!TALKS[n.id]) { var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(); if (ow && ow.controls && ow.controls.say) { ow.controls.say(d); } return d; }
-    var v = doc.getElementById('voices'), talk = doc.querySelector('.cats [data-cat=Communication]'), mode = doc.getElementById('chat-destination');
-    if (talk && (!v || v.hidden || v.dataset.activeCategory !== 'Communication')) { talk.click(); }
+    var v = doc.getElementById('voices'), mode = doc.getElementById('chat-destination');
+    if (root.AtlasTerminalPanel && root.AtlasTerminalPanel.mounted) { root.AtlasTerminalPanel.mounted.show('Communication', 'chat'); }
     if (mode) { mode.value = 'hexelion'; mode.dispatchEvent(new root.Event('change')); }
     if (v) { v.dataset.talk = 'node'; if (!v.dataset.talkWatch) { v.dataset.talkWatch = '1'; // the sheet is a conversation while you talk to a node (building_skins.css)
       var off = function () { delete v.dataset.talk; }; if (mode) { mode.addEventListener('change', function () { if (mode.value !== 'hexelion') { off(); } }); }

@@ -8,7 +8,7 @@ import { readFileSync, statSync } from 'node:fs';
 const require = createRequire(import.meta.url);
 const FILE = new URL('../../public/game/gamepad.js', import.meta.url);
 const G = require(FILE.pathname);
-const NAMES = ['Map', 'Character', 'Play', 'Welcome', 'Profile', 'Communication'];
+const NAMES = ['Map', 'Character', 'Play', 'Welcome', 'Profile', 'Army'];
 
 test('FNV-1a 32-bit matches the published vectors', () => {
   assert.equal(G.fnv1a(''), 0x811c9dc5);
@@ -70,6 +70,6 @@ test('no clock, no random number, no network, under 9000 B', () => {
 });
 
 test('the middle buttons open things that already exist; the SVG is decorative', () => {
-  assert.deepEqual(G.BUTTONS.map((b) => b.name), ['Play', 'Welcome', 'Profile', 'Communication']);
+  assert.deepEqual(G.BUTTONS.map((b) => b.name), ['Play', 'Welcome', 'Profile', 'Army']);
   assert.ok(G.svg('Play', 32, 10).includes('aria-hidden="true"'));
 });

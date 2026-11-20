@@ -18,8 +18,8 @@
   [['local', 'Device guide'], ['hexelion', NAME + ' · on the rack']].forEach(function (item) {
     var option = doc.createElement('option'); option.value = item[0]; option.textContent = item[1]; mode.append(option);
   });
-  zone.prepend(modeLabel, mode);
-  var remoteNotice = doc.createElement('p'); remoteNotice.textContent = NAME + ' is the rack AI (Hexelion). On Send, your message, the session thread (when it fits) and an ephemeral visit hash go to the chat gateway. The thread clears at visit end; the AI advises and never signs.'; remoteNotice.hidden = true; zone.append(remoteNotice);
+  form.prepend(modeLabel, mode);
+  var remoteNotice = doc.createElement('p'); remoteNotice.textContent = NAME + ' is the rack AI (Hexelion). On Send, your message, the session thread (when it fits) and an ephemeral visit hash go to the chat gateway. The thread clears at visit end; the AI advises and never signs.'; remoteNotice.hidden = true; form.prepend(remoteNotice);
   var aulaLoad = null;
   function loadAula() {
     if (root.AtlasAulaChat) return Promise.resolve(root.AtlasAulaChat);

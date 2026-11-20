@@ -135,9 +135,9 @@ main.map-panel-mask.with-showcase-player{grid-template-columns:minmax(0,1fr);gri
 html{font-size:80%}
 body{font-size:1rem}
 #voices.map-voices,#voices.map-voices[data-active-category="Communication"]{inset:0;max-height:none;padding:8px;border-radius:0}
-#map:has(#voices.map-voices:not([hidden])) #map-actions{display:none}
+#map:has(#voices.map-voices:not([data-active-category=Communication]):not([hidden])) #map-actions{display:none}
 /* the joysticks step aside (and out of focus) while a sheet is open */
-#map:has(#voices.map-voices:not([hidden])) .view-joy{opacity:.35;pointer-events:none}
+#map:has(#voices.map-voices:not([data-active-category=Communication]):not([hidden])) .view-joy{opacity:.35;pointer-events:none}
 }
 /* Gamepad (Sovereign, 2026-11-07): one status line on top, the map, and one Acho gamepad at the bottom (gamepad.js).
    Left stick pans the map; right stick is off until the character exists; the account buttons sit between them. */

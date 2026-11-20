@@ -63,7 +63,7 @@
     Object.freeze({ name: 'Play', glyph: '▶', label: 'Play now. Sign on this device.', opens: '#play-now' }),
     Object.freeze({ name: 'Welcome', opens: '.cats [data-cat=Welcome]' }),
     Object.freeze({ name: 'Profile', opens: '.cats [data-cat=Profile]' }),
-    Object.freeze({ name: 'Communication', opens: '.cats [data-cat=Communication]' })
+    Object.freeze({ name: 'Army', opens: '.cats [data-cat=Army]' })
   ]);
 
   function paint(el, name) {
@@ -96,7 +96,7 @@
     sync();
     if (real && win && win.MutationObserver) { new win.MutationObserver(sync).observe(real, { attributes: true, attributeFilter: ['hidden', 'disabled'] }); }
     mid.appendChild(play);
-    var cats = doc.querySelector('#map .cats');
+    var cats = doc.querySelector('#map > .cats');
     if (cats) {
       Array.prototype.forEach.call(cats.querySelectorAll('button[data-cat]'), function (b) {
         var n = b.dataset.cat; paint(b, n); b.addEventListener('click', function () { move(b, n, win); });

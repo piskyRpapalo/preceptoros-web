@@ -100,7 +100,7 @@ async function main() {
 
   const initial = JSON.parse(await evaluate(`JSON.stringify((() => {
     const map = document.getElementById('map'), stage = document.getElementById('stage'), canvas = document.getElementById('surface');
-    const voices = document.getElementById('voices'), chat = document.getElementById('chat'), bar = map.querySelector('.cats');
+    const voices = document.getElementById('voices'), chat = document.getElementById('chat'), bar = map.querySelector('#gamepad .cats');
     const joy = document.querySelector('#gamepad #view-joystick'), form = document.getElementById('entry'), sr = (e) => { const r=e.getBoundingClientRect(); return [r.left,r.top,r.right,r.bottom,r.width,r.height]; };
     let inkPixels = 0; try { const data=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data; for(let i=3;i<data.length;i+=4) if(data[i]) inkPixels++; } catch { inkPixels=-1; }
     return { title: document.querySelector('h1')?.textContent, canvases: document.querySelectorAll('canvas').length,
@@ -114,7 +114,7 @@ async function main() {
   ok(initial.canvases === 1, 'OpenWorld renders more than one canvas: ' + initial.canvases);
   ok(initial.inkPixels > 2000, 'the map is blank: ' + initial.inkPixels);
   ok(initial.panelParent === 'stage' && initial.panelHidden, 'voice panels are not mounted as a closed overlay on the shared map');
-  ok(initial.count === 3 && /^Help\|Profile\|(Talk · )?Communication$/.test(initial.labels.join('|')), 'the three terminal leaves are missing or unnamed: ' + JSON.stringify(initial.labels));
+  ok(initial.count === 3 && /^Help\|Crab\|Army$/.test(initial.labels.join('|')), 'the three terminal leaves are missing or unnamed: ' + JSON.stringify(initial.labels));
   ok(initial.profileHidden && initial.entryTools, 'Profile is visible before a visit or the entry Tools button is missing');
   ok(initial.bar[1] >= initial.stage[3] - 1, 'voice controls are not immediately below the map: ' + JSON.stringify(initial.bar));
 // Main's three-leaf entry starts closed; this is intentional after the communication moved behind its own leaf.
@@ -123,7 +123,7 @@ async function main() {
   ok(initial.joy && initial.joy[4] >= 44, 'the view joystick is not visible on the map layer: ' + JSON.stringify(initial.joy));
 
   const remoteChat = await evaluate(`(async () => {
-    document.querySelector('.cats [data-cat=Communication]').click();
+    AtlasTerminalPanel.mounted.show('Communication','chat');
     const mode = document.getElementById('chat-destination'), form = document.getElementById('entry'), input = document.getElementById('question');
     const script=document.createElement('script'); script.src='/game/classroom_chat.js'; await new Promise((resolve,reject)=>{script.onload=resolve;script.onerror=reject;document.head.append(script)});
     let calls = [], original = AtlasAulaChat.turn;
@@ -135,7 +135,7 @@ async function main() {
     const profileAvailable=!document.querySelector('.cats [data-cat=Profile]').hidden;
     document.querySelector('.cats [data-cat=Profile]').click();
     const profileHasVisit=!!document.querySelector('#visitor-play #visitor-end');
-    document.querySelector('.cats [data-cat=Communication]').click();
+    AtlasTerminalPanel.mounted.show('Communication','chat');
     input.value='hello'; form.requestSubmit(); await new Promise(r=>setTimeout(r,100));
     const response=document.getElementById('log').textContent.includes('Fixture response');
     const sent=calls.slice(); document.getElementById('visitor-end').click(); await new Promise(r=>setTimeout(r,100));
@@ -146,7 +146,7 @@ async function main() {
   ok(remoteChat && remoteChat.withoutVisit === 0 && remoteChat.informed && remoteChat.sent.length === 1 && /^[a-f0-9]{64}$/.test(remoteChat.sent[0].visit) && remoteChat.sent[0].page === '/openworld/' && remoteChat.response && remoteChat.afterEnd === 1 && remoteChat.profileAvailable && remoteChat.profileHasVisit && remoteChat.profileHiddenAfterEnd, 'Profile and remote chat must follow the active ephemeral visit only: ' + JSON.stringify(remoteChat));
 
   const panel = JSON.parse(await evaluate(`JSON.stringify((() => {
-    const bar = document.querySelector('.cats'), buttons = [...bar.querySelectorAll('button')], voices = document.getElementById('voices');
+    const bar = document.querySelector('#gamepad .cats'), buttons = [...bar.querySelectorAll('button')], voices = document.getElementById('voices');
     const map = buttons.find(b=>b.dataset.cat==='Welcome'), sizes = buttons.filter(b=>!b.hidden).map(b=>{const r=b.getBoundingClientRect();return [r.width,r.height]});
     map.click(); const opened = !voices.hidden && getComputedStyle(voices).display !== 'none';
     const stage = document.getElementById('stage'), chat = document.getElementById('chat');
@@ -170,7 +170,7 @@ async function main() {
     const results=bs.map(b=>{b.click(); const cat=b.dataset.cat, own=[...voices.querySelectorAll('[data-speaker]')].filter(v=>v.dataset.cat===cat);
       const visible=own.some(v=>v.getBoundingClientRect().width>0 && getComputedStyle(v).display!=='none');
       const over=[...voices.querySelectorAll('[data-speaker]')].filter(v=>v.dataset.cat!==cat).every(v=>getComputedStyle(v).display==='none');
-      const composer=document.getElementById('entry').getBoundingClientRect().height>0; b.click(); return {cat,visible,over,composer};});
+      const composer=document.getElementById('open-chat-text').getBoundingClientRect().height>0; b.click(); return {cat,visible,over,composer};});
     return results; })())`));
   ok(categories.length === 2 && categories.every((row) => row.visible && row.over && row.composer === (row.cat === 'Communication')), 'Welcome and Communication leaves are broken: ' + JSON.stringify(categories));
   // The old #play-now lived inside the retired Guide block (#next); the current native Play belongs to #gamepad.

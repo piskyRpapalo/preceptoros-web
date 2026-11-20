@@ -32,9 +32,9 @@ html[data-ow-phase=arrive] #ow-brief,#ow-coords{clip-path:inset(50%);width:1px;h
 @media (forced-colors:active){html[data-ow-phase=arrive] #gamepad #gp-play{background:ButtonFace;border-color:ButtonText}#gamepad .gp-mid button[data-name]::after{color:ButtonText}}
 /* UX-VISIBILITY-01: content first. A panel, a card or a dialog open → the sticks fold, one row of named buttons stays
    (to change panel); writing with the keyboard up → the gamepad steps aside until the field is left. */
-#map:has(#voices.map-voices:not([hidden]),.bs-sheet:not([hidden]),dialog[open],.revela) #gamepad :is(#view-joystick,#character-joystick,.gp-off){display:none}
-#map:has(#voices.map-voices:not([hidden]),.bs-sheet:not([hidden]),dialog[open],.revela) #gamepad .gp-mid{flex-wrap:nowrap;max-width:none;padding-top:0}
-#map:has(#voices.map-voices:not([hidden]),.bs-sheet:not([hidden]),dialog[open],.revela) #gamepad .gp-mid::after{display:none}
+#map:has(#voices.map-voices:not([data-active-category=Communication]):not([hidden]),.bs-sheet:not([hidden]),dialog[open],.revela) #gamepad :is(#view-joystick,#character-joystick,.gp-off){display:none}
+#map:has(#voices.map-voices:not([data-active-category=Communication]):not([hidden]),.bs-sheet:not([hidden]),dialog[open],.revela) #gamepad .gp-mid{flex-wrap:nowrap;max-width:none;padding-top:0}
+#map:has(#voices.map-voices:not([data-active-category=Communication]):not([hidden]),.bs-sheet:not([hidden]),dialog[open],.revela) #gamepad .gp-mid::after{display:none}
 html[data-ow-typing] #gamepad{display:none}
 /* two eggs hatch together: one reveal at a time (the next waits behind the first one's Continue), never two stacked */
 #stage > .revela.on-map ~ .revela.on-map{display:none}

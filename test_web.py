@@ -2630,12 +2630,12 @@ class PanelPorCategorias(unittest.TestCase):
                  "process.stdout.write(JSON.stringify([P.CATS.map(c=>c.name),P.CATS.filter(c=>c.button).map(c=>c.name),"
                  "P.CATS.find(c=>c.name==='Profile').visit,process.argv.slice(1).map(P.categoryOf)]))")
         cats, botoneras, profile_visits, de = json.loads(subprocess.run(["node", "-e", guion, *voces], capture_output=True, text=True, cwd=RAIZ, check=True).stdout)
-        self.assertEqual(cats, ["Welcome", "Profile", "Communication", "Tools"])
-        self.assertEqual(botoneras, ["Welcome", "Profile", "Communication"])
+        self.assertEqual(cats, ["Welcome", "Profile", "Army", "Communication", "Tools"])
+        self.assertEqual(botoneras, ["Welcome", "Profile", "Army", "Communication"])
         self.assertTrue(profile_visits)
         self.assertIn('<button id="entry-tools">Tools</button>', pagina)
         esperado = {"Tutorial": "Welcome", "Welcome": "Welcome", "Guide": "Welcome", "Map": "Welcome", "Floor": "Welcome",
-                    "Walkers": "Welcome", "Zoom": "Welcome", "House": "Profile", "Army": "Profile", "Radio": "Communication", "Models": "Tools"}
+                    "Walkers": "Welcome", "Zoom": "Welcome", "House": "Profile", "Army": "Army", "Radio": "Communication", "Models": "Tools"}
         self.assertEqual(dict(zip(voces, de)), esperado)
 
 
