@@ -12,6 +12,13 @@ async function run() {
       const box = await page.locator('main').boundingBox();
       assert.ok(Math.abs(box.x+box.width/2-width/2)<1 && Math.abs(box.y+box.height/2-height/2)<1);
       assert.equal(await page.locator('#acho-reel').getAttribute('src'),null);
+      const reel=page.locator('#acho-reel');
+      assert.match(await reel.getAttribute('aria-label'),/Simulated colony.*Five crabs.*Four ghost guardians/);
+      assert.ok(await page.getByText('Preview · simulated scene',{exact:true}).isVisible());
+      assert.deepEqual(await reel.evaluate(async el=>{
+        const img=new Image(); img.src=el.poster; await img.decode(); return [img.naturalWidth,img.naturalHeight];
+      }),[960,540]);
+      if (process.env.REEL_CAPTURES) await page.screenshot({path:process.env.REEL_CAPTURES+'/landing-'+width+'.png'});
       const map=page.frames().find(f=>f.parentFrame());
       await map.waitForFunction(()=>window.AtlasWelcome);
       await map.evaluate(()=>document.querySelector('#visitor-play').addEventListener('visitor:render',e=>{
@@ -35,6 +42,11 @@ async function run() {
       console.log(width,height,'centered, poster, look, signed visit, Back, same key, single map');
       await page.close();
     }
+    const moving=await browser.newPage({serviceWorkers:'block'});
+    await moving.goto(url);
+    await moving.waitForFunction(()=>document.querySelector('#acho-reel').currentTime>.15);
+    assert.ok(await moving.locator('#acho-reel').evaluate(el=>el.loop && el.muted && el.playsInline));
+    await moving.close();
     const failed = await browser.newPage({serviceWorkers:'block'});
     const requests = [];
     failed.on('request', req => requests.push(req.url()));

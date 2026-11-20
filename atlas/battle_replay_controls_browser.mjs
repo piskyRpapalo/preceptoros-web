@@ -2,7 +2,7 @@
 // each control, the recorded battle still verifies at every speed, and the visit that holds it still works end to end.
 // Uso: node atlas/battle_replay_controls_browser.mjs   (Chrome headless por CDP). Prints one JSON line; exit 1 on failure.
 import { createServer } from 'node:http';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, extname } from 'node:path';
 import { launchChrome } from './chrome_launch.mjs';
 import { fileURLToPath } from 'node:url';
@@ -68,6 +68,24 @@ async function main() {
   ok(await hasta('document.getElementById("visitor-play").textContent.includes("Troops 1")', 10000), 'adopted troop available');
 
   // Record every rate the scene receives, then open the battle. The record is snapshotted when it is handed over.
+  // Observe what the live painter receives. Match each call to the troop rolled
+  // from an actual contestant seed, independently of the options duel_face sets.
+  await ev(`(() => {
+    const O = AtlasOnda, D = AtlasDuelFace, paint = O.dibuja, scene = D.scene;
+    window.waveAudit = { draws: 0, bad: 0, eyes: [] };
+    D.scene = function(canvas, defenders, attackers, ...rest) {
+      const troops = defenders.concat(attackers).map(t => AtlasGacha.tirada(t.semilla, t.tc));
+      O.dibuja = function(ctx, harmonics, x, y, r, opts) {
+        const troop = troops.find(t => JSON.stringify(t.armonicos) === JSON.stringify(harmonics));
+        waveAudit.draws++;
+        if (!troop || opts.face !== true || opts.eye !== O.eyeKind(troop) ||
+            opts.eyes !== O.eyeCount(troop) || opts.eyeSeed !== O.eyeSeed(troop)) waveAudit.bad++;
+        if (!waveAudit.eyes.includes(opts.eyes)) waveAudit.eyes.push(opts.eyes);
+        return paint.apply(this, arguments);
+      };
+      return scene.call(this, canvas, defenders, attackers, ...rest);
+    };
+  })()`);
   await ev(`(() => { window.rates = []; const D = window.AtlasDuelFace, F = D && D.ready() ? D : AtlasWaveDuel, k = F === D ? 'scene' : 'escena'; window.faceName = F === D ? 'duel_face' : 'wave_duel'; const orig = F[k]; F[k] = function () { const r = orig.apply(this, arguments); const v = r.velocidad; r.velocidad = function (x) { rates.push(x); v(x); }; return r; }; })()`);
   await ev(`document.getElementById('visitor-play').addEventListener('visitor:battle', e => { window.measuredBattle = e.detail; window.snapBattle = JSON.stringify(e.detail); }, { once: true })`);
   await ev(`(async()=>{const V=AtlasMapPainter.view(),mk=V.world.markList.find(m=>m.fog);window.retado=mk;AtlasBuildingSheet.open(mk.id);await new Promise(r=>setTimeout(r,400));document.getElementById('surface').dataset.sel=mk.q+','+mk.r;for(let i=0;i<40&&!document.getElementById('bs-challenge');i++)await new Promise(r=>setTimeout(r,100));document.getElementById('bs-challenge').click();return 1})()`) /* C2: challenge a grey NPC building from its card (fog-and-conquest.md) */;
@@ -90,6 +108,13 @@ async function main() {
   ok(await pulsaDialogo('Pause'), 'Pause again');
   ok(await pulsaDialogo('Play'), 'Play again');
   ok((await status()) === 'PLAYING · ×2', 'play resumes at ×2');
+  medidas.waves = await ev('waveAudit');
+  ok(medidas.waves && medidas.waves.draws > 0 && medidas.waves.bad === 0, 'canonical troop and eyes on every draw');
+  if (process.env.DUEL_CAPTURE) {
+    await espera(600);
+    const png = await ev("document.querySelector('dialog[open] canvas').toDataURL().split(',')[1]");
+    writeFileSync(process.env.DUEL_CAPTURE, Buffer.from(png, 'base64'));
+  }
   const tasas = await ev('window.rates');
   medidas.tasas = tasas;
   ok(JSON.stringify(tasas) === JSON.stringify([0, 0, 0, 4, 2, 0, 2]), 'scene rates follow the controls: ' + JSON.stringify(tasas));
