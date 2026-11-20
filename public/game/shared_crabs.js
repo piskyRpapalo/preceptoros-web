@@ -1,6 +1,8 @@
 // Shared crabs on the one map (Seam A, Mesa #34). EXPERIMENT: this piece does nothing unless the page runs on
 // loopback AND names a TEST authority by its port (?presence=8812). On the public site there is no authority, so
 // nothing is offered, nothing is asked of the network and nothing is drawn.
+// A future production authority can be reached via crab_presence_remote.js with explicit config — that adapter
+// defaults OFF, requires HTTPS, origin allowlist, consent, identity separation and bounded errors.
 // With a test authority and a visit, one button asks for consent. After it:
 //   - every hex the crab walks is signed (atlas.paso/1) and sent; the authority decides the cell;
 //   - a crab that stands still signs «still here» (atlas.presente/1) so it is not forgotten;
@@ -12,10 +14,25 @@
 (function (root) {
   'use strict';
   // Pure: authority(location) → 'http://127.0.0.1:<port>' or null. Only loopback, only a port: no page can be
-  // pointed at another host.
+  // pointed at another host. The test authority is never exposed on the public internet.
   function authority(loc) {
     var m = /[?&]presence=(\d{2,5})(?:&|$)/.exec((loc && loc.search) || '');
     return m && /^(127\.0\.0\.1|localhost)$/.test((loc && loc.hostname) || '') ? 'http://127.0.0.1:' + m[1] : null;
+  }
+  // Pure: remoteConfig(location, consentGranted) → a validated remote adapter or null. Defaults OFF.
+  // Requires crab_presence_remote.js to be loaded. The config must come from a page-level constant
+  // (REMOTE_PRESENCE_CONFIG) — never from URL params, to prevent injection.
+  // consentGranted must be exactly true (from a user event or separate consent flow); missing → null.
+  // NO_DATA(public_consent_UI_not_wired) — public loader remains OFF, no UI wired.
+  function remoteConfig(loc, consentGranted) {
+    if (consentGranted !== true) { return null; }
+    var R = root.AtlasCrabPresenceRemote;
+    if (!R || !R.create) { return null; }
+    var cfg = root.REMOTE_PRESENCE_CONFIG;
+    if (!cfg) { return null; } // no config → fail closed, nothing offered
+    var adapter = R.create(cfg, loc && loc.ancestorOrigins ? loc : (typeof window !== 'undefined' ? window : null), true);
+    if (!adapter) { return null; } // origin or URL rejected → fail closed
+    return adapter;
   }
   function param(loc, name, fallback, min) {
     var m = new RegExp('[?&]' + name + '=(\\d{1,6})(?:&|$)').exec((loc && loc.search) || ''), n = m ? Number(m[1]) : fallback;
@@ -147,7 +164,7 @@
     return { auth: auth, poll: POLL, beat: BEAT, radius: RADIUS, state: function () { return { id: me ? me.id : null, pos: pos, view: view, said: said.slice(), beacon: coop ? coop.state() : null }; } };
   }
 
-  var api = { authority: authority, dirOf: dirOf, label: label, slot: slot, mount: mount, mounted: null };
+  var api = { authority: authority, remoteConfig: remoteConfig, dirOf: dirOf, label: label, slot: slot, mount: mount, mounted: null };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasSharedCrabs = api;
   if (root.document && root.document.getElementById && root.location) { api.mounted = mount(root.document, root); }
