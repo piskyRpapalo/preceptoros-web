@@ -62,10 +62,14 @@ async function main() {
     const q = document.getElementById('question'); q.value = 'How do I move my character?';
     document.getElementById('entry').requestSubmit();
     for (let i = 0; i < 900 && !heard.length; i++) await new Promise((r) => setTimeout(r, 100));
-    const t2 = performance.now(), log = [...document.querySelectorAll('#log li')].map((li) => li.textContent);
+    const t2 = performance.now(), log = [...document.querySelectorAll('#log li')];
     const a = heard[0] || {}, h = a.text ? Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(a.text))), (x) => x.toString(16).padStart(2, '0')).join('') : '';
     return JSON.stringify({ load_ms: Math.round(t1 - t0), reply_ms: Math.round(t2 - t1), tall, ready, text: a.text || null, source: a.source || null, sha_ok: h === a.sha, verified: a.verified === true,
-      logged: log.some((l) => l.startsWith('OpenWorld guide · page controls · Tap a hex to walk')) }); })()`));
+      logged: log.some((li) => li.dataset.speaker === 'OpenWorld guide' &&
+        li.textContent === 'OpenWorld guide · ' + a.text &&
+        (() => { try { const f = JSON.parse(li.dataset.acho || 'null');
+          return f?.v === 'preceptoros.acho/1' && f.atoms?.[0]?.r === li.textContent &&
+            f.atoms[0].k === 'voice.script'; } catch { return false; } })()) }); })()`));
   ok(r.tall >= 44, 'the download button is below 44 px: ' + r.tall);
   ok(/ready on this device/.test(r.ready), 'the brain did not get ready: ' + r.ready);
   ok(r.verified && r.sha_ok && r.logged, 'no verified answer reached the chat log and brain:answer: ' + JSON.stringify(r));
