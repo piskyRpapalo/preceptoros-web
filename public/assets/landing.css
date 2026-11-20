@@ -84,7 +84,7 @@ body.landing-world.world-active #landing-world{pointer-events:auto}
 .model-frame canvas{display:block;width:100%;height:auto;aspect-ratio:320/96}
 .model-frame p{margin:4px 0 0;font-size:.85rem}
 
-#acho-reel{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#173d4a}
+#acho-reel{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:var(--bg)}
 body.landing-world>.skip{position:fixed}
 body.landing-world>main{width:min(25rem,calc(100% - 2rem));padding:1rem;background:var(--bg);border-radius:calc(2 * var(--radius))}
 body.landing-world .hero{display:flex;align-items:center;justify-content:center;gap:.75rem}
@@ -104,7 +104,7 @@ body.landing-world:not(.world-active) #landing-world{visibility:hidden}
   #acho-reel{z-index:-2}
 }
 @media (max-aspect-ratio:1/1){
-  body.landing-world{background:#173d4a}
+  body.landing-world{background:var(--bg)}
   body.landing-world>main{padding:.65rem;backdrop-filter:none}
   #acho-reel{position:static;width:100%;height:auto;aspect-ratio:16/9;display:block;border-radius:var(--radius)}
   body.landing-world .hero{margin-top:.5rem}
