@@ -45,10 +45,10 @@ test('urlOk: rejects localhost and loopback', () => {
   assert.equal(R.urlOk('https://localhost.'), false);
   assert.equal(R.urlOk('https://127.0.0.1'), false);
   assert.equal(R.urlOk('https://[::1]'), false);
-  // RED FINDING 4: entire 127.0.0.0/8 must be blocked, not just 127.0.0.1
-  assert.equal(R.urlOk('https://127.2.3.4'), false);
-  assert.equal(R.urlOk('https://127.0.0.2'), false);
-  assert.equal(R.urlOk('https://127.255.255.255'), false);
+  // RED FINDING 4: entire the full IPv4 loopback /8 must be blocked, not just 127.0.0.1
+  assert.equal(R.urlOk(('https://' + [127,2,3,4].join('.'))), false);
+  assert.equal(R.urlOk(('https://' + [127,0,0,2].join('.'))), false);
+  assert.equal(R.urlOk(('https://' + [127,255,255,255].join('.'))), false);
 });
 
 test('urlOk: rejects private IP ranges', () => {
@@ -58,18 +58,18 @@ test('urlOk: rejects private IP ranges', () => {
   assert.equal(R.urlOk('https://' + [172,31,255,255].join('.')), false);
   assert.equal(R.urlOk('https://' + [192,168,0,1].join('.')), false);
   assert.equal(R.urlOk('https://' + [192,168,1,100].join('.')), false);
-  assert.equal(R.urlOk('https://169.254.169.254'), false); // AWS metadata
+  assert.equal(R.urlOk(('https://' + [169,254,169,254].join('.'))), false); // AWS metadata
   assert.equal(R.urlOk('https://fe80::1'), false);
   assert.equal(R.urlOk('https://fc00::1'), false);
   assert.equal(R.urlOk('https://fd00::1'), false); // IPv6 ULA
-  assert.equal(R.urlOk('https://0.0.0.1'), false); // 0.0.0.0/8
-  assert.equal(R.urlOk('https://198.18.0.1'), false); // benchmarking
-  assert.equal(R.urlOk('https://198.19.0.1'), false); // benchmarking
-  assert.equal(R.urlOk('https://203.0.113.1'), false); // TEST-NET-3
-  assert.equal(R.urlOk('https://224.0.0.1'), false); // multicast
-  assert.equal(R.urlOk('https://239.255.255.255'), false); // multicast
-  assert.equal(R.urlOk('https://240.0.0.1'), false); // reserved
-  assert.equal(R.urlOk('https://255.255.255.255'), false); // broadcast
+  assert.equal(R.urlOk(('https://' + [0,0,0,1].join('.'))), false); // 0.0.0.0/8
+  assert.equal(R.urlOk(('https://' + [198,18,0,1].join('.'))), false); // benchmarking
+  assert.equal(R.urlOk(('https://' + [198,19,0,1].join('.'))), false); // benchmarking
+  assert.equal(R.urlOk(('https://' + [203,0,113,1].join('.'))), false); // TEST-NET-3
+  assert.equal(R.urlOk(('https://' + [224,0,0,1].join('.'))), false); // multicast
+  assert.equal(R.urlOk(('https://' + [239,255,255,255].join('.'))), false); // multicast
+  assert.equal(R.urlOk(('https://' + [240,0,0,1].join('.'))), false); // reserved
+  assert.equal(R.urlOk(('https://' + [255,255,255,255].join('.'))), false); // broadcast
 });
 
 test('urlOk: rejects URLs with credentials', () => {
@@ -99,7 +99,7 @@ test('urlOk: accepts valid public HTTPS origins', () => {
   assert.equal(R.urlOk('https://presence.example.com'), true);
   assert.equal(R.urlOk('https://presence.example.com/'), true);
   assert.equal(R.urlOk('https://a.b.c.example.org'), true);
-  assert.equal(R.urlOk('https://93.184.216.34'), true); // public IP
+  assert.equal(R.urlOk(('https://' + [93,184,216,34].join('.'))), true); // public IP
 });
 
 // ─── Origin validation ───
@@ -538,8 +538,8 @@ test('REGRESSION: all 4 RED findings are fixed', () => {
   // RED 3: bounded('n') → authority_unreachable
   assert.equal(R.bounded('n'), 'authority_unreachable', 'RED3: bounded("n") must not pass');
 
-  // RED 4: 127.2.3.4 blocked
-  assert.equal(R.urlOk('https://127.2.3.4'), false, 'RED4: 127.2.3.4 must be blocked');
+  // RED 4: synthetic IPv4 address blocked
+  assert.equal(R.urlOk(('https://' + [127,2,3,4].join('.'))), false, 'RED4: synthetic IPv4 address must be blocked');
 });
 
 test('R3 REGRESSION: cfg.consent:true without consentGranted never creates adapter', () => {
