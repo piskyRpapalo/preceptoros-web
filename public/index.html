@@ -50,9 +50,6 @@
 @media (prefers-reduced-motion:no-preference){.welcome-card svg{animation:creature 24s linear infinite}.welcome-card svg.r{animation-direction:reverse}
 .welcome-card .start{transition:transform .15s,box-shadow .15s}.welcome-card .start:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--wc-ink)}.welcome-card .start:active{transform:translateY(3px);box-shadow:0 2px 0 var(--wc-ink)}}
 @keyframes creature{to{transform:rotate(360deg)}}
-/* Beauty B1 (2026-11-14): the live map is the hero. On a phone the card is a sheet on the bottom edge and the
-   one map instance is lifted so the crab stands in the open sky above it; on a wide screen the card is a left
-   column and the map stays whole beside it. Pressing Play lets the map settle back while the sheet leaves. */
 body.landing-world{place-items:end center}
 body.landing-world>main{width:min(100%,40rem);max-height:min(64dvh,calc(100dvh - 24px));padding:14px 16px 18px;border-radius:24px 24px 0 0;border-bottom:0}
 #landing-world{transform:translateY(-20dvh)}
@@ -89,7 +86,7 @@ body.landing-world>main{width:28rem;margin:0;max-height:calc(100dvh - 48px);bord
 <svg class="r" viewBox="0 0 100 100" aria-hidden="true"><path d="M83 68L84 72L84 75L84 77L83 77L83 76L83 74L84 72L85 69L87 68L89 66L91 66L91 67L91 68L89 69L85 70L81 70L76 69L70 67L65 65L61 62L57 59L55 57L53 55L51 55L49 56L46 58L43 61L39 64L34 66L28 68L23 69L18 69L14 68L11 67L10 66L10 65L11 66L13 67L14 68L16 71L16 74L16 76L16 77L15 77L14 76L14 74L15 71L18 67L21 63L25 59L30 56L34 54L39 52L42 51L44 50L45 48L45 46L45 43L44 39L44 33L44 28L45 22L47 17L50 13L52 10L55 8L56 7L57 8L56 9L54 9L52 10L49 10L47 9L45 8L44 7L44 6L45 6L47 7L50 10L52 14L54 18L55 24L55 29L55 35L54 39L53 43L53 45L54 47L56 48L59 49L63 51L67 53L72 56L77 60L80 64L83 68Z"/></svg>
 <div>
 <p class="go"><button type="button" id="sound-first" class="sound-first" aria-pressed="false">Sound off · press to hear the world</button></p>
-<p class="go"><a class="start" id="start" href="/openworld/">Play OpenWorld</a></p>
+<p class="go"><a class="start" id="start" href="/openworld/">Sign HITL, and take a piece</a></p>
 <nav class="dayd-doors" aria-label="Day D · one clear path">
 <a class="ta-btn" id="dayd-building" href="/get-the-app/#building-draft">Propose building</a>
 <a class="ta-btn" id="dayd-download" href="/get-the-app/#doors">Get the APP · ship access</a>
@@ -102,48 +99,6 @@ body.landing-world>main{width:28rem;margin:0;max-height:calc(100dvh - 48px);bord
 <li>Walk the map with your crab and enter the buildings.</li>
 <li>Talk to the guides and summon your first wave.</li>
 </ol>
-<section id="four-actions" class="three-actions four-actions" aria-labelledby="fa-title" hidden>
-<h3 id="fa-title">More options · install and Companion later at home</h3>
-<div class="ta-row" role="group" aria-label="Four actions">
-<button type="button" id="ta-pwa" class="ta-btn" aria-describedby="ta-pwa-say">PWA</button>
-<button type="button" id="ta-app" class="ta-btn" aria-expanded="false" aria-controls="ta-panel">Download App</button>
-<button type="button" id="ta-update" class="ta-btn" aria-expanded="false" aria-controls="ta-panel">Update App</button>
-<button type="button" id="fa-companion" class="ta-btn" aria-expanded="false" aria-controls="fa-panel">Create Companion</button>
-</div>
-<p id="ta-pwa-say" class="ta-say" role="status"></p>
-<div id="ta-panel" hidden><fieldset><legend id="ta-legend">App for which system?</legend>
-<label><input type="radio" name="ta-os" value="android"> Android</label>
-<label><input type="radio" name="ta-os" value="ubuntu"> Ubuntu</label>
-<label><input type="radio" name="ta-os" value="windows"> Windows</label>
-</fieldset><div id="ta-out" aria-live="polite"></div></div>
-<div id="fa-panel" hidden>
-<h4 id="fa-h">At home later · create your Companion on this device</h4>
-<p class="ta-say">We prepare two drafts from your answers. Nothing is sent anywhere, and nothing is registered until a pull request is accepted in the companion repository. Blank measurements stay NO_DATA.</p>
-<label for="fa-name">Companion name (lowercase letters, digits, hyphens)</label>
-<input id="fa-name" autocomplete="off" spellcheck="false" maxlength="40">
-<label for="fa-project">Project name</label>
-<input id="fa-project" autocomplete="off" maxlength="120">
-<label for="fa-what">What your project is</label>
-<textarea id="fa-what" rows="3" maxlength="2000"></textarea>
-<label for="fa-solves">What it solves, and for whom</label>
-<textarea id="fa-solves" rows="3" maxlength="2000"></textarea>
-<label for="fa-stack">Stack</label>
-<input id="fa-stack" maxlength="300">
-<label for="fa-state">Current state</label>
-<input id="fa-state" maxlength="300">
-<fieldset><legend>Measurements (blank = NO_DATA)</legend>
-<label for="fa-acc">Accuracy</label><input id="fa-acc" maxlength="200">
-<label for="fa-tests">Tests</label><input id="fa-tests" maxlength="200">
-<label for="fa-cost">Cost</label><input id="fa-cost" maxlength="200">
-<label for="fa-date">Run date</label><input id="fa-date" type="date">
-<label for="fa-machine">Machine</label><input id="fa-machine" maxlength="200">
-</fieldset>
-<button type="button" id="fa-make" class="ta-btn">Prepare my two drafts</button>
-<p id="fa-say" role="status" aria-live="polite">NO_DATA: nothing prepared yet.</p>
-<div id="fa-out"></div>
-<p>Then <a href="https://github.com/piskyRpapalo/preceptoros-companion/blob/main/CONTRIBUTING.md">read CONTRIBUTING</a>, put both files in <code>companions/&lt;your-name&gt;/</code>, and open a docs-only pull request titled HITL.</p>
-</div>
-</section>
 <p class="go"><a href="/get-the-app/">Release details, every file and its SHA-256</a></p>
 </div>
 </section>
