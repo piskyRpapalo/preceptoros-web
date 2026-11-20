@@ -59,17 +59,26 @@ async function main() {
     tras: (() => { const c = document.querySelector('.welcome-card'); let n = 0; for (let e = c && c.nextElementSibling; e; e = e.nextElementSibling) { n++; } return n; })(),
     texto: document.body.innerText })`));
   ok(medida.h1 === 'PreceptorOS' && medida.welcome === 'Welcome to OpenWorld' && medida.start === '/openworld/', 'the landing top changed: ' + JSON.stringify([medida.h1, medida.welcome, medida.start]));
-  // Day D: same public URL offers play, one building draft, and honest APP download; Companion is a later step.
+  // Day D (V5.1): landing keeps only three guide links under "OpenWorld Today" details;
+  // building proposal moved inside /get-the-app/ visitor flow. Feedback is owner-local.
   medida.daydHome = JSON.parse(await ev(`JSON.stringify({
-    building: document.getElementById('dayd-building')?.getAttribute('href'),
     download: document.getElementById('dayd-download')?.getAttribute('href'),
     update: document.getElementById('ta-update')?.getAttribute('href'),
-    paths: [...document.querySelectorAll('.dayd-doors a')].map(x=>x.getAttribute('href')),
-    feedback: [...document.querySelectorAll('.welcome-card p')].some(x=>/Feedback stays only on the node owner's device/.test(x.textContent))
+    companion: document.getElementById('dayd-companion')?.getAttribute('href'),
+    nav: !!document.querySelector('nav[aria-label="Installation and guides"]'),
+    details: !!document.querySelector('details.honest summary'),
+    summary: (document.querySelector('details.honest summary') || {}).textContent,
+    paths: [...document.querySelectorAll('nav[aria-label="Installation and guides"] a')].map(x=>x.getAttribute('href')),
+    feedback: [...document.querySelectorAll('.welcome-card p')].some(x=>/Feedback stays on the owner/.test(x.textContent)),
+    noBuilding: !document.getElementById('dayd-building')
   })`));
-  ok(medida.daydHome.building==='/get-the-app/#building-draft' && medida.daydHome.download==='/get-the-app/#doors' &&
+  ok(medida.daydHome.download==='/get-the-app/#doors' &&
     medida.daydHome.update==='/get-the-app/#update-existing-app' &&
-    medida.daydHome.paths.join()==='/get-the-app/#building-draft,/get-the-app/#doors,/get-the-app/#companion-path,/get-the-app/#update-existing-app' && medida.daydHome.feedback,
+    medida.daydHome.companion==='/get-the-app/#companion-path' &&
+    medida.daydHome.nav && medida.daydHome.details &&
+    medida.daydHome.summary==='OpenWorld Today' &&
+    medida.daydHome.paths.join()==='/get-the-app/#doors,/get-the-app/#update-existing-app,/get-the-app/#companion-path' &&
+    medida.daydHome.feedback && medida.daydHome.noBuilding,
     'Day D home path or feedback copy missing: '+JSON.stringify(medida.daydHome));
   ok(medida.restos.length === 0 && medida.tras === 0, 'old landing text is back under the welcome card: ' + JSON.stringify(medida.restos) + ' · after the card: ' + medida.tras);
   ok(!/\bundefined\b|\bNaN\b/.test(medida.texto), 'missing value shown on the landing');
