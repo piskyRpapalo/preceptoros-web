@@ -75,7 +75,7 @@ test('WEB public door prioritizes real Android v7, distinguishes static MINI and
   assert.doesNotMatch(door, /href="\/get-the-app\/PreceptorOS-android-0\.3\.0-v7\.apk"/, 'no dead local native APK download');
   assert.match(door,/id="native-android-download"/);
   assert.match(door,/Legacy OpenWorld 1\.0\.1/);
-  assert.match(door,/NO_DATA\(app_route_http_404\)/);
+  assert.match(door,/href="\/app\/">Open the browser MINI/);
   assert.match(door,/without uninstalling/);
   assert.match(door,/Node identity/);
   assert.doesNotMatch(door,/href="\/app\/" id="mini-app-primary"/);
