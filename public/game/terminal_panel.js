@@ -83,7 +83,7 @@
     stage.appendChild(voices);
     var top = doc.createElement('div'), channel = doc.createElement('select');
     top.id = 'map-communication'; top.className = 'cats';
-    channel.setAttribute('aria-label', 'Communication destination');
+    channel.setAttribute('aria-label', 'Choose Chat Live, Radio, Echoes or Guide');
     [['public', 'Chat Live · public 24 h'], ['radio', 'Radio'], ['echoes', 'Echoes'], ['chat', 'Guide']].forEach(function (choice) {
       var option = doc.createElement('option'); option.value = choice[0]; option.textContent = choice[1]; channel.append(option);
     });
@@ -91,6 +91,10 @@
       channel.value = value; voices.dataset.channel = value; voices.scrollTop = 0;
       var player = root.AtlasRadioChat;
       if (value !== 'public' && player && doc.getElementById('radio-chat')) { player.alterna(true); player.canal(value); }
+      // Reading public history starts only after a visitor explicitly opens Chat Live.
+      if (value === 'public' && current === 'Communication' && typeof root.CustomEvent === 'function') {
+        doc.dispatchEvent(new root.CustomEvent('openworld:chatlive-open'));
+      }
     }
     channel.addEventListener('change', function () { selectChannel(channel.value); });
     function show(cat, destination) {
@@ -99,10 +103,16 @@
       voices.dataset.activeCategory = cat || '';
       if (tools) { tools.setAttribute('aria-expanded', String(cat === 'Tools')); }
       Array.prototype.forEach.call(voices.querySelectorAll('[data-speaker]'), function (li) { li.style.display = li.dataset.cat === cat ? '' : 'none'; });
-      Object.keys(buttons).forEach(function (name) { buttons[name].setAttribute('aria-pressed', String(name === cat)); });
+      Object.keys(buttons).forEach(function (name) {
+        buttons[name].setAttribute('aria-pressed', String(name === cat));
+        if (name === 'Communication') { buttons[name].setAttribute('aria-expanded', String(name === cat)); }
+      });
       top.dataset.open = String(cat === 'Communication');
       channel.hidden = cat !== 'Communication';
-      if (cat === 'Communication') { selectChannel(destination || 'chat'); }
+      if (cat === 'Communication') {
+        if (buttons.Communication) { buttons.Communication.textContent = 'Chat Live'; buttons.Communication.setAttribute('aria-label', 'Chat Live'); }
+        selectChannel(destination || 'public');
+      }
 
     }
     CATS.forEach(function (c) {
@@ -121,12 +131,18 @@
         top.append(b, channel); stage.appendChild(top);
       } else { bar.appendChild(b); }
     });
+    // New public messages mark the existing Chat Live control; tutorial instructions are never displaced.
+    doc.addEventListener('openworld:chatlive-unread', function (event) {
+      var b = buttons.Communication, n = event.detail && Number(event.detail.count) || 0;
+      if (!b || current === 'Communication' || n < 1) { return; }
+      b.textContent = 'Chat Live •'; b.setAttribute('aria-label', 'Chat Live, new public messages');
+    });
     var tools = doc.getElementById('entry-tools');
     if (tools) { tools.setAttribute('aria-controls', 'voices'); tools.setAttribute('aria-expanded', 'false'); tools.addEventListener('click', function () { show(current === 'Tools' ? null : 'Tools'); }); }
     var skip = doc.querySelector('a.skip[href="#chat"]');
     if (skip) { skip.addEventListener('click', function (event) {
       event.preventDefault(); show('Communication');
-      var input = doc.getElementById('question'); if (input) { input.focus(); }
+      var input = doc.getElementById('open-chat-text'); if (input) { input.focus(); }
     }); }
     function visit(on) {
       hasVisit = !!on; if (buttons.Profile) { buttons.Profile.hidden = !hasVisit; }

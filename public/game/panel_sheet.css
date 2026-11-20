@@ -161,17 +161,34 @@
 .worm-burst{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:40}
 @media (prefers-reduced-motion:reduce){.worm-burst{display:none}}
 
-#stage > #map-communication{position:absolute;inset:6px auto auto 6px;display:flex;align-items:center;gap:4px;z-index:6;width:auto;max-width:calc(100% - 12px);padding:0;background:none;border:0;transform:none}
-#map-communication :is(button,select){min-width:44px;min-height:44px;padding:4px 10px;background:Canvas;color:CanvasText;border:2px solid currentColor;border-radius:var(--radius);font:inherit}
+/* Chat Live is a transparent top HUD, not a second Communication window.
+   The same Acho, Listen button and existing voice / radio elements remain intact. */
+#stage > #map-communication{position:absolute;inset:6px auto auto 6px;display:flex;align-items:center;gap:6px;z-index:9;width:auto;max-width:calc(100% - 12px);padding:0;background:none;border:0;transform:none}
+#map-communication :is(button,select){min-width:44px;min-height:44px;padding:4px 10px;background:color-mix(in srgb,var(--afffdf6) 88%,transparent);color:var(--a1d1b26);border:1px solid var(--a1d1b26);border-radius:12px;font:inherit;box-shadow:none}
 #stage #map-communication button{flex:0 0 auto;white-space:nowrap;width:auto;height:auto;aspect-ratio:auto}
+#stage #map-communication button[aria-expanded=true]{outline:2px solid var(--a0b6e8f);outline-offset:1px}
+#stage #map-communication select{max-width:min(13rem,45vw)}
 #stage #map-communication select[hidden]{display:none}
-#stage #voices.map-voices[data-active-category=Communication]{animation:none;inset:54px auto auto 6px;width:min(26rem,calc(100% - 12px));height:auto;max-height:calc(68% - 50px);overflow:auto;overscroll-behavior:contain;background:color-mix(in srgb,Canvas 92%,transparent);color:CanvasText;align-content:start}
-#voices[data-active-category=Communication] .sheet-head{position:static}
+#stage #voices.map-voices[data-active-category=Communication]{animation:none;inset:54px auto auto 6px;width:min(30rem,calc(100% - 12px));height:auto;max-height:min(62dvh,34rem);overflow-y:auto;overscroll-behavior:contain;align-content:start;gap:6px;padding:0 2px 4px;border:0;border-radius:0;box-shadow:none;background:transparent;color:var(--a1d1b26)}
+#voices[data-active-category=Communication] .sheet-head{position:static;display:flex;align-items:center;gap:6px;margin:0;padding:5px 8px;border:1px solid color-mix(in srgb,var(--a1d1b26) 45%,transparent);border-radius:14px;background:color-mix(in srgb,var(--afffdf6) 85%,transparent);box-shadow:none}
+#voices[data-active-category=Communication] .sheet-head::before{display:none}
+#voices[data-active-category=Communication] .sheet-head h2{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+#voices[data-active-category=Communication] .sheet-head .acho{flex:0 0 36px;width:36px;height:36px;margin:0}
+#voices[data-active-category=Communication] .sheet-head button{min-height:44px;border-width:1px;box-shadow:none}
+#voices[data-active-category=Communication] .voice{padding:8px 10px 10px;gap:6px;border:1px solid color-mix(in srgb,var(--a1d1b26) 40%,transparent);border-radius:16px;box-shadow:none;background:color-mix(in srgb,var(--afffdf6) 86%,transparent);backdrop-filter:blur(5px)}
+#voices[data-active-category=Communication] #open-chat > :is(.who,h3){position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+#voices[data-active-category=Communication] #open-chat .ot-pin{padding:3px 0;margin:0;background:none;border:0;box-shadow:none;font-size:.81rem}
+#voices[data-active-category=Communication] #open-chat .ot-day{max-height:min(29dvh,230px)}
+#voices[data-active-category=Communication] #open-chat .ot-day li{border:1px solid color-mix(in srgb,var(--a1d1b26) 27%,transparent);box-shadow:none}
+#voices[data-active-category=Communication] .radio-chat{margin:0;border:0;box-shadow:none;background:none}
+#voices[data-active-category=Communication] .radio-chat :is(.radio-chat-tabs,.radio-chat-alterna){display:none}
 #voices[data-active-category=Communication][data-channel=public] > [data-speaker=Radio]:not(#open-chat),
-#voices[data-active-category=Communication]:not([data-channel=public]) > #open-chat,
-#voices[data-active-category=Communication] #radio-chat :is(.radio-chat-tabs,.radio-chat-alterna){display:none}
+#voices[data-active-category=Communication]:not([data-channel=public]) > #open-chat{display:none}
 #voices[data-active-category=Communication] #entry{display:flex;flex-wrap:wrap}
 #voices[data-active-category=Communication] #entry p{flex-basis:100%}
 #voices[data-active-category=Communication] #entry #question{flex:1 1 55%}
 #voices[data-active-category=Communication] #entry[hidden]{display:none}
-@media (forced-colors:active),(prefers-reduced-transparency:reduce){#stage #voices.map-voices[data-active-category=Communication]{background:Canvas}}
+@media (max-width:600px){#stage #voices.map-voices[data-active-category=Communication]{inset:54px 6px auto;width:auto;max-height:min(60dvh,32rem)}}
+@media (prefers-reduced-transparency:reduce){#voices[data-active-category=Communication] :is(.sheet-head,.voice){background:var(--afffdf6);backdrop-filter:none}}
+@media (forced-colors:active){#stage #map-communication :is(button,select),#voices[data-active-category=Communication] :is(.sheet-head,.voice){background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none;backdrop-filter:none}}
+
