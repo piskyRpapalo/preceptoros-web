@@ -1,43 +1,58 @@
-// The first-run welcome card of /openworld/ (two clicks from the landing to play): the Welcome voice at the top of the
-// panel while no visit is active (compact terminal, 2026-11-02: it no longer covers the map; the Summons tab is retired). «Play now» runs the existing visit flow in one click: start (consent + Ed25519 keys signed on this device),
-// claim the beacon (+100 copper, two reef summons), open the Summons tab, say it in #state. Any visit start closes it.
+// OpenWorld welcome · SQUEEZE · one panel (HITL 2026-11-20 Grok)
+// Single CTA: Sign HITL, and take a piece. One Skip tutorial checkbox. No stacked sheets.
 (function (root) {
   'use strict';
   var doc = root.document, card = doc.getElementById('sheet-welcome'), play = doc.getElementById('visitor-play');
   if (!card || !play) { return; }
   var go = doc.getElementById('welcome-play'), look = doc.getElementById('welcome-look'), said = doc.getElementById('welcome-result');
   var lore = doc.getElementById('welcome-lore');
-  lore.textContent = 'Welcome to a world of waves: AI models live on equipment their owners control, under a human protocol. Owners can create buildings; you can explore and interact during your visit.';
-  var liveStatus = doc.createElement('p'); liveStatus.id = 'welcome-live'; liveStatus.setAttribute('role', 'status');
-  liveStatus.textContent = 'Live nodes: NO_DATA · waiting for the map. Live visitors: NO_DATA · no shared count is available.';
-  lore.after(liveStatus);
+  var skip = doc.getElementById('welcome-skip-tutorial');
+  if (lore) {
+    lore.textContent = 'You are an ephemeral crab: sign on this device, walk the map, conquer and talk. Crabs do not host services; nodes do (after the Sovereign activates them).';
+  }
+  if (go) { go.textContent = 'Sign HITL, and take a piece'; }
+  if (look) { look.textContent = 'Look around'; }
+  var liveStatus = doc.getElementById('welcome-live');
+  if (!liveStatus) {
+    liveStatus = doc.createElement('p'); liveStatus.id = 'welcome-live'; liveStatus.setAttribute('role', 'status');
+    if (lore) { lore.after(liveStatus); }
+  }
+  liveStatus.textContent = 'Live nodes: NO_DATA · waiting. Visitors share presence only when an open authority is on.';
   doc.addEventListener('world:summary', function (event) {
     var data = event.detail || {};
     liveStatus.textContent = (data.ok ? 'Live nodes: ' + data.live + '.' : 'Live nodes: NO_DATA · ' + (data.cause || 'publisher unavailable') + '.') +
-      ' Live visitors: NO_DATA · no shared count is available.';
+      ' Shared visitors: NO_DATA unless open authority is measured.';
   });
-  var TUTORIAL = 'Your visit is active. Walk with the crab stick to explore.';
+  var TUTORIAL = 'Visit active. Walk the map with your crab.';
   function close() { card.hidden = true; }
   function next(test) { return new Promise(function (ok) { function on(e) { if (test(e.detail || {})) { play.removeEventListener('visitor:render', on); ok(e.detail); } } play.addEventListener('visitor:render', on); }); }
   function press(id) { var b = doc.getElementById(id); if (!b || b.disabled) { throw new Error(id + ' is not available'); } b.click(); }
-  function ready(d) { return !!(d.state && d.controls && d.controls.querySelector('#visitor-step')); } // the walk hint: the visit is on
-  play.addEventListener('visitor:render', function () { if (!go.disabled) { close(); } });
-  look.addEventListener('click', function () { close(); var t = doc.getElementById('play-now'); if (t && !t.hidden) { t.focus({ preventScroll: true }); } });
-  card.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.preventDefault(); look.click(); } });
-  go.addEventListener('click', async function () {
-    go.disabled = true; said.textContent = 'Signing on this device…';
-    try {
-      var started = next(function (d) { return ready(d) && !d.state.claimed; });
-      press('visitor-start'); await started;
-      var claimed = next(function (d) { return ready(d) && d.state.claimed; });
-      press('visitor-beacon'); var d = await claimed;
-      if (root.AtlasTerminalTabs) { root.AtlasTerminalTabs.select('tab-summons'); }
-      var n = Math.floor(d.state.copper / root.AtlasGacha.TCS.tc1.coste.cobre);
-      doc.getElementById('state').textContent = 'Visit started · signed on this device · ' + d.state.copper + ' copper from the beacon · you can summon ' + (n === 2 ? 'twice' : n + ' times') + '. ' + TUTORIAL;
-      said.textContent = TUTORIAL; close();
-      // The map stays in view on a phone: focus moves without scrolling; the Guide voice says the next step (aria-live).
-      var reef = doc.getElementById('visitor-summon-tc1'); if (reef) { reef.focus({ preventScroll: true }); }
-    } catch (error) { said.textContent = 'NO_DATA: ' + error.message; go.disabled = false; }
-  });
-  if (doc.getElementById('visitor-beacon')) { close(); } else { card.hidden = false; go.focus({ preventScroll: true }); }
+  function ready(d) { return !!(d.state && d.controls && d.controls.querySelector('#visitor-step')); }
+  play.addEventListener('visitor:render', function () { if (go && !go.disabled) { close(); } });
+  if (look) {
+    look.addEventListener('click', function () { close(); var t = doc.getElementById('play-now'); if (t && !t.hidden) { t.focus({ preventScroll: true }); } });
+  }
+  card.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.preventDefault(); if (look) { look.click(); } } });
+  if (go) {
+    go.addEventListener('click', async function () {
+      go.disabled = true; if (said) { said.textContent = 'Signing on this device…'; }
+      try {
+        var started = next(function (d) { return ready(d) && !d.state.claimed; });
+        press('visitor-start'); await started;
+        var claimed = next(function (d) { return ready(d) && d.state.claimed; });
+        press('visitor-beacon'); var d = await claimed;
+        if (root.AtlasTerminalTabs) { root.AtlasTerminalTabs.select('tab-summons'); }
+        var n = Math.floor(d.state.copper / root.AtlasGacha.TCS.tc1.coste.cobre);
+        var stateEl = doc.getElementById('state');
+        if (stateEl) {
+          stateEl.textContent = 'Visit started · signed on this device · ' + d.state.copper + ' copper · summon ' + (n === 2 ? 'twice' : n + ' times') + '. ' +
+            ((skip && skip.checked) ? 'Tutorial skipped.' : TUTORIAL);
+        }
+        if (said) { said.textContent = (skip && skip.checked) ? 'Tutorial skipped. Explore the map.' : TUTORIAL; }
+        close();
+        var reef = doc.getElementById('visitor-summon-tc1'); if (reef) { reef.focus({ preventScroll: true }); }
+      } catch (error) { if (said) { said.textContent = 'NO_DATA: ' + error.message; } go.disabled = false; }
+    });
+  }
+  if (doc.getElementById('visitor-beacon')) { close(); } else { card.hidden = false; if (go) { go.focus({ preventScroll: true }); } }
 })(globalThis);
