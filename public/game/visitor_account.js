@@ -14,6 +14,16 @@
     if (root.addEventListener) { root.addEventListener('pagehide', end, { once: true }); }
     return Object.freeze({
       info: function () { alive(); return Object.freeze({ phase: 'ephemeral', publicKey: publicKey, seed: seed, name: 'Visitor-' + seed.slice(0, 8) }); },
+      proveVisit: async function (consent) {
+        alive();
+        if (consent !== true) { throw new Error('Explicit visit consent is required'); }
+        var challenge = encode.encode('preceptoros.local-visit/1|' + publicKey + '|' + hex(root.crypto.getRandomValues(new Uint8Array(16))));
+        var signature = await root.crypto.subtle.sign('Ed25519', keys.privateKey, challenge);
+        alive();
+        if (!await root.crypto.subtle.verify('Ed25519', keys.publicKey, signature, challenge)) { throw new Error('Visit proof failed'); }
+        alive();
+        return publicKey;
+      },
       sign: async function (record, consent) {
         alive();
         if (consent !== true) { throw new Error('Explicit signing consent is required'); }

@@ -83,3 +83,32 @@ body.landing-world.world-active #landing-world{pointer-events:auto}
 .model-frame h3{margin:0 0 4px;font-size:.95rem;overflow-wrap:anywhere}
 .model-frame canvas{display:block;width:100%;height:auto;aspect-ratio:320/96}
 .model-frame p{margin:4px 0 0;font-size:.85rem}
+
+#acho-reel{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#173d4a}
+body.landing-world>.skip{position:fixed}
+body.landing-world>main{width:min(25rem,calc(100% - 2rem));padding:1rem;background:var(--bg);border-radius:calc(2 * var(--radius))}
+body.landing-world .hero{display:flex;align-items:center;justify-content:center;gap:.75rem}
+.hero h1{margin:0}
+body.landing-world .welcome-card{display:block;margin:1rem 0 0;text-align:center;padding:1rem}
+.welcome-card .entry-options{display:flex;justify-content:center;align-items:center;gap:1rem;flex-wrap:wrap}
+.entry-options label,.honest summary,.honest a{display:inline-flex;align-items:center;min-height:44px;cursor:pointer}
+.preview-label{font-size:.85rem;letter-spacing:.035em}
+#landing-result:empty{display:none}
+body.landing-world:not(.world-active) #landing-world{visibility:hidden}
+.world-active #acho-reel,.world-active>.skip{display:none}
+/* Wide screens use the reel as scenery. Portrait shows the complete scene above the controls. */
+@media (min-aspect-ratio:1/1){
+  body.landing-world>main{position:relative;backdrop-filter:none}
+  body.landing-world>main>*:not(video){position:relative}
+  body.landing-world>main::before{content:"";position:absolute;inset:0;background:var(--bg);border-radius:inherit;z-index:-1}
+  #acho-reel{z-index:-2}
+}
+@media (max-aspect-ratio:1/1){
+  body.landing-world{background:#173d4a}
+  body.landing-world>main{padding:.65rem;backdrop-filter:none}
+  #acho-reel{position:static;width:100%;height:auto;aspect-ratio:16/9;display:block;border-radius:var(--radius)}
+  body.landing-world .hero{margin-top:.5rem}
+  body.landing-world .hero .mark{width:32px;height:32px}
+  body.landing-world .hero h1{font-size:1.3rem}
+  body.landing-world .welcome-card{margin-top:.5rem;padding:.7rem}
+}

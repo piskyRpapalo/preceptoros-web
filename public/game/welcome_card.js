@@ -23,36 +23,37 @@
     liveStatus.textContent = (data.ok ? 'Live nodes: ' + data.live + '.' : 'Live nodes: NO_DATA · ' + (data.cause || 'publisher unavailable') + '.') +
       ' Shared visitors: NO_DATA unless open authority is measured.';
   });
-  var TUTORIAL = 'Visit active. Walk the map with your crab.';
   function close() { card.hidden = true; }
-  function next(test) { return new Promise(function (ok) { function on(e) { if (test(e.detail || {})) { play.removeEventListener('visitor:render', on); ok(e.detail); } } play.addEventListener('visitor:render', on); }); }
-  function press(id) { var b = doc.getElementById(id); if (!b || b.disabled) { throw new Error(id + ' is not available'); } b.click(); }
-  function ready(d) { return !!(d.state && d.controls && d.controls.querySelector('#visitor-step')); }
   play.addEventListener('visitor:render', function () { if (go && !go.disabled) { close(); } });
   if (look) {
     look.addEventListener('click', function () { close(); var t = doc.getElementById('play-now'); if (t && !t.hidden) { t.focus({ preventScroll: true }); } });
   }
   card.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.preventDefault(); if (look) { look.click(); } } });
-  if (go) {
-    go.addEventListener('click', async function () {
-      go.disabled = true; if (said) { said.textContent = 'Signing on this device…'; }
-      try {
-        var started = next(function (d) { return ready(d) && !d.state.claimed; });
-        press('visitor-start'); await started;
-        var claimed = next(function (d) { return ready(d) && d.state.claimed; });
-        press('visitor-beacon'); var d = await claimed;
-        if (root.AtlasTerminalTabs) { root.AtlasTerminalTabs.select('tab-summons'); }
-        var n = Math.floor(d.state.copper / root.AtlasGacha.TCS.tc1.coste.cobre);
-        var stateEl = doc.getElementById('state');
-        if (stateEl) {
-          stateEl.textContent = 'Visit started · signed on this device · ' + d.state.copper + ' copper · summon ' + (n === 2 ? 'twice' : n + ' times') + '. ' +
-            ((skip && skip.checked) ? 'Tutorial skipped.' : TUTORIAL);
-        }
-        if (said) { said.textContent = (skip && skip.checked) ? 'Tutorial skipped. Explore the map.' : TUTORIAL; }
-        close();
-        var reef = doc.getElementById('visitor-summon-tc1'); if (reef) { reef.focus({ preventScroll: true }); }
-      } catch (error) { if (said) { said.textContent = 'NO_DATA: ' + error.message; } go.disabled = false; }
-    });
+  async function enter(consent, skipTutorial) {
+    if (consent !== true || go.disabled) { throw new Error('Visit unavailable'); }
+    go.disabled = true;
+    if (said) { said.textContent = 'Signing on this device…'; }
+    try {
+      var receipt = await root.AtlasVisitorPlay.enter(consent);
+      if (skipTutorial) {
+        var skipAction = doc.getElementById('fa-skip');
+        if (skipAction) { skipAction.click(); }
+      }
+      var message = 'Visit signed on this device · ' + receipt.state.copper + ' copper.';
+      if (said) { said.textContent = message; }
+      var stateEl = doc.getElementById('state');
+      if (stateEl) { stateEl.textContent = message; }
+      close();
+      if (root.AtlasTerminalTabs) { root.AtlasTerminalTabs.select('tab-summons'); }
+      var reef = doc.getElementById('visitor-summon-tc1');
+      if (reef) { reef.focus({ preventScroll: true }); }
+      return receipt;
+    } catch (error) {
+      if (said) { said.textContent = 'NO_DATA: ' + error.message; }
+      throw error;
+    } finally { go.disabled = false; }
   }
+  root.AtlasWelcome = { enter: enter, look: close };
+  if (go) { go.addEventListener('click', function () { enter(true, skip && skip.checked).catch(function () {}); }); }
   if (doc.getElementById('visitor-beacon')) { close(); } else { card.hidden = false; if (go) { go.focus({ preventScroll: true }); } }
 })(globalThis);

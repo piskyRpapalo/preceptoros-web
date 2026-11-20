@@ -47,6 +47,25 @@
     if (box && box.classList.contains('folded') !== fin) { box.classList.toggle('folded', fin); box.setAttribute('aria-disabled', String(fin)); }
   }
   async function start() { account = await root.AtlasVisitorAccount.create(true); game = await root.AtlasVisitorEggs.create(account); }
+  root.AtlasVisitorPlay = { enter: async function (consent) {
+    if (consent !== true || waiting) { throw new Error('Visit unavailable'); }
+    waiting = true;
+    try {
+      var key;
+      if (game) {
+        key = await account.proveVisit(consent);
+      } else {
+        var candidate = await root.AtlasVisitorAccount.create(consent);
+        try {
+          key = await candidate.proveVisit(consent);
+          game = await root.AtlasVisitorEggs.create(candidate);
+          account = candidate;
+        } catch (error) { candidate.end(); throw error; }
+      }
+      if (!game.state().claimed) { game.beacon(); }
+      return { publicKey: key, state: game.state() };
+    } finally { waiting = false; render(); }
+  } };
   if (playNow) {
     playNow.addEventListener('click', async function () {
       if (waiting || game) { return; } waiting = true; playNow.disabled = true;
