@@ -36,6 +36,7 @@ function sirve(raiz) {
       let cuerpo = ruta === '/openworld/state.json' ? ONE : readFileSync(f);
       if (ruta === '/openworld/index.html' && SAB === 'en-carga') { cuerpo = Buffer.from(String(cuerpo).replace('</body>', "<script>fetch('" + STUDY + "piskyRpapalo/study/main/ai-index.json').catch(function(){})</script></body>")); }
       if (ruta === '/game/building_chat.js' && SAB === 'sin-titulo') { cuerpo = Buffer.from(String(cuerpo).replace('h.textContent = titleOf(b);', '')); }
+      if (ruta === '/game/rack_ideas.js' && SAB === 'simultaneous') { cuerpo = Buffer.from(String(cuerpo).replace('wait(next, STEP);', 'next();')); }
       res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
   });
@@ -70,6 +71,23 @@ async function main() {
   });
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   const foto = async (n) => { if (CAPTURA) { const g = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, n), Buffer.from(g.result.data, 'base64')); } };
+  // Count the DOM deliveries in distinct mutation batches, not after a 450ms wall-clock guess.
+  const watchStream = async (key, voice, prefix) => ev(`(() => {
+    const log = document.getElementById('log'); if (!log) return false;
+    const count = () => [...log.querySelectorAll('li')].filter(li =>
+      li.dataset.voice === ${JSON.stringify(voice)} && li.textContent.startsWith(${JSON.stringify(prefix)})).length;
+    const trace = { count: count(), batches: [] };
+    new MutationObserver(() => { const n = count(); if (n > trace.count) { trace.batches.push(n - trace.count); trace.count = n; } })
+      .observe(log, { childList: true, subtree: true });
+    window[${JSON.stringify(key)}] = trace;
+    return true;
+  })()`);
+  const pollStream = async (key, total, ms) => {
+    const read = () => ev(`JSON.stringify(window[${JSON.stringify(key)}])`);
+    let state = JSON.parse(await read());
+    for (let t = 0; t < ms && state.count < total; t += 100) { await espera(100); state = JSON.parse(await read()); }
+    return state;
+  };
   await cmd('Runtime.enable'); await cmd('Page.enable'); await cmd('Network.enable');
   await cmd('Fetch.enable', { patterns: [{ urlPattern: STUDY + '*', requestStage: 'Request' }] });
   await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });
@@ -96,14 +114,14 @@ async function main() {
   ok(pedidas.length === 0, 'entering a building asked the network: ' + pedidas.slice(0, 3));
 
   // 3 · one click: one request to the study index; the ideas arrive one by one (never all at once).
-  const ideas = () => ev(`[...document.querySelectorAll('#log li')].filter((li) => li.dataset.voice === 'rack' && /^Rack · study · Idea /.test(li.textContent)).length`);
-  await ev("document.getElementById('rack-ideas').click(), true"); await espera(450);
-  const pronto = await ideas(); await espera(2000);
-  const luego = await ideas();
+  ok(await watchStream('__rackIdeasProbe', 'rack', 'Rack · study · Idea '), 'the rack stream could not be observed');
+  await ev("document.getElementById('rack-ideas').click(), true");
+  const rackTrace = await pollStream('__rackIdeasProbe', 3, 5500);
+  const pronto = rackTrace.batches[0] || 0, luego = rackTrace.count;
   const lineas = JSON.parse(await ev(`JSON.stringify([...document.querySelectorAll('#log li')].map((li) => li.textContent).filter((t) => /^Rack · study · /.test(t)))`));
-  medidas.ideas = { pronto, luego, peticiones: pedidas.length, primera: lineas[1] || null };
+  medidas.ideas = { pronto, luego, entregas: rackTrace.batches, peticiones: pedidas.length, primera: lineas[1] || null };
   ok(pedidas.length === 1 && /\/study\/main\/ai-index\.json$/.test(pedidas[0] || ''), 'one click did not make exactly one request to the study index: ' + pedidas);
-  ok(pronto >= 1 && pronto < 3 && luego === 3, 'the ideas did not arrive one by one: ' + JSON.stringify(medidas.ideas));
+  ok(luego === 3 && rackTrace.batches.length === 3 && rackTrace.batches.every(n => n === 1), 'the ideas did not arrive one by one: ' + JSON.stringify(medidas.ideas));
   ok(/^Rack · study · 3 ideas, live from study .*asked from Hexagonal building\.$/.test(lineas[0] || ''), 'no header naming the count and the building: ' + lineas[0]);
   ok(lineas.every((t) => Buffer.byteLength(t) < 1024), 'a rack line is over 1 KiB');
   await foto('rack-ideas.png');
@@ -117,13 +135,14 @@ async function main() {
 
   // 4b · the jewels: one click, one request to JOYAS.md on main, said one by one.
   modo = 200; const antes = pedidas.length;
-  const joyas = () => ev(`[...document.querySelectorAll('#log li')].filter((li) => li.dataset.voice === 'jewels' && /^Rack · jewels · Jewel /.test(li.textContent)).length`);
-  await ev("document.getElementById('rack-jewels').click(), true"); await espera(450);
-  const jPronto = await joyas(); await espera(4000);
-  const jLuego = await joyas(), total = (String(JOYAS).match(/^### J\d+ · /gm) || []).length;
-  medidas.joyas = { pronto: jPronto, luego: jLuego, total, peticion: pedidas.slice(antes) };
+  ok(await watchStream('__rackJewelsProbe', 'jewels', 'Rack · jewels · Jewel '), 'the jewels stream could not be observed');
+  await ev("document.getElementById('rack-jewels').click(), true");
+  const jewelTrace = await pollStream('__rackJewelsProbe', (String(JOYAS).match(/^### J\d+ · /gm) || []).length, 7000);
+  const jPronto = jewelTrace.batches[0] || 0;
+  const jLuego = jewelTrace.count, total = (String(JOYAS).match(/^### J\d+ · /gm) || []).length;
+  medidas.joyas = { pronto: jPronto, luego: jLuego, total, entregas: jewelTrace.batches, peticion: pedidas.slice(antes) };
   ok(pedidas.length === antes + 1 && /\/preceptoros-web\/main\/odd\/JOYAS\.md$/.test(pedidas[antes] || ''), 'the Jewels click did not make one request to JOYAS.md: ' + pedidas.slice(antes));
-  ok(jPronto >= 1 && jPronto < total && jLuego === total, 'the jewels did not arrive one by one: ' + JSON.stringify(medidas.joyas));
+  ok(jLuego === total && jewelTrace.batches.length === total && jewelTrace.batches.every(n => n === 1), 'the jewels did not arrive one by one: ' + JSON.stringify(medidas.joyas));
 
   // 4c · a question with no script goes to Hexelion with the building in its context (page-side stub of the edge).
   // The stub now carries the D7 decision receipt (PROPOSED · FIRMA:NO): the aula shows the answer AND its receipt
