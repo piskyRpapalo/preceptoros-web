@@ -8,7 +8,7 @@
   var box = document.getElementById('four-actions');
   if (!box) return;
   var REL = 'https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/';
-  var APK = '/get-the-app/PreceptorOS-android-0.3.0-v7.apk';
+  var APK = 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk';
   var P = {
     android: {
       name: 'Android',

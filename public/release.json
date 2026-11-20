@@ -132,7 +132,7 @@
   "estado": "MEDIDO",
   "causa": null,
   "remedio": "Install the signed APK; configure your identity and request owner review explicitly. Aduana approval, provisioning and a fresh heartbeat are separate gates.",
-  "url": "/get-the-app/PreceptorOS-android-0.3.0-v7.apk",
+  "url": "https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk",
   "source_url": "https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk",
   "certificate_sha256": "16761a1e61376506acf4abdadfdddeb96ff18b4cc80a3d98205c91648e4c010f"
  }

@@ -26,12 +26,15 @@
       peso: typeof pwa.peso_b === 'number' ? pwa.peso_b + ' B' : nd('size not measured')
     };
     var installer = os !== 'android' && os !== 'ios';
-    // Android can download the signed native APK through the single pinned same-origin redirect.
-    // Only offer the direct download when its same-origin URL and digest are declared in release.json.
+    // Pin all three asset facts: direct official Release, digest and bytes.
+    // This bypasses a measured 404 on the old same-origin Worker APK route.
+    // A plausible-looking third-party URL or fake 64-char digest is NOT enough.
+    var V7_URL = 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk';
+    var V7_SHA = '9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b';
     var android = d.android || {}, apk = os === 'android' &&
-      /^\/get-the-app\/[A-Za-z0-9._-]+\.apk$/.test(android.url || '') &&
-      /^[0-9a-f]{64}$/.test(android.sha256 || '') &&
-      Number.isSafeInteger(android.bytes) && android.bytes > 0;
+      android.version === 'android-mvp-v7-20261119' &&
+      android.url === V7_URL && android.sha256 === V7_SHA &&
+      android.bytes === 155998639;
     var carril2 = {
       id: 'app', preseleccionado: INSTALADOR[os], clics: apk ? 1 : 2,
       sha256: apk ? android.sha256 : undefined,

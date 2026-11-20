@@ -114,11 +114,14 @@ async function main() {
   // The v7 APK cannot be hosted as a Cloudflare asset: two native links use
   // one exact Worker redirect; GitHub links remain the other public downloads.
   // Count it only when BOTH on-page paths and its SHA match the release contract.
-  const native = '/get-the-app/PreceptorOS-android-0.3.0-v7.apk';
+  // A 156 MB APK cannot be relied on as a public static Cloudflare asset.
+  // The observed local Worker route returned 404 in production on 2026-11-20.
+  // Both visible CTAs must go directly to the official signed GitHub Release.
+  const native = 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk';
   const pinned = medida.guia.nativeRoute === native && medida.guia.nativeDoorRoute === native &&
     medida.guia.nativeSha === '9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b';
   ok(medida.guia.bajas + (pinned ? 1 : 0) >= 3 && medida.guia.huellas >= 2 && medida.guia.filas >= 4,
-    '/get-the-app/ lost native pinned redirect, GitHub downloads, fingerprints or test table');
+    '/get-the-app/ lost direct verified GitHub Release, fingerprints or test table');
   ok(!/\bundefined\b|\bNaN\b/.test(medida.guia.texto), 'missing value shown on /get-the-app/');
   if (CAPTURA) { const g = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }); writeFileSync(join(CAPTURA, 'get-the-app.png'), Buffer.from(g.result.data, 'base64')); }
   ok(externas.length === 0, 'external requests after /get-the-app/: ' + externas.slice(0, 3));

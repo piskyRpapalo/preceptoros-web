@@ -21,9 +21,9 @@ function juez(t, r) {
   const shaN = nat.sha256 ? { 'native-v7-apk': nat.sha256 } : {};
   if (r.native) {
     if (!/^[a-f0-9]{64}$/.test(nat.sha256 || '')) fallos.push('native APK hash not valid');
-    if (nat.url !== '/get-the-app/PreceptorOS-android-0.3.0-v7.apk' ||
+    if (nat.url !== nat.source_url ||
         nat.source_url !== 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk') {
-      fallos.push('native release URL differs from pinned route');
+      fallos.push('native direct GitHub Release differs from pinned source URL');
     }
     if (!t.includes('data-asset="native-v7-apk">' + nat.sha256 + '</code>')) {
       fallos.push('native APK fingerprint differs from card');
@@ -63,7 +63,11 @@ function juez(t, r) {
   if (bajas.length + nativePinnedRoute < 3) {
     fallos.push('fewer than 3 verified downloads: ' + (bajas.length + nativePinnedRoute));
   }
-  bajas.forEach((u) => { if (!(u.startsWith(base) && u.slice(base.length) in sha) && !(and.version && u.startsWith(baseA) && u.slice(baseA.length) in shaA)) { fallos.push('download not in the card: ' + u); } });
+  bajas.forEach((u) => { if (!(u.startsWith(base) && u.slice(base.length) in sha) &&
+      !(and.version && u.startsWith(baseA) && u.slice(baseA.length) in shaA) &&
+      !(nat.publicado === true && u === nat.source_url && /^[a-f0-9]{64}$/.test(nat.sha256 || '') && nat.bytes === 155998639)) {
+    fallos.push('download not in the card: ' + u);
+  } });
   const huellas = [...t.matchAll(/<code class="sha" data-asset="([^"]+)">([0-9a-f]{64})<\/code>/g)];
   if (huellas.length < 2) { fallos.push('fewer than 2 fingerprints'); }
   huellas.forEach((m) => { if ((sha[m[1]] || shaA[m[1]] || shaN[m[1]]) !== m[2]) { fallos.push('fingerprint differs from the card: ' + m[1]); } });
@@ -159,18 +163,20 @@ test('SABOTAGE Android download: absent or fabricated hash keeps APK lane closed
 });
 
 
-test('Homepage still has exactly four actions and Android now downloads the native APP (not legacy web wrapper)', () => {
+test('Homepage exposes native Android v7 as download, while web wrapper stays only in legacy door', () => {
   const native = R.native;
   const home = leer('public/index.html'), js = leer('public/assets/three_actions.js');
-  const row = (home.match(/<div class="ta-row"[\s\S]*?<\/div>/) || [''])[0];
-  const ids = [...row.matchAll(/<button type="button" id="([a-z-]+)" class="ta-btn"/g)].map((m) => m[1]);
-  if (ids.join(',') !== 'ta-pwa,ta-app,ta-update,fa-companion') throw new Error('four-actions layout changed: '+ids.join(','));
-  if (!js.includes("var APK = '" + native.url + "'")) throw new Error('homepage Android source is legacy APK');
-  if ((js.split(native.sha256).length - 1) !== 1) throw new Error('Android native SHA must appear once in homepage action');
+  const expected = 'id="native-app-cta" href="' + native.source_url + '"';
+  if (!home.includes(expected)) throw new Error('homepage does not link signed native v7 release directly');
+  if (!home.includes('id="dayd-download" href="/get-the-app/#doors"')) throw new Error('get-the-app details inaccessible');
+  if (!home.includes('id="dayd-building"') || !home.includes('id="dayd-companion"')) throw new Error('Day D doors missing');
+  if (home.includes('/get-the-app/PreceptorOS-android-1.0.1.apk')) throw new Error('homepage promotes old wrapper');
+  if (!js.includes("var APK = '" + native.source_url + "'")) throw new Error('homepage Android source is legacy APK');
+  if ((js.split(native.sha256).length - 1) !== 1) throw new Error('Android native SHA must appear once');
   if (!js.includes("'Download PreceptorOS APP (APK, 156 MB)'") ||
-      !js.includes("'Download the APP installer (install.sh)'")) throw new Error('homepage download mislabelled');
+      !js.includes("'Download the APP installer (install.sh)'")) throw new Error('download paths mislabeled');
   if (!js.includes('It is not the PreceptorOS APP and has no model inside')) throw new Error('legacy wrapper not distinguished');
-  if (!js.includes('The public website cannot inspect an APP on another origin')) throw new Error('false automatic update claim');
+  if (!js.includes('The public website cannot inspect an APP on another origin')) throw new Error('false update claim');
   if (/hexelion/i.test(js)) throw new Error('homepage must not promise Hexelion');
   if (!/\.ta-btn:focus-visible/.test(home)) throw new Error('missing visible focus');
 });
@@ -187,7 +193,7 @@ test('Native v7 · manifest and gate declare the real public native APK', () => 
       embedded.native.publicado !== true) throw new Error('native first-class Android gate missing');
 });
 
-test('Native v7 · first Android download is a real pinned redirect, not old TWA', async () => {
+test('Native v7 · direct Release is primary; optional exact Worker redirect still constrained', async () => {
   if (juez(PAGINA,R).length) throw new Error(juez(PAGINA,R).join(' | '));
   if (PAGINA.indexOf('id="door-native"') > PAGINA.indexOf('id="door-openworld"')) throw new Error('legacy wrapper precedes native APP');
   if (!PAGINA.includes('id="native-android-download"') || !PAGINA.includes('href="' + R.native.url + '"')) throw new Error('native download anchor missing');
@@ -195,7 +201,7 @@ test('Native v7 · first Android download is a real pinned redirect, not old TWA
   let assetHits=0;
   const env={ASSETS:{fetch:async()=>{assetHits++;return new Response('not an APK',{status:404});}}};
   for(const method of ['GET','HEAD']){
-    const r=await worker.fetch(new Request('https://preceptoros.org'+R.native.url,{method}),env);
+    const r=await worker.fetch(new Request('https://preceptoros.org/get-the-app/PreceptorOS-android-0.3.0-v7.apk',{method}),env);
     if (r.status !== 302 || r.headers.get('location') !== R.native.source_url || assetHits) {
       throw new Error('pinned Worker redirect did not route '+method+' to GitHub release');
     }
