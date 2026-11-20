@@ -60,6 +60,17 @@ test('garrison only from measured ledger and cannot be faked for a loss',async()
   s=await approach(s);
   assert.equal((await C.advance(s,{kind:'npc_retake',place:PLACE},gates)).ok,false);
 });
+test('a formerly protected house can fall only after the real ledger reports a broken garrison',async()=>{
+  let s=await profile(await claim(C.fresh(SEED)));
+  s=(await C.advance(s,{kind:'garrison',place:PLACE,count:5},gates)).state;
+  s=await approach(s);
+  assert.equal((await C.advance(s,{kind:'garrison_broken',place:PLACE},{})).ok,false);
+  assert.equal((await C.advance(s,{kind:'garrison_broken',place:PLACE},gates)).cause,'garrison_still_alive');
+  s=(await C.advance(s,{kind:'garrison_broken',place:PLACE},{readGarrison:async()=>({count:0,life:0})})).state;
+  assert.equal(s.garrison,0);
+  s=(await C.advance(s,{kind:'npc_retake',place:PLACE},gates)).state;
+  assert.equal(s.held,false); assert.equal(C.phase(s),'recapture');
+});
 test('hospital and healing fail closed until verified real operators exist',async()=>{
   let s=await profile(await claim(C.fresh(SEED)));
   s=(await C.advance(s,{kind:'garrison',place:PLACE,count:5},gates)).state;
