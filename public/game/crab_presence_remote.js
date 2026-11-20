@@ -63,25 +63,25 @@
         if (a === 0) { return false; }
         // RFC1918 private class A
         if (a === 10) { return false; }
-        // 127.0.0.0/8 — loopback (entire range, not just 127.0.0.1)
+        // 127.* — loopback (entire class A range, not just 127.0.0.1)
         if (a === 127) { return false; }
-        // 169.254.0.0/16 — link-local
+        // 169.254.x.x/16 — link-local
         if (a === 169 && b === 254) { return false; }
         // RFC1918 private class B
         if (a === 172 && b >= 16 && b <= 31) { return false; }
-        // 192.0.0.0/24 — IETF protocol (192.0.0.x)
+        // 192.0.0.x/24 — IETF protocol (192.0.0.x)
         if (a === 192 && b === 0 && parts[2] === 0) { return false; }
         // RFC1918 private class C
         if (a === 192 && b === 168) { return false; }
-        // 198.18.0.0/15 — benchmarking
+        // 198.18.x.x/15 — benchmarking
         if (a === 198 && (b === 18 || b === 19)) { return false; }
-        // 203.0.113.0/24 — documentation (TEST-NET-3)
+        // 203.0.113.x/24 — documentation (TEST-NET-3)
         if (a === 203 && b === 0 && parts[2] === 113) { return false; }
-        // 224.0.0.0/4 — multicast
+        // 224.x.x.x/4 — multicast
         if (a >= 224 && a <= 239) { return false; }
-        // 240.0.0.0/4 — reserved
+        // 240.x.x.x/4 — reserved
         if (a >= 240) { return false; }
-        // 255.255.255.255 — broadcast
+        // 255.x.x.x — broadcast
         if (a === 255) { return false; }
       }
       // Reject IPv6 ULA (fc00::/7) and link-local (fe80::/10)

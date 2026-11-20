@@ -50,6 +50,26 @@
         .join('\n');
     }
 
+    // The chat transport accepts at most 600 UTF-8 bytes in contexto.texto.
+    // Preserve the visitor's new message intact. History is opportunistic:
+    // include newest complete turns only when the full text fits the transport.
+    function outbound(message, requestedLimit) {
+      var max = Math.min(600, Number(requestedLimit) || 600);
+      var current = String(message == null ? '' : message);
+      var bytes = function (value) { return new TextEncoder().encode(value).length; };
+      if (bytes(current) > max) { throw new RangeError('message_exceeds_chat_transport'); }
+      if (!turns.length) { return current; }
+      var prefix = 'Continue this visit, use prior facts:\n', suffix = '\nVisitor: ' + current, selected = [];
+      for (var i = turns.length - 1; i >= 0; i--) {
+        var label = turns[i].role === 'you' ? 'Visitor: ' : 'Node0: ';
+        var candidate = label + turns[i].text;
+        var proposed = [candidate].concat(selected);
+        if (bytes(prefix + proposed.join('\n') + suffix) > max) { break; }
+        selected = proposed;
+      }
+      return selected.length ? prefix + selected.join('\n') + suffix : current;
+    }
+
     function clear() {
       turns = [];
     }
@@ -58,7 +78,7 @@
       return turns.length;
     }
 
-    return { append: append, snapshot: snapshot, asPromptBlock: asPromptBlock, clear: clear, size: size };
+    return { append: append, snapshot: snapshot, asPromptBlock: asPromptBlock, outbound: outbound, clear: clear, size: size };
   }
 
   var api = { create: create, MAX_TURNS: MAX_TURNS, MAX_CHARS_PER: MAX_CHARS_PER, MAX_TOTAL: MAX_TOTAL };

@@ -19,7 +19,7 @@
     var option = doc.createElement('option'); option.value = item[0]; option.textContent = item[1]; mode.append(option);
   });
   zone.prepend(modeLabel, mode);
-  var remoteNotice = doc.createElement('p'); remoteNotice.textContent = NAME + ' is the rack AI (Hexelion). Session thread is kept only for this visit so answers follow the conversation. It advises; it never signs.'; remoteNotice.hidden = true; zone.append(remoteNotice);
+  var remoteNotice = doc.createElement('p'); remoteNotice.textContent = NAME + ' is the rack AI (Hexelion). On Send, your message, the session thread (when it fits) and an ephemeral visit hash go to the chat gateway. The thread clears at visit end; the AI advises and never signs.'; remoteNotice.hidden = true; zone.append(remoteNotice);
   var aulaLoad = null;
   function loadAula() {
     if (root.AtlasAulaChat) return Promise.resolve(root.AtlasAulaChat);
@@ -33,7 +33,14 @@
   var visitAccount = null, chain = { tic: 0, hash: null, sello: null }, visitGeneration = 0;
   var thread = (root.AtlasThreadWindow && root.AtlasThreadWindow.create) ? root.AtlasThreadWindow.create() : null;
   var visitPanel = doc.getElementById('visitor-play');
-  visitPanel.addEventListener('visitor:render', function (event) { visitAccount = event.detail.account; });
+  visitPanel.addEventListener('visitor:render', function (event) {
+    if (visitAccount && event.detail.account !== visitAccount) {
+      if (thread && thread.clear) { thread.clear(); }
+      chain = { tic: 0, hash: null, sello: null };
+      visitGeneration++;
+    }
+    visitAccount = event.detail.account;
+  });
   visitPanel.addEventListener('visitor:end', function () {
     visitAccount = null; chain = { tic: 0, hash: null, sello: null }; visitGeneration++;
     if (thread && thread.clear) { thread.clear(); }
@@ -57,10 +64,7 @@
     li.append(b); log.append(li);
   }
   function withThread(text) {
-    if (!thread || !thread.asPromptBlock) { return text; }
-    var prior = thread.asPromptBlock();
-    if (!prior) { return text; }
-    return 'Continue this visit thread. Do not re-ask facts already answered.\n' + prior + '\nVisitor: ' + text;
+    return thread && thread.outbound ? thread.outbound(text, 600) : text;
   }
   function brain() {
     if (root.AtlasWebNodeBrain) { return Promise.resolve(root.AtlasWebNodeBrain); }
@@ -109,6 +113,18 @@
     var wait = accept(input, text, NAME), failed = false;
     try {
       var outbound = withThread(text);
+      function fitsPacket(value, currentChain) {
+        if (!root.AtlasAulaChat.cief) return false;
+        return new TextEncoder().encode(JSON.stringify(root.AtlasAulaChat.cief(seed, value, currentChain, '/openworld/'))).length < 1024;
+      }
+      if (!fitsPacket(outbound, chain)) {
+        outbound = text;
+        if (!fitsPacket(outbound, chain)) {
+          settle(wait); line(NAME, 'NO_DATA · Chat envelope exceeds 1023 bytes. Shorten your message.');
+          failed = true; return;
+        }
+        note.textContent = 'Earlier thread context omitted to honor transport byte limit.';
+      }
       var result = await root.AtlasAulaChat.turn(root.fetch.bind(root), seed, outbound, chain, '/openworld/');
       if (generation !== visitGeneration || account !== visitAccount) { settle(wait); return; }
       if (!result.ok && result.cause === 'stale') {

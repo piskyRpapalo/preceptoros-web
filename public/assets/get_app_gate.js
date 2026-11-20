@@ -41,7 +41,7 @@
     var a = el('a', 'gate-boton', b.etiqueta);
     var apk = c.id === 'app' && os === 'android' && datos.android && c.sha256;
     a.href = apk ? datos.android.url : c.id === 'app' ? datos.pagina : (datos.descargas[c.id] || '#steps');
-    if (apk) { a.setAttribute('download', ''); a.type = 'application/vnd.android.package-archive'; }
+    if (apk) { a.type = 'application/vnd.android.package-archive'; a.rel = 'noopener noreferrer'; }
     return a;
   }
   function pinta() {
@@ -60,7 +60,7 @@
       if (c.id === 'app' && os === 'android' && c.boton.activo && c.sha256) {
         var update = el('a', 'gate-boton', 'Update Android app · download verified APK');
         update.href = datos.android.url;
-        update.setAttribute('download', '');
+        update.rel = 'noopener noreferrer';
         update.type = 'application/vnd.android.package-archive';
         update.setAttribute('aria-label', 'Update Android app by downloading the signed APK');
         li.appendChild(update);

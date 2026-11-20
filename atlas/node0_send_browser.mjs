@@ -57,7 +57,13 @@ async function main() {
   ok(await hasta('!!document.getElementById("visitor-beacon")', 10000), 'visit started');
   const r = JSON.parse(await ev(`(async()=>{
     const w=(ms)=>new Promise(r=>setTimeout(r,ms)), q=document.getElementById('question'), f=document.getElementById('entry'), log=document.getElementById('log'), send=f.querySelector('button[type=submit]');
-    let release=null; window.AtlasAulaChat={plain:(c)=>'NO_DATA · '+c, turn:()=>new Promise(r=>{release=r;})};
+    // Load the real CIEF serializer, then stub only the gateway transport.
+    // The UI must obey the same <=1023-byte envelope contract under test.
+    if (!window.AtlasAulaChat) await new Promise((ok,fail)=>{
+      const script=document.createElement('script');
+      script.src='/game/classroom_chat.js'; script.onload=ok; script.onerror=fail; document.head.append(script);
+    });
+    let release=null; window.AtlasAulaChat.turn=()=>new Promise(r=>{release=r;});
     const m=document.getElementById('chat-destination'); m.value='hexelion'; m.dispatchEvent(new Event('change'));
     const out={};
     q.value='Where do I start?'; f.dispatchEvent(new Event('submit',{cancelable:true})); await w(50);
@@ -65,7 +71,7 @@ async function main() {
     q.value='a newer draft'; f.dispatchEvent(new Event('submit',{cancelable:true})); await w(50);
     out.youCount=[...log.children].filter(li=>/^You · /.test(li.textContent)).length; out.draftKept=q.value;
     release({ok:false,cause:'aula_rechaza',chain:{tic:0,hash:null,sello:null}}); await w(80);
-    out.pendingAfter=!!log.querySelector('[data-state=pending]'); out.fail=[...log.children].map(li=>li.textContent).filter(t=>/NO_DATA · aula_rechaza/.test(t)); out.enabled=!send.disabled;
+    out.pendingAfter=!!log.querySelector('[data-state=pending]'); out.fail=[...log.children].map(li=>li.textContent).filter(t=>/NO_DATA.*aula_rechaza/.test(t)); out.enabled=!send.disabled;
     const back=log.querySelector('li.back button'); out.back=back?back.textContent:null; if(back){back.click();} out.restored=q.value;
     q.value='Second question'; window.AtlasAulaChat.turn=()=>Promise.resolve({ok:true,text:'Walk to the first node.',chain:{tic:1,hash:null,sello:null}});
     f.dispatchEvent(new Event('submit',{cancelable:true})); await w(80);

@@ -85,9 +85,15 @@
   // One turn against the door. Returns {ok, text, cause, chain}; it never throws at the page.
   async function turn(fetcher, visita, text, chain, page) {
     if (root.navigator && root.navigator.onLine === false) return { ok: false, cause: 'offline', chain: chain };
+    // Transport is a bounded CIEF envelope, not just a bounded text field.
+    // Refuse oversized payloads before issuing any network request.
+    var payload = JSON.stringify(cief(visita, text, chain, page));
+    if (new TextEncoder().encode(payload).length >= 1024) {
+      return { ok: false, cause: 'cief_invalido', chain: chain };
+    }
     var res, body;
     try {
-      res = await fetcher(API, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(cief(visita, text, chain, page)) });
+      res = await fetcher(API, { method: 'POST', headers: { 'content-type': 'application/json' }, body: payload });
       body = await res.json();
     } catch (e) { return { ok: false, cause: 'red', chain: chain }; }
     if (res.status === 200 && body && body.estado === 'OK' && body.burbuja && typeof body.burbuja.texto === 'string' && body.sello) {
