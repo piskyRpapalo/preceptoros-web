@@ -74,7 +74,11 @@
         if (news.length) {
           var panel = doc.getElementById('voices');
           var visible = panel && !panel.hidden && panel.dataset.activeCategory === 'Communication' && panel.dataset.channel === 'public';
-          if (!visible) { toast(doc, news[0].avance); }
+          var tutorial = doc.getElementById('fa');
+          if (!visible && !(tutorial && !tutorial.hidden)) { toast(doc, news[0].avance); }
+          if (!visible && typeof win.CustomEvent === 'function') {
+            doc.dispatchEvent(new win.CustomEvent('openworld:chatlive-unread', { detail: { count: news.length } }));
+          }
           if (status) { status.textContent = news.length + ' new public message' + (news.length === 1 ? '' : 's') + ' in Chat Live.'; }
           // Radio tones and speech are independently opt-in. Do not layer a second automatic chime over a screen reader.
         }
