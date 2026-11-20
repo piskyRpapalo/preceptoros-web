@@ -40,12 +40,12 @@ export function violations(html, apkBytes) {
     out.push('false native node admission or LIVE claim');
   }
   const b = door('door-app');
-  if (!b.includes('NO_DATA(app_route_http_404)')) out.push('browser MINI falsely published');
+  if (!b.includes('href="/app/"') || b.includes('app_route_http_404')) out.push('browser MINI route is wrong');
   if (!b.includes('does not include the Android Mini Orchestrator or model')) out.push('browser MINI falsely includes model');
   if (/\b(?:a local AI is included|node is live|registered remotely)\b/i.test(b)) out.push('public MINI availability claimed');
   if (PRIVATE.test(html.replace(/<script[\s\S]*?<\/script>/g, ''))) out.push('a private address or API route is in the page');
   const a = door('door-openworld');
-  if (!a.includes('not PreceptorOS APP') || !a.includes('It contains no local model')) {
+  if (!a.includes('archived') || !a.includes('It contains no local model')) {
     out.push('legacy OpenWorld door incorrectly describes APK or local model');
   }
   const sh = html.match(/data-asset="install\.sh"[^>]*>([0-9a-f]{64})/);
@@ -84,8 +84,8 @@ test('sabotage: wrong native APK path, false LIVE claim and private link are rej
     'Node is live and approved automatically');
   const bad1 = html.replace('id="native-android-download" class="get-app" href="' + NATIVE_URL + '"',
     'id="native-android-download" class="get-app" href="/get-the-app/not-an-app.apk"');
-  const bad2 = html.replace('NO_DATA(app_route_http_404)',
-    'Available at <a href="http://127.0.0.1:8740/app">the private rack</a>. NO_DATA(app_route_http_404)');
+  const bad2 = html.replace('href="/app/"',
+    'href="http://127.0.0.1:8740/app"');
   assert.notEqual(fake, html, 'false LIVE sabotage must change the page');
   assert.ok(violations(fake, apk).includes('false native node admission or LIVE claim'), 'false LIVE not rejected');
   assert.notEqual(bad1, html, 'wrong native link sabotage must change the page');

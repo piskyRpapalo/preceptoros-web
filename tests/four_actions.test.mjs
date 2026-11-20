@@ -13,11 +13,12 @@ const APK_SHA = '9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6
 // Returns the list of breaches (empty = clean). `html` is the homepage, `js` the scripts it loads.
 export function violations(html, js) {
   const out = [];
-  const row = (html.match(/<nav class="dayd-doors"[\s\S]*?<\/nav>/) || [''])[0];
-  const actions = [...row.matchAll(/<a class="ta-btn" id="([a-z-]+)" href="([^"]+)"/g)].map((m) => [m[1], m[2]]);
-  const expected = [['dayd-building', '/get-the-app/#building-draft'], ['dayd-download', '/get-the-app/#doors'],
-    ['dayd-companion', '/get-the-app/#companion-path'], ['ta-update', '/get-the-app/#update-existing-app']];
-  if (JSON.stringify(actions) !== JSON.stringify(expected)) out.push('the Day-D paths are not exactly four truthful actions: ' + JSON.stringify(actions));
+  const row = (html.match(/<nav aria-label="Installation and guides"[\s\S]*?<\/nav>/) || [''])[0];
+  const actions = [...row.matchAll(/<a id="([a-z-]+)" href="([^"]+)"/g)].map((m) => [m[1], m[2]]);
+  const expected = [['dayd-download', '/get-the-app/#doors'], ['ta-update', '/get-the-app/#update-existing-app'], ['dayd-companion', '/get-the-app/#companion-path']];
+  if (!/<details[^>]*>\s*<summary>OpenWorld Today<\/summary>[\s\S]*?<nav aria-label="Installation and guides">[\s\S]*?<\/nav>\s*<\/details>/.test(html)) out.push('guide links must be under OpenWorld Today');
+  if (/dayd-building|#building-draft/i.test(html)) out.push('building proposal is on the landing');
+  if (JSON.stringify(actions) !== JSON.stringify(expected)) out.push('unexpected installation or guide links: ' + JSON.stringify(actions));
   if (/href="\/app(\.html)?\/?"/.test(html) || /<a [^>]*>\s*(Open the app|Open PreceptorOS app)/i.test(html)) out.push('a link to a public /app exists');
   if (/\b(fetch|XMLHttpRequest|sendBeacon|WebSocket|navigator\.sendBeacon)\b/.test(js.companion)) out.push('Create Companion makes a network request');
   // An affirmative claim only: «is registered» / «has been registered». «Not registered until…» is the honest sentence.
@@ -40,7 +41,7 @@ export function violations(html, js) {
 const html = read('public/index.html');
 const js = { three: read('public/assets/three_actions.js'), companion: read('public/assets/create_companion.js'), companion_text: read('public/assets/create_companion.js') };
 
-test('the homepage is clean: four actions, honest downloads, no network on open, no fake app link', () => {
+test('the landing groups install guides under OpenWorld Today and preserves honest downloads', () => {
   assert.deepEqual(violations(html, js), []);
 });
 
@@ -48,9 +49,9 @@ test('the script lists are cached so the offline copy has the same panel', () =>
   assert.ok(read('public/sw-listas.js').includes("'/assets/create_companion.js'"));
 });
 
-test('sabotage: a fifth main action, a public /app link, a network call and a false registration are rejected', () => {
-  const fifth = html.replace('<a class="ta-btn" id="ta-update"', '<a class="ta-btn" id="ta-extra" href="/openworld/">Extra</a>\n<a class="ta-btn" id="ta-update"');
-  assert.notEqual(fifth, html, 'fifth-action sabotage must change the real Day-D navigation');
+test('sabotage: an extra guide link, a public /app link, a network call and a false registration are rejected', () => {
+  const fifth = html.replace('<a id="ta-update"', '<a id="ta-extra" href="/openworld/">Extra</a>\n<a id="ta-update"');
+  assert.notEqual(fifth, html, 'extra-link sabotage must change the install guides');
   const link = html.replace('<p class="go">', '<p class="go"><a href="/app/">Open the app</a> ');
   const net = { ...js, companion: js.companion + '\nfetch("https://example.invalid/x");' };
   const lie = js.companion.replace('Nothing was sent.', 'Nothing was sent. Your companion is registered.');
@@ -58,7 +59,7 @@ test('sabotage: a fifth main action, a public /app link, a network call and a fa
   const wrongUpdate = { ...js, three: js.three.replace("link: ['/get-the-app/#update-existing-app', 'Open the PreceptorOS APP update instructions']", "link: [APK, 'Update OpenWorld (APK)']") };
   assert.notEqual(wrongUpdate.three, js.three, 'the update sabotage must change the route');
   assert.ok(violations(html, wrongUpdate).some((v) => /APP update lacks trusted instructions/.test(v)), 'wrong APK update route not caught');
-  assert.ok(violations(fifth, js).some((v) => /four/.test(v)), 'fifth action not caught');
+  assert.ok(violations(fifth, js).some((v) => /unexpected installation/.test(v)), 'extra link not caught');
   assert.ok(violations(link, js).some((v) => /public \/app/.test(v)), 'public /app link not caught');
   assert.ok(violations(html, net).some((v) => /network/.test(v)), 'network call not caught');
   assert.ok(violations(html, claim).some((v) => /registration/.test(v)), 'false registration not caught');

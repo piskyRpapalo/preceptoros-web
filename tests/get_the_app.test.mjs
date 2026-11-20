@@ -169,7 +169,7 @@ test('Homepage exposes native Android v7 as download, while web wrapper stays on
   const expected = 'id="native-app-cta" href="' + native.source_url + '"';
   if (!home.includes(expected)) throw new Error('homepage does not link signed native v7 release directly');
   if (!home.includes('id="dayd-download" href="/get-the-app/#doors"')) throw new Error('get-the-app details inaccessible');
-  if (!home.includes('id="dayd-building"') || !home.includes('id="dayd-companion"')) throw new Error('Day D doors missing');
+  if (home.includes('id="dayd-building"') || !home.includes('id="dayd-companion"')) throw new Error('Landing must keep the Companion guide and leave proposals inside the visitor flow');
   if (home.includes('/get-the-app/PreceptorOS-android-1.0.1.apk')) throw new Error('homepage promotes old wrapper');
   if (!js.includes("var APK = '" + native.source_url + "'")) throw new Error('homepage Android source is legacy APK');
   if ((js.split(native.sha256).length - 1) !== 1) throw new Error('Android native SHA must appear once');

@@ -33,7 +33,7 @@ main.guide code{overflow-wrap:anywhere;word-break:break-word}
 <main class="guide">
 <p><a href="/">← PreceptorOS</a></p>
 <h1>Get the app</h1>
-<p class="lead"><strong>PreceptorOS 1.0 for Android is available as a signed native APP.</strong> It includes six panels, the walking crab and a small local model. PreceptorOS 1.1 is not yet a certified release: <code>NO_DATA(app_1_1_release_unverified)</code>. Ubuntu and Windows use separate historical source installers, not Android APKs or modern .deb/.msi packages.</p>
+<p class="lead"><strong>PreceptorOS 1.0 for Android is available as a signed native APP.</strong> It includes six panels, the walking crab and a small local model. PreceptorOS 1.1 is not yet a certified release: <code>NO_DATA(app_1_1_release_unverified)</code>. Ubuntu and Windows use historical source installers.</p>
 <p class="get-app"><a href="https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk" id="native-app-primary" download type="application/vnd.android.package-archive">Download the native PreceptorOS APP · Android v7 (156 MB)</a></p>
 <p id="native-app-note" role="note">Android: open the signed APK and confirm installation. Previous versions with the same signing certificate can update without uninstalling. Save your node identity inside My node; requesting admission requires your consent and a separate Sovereign approval.</p>
 <p><a href="#update-existing-app">How to update without losing local data</a> · <a href="#doors">Choose your operating system</a></p>
@@ -74,9 +74,9 @@ main.guide code{overflow-wrap:anywhere;word-break:break-word}
 <p>SHA-256: <code class="sha" data-asset="native-v7-apk">9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b</code> · 155,998,639 bytes. Certificate SHA-256: <code>16761a1e61376506acf4abdadfdddeb96ff18b4cc80a3d98205c91648e4c010f</code>.</p>
 <p role="status">Release: published, 155,998,639 bytes, SHA-256 provided by GitHub. Download is served by the official GitHub Release, not this website; local hosting/chunk delivery is not claimed. Node registration requires explicit consent and human approval. <code>NO_DATA(node_admission_and_live_not_verified)</code>; installing alone does not register a node or send hidden requests.</p>
 </article>
-<article class="door" id="door-openworld" data-door="openworld"><h3>Historical OpenWorld TWA</h3><p>The old 1.34 MB wrapper opens only the map; its archive remains, but it is not a current APP download.</p></article>
-
-
+<article class="door" id="door-openworld" data-door="openworld"><h3>Legacy OpenWorld 1.0.1</h3><p>This archived 1.34 MB Android wrapper opens the map. It contains no local model.</p></article>
+<article class="door" id="door-app"><h3>Browser MINI</h3><p><a href="/app/">Open the browser MINI</a> to work with projects on this device. It runs locally and does not include the Android Mini Orchestrator or model.</p></article>
+<article class="door" id="door-install"><h3>Desktop source installers</h3><p><a href="#steps">Ubuntu installation steps and fingerprint</a> · <a href="#windows">Windows installation steps and fingerprint</a> · <code>NO_DATA(windows_install_E2E_unverified)</code>.</p></article>
 </section>
 <section id="update-existing-app" class="gate" aria-labelledby="update-existing-h">
 <h2 id="update-existing-h">Update your existing PreceptorOS app</h2>
@@ -97,7 +97,7 @@ main.guide code{overflow-wrap:anywhere;word-break:break-word}
 <ol class="gate-carriles" id="gate-carriles"><li>Without JavaScript, follow the steps below.</li></ol>
 <script type="application/json" id="gate-datos">{"version":"v1.3","pagina":"https://github.com/piskyRpapalo/PreceptorOS/releases/tag/v1.3","release":{"firmada":{}},"cerebros":[{"id":"mini","size_gb":1.36,"sha256":null,"maquina":"Vulkan \u00b7 Radeon 780M","fecha":"2026-09-07"}],"descargas":{},"android":{"version":"android-mvp-v7-20261119","url":"https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk","sha256":"9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b","bytes":155998639},"native":{"version":"android-mvp-v7-20261119","url":"https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk","sha256":"9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b","bytes":155998639,"package":"org.preceptoros.app","versionCode":7,"publicado":true,"estado":"MEDIDO","causa":null},"legacy_android":{"version":"android-v1.0.1","url":"/get-the-app/PreceptorOS-android-1.0.1.apk","sha256":"8db3176a20ed973dab1f28642972bb97ab1ccd70ddbc7cf95f7a44affc7c4d8b","bytes":1340742}}</script>
 </section>
-<p class="aviso"><b>Five minutes?</b> Nobody has timed a clean install yet, so that figure is NO_DATA. The steps are short; how long they take on your machine is yours to measure.</p>
+<p class="aviso"><b>Five minutes?</b> Nobody has timed a clean install yet, so that figure is NO_DATA.</p>
 <h2>Before you start</h2>
 <ul>
 <li>You need <code>python3</code> and <code>git</code>. If one is missing, the installer stops and prints the exact command for your system.</li>
@@ -115,7 +115,7 @@ main.guide code{overflow-wrap:anywhere;word-break:break-word}
 <li>Start it: <code>cd ~/preceptoros &amp;&amp; bin/preceptoros-servicio arranca</code>, then open the local address it prints in your browser.</li>
 </ol>
 <h2 id="windows">Windows · historical v1.3 source installer</h2>
-<p><strong>NO_DATA(windows_install_E2E_unverified)</strong>. This historical PowerShell script is provided for review, not as an accepted .msi or proven installation. Read the script and verify the fingerprint before deciding to run it.</p>
+<p><strong>NO_DATA(windows_install_E2E_unverified)</strong>. Review the PowerShell script and verify its fingerprint before running it.</p>
 <ol>
 <li>Download <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/install.ps1">install.ps1</a>. It has never been run: if it fails, the exact message is useful.</li>
 <li>Check its fingerprint. <code>Get-FileHash install.ps1</code> must print<br><code class="sha" data-asset="install.ps1">b10d7b8ade7ea0f301fd325336ae97dba6fd954786956703a3c1c6a80641f19b</code></li>
