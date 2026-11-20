@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
+import * as waveVm from 'node:vm';
 const F = createRequire(import.meta.url)('../../public/game/duel_face.js');
 test('the middle line: even at the start, leaning toward the side losing life, pushed into the loser\'s corner at the end', () => {
   assert.equal(F.front(1, 1, false, null), 0.5);
@@ -90,4 +91,55 @@ test('the eyes sit inside the wave\'s core, from the centre: one eye is the cent
     for (const [x, y, rr] of whites) assert.ok(Math.hypot(x - 100, y - 100) + rr <= 50 * 0.45, `n=${n} eye at ${x},${y} r ${rr} stays in the core`);
     if (n === 1 || n >= 4) assert.ok(whites.some(([x, y]) => x === 100 && y === 100), 'one eye is the centre');
   }
+});
+
+
+// L0.2 · A cached low-detail NPC sprite must identify the actual painted input,
+// not just its NPC id, rounded radius and DPR. Red/blue and harmonics may change
+// while the same NPC stays in the same place.
+function createSpriteRenderer(sourceText) {
+  const context = {
+    Math,
+    AtlasGacha: {
+      punto(arm, u) {
+        return arm.reduce(([x, y], h) => [x + h[1] * Math.cos(h[0] * u + h[3] * Math.PI / 32),
+                                          y + h[2] * Math.sin(h[0] * u + h[3] * Math.PI / 32)], [0, 0]);
+      },
+    },
+    document: {
+      createElement() {
+        const g = new Proxy({}, {
+          get(target, prop) { return prop in target ? target[prop] : () => {}; },
+          set(target, prop, value) { target[prop] = value; return true; },
+        });
+        return { width: 0, height: 0, getContext: () => g };
+      },
+    },
+  };
+  context.window = context;
+  waveVm.createContext(context);
+  waveVm.runInContext(sourceText, context);
+  return context.AtlasOnda.sprite;
+}
+test('low-quality NPC sprite cache invalidates when its colour or harmonics change', () => {
+  const src = readFileSync(new URL('../../public/game/wave_render.js', import.meta.url), 'utf8');
+  const sprite = createSpriteRenderer(src);
+  const base = [[1, 24, 24, 0], [-3, 5, 3, 9]];
+  const red = sprite(base, 18.2, '#ec2929', 'npc_7_18', 1);
+  const blue = sprite(base, 18.2, '#264be5', 'npc_7_18', 1);
+  assert.notEqual(blue, red, 'a new colour must not reuse old painted red pixels');
+  assert.equal(sprite(base.map(h => [...h]), 18.2, '#ec2929', 'npc_7_18', 1), red,
+               'equal painted content remains cacheable even when the array instance changes');
+  assert.notEqual(sprite([[1, 24, 24, 0], [-3, 5, 9, 9]], 18.2, '#ec2929', 'npc_7_18', 1), red,
+                  'changing just the wave shape invalidates the cache');
+});
+test('NPC sprite cache invalidates for fractional radius and DPR changes', () => {
+  const src = readFileSync(new URL('../../public/game/wave_render.js', import.meta.url), 'utf8');
+  const sprite = createSpriteRenderer(src);
+  const a = [[1, 24, 24, 0]];
+  const first = sprite(a, 18.1, [35, 80, 62], 'npc_7_18', 1);
+  assert.notEqual(sprite(a, 18.3, [35, 80, 62], 'npc_7_18', 1), first,
+                  'rounding both radius values to 18 must not collide');
+  assert.notEqual(sprite(a, 18.1, [35, 80, 62], 'npc_7_18', 2), first);
+  assert.equal(sprite(a, 18.1, [35, 80, 62], 'npc_7_18', 1), first);
 });

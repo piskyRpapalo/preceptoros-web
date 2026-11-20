@@ -299,7 +299,10 @@
   }
 
   function sprite(arm, r, c, clave, dpr) {
-    var key = clave + ':' + Math.round(r) + ':' + (dpr || 1);
+    // Low-detail NPC colours may change with the live reading. Cache the painted
+    // inputs, not only the NPC id: colour, wave shape and fractional radius affect pixels.
+    // The arrays here are bounded game harmonics; exact JSON avoids silent hash collisions.
+    var key = JSON.stringify([clave, r, dpr || 1, c, arm]);
     if (CACHE[key]) { return CACHE[key]; }
     if (NCACHE > 120) { CACHE = {}; NCACHE = 0; }
     var lado = Math.ceil(r * 2.6), cv = raiz.document.createElement('canvas');
