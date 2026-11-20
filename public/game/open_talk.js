@@ -58,18 +58,32 @@
     });
     if (!list.length) { var e = doc.createElement('li'); e.textContent = 'No messages in the last 24 hours.'; day.appendChild(e); }
   }
-  function watch(doc, win, day) {
-    var seen = {}, first = true, net = win.fetch && win.fetch.bind(win);
-    if (!net) { return; }
+  function watch(doc, win, day, status) {
+    var seen = {}, first = true, net = win.fetch && win.fetch.bind(win), pending = false;
+    if (!net) { if (status) { status.textContent = 'NO_DATA: public chat connection unavailable'; } return function () {}; }
     function look() {
-      if (doc.visibilityState === 'hidden') { return; }
-      net(API + '/dia', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
-        var list = (j && j.mensajes) || []; draw(doc, day, list);
+      if (doc.visibilityState === 'hidden' || pending) { return; }
+      pending = true;
+      net(API + '/dia', { cache: 'no-store' }).then(function (r) {
+        if (!r.ok) { throw new Error('public_chat_unavailable'); }
+        return r.json();
+      }).then(function (j) {
+        if (!j || !Array.isArray(j.mensajes)) { throw new Error('public_chat_invalid_list'); }
+        var list = j.mensajes; draw(doc, day, list);
         var news = fresh(seen, list, first); first = false;
-        if (news.length) { toast(doc, news[0].avance); chime(win); }
-      }).catch(function () { /* the intake may be closed: the list stays as it was */ });
+        if (news.length) {
+          var panel = doc.getElementById('voices');
+          var visible = panel && !panel.hidden && panel.dataset.activeCategory === 'Communication' && panel.dataset.channel === 'public';
+          if (!visible) { toast(doc, news[0].avance); }
+          if (status) { status.textContent = news.length + ' new public message' + (news.length === 1 ? '' : 's') + ' in Chat Live.'; }
+          // Radio tones and speech are independently opt-in. Do not layer a second automatic chime over a screen reader.
+        }
+      }).catch(function () {
+        if (status) { status.textContent = 'NO_DATA: public chat history unavailable'; }
+      }).finally(function () { pending = false; });
     }
     look(); root.setInterval(look, 30000);
+    return look;
   }
   function mount(doc, win) {
     var list = doc.getElementById('voices');
@@ -83,16 +97,22 @@
     var go = doc.createElement('button'); go.type = 'button'; go.textContent = 'Send'; go.style.minHeight = '44px'; go.style.minWidth = '44px';
     var st = doc.createElement('p'); st.setAttribute('role', 'status'); st.setAttribute('aria-live', 'polite');
     var pin = doc.createElement('p'); pin.className = 'ot-pin'; pin.textContent = '📌 Messages here are public and erased every 24 hours.';
-    var day = doc.createElement('ol'); day.className = 'ot-day'; day.setAttribute('aria-label', 'Messages of the last 24 hours');
+    var day = doc.createElement('ol'); day.className = 'ot-day'; day.setAttribute('role', 'log'); day.setAttribute('aria-label', 'Public messages of the last 24 hours');
+    day.setAttribute('aria-live', 'off'); // Replacing the 24h list must not read all earlier messages again.
     var policy = doc.createElement('details'), summary = doc.createElement('summary');
     summary.textContent = 'Files and public chat policy'; policy.append(summary, law, files);
     li.append(h, pin, box, go, st, policy, day);
     // Y10 (2026-11-09): the live chat leads the Communication panel; the radio and the guide follow it.
     var radio = list.querySelector('[data-speaker="Radio"]'); if (radio) { list.insertBefore(li, radio); } else { list.appendChild(li); }
-    // Nothing leaves the page until the visitor asks: the 24-hour list (and its toasts on the map) start behind this button.
-    var show = doc.createElement('button'); show.type = 'button'; show.className = 'ot-show'; show.textContent = 'Show the last 24 hours';
-    show.addEventListener('click', function () { show.remove(); watch(doc, win, day); });
-    day.before(show);
+    // Opening Chat Live is already an explicit reading choice. Do not make the visitor open a second panel.
+    // No network request happens before that action. Reopening refreshes the same observer; no duplicate polling timer.
+    var refresh = null;
+    function open() {
+      if (!refresh) { refresh = watch(doc, win, day, st); }
+      else { refresh(); }
+    }
+    doc.addEventListener('openworld:chatlive-open', open);
+    if (!list.hidden && list.dataset.activeCategory === 'Communication' && list.dataset.channel === 'public') { open(); }
     function say(t) { st.textContent = t; }
     go.addEventListener('click', async function () {
       var subtle = win.crypto && win.crypto.subtle, net = win.fetch && win.fetch.bind(win);
