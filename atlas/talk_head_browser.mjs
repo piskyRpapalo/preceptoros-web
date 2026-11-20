@@ -60,10 +60,22 @@ async function main() {
   const TEXT = 'Hello. I am Node 0, the rack\'s AI. Walk to the beacon first; then summon, and we will practise a duel together.';
   const ASK = `(async(reduce)=>{ const w=(ms)=>new Promise(r=>setTimeout(r,ms)), q=document.getElementById('question'), f=document.getElementById('entry'), log=document.getElementById('log');
     window.__said=[]; window.speechSynthesis.cancel=()=>{}; window.speechSynthesis.speak=(u)=>window.__said.push(u.text); document.documentElement.dataset.audioOnly='on';
-    window.AtlasAulaChat={plain:(c)=>'NO_DATA · '+c, turn:()=>Promise.resolve({ok:true,text:${JSON.stringify(TEXT)},chain:{tic:1,hash:null,sello:null}})};
+    // Use the actual CIEF serializer; stub only the gateway reply.
+    // Replacing AtlasAulaChat wholesale removes cief(), triggering the genuine
+    // 1023-byte fail-closed check before any talking head can render.
+    if (!window.AtlasAulaChat) await new Promise((ok,fail)=>{
+      const script=document.createElement('script'); script.src='/game/classroom_chat.js';
+      script.onload=ok; script.onerror=fail; document.head.append(script);
+    });
+    if (!window.AtlasAulaChat || typeof window.AtlasAulaChat.cief !== 'function') throw new Error('real_cief_serializer_unavailable');
+    window.AtlasAulaChat.turn=()=>Promise.resolve({ok:true,text:${JSON.stringify(TEXT)},chain:{tic:1,hash:null,sello:null}});
     const m=document.getElementById('chat-destination'); m.value='hexelion'; m.dispatchEvent(new Event('change'));
     q.value='Who are you?'; f.dispatchEvent(new Event('submit',{cancelable:true})); await w(150);
-    const li=log.lastElementChild, th=li&&li.previousElementSibling, says=th&&th.querySelector('.th-says'), out={};
+    // A synthetic successful turn has no signed receipt: the real serializer
+    // correctly appends a NO_DATA receipt AFTER Node0. Find the Node0 message
+    // by speaker rather than assuming it is the final list element.
+    const li=[...log.children].reverse().find(x=>x.dataset.speaker==='Node 0'), th=li&&li.previousElementSibling, says=th&&th.querySelector('.th-says'), out={};
+    out.invalidReceiptShown=[...log.children].some(x=>/Decision receipt unavailable or invalid/.test(x.textContent));
     out.reader=li&&li.textContent; out.veiled=li&&li.classList.contains('th-veiled'); out.isHead=!!(th&&th.classList.contains('th'));
     out.artHidden=!!(th&&th.querySelector('.th-art[aria-hidden=true]')); out.liveInHead=!!(th&&th.querySelector('[aria-live],[role=status]'));
     out.first=says&&says.dataset.t; out.state=th&&th.dataset.state; out.face=(th&&th.querySelector('img.th-face')||{}).src||'';
@@ -83,7 +95,7 @@ async function main() {
     await ev('(()=>{const c=document.querySelector(".cats [data-cat=Communication]"); if(c) c.click(); return 1})()');
     const r = JSON.parse(await ev(ASK + '(' + reduce + ')')); medidas[w] = { steps: (r.steps || []).length, headW: r.headW, buttons: r.buttons };
     const full = 'Node 0 · ' + TEXT;
-    ok(r.reader === full && r.veiled && r.isHead && r.artHidden && !r.liveInHead, w + ': the reader does not get the whole answer once, beside an aria-hidden head: ' + JSON.stringify({ reader: r.reader, veiled: r.veiled, head: r.isHead, art: r.artHidden, live: r.liveInHead }));
+    ok(r.reader === full && r.veiled && r.isHead && r.artHidden && !r.liveInHead && r.invalidReceiptShown, w + ': the reader does not get the full accessible answer beside the head, or missing fail-closed receipt: ' + JSON.stringify({ reader: r.reader, veiled: r.veiled, head: r.isHead, art: r.artHidden, live: r.liveInHead, receiptNoData: r.invalidReceiptShown }));
     if (!reduce) {
       ok(r.state === 'speaking' && TEXT.startsWith(r.first) && r.first.length < TEXT.length, w + ': not revealed progressively from the start: ' + r.first);
       ok(r.steps.length >= 3 && r.steps.every((t) => TEXT.startsWith(t) && (t === '' || /[\s]$|[.;:!?]$/.test(t) || t === TEXT)), w + ': the reveal is not word by word along the real text: ' + JSON.stringify(r.steps));
