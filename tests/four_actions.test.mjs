@@ -13,16 +13,17 @@ const APK_SHA = '9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6
 // Returns the list of breaches (empty = clean). `html` is the homepage, `js` the scripts it loads.
 export function violations(html, js) {
   const out = [];
-  const row = (html.match(/<div class="ta-row"[\s\S]*?<\/div>/) || [''])[0];
-  const ids = [...row.matchAll(/<button type="button" id="([a-z-]+)" class="ta-btn"/g)].map((m) => m[1]);
-  if (ids.join(',') !== 'ta-pwa,ta-app,ta-update,fa-companion') out.push('the main row is not exactly the four actions: ' + ids.join(','));
-  if (!/id="fa-companion"[^>]*aria-controls="fa-panel"/.test(html)) out.push('Create Companion does not control its panel');
+  const row = (html.match(/<nav class="dayd-doors"[\s\S]*?<\/nav>/) || [''])[0];
+  const actions = [...row.matchAll(/<a class="ta-btn" id="([a-z-]+)" href="([^"]+)"/g)].map((m) => [m[1], m[2]]);
+  const expected = [['dayd-building', '/get-the-app/#building-draft'], ['dayd-download', '/get-the-app/#doors'],
+    ['dayd-companion', '/get-the-app/#companion-path'], ['ta-update', '/get-the-app/#update-existing-app']];
+  if (JSON.stringify(actions) !== JSON.stringify(expected)) out.push('the Day-D paths are not exactly four truthful actions: ' + JSON.stringify(actions));
   if (/href="\/app(\.html)?\/?"/.test(html) || /<a [^>]*>\s*(Open the app|Open PreceptorOS app)/i.test(html)) out.push('a link to a public /app exists');
   if (/\b(fetch|XMLHttpRequest|sendBeacon|WebSocket|navigator\.sendBeacon)\b/.test(js.companion)) out.push('Create Companion makes a network request');
   // An affirmative claim only: «is registered» / «has been registered». «Not registered until…» is the honest sentence.
   if (/\b(is|was|has been|are|now)\s+(now\s+)?(registered|registrad[oa])\b/i.test(js.companion_text || '')) out.push('Create Companion claims a registration');
   if (!js.companion.includes('Nothing was sent') || !js.companion.includes('NO_DATA')) out.push('Create Companion does not say nothing is sent or what is NO_DATA');
-  if (!js.three.includes("var APK = '/get-the-app/PreceptorOS-android-0.3.0-v7.apk'")) out.push('Download App does not point at the published file');
+  if (!js.three.includes("var APK = 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk'")) out.push('Download App does not point at the official GitHub Release');
   if (!js.companion.includes("e.key === 'Escape'")) out.push('Create Companion cannot be closed with Escape');
   if (!js.three.includes('It is not the PreceptorOS APP and has no model inside')) out.push('the OpenWorld file is not said to be not the app');
   if (js.three.split(APK_SHA).length - 1 !== 1) out.push('Android download must show its published SHA-256 exactly once');
@@ -48,7 +49,8 @@ test('the script lists are cached so the offline copy has the same panel', () =>
 });
 
 test('sabotage: a fifth main action, a public /app link, a network call and a false registration are rejected', () => {
-  const fifth = html.replace('<button type="button" id="fa-companion"', '<button type="button" id="ta-extra" class="ta-btn">Extra</button>\n<button type="button" id="fa-companion"');
+  const fifth = html.replace('<a class="ta-btn" id="ta-update"', '<a class="ta-btn" id="ta-extra" href="/openworld/">Extra</a>\n<a class="ta-btn" id="ta-update"');
+  assert.notEqual(fifth, html, 'fifth-action sabotage must change the real Day-D navigation');
   const link = html.replace('<p class="go">', '<p class="go"><a href="/app/">Open the app</a> ');
   const net = { ...js, companion: js.companion + '\nfetch("https://example.invalid/x");' };
   const lie = js.companion.replace('Nothing was sent.', 'Nothing was sent. Your companion is registered.');

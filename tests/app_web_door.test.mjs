@@ -13,6 +13,9 @@ const PAGE = path.join(ROOT, 'public/get-the-app/index.html');
 const APK = path.join(ROOT, 'public/get-the-app/PreceptorOS-android-1.0.1.apk');
 const INSTALL_SH = '2bd8666979a67ea1ec8b01a01aac240acfc2cef6165b93e558d0b836d3df6e74';
 const APK_SHA = '8db3176a20ed973dab1f28642972bb97ab1ccd70ddbc7cf95f7a44affc7c4d8b';
+const NATIVE_URL = 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk';
+const NATIVE_SHA = '9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b';
+const RELEASE = JSON.parse(readFileSync(path.join(ROOT, 'public/release.json'), 'utf8'));
 const PRIVATE = /(127\.0\.0\.1|localhost|\b10\.\d+\.\d+\.\d+|\b192\.168\.\d+\.\d+|\b100\.\d+\.\d+\.\d+|\/api\/|21434)/i;
 
 // Every rule is one sentence a visitor could be misled by. Returns the list of breaches (empty = clean).
@@ -26,7 +29,7 @@ export function violations(html, apkBytes) {
     .map((id) => html.indexOf(`id="${id}"`));
   if (order.some((i, k) => k && i < order[k - 1])) out.push('doors out of order');
   const native = door('door-native');
-  if (!native.includes('href="/get-the-app/PreceptorOS-android-0.3.0-v7.apk"')) {
+  if (!native.includes('href="' + NATIVE_URL + '"')) {
     out.push('official native Android v7 link missing');
   }
   if (!native.includes('data-asset="native-v7-apk">9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b')) {
@@ -65,6 +68,10 @@ const apk = readFileSync(APK);
 
 test('four truthful doors: native first, legacy TWA, deterministic MINI and desktop with no private address', () => {
   assert.deepEqual(violations(html, apk), []);
+  assert.equal(RELEASE.native.url, NATIVE_URL, 'Release manifest and native CTA must agree');
+  assert.equal(RELEASE.native.sha256, NATIVE_SHA, 'Release manifest and native SHA must agree');
+  assert.equal(RELEASE.native.bytes, 155998639, 'native v7 byte count must be measured');
+  assert.equal(RELEASE.native.package, 'org.preceptoros.app');
 });
 
 test('the file on disk is the one published (size and fingerprint)', () => {
@@ -75,7 +82,7 @@ test('the file on disk is the one published (size and fingerprint)', () => {
 test('sabotage: wrong native APK path, false LIVE claim and private link are rejected', () => {
   const fake = html.replace('Node registration requires explicit consent and human approval',
     'Node is live and approved automatically');
-  const bad1 = html.replace('id="native-android-download" class="get-app" href="/get-the-app/PreceptorOS-android-0.3.0-v7.apk"',
+  const bad1 = html.replace('id="native-android-download" class="get-app" href="' + NATIVE_URL + '"',
     'id="native-android-download" class="get-app" href="/get-the-app/not-an-app.apk"');
   const bad2 = html.replace('NO_DATA(app_route_http_404)',
     'Available at <a href="http://127.0.0.1:8740/app">the private rack</a>. NO_DATA(app_route_http_404)');
