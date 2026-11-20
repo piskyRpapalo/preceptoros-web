@@ -84,6 +84,15 @@
       }
       return accept(s, ev.kind, { garrison: observed.count });
     }
+    if (ev.kind === 'garrison_broken') {
+      // A previously posted defense can truly fall in the ledger. The drawing must not keep it alive.
+      if (!s.held || s.garrison < 1 || typeof g.readGarrison !== 'function') {
+        return fail('garrison_loss_not_measured', s);
+      }
+      var remaining = await g.readGarrison(key, s.seed);
+      if (!remaining || remaining.count !== 0) { return fail('garrison_still_alive', s); }
+      return accept(s, ev.kind, { garrison: 0 });
+    }
     if (ev.kind === 'hospital_built') {
       if (!s.held || !s.garrison || typeof g.confirmHospital !== 'function' ||
           await g.confirmHospital(ev, s.seed) !== true) { return fail('healing_building_not_verified', s); }
