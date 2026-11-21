@@ -137,3 +137,14 @@ test('Node status, online presence and Acho use one existing verified frame core
   assert.match(nodes, /nodes\.length \? 'LIVE' : 'STATIC'/);
   assert.match(nodes, /state\.dataset\.state = ok \? 'MEDIDO' : 'NO_DATA'/);
 });
+
+test('Fresh signed node identifiers use the exact Aduana canonical alphabet, including dots and underscores', () => {
+  const live = [
+    {id:'primer-ancla',q:0,r:0,alive:true,seal:'LIVE'},
+    {id:'nodo.1.alpha',q:1,r:0,alive:true,seal:'LIVE'},
+    {id:'nodo.2_beta',q:2,r:0,alive:true,seal:'LIVE'},
+    {id:'nodo.3.gamma',q:3,r:0,alive:true,seal:'STALE'},
+    {id:'nodo/4',q:4,r:0,alive:true,seal:'LIVE'}
+  ];
+  assert.deepEqual(new Set(N.liveNodes(live).map(x=>x.id)), new Set(['primer-ancla','nodo.1.alpha','nodo.2_beta']));
+});
