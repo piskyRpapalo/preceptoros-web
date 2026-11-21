@@ -1,6 +1,7 @@
 // AtlasHoldingsView · the «Buildings owned» panel. Global AtlasHoldingsView.
 // render(doc, api, step) builds a section from the holdings API (see holdings_wasm.js) and returns it.
-// mount(doc, api, step) places it at the end of the Army voice (data-speaker Army) inside #voices, or of #voices itself, and replaces an old one.
+// mount(doc, api, step) places it at the end of the Crab voice (data-speaker House, the Profile panel) inside #voices, else the Army voice, else #voices itself, and replaces an old one.
+// Buildings are territory of the crab, not the Army (odd/tasks/openworld-ux-recovery-20261121.md, decision 3).
 // Every number comes from the ledger. A heal that cannot be paid is disabled, and its button says why.
 (function (root) {
   'use strict';
@@ -71,7 +72,7 @@
     if (!voices) { return null; }
     var sec = render(doc, api, step), old = doc.getElementById('holdings');
     if (old && old.parentNode) { old.parentNode.replaceChild(sec, old); return sec; }
-    (voices.querySelector('li[data-speaker="Army"]') || voices).appendChild(sec);
+    (voices.querySelector('li[data-speaker="House"]') || voices.querySelector('li[data-speaker="Army"]') || voices).appendChild(sec);
     return sec;
   }
 
