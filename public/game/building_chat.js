@@ -103,7 +103,7 @@
   // screen reader hears the building as it hears the map. While a building is open, the chat input asks its bot; Escape
   // or the 44 px «Leave building» button closes it, and #state says so.
   var inside = null, page = null, leave = null, rackBtn = null, jewelBtn = null, asking = false, chain = null, visit = null;
-  var thread = null, generation = 0;
+  var thread = null, generation = 0, visitEventsBound = false;
   function freshThread() {
     var W = root.AtlasThreadWindow;
     return W && typeof W.create === 'function' ? W.create() : null;
@@ -192,6 +192,11 @@
   }
   function open(building, p) {
     page = p;
+    var visitorPanel = p.doc.getElementById('visitor-play');
+    if (visitorPanel && !visitEventsBound) {
+      visitorPanel.addEventListener('visitor:end', function () { visit = null; leaveBuilding(); });
+      visitEventsBound = true;
+    }
     // Engaging a building opens its existing conversation in the shared player.
     if (root.AtlasRadioChat && typeof root.AtlasRadioChat.canal === 'function') root.AtlasRadioChat.canal('chat');
     if (root.AtlasTerminalPanel && root.AtlasTerminalPanel.mounted) root.AtlasTerminalPanel.mounted.show('Communication', 'chat');
