@@ -2,7 +2,7 @@
 // A node without LIVE+alive is never offered as a destination. Conquest/visitors are separate identities.
 (function (root) {
   'use strict';
-  // Same canonical node-id grammar as Aduana src/index.js NODE_ID; this does not grant admission.
+  // Same canonical node-id grammar as the gateway src/index.js NODE_ID; this does not grant admission.
   var ID = /^[a-z0-9][a-z0-9._-]{0,63}$/;
   function liveNodes(rows) {
     if (!Array.isArray(rows)) { return []; }
