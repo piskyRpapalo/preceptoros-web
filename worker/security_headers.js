@@ -15,9 +15,12 @@ export const POLICY = [
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
-  // the landing frames /openworld/ (index.html:31); the PreceptorOS app frames it from its own loopback origins only
-  // (odd/tasks/app-frames-openworld.md, FIRMO of the Sovereign in chat 2026-11-08). Never a wildcard.
-  "frame-ancestors 'self' http://127.0.0.1:8742 http://localhost:8742",
+  // the landing frames /openworld/ (index.html:31); the PreceptorOS app frames it from its own loopback origins
+  // (odd/tasks/app-frames-openworld.md, FIRMO of the Sovereign in chat 2026-11-08) and, PROPOSED pending FIRMO, from the
+  // signed Android APK's bundled-asset origin https://preceptoros.mvp.local (WebViewAssetLoader; not a DNS host, no public
+  // TLS certificate can exist for it). Measured 2026-11-21: without it the APK frame fails net::ERR_BLOCKED_BY_RESPONSE.
+  // Never a wildcard.
+  "frame-ancestors 'self' http://127.0.0.1:8742 http://localhost:8742 https://preceptoros.mvp.local",
 ].join('; ');
 
 // This exact script comes from APP #345 public-mini package, whose index.html
