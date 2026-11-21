@@ -1,0 +1,21 @@
+/* OpenWorld online controls: one existing map, real node feed, no decorative/fictitious buildings.
+   Central controls sit BETWEEN the two 64px joysticks; minimum 44px touch and keyboard targets. */
+#online-actions{position:absolute;z-index:6;bottom:4px;left:76px;right:76px;display:flex;align-items:stretch;justify-content:center;gap:4px;pointer-events:auto}
+#online-actions button{flex:1 1 0;min-width:44px;min-height:44px;max-width:130px;padding:4px 3px;border:2px solid currentColor;border-radius:var(--radius);font:inherit;font-size:clamp(.75rem,2.4vw,.95rem);font-weight:700;line-height:1.15;background:var(--bg);color:var(--fg);cursor:pointer}
+#online-actions button[aria-expanded="true"]{outline:3px solid currentColor;outline-offset:1px}
+#online-actions button:disabled{opacity:.6;cursor:not-allowed}
+#online-panels{position:absolute;z-index:6;inset:auto 8px 76px;display:flex;flex-direction:column;align-items:center;pointer-events:none}
+#online-panels > section{pointer-events:auto;width:min(100%,420px);max-height:min(45vh,260px);overflow:auto;padding:8px;box-sizing:border-box;border:2px solid var(--fg);border-radius:var(--radius);background:var(--bg);color:var(--fg);box-shadow:0 3px 0 var(--line)}
+#online-panels > section[hidden]{display:none!important}
+#online-panels h2{font-size:1rem;margin:0 0 4px}
+#online-panels :is(button,select){min-width:44px;min-height:44px;padding:6px 8px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
+#online-panels button:disabled{opacity:.6}
+#online-panels label{display:flex;align-items:center;gap:8px;min-height:44px;font-size:.9rem}
+#online-consent{width:20px;height:20px;min-height:20px;flex:none;accent-color:currentColor}
+#online-panels p{margin:6px 0;font-size:.88rem;line-height:1.4;overflow-wrap:anywhere}
+#online-player-list{padding:0 0 0 20px;margin:6px 0;max-height:9rem;overflow:auto}
+#online-node-select{display:block;width:100%;margin:5px 0}
+#online-panels :is(button,select,input):focus-visible,#online-actions button:focus-visible{outline:3px solid currentColor;outline-offset:2px}
+@media (max-width:360px){#online-actions{left:72px;right:72px;gap:2px}#online-actions button{padding:4px 1px;font-size:.72rem}}
+@media (forced-colors:active){#online-actions button,#online-panels > section,#online-panels :is(button,select){color:CanvasText;background:Canvas;border-color:CanvasText;forced-color-adjust:none}#online-actions button:focus-visible,#online-panels :focus-visible{outline:3px solid Highlight}}
+@media (prefers-reduced-motion:reduce){#online-actions button,#online-panels > section{transition:none;animation:none}}
