@@ -73,7 +73,7 @@ async function until(expression, value, deadline=7000) {
 function violations(home, guide) {
   const out = [];
   if (home.href !== '/get-the-app/#companion-path') out.push('companion route must be docs-only');
-  if (!/Create Companion · docs-only/.test(home.label)) out.push('companion label misrepresents admission');
+  if (!/^Companion guide$/.test(home.label)) out.push('companion guide label misrepresents admission');
   if (!home.box || home.box.h < 44 || home.box.w < 44) out.push('companion action below 44px');
   if (home.retired) out.push('retired companion modal reintroduced');
   if (!guide.docsOnly || guide.claimsLive || !guide.noData) out.push('false live admission or missing NO_DATA');
@@ -111,6 +111,13 @@ try {
     {width:360,height:640,deviceScaleFactor:1,mobile:true});
   await command('Page.navigate', {url:base + '/'});
   await until("document.readyState==='complete' && !!document.getElementById('dayd-companion')", true);
+  // Open the existing disclosure the same way visitors do; a collapsed
+  // OpenWorld Today panel intentionally keeps its internal links unfocusable.
+  const disclosure = await evalJS("(() => {const d=document.getElementById('dayd-companion').closest('details'),s=d?.querySelector('summary'),r=s?.getBoundingClientRect();return {present:!!d,summary:!!s,wasOpen:!!d?.open,w:r?.width||0,h:r?.height||0};})()");
+  assert.ok(disclosure.present && disclosure.summary && disclosure.w >= 44 && disclosure.h >= 44,
+    'OpenWorld Today must expose an accessible 44px disclosure');
+  await evalJS("document.getElementById('dayd-companion').closest('details').querySelector('summary').click()");
+  await until("!!document.getElementById('dayd-companion').closest('details').open",true);
   const home = await evalJS("(() => {const a=document.getElementById('dayd-companion'),r=a.getBoundingClientRect();return {href:a.getAttribute('href'),label:a.textContent.trim(),box:{w:r.width,h:r.height},retired:!!document.getElementById('fa-companion')||!!document.getElementById('four-actions')};})()");
   assert.equal(await evalJS("(() => {document.getElementById('dayd-companion').focus();return document.activeElement.id;})()"),'dayd-companion','keyboard focus must reach companion route');
   watching=true;
