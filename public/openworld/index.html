@@ -26,28 +26,6 @@
 <div class="topbar"><h1 id="map-h">NO_DATA: visitor position unavailable</h1></div>
 <div id="stage" class="stage">
 <canvas class="surface" id="surface" role="img" aria-label="Hexagonal map. Tap a hex to walk; the joystick moves the view."></canvas>
-<div id="online-actions" role="group" aria-label="Online visitors and verified nodes">
-<button type="button" id="online-share" aria-controls="online-players" aria-describedby="online-status">Share</button>
-<button type="button" id="online-players-toggle" aria-expanded="false" aria-controls="online-players">Players (0)</button>
-<button type="button" id="online-nodes-toggle" aria-expanded="false" aria-controls="online-nodes">Nodes (0)</button>
-</div>
-<div id="online-panels">
-<section id="online-players" aria-labelledby="online-players-h" hidden>
-<h2 id="online-players-h">Visitors in this world</h2>
-<label id="online-consent-label" for="online-consent"><input type="checkbox" id="online-consent"> I consent to share my temporary crab public key and map position with nearby visitors. No chat is shared.</label>
-<p id="online-status" role="status" aria-live="polite" data-state="NO_DATA" data-cause="visit_not_shared">NO_DATA: this visit is not shared.</p>
-<button type="button" id="online-disconnect" hidden>Disconnect my visit</button>
-<ol id="online-player-list" aria-label="Visitors reported by the shared authority"><li>NO_DATA: no connected visitors verified.</li></ol>
-</section>
-<section id="online-nodes" aria-labelledby="online-nodes-h" hidden>
-<h2 id="online-nodes-h">LIVE nodes · verified heartbeat</h2>
-<p id="online-nodes-state" role="status" aria-live="polite">NO_DATA: checking the public node feed.</p>
-<label for="online-node-select">Choose a real live node</label>
-<select id="online-node-select"><option value="">No verified live nodes</option></select>
-<button type="button" id="online-node-visit" disabled>Go to selected node</button>
-<p id="online-node-service">NO_DATA: no verified node selected.</p>
-</section>
-</div>
 </div>
 <div id="map-actions" class="press" role="group" aria-label="Map controls"><div id="terrain-actions" class="press"></div></div>
 </section>
@@ -60,7 +38,7 @@
 <div class="acts"><button type="button" id="welcome-play" class="welcome-play">Sign HITL, and take a piece</button>
 <button type="button" id="welcome-look">Look around</button>
 <button id="entry-tools">Tools</button></div>
-<label for="welcome-skip-tutorial" style="display:flex;gap:8px;align-items:center;min-height:44px;margin:6px 0"><input type="checkbox" id="welcome-skip-tutorial"> Skip tutorial</label>
+<label for="welcome-skip-tutorial"><input type="checkbox" id="welcome-skip-tutorial"> Skip tutorial</label>
 <p id="welcome-result" class="state" role="status"></p>
 </section></li>
 <li class="voice" data-speaker="Tutorial"><div id="joy" aria-label="Tutorial" hidden></div></li>

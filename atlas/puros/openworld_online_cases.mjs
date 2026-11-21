@@ -28,8 +28,12 @@ test('The actual page contains visible, labelled buttons BETWEEN joysticks and r
   for (const id of ['online-actions','online-share','online-players-toggle','online-nodes-toggle',
     'online-players','online-nodes','online-consent','online-status','online-player-list',
     'online-node-select','online-node-visit','online-nodes-state','online-disconnect']) {
-    assert.ok(html.includes('id="'+id+'"'), 'missing '+id);
+    // The markup lives in openworld_online_config.js (loaded before the presence scripts) so the page keeps 8 KiB.
+    const page = html + configText;
+    assert.equal(page.split('id="'+id+'"').length - 1, 1, 'missing or duplicated '+id);
   }
+  assert.ok(configText.indexOf("insertAdjacentHTML('afterend'") < configText.indexOf("root.location.origin !== 'https://preceptoros.org'"),
+    'the controls are built on every origin, before the production-only presence config');
   assert.match(css, /#online-actions\{position:absolute/);
   assert.match(css, /bottom:4px;left:50%;right:auto;width:140px;transform:translateX\(-50%\)/);
   assert.match(css, /min-height:44px/);

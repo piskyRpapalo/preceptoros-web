@@ -103,6 +103,16 @@ async function main() {
   ok(orden.vis[0] === 'map' && orden.vis.length === 1 && orden.mapa === 0, 'the showcase is not the only visible surface before interaction: ' + JSON.stringify(orden));
   ok(orden.titulo === 'Guide', 'the initial panel does not identify its guide speaker: ' + orden.titulo);
 
+  // 1b · the visitor's own consented crab visit (Play), as a person starts it. Since #938 the building chat uses that
+  // visit and never mints a second identity, so Hexelion is only asked from inside a started visit.
+  medidas.visita = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)); let started = false;
+    document.getElementById('visitor-play').addEventListener('visitor:render', (e) => { if (e.detail && e.detail.account) started = true; });
+    const vis = (e) => e && !e.hidden && e.offsetParent, b = ['#welcome-play', '#gp-play', '#play-now'].map((q) => document.querySelector(q)).find(vis);
+    if (b) b.click(); for (let i = 0; i < 100 && !started; i++) await w(100);
+    return JSON.stringify({ pressed: b ? '#' + b.id : null, started }); })()`));
+  ok(medidas.visita.started, 'the visit did not start from Play: ' + JSON.stringify(medidas.visita));
+  ok(pedidas.length === 0, 'starting the visit asked the network: ' + pedidas.slice(0, 3));
+
   // 2 · enter the first node: the title names it; the Rack ideas button is a 44 px target.
   const dentro = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), st = () => document.getElementById('state').textContent;
     document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); for (let i = 0; i < 30 && !/Inside building/.test(st()); i++) await w(100);

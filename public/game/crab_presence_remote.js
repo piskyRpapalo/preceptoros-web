@@ -140,7 +140,8 @@
       'beat_too_soon': 1,
       'visit_already_open': 1,
       'route_unknown': 1,
-      'no_data_public_backend': 1
+      'no_data_public_backend': 1,
+      'network_offline': 1
     };
     if (!allowed[cause]) { return 'authority_unreachable'; }
     return cause;
@@ -229,7 +230,9 @@
         }, function () { return { ok: false, cause: 'authority_unreachable' }; });
       }, function () {
         if (timerId !== null) { clearTimeout(timerId); }
-        return { ok: false, cause: 'authority_unreachable' };
+        // The browser says it has no network: say that, not that the authority is down.
+        var offline = win.navigator && win.navigator.onLine === false;
+        return { ok: false, cause: offline ? 'network_offline' : 'authority_unreachable' };
       });
     }
 

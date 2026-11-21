@@ -46,3 +46,4 @@
   #ow-controls,#ow-directions,#ow-directions button,#ow-brief{background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}
   #ow-controls:focus-visible,#ow-directions button:focus-visible{outline-color:Highlight}
 }
+label[for="welcome-skip-tutorial"]{display:flex;gap:8px;align-items:center;min-height:44px;margin:6px 0}
