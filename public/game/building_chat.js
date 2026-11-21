@@ -172,7 +172,8 @@
     load('/game/classroom_chat.js', 'AtlasAulaChat', function (A) {
       if (inside !== b || generation !== ticket) { return; }
       if (!A) { say('hexelion', 'NO_DATA · not_loaded: the door to Hexelion did not load.'); return; }
-      var account = visit ? Promise.resolve(visit) : (root.AtlasVisitorAccount ? root.AtlasVisitorAccount.create(true) : Promise.reject(new Error('no visit')));
+      // Use the crab's already-consented visit key; never mint a second identity here.
+      var account = visit ? Promise.resolve(visit) : Promise.reject(new Error('visit_not_started'));
       account.then(function (v) {
         if (inside !== b || generation !== ticket) { return null; }
         visit = v;
@@ -194,8 +195,18 @@
     page = p;
     var visitorPanel = p.doc.getElementById('visitor-play');
     if (visitorPanel && !visitEventsBound) {
+      visitorPanel.addEventListener('visitor:render', function (event) {
+        var current = event.detail && event.detail.account || null;
+        if (visit && visit !== current) { leaveBuilding(); }
+        visit = current;
+      });
       visitorPanel.addEventListener('visitor:end', function () { visit = null; leaveBuilding(); });
       visitEventsBound = true;
+    }
+    // visitor:tick is an existing redraw-only request, not an advance or a new API.
+    // It emits visitor:render even when the building script was loaded after the visit began.
+    if (visitorPanel && p.doc.defaultView && typeof p.doc.defaultView.Event === 'function') {
+      visitorPanel.dispatchEvent(new p.doc.defaultView.Event('visitor:tick'));
     }
     // Engaging a building opens its existing conversation in the shared player.
     if (root.AtlasRadioChat && typeof root.AtlasRadioChat.canal === 'function') root.AtlasRadioChat.canal('chat');
