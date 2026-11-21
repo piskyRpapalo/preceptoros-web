@@ -118,3 +118,22 @@ test('Remote sends are strictly POST with no cookies or redirects', async () => 
   adapter.end();
   assert.equal((await adapter.send('/open',{})).ok,false);assert.equal(requests.length,1);
 });
+
+test('Online visitor is independent of LIVE nodes and uses the existing free-walk spawn', () => {
+  const shared=readFileSync(new URL('../../public/game/shared_crabs.js', import.meta.url),'utf8');
+  const controls=readFileSync(new URL('../../public/game/colony_controls.js', import.meta.url),'utf8');
+  assert.match(controls, /start\(visitor\)/);
+  assert.match(controls, /else if \(visitor\) \{ walker = \{ node: 'cabin', q: 0, r: 0, visitor: true \}/);
+  assert.match(shared, /if \(account && remote && !walker\(\)\)/);
+  assert.match(shared, /ow\.controls\.start\(true\)/);
+  assert.ok(!shared.includes("if (!colonia) { return null; }"));
+  assert.deepEqual(N.liveNodes([]), []);
+});
+test('Node status, online presence and Acho use one existing verified frame core', () => {
+  const shared=readFileSync(new URL('../../public/game/shared_crabs.js', import.meta.url),'utf8');
+  const nodes=readFileSync(new URL('../../public/game/online_nodes.js', import.meta.url),'utf8');
+  assert.match(shared, /F\.stateFrame\(\{ id: 'online\/visit', sentence: text, waves: \[\] \}\)/);
+  assert.match(nodes, /F\.stateFrame\(\{id:'world\/nodes',sentence:sentence,waves:\[\]\}\)/);
+  assert.match(nodes, /nodes\.length \? 'LIVE' : 'STATIC'/);
+  assert.match(nodes, /state\.dataset\.state = ok \? 'MEDIDO' : 'NO_DATA'/);
+});
