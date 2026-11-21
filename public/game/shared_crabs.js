@@ -133,7 +133,11 @@
       if (coop) { coop.stop(); coop = null; }
       if (adapter) { adapter.end(); adapter = null; }
       if (remote) {
-        say(cause ? 'NO_DATA · sharing stopped · ' + cause + '. Server presence expires by TTL.' :
+        var recovery = cause === 'visit_already_open' || cause === 'authority_unreachable' ||
+          cause === 'chain_broken' || cause === 'replayed_step';
+        say(cause ? 'NO_DATA · sharing stopped · ' + cause +
+          '. Server presence expires by TTL.' + (recovery ?
+            ' For a new independent session, end your local visit and start a fresh ephemeral visit.' : '') :
           'NO_DATA · this visit is not shared.', cause || 'visit_not_shared', false);
         renderPeople(null);
       } else if (cause) { say('NO_DATA · sharing stopped · ' + cause); }
@@ -177,6 +181,7 @@
       }
       joining = true; updateButton();
       if (remote) {
+        showConsent();
         adapter = remoteConfig(win, true);
         if (!adapter) { stop('no_data_public_backend'); return; }
       }
