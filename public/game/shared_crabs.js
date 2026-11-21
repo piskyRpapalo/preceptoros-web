@@ -1,16 +1,7 @@
-// Shared crabs on the one map (Seam A, Mesa #34). EXPERIMENT: this piece does nothing unless the page runs on
-// loopback AND names a TEST authority by its port (?presence=8812). On the public site there is no authority, so
-// nothing is offered, nothing is asked of the network and nothing is drawn.
-// A future production authority can be reached via crab_presence_remote.js with explicit config — that adapter
-// defaults OFF, requires HTTPS, origin allowlist, consent, identity separation and bounded errors.
-// With a test authority and a visit, one button asks for consent. After it:
-//   - every hex the crab walks is signed (atlas.paso/1) and sent; the authority decides the cell;
-//   - a crab that stands still signs «still here» (atlas.presente/1) so it is not forgotten;
-//   - the authority's view around the crab is read while the page is visible, and the other crabs are drawn on the
-//     same map with the same crab body; a silent crab is drawn pale and its label says STALE (never colour alone);
-//   - each change is ONE event with four readings from crab_presence_acho.js: the live line (eye and screen reader),
-//     its notes (ear: a nearer crab is a higher note) and an «acho:event» with the frame (machine).
-// Parameters of the experiment, not policy: ?poll=ms (look every), ?beat=ms (still-here every), ?radius=hexes.
+// One OpenWorld presence layer for signed local TEST and consent-gated HTTPS Aduana.
+// Loopback ?presence=<port> is TEST-only. Public authority config is fixed, never URL-selected.
+// Visits are ephemeral and independent of nodes. Only the authority decides crab positions and TTL.
+// Existing comic crab painter and Acho show the same state; no second multiplayer engine.
 (function (root) {
   'use strict';
   // Pure: authority(location) → 'http://127.0.0.1:<port>' or null. Only loopback, only a port: no page can be
