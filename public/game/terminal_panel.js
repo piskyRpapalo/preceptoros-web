@@ -99,6 +99,7 @@
     channel.addEventListener('change', function () { selectChannel(channel.value); });
     function show(cat, destination) {
       if ((cat === 'Profile' || cat === 'Army') && !hasVisit) { cat = null; }
+      if (cat && root.AtlasPanelX && root.AtlasPanelX.exclusive) { root.AtlasPanelX.exclusive(null); }
       current = cat; voices.hidden = !cat;
       voices.dataset.activeCategory = cat || '';
       if (tools) { tools.setAttribute('aria-expanded', String(cat === 'Tools')); }

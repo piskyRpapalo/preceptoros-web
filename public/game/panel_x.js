@@ -26,6 +26,16 @@
       var s = doc.getElementById(id); if (s && !s.hidden) { var c = s.querySelector('.bs-bar > .bs-tool:last-child'); if (c) { c.click(); } }
     });
   }
+  // exclusive(keep): one panel at a time (odd/tasks/openworld-ux-recovery-20261121.md, decision 4). Opening a sheet
+  // (keep = its id) closes the other sheet through its own Close, and the open map category (Chat Live stays at the top);
+  // opening a category (keep = null) closes both sheets. Escape, outside click and the sheets' Close keep their paths.
+  function exclusive(keep) {
+    ['building-sheet', 'settings-sheet'].forEach(function (id) {
+      var s = doc.getElementById(id); if (id === keep || !s || s.hidden) { return; }
+      var c = s.querySelector('.bs-bar > .bs-tool:last-child'); if (c) { c.click(); }
+    });
+    if (keep) { var b = doc.querySelector('#map .cats button[aria-pressed="true"]'); if (b && b.dataset.cat !== 'Communication') { b.click(); } }
+  }
   function mount() {
     var v = doc.getElementById('voices');
     if (!v || doc.getElementById('voices-x')) { return null; }
@@ -51,7 +61,7 @@
     }, true);
     return x;
   }
-  var api = { verdict: verdict, outside: outside, mount: mount };
+  var api = { verdict: verdict, outside: outside, exclusive: exclusive, mount: mount };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasPanelX = api;
   if (doc && doc.getElementById) { if (!mount() && doc.addEventListener) { doc.addEventListener('DOMContentLoaded', mount); } }

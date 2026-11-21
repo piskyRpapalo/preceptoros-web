@@ -84,14 +84,16 @@ test('click heals once', () => {
   assert.equal(voices.children.length, 1);
 });
 
-test('mount: Army, replace, fallback', () => {
+test('mount: Crab (House) first, Army fallback, replace', () => {
   const doc = makeDoc();
   assert.equal(V.mount(doc, fakeApi(), 0), null);
   const voices = doc.createElement('ol'); voices.setAttribute('id', 'voices'); doc.body.appendChild(voices);
+  const house = doc.createElement('li'); house.setAttribute('data-speaker', 'House'); voices.appendChild(house);
   const army = doc.createElement('li'); army.setAttribute('data-speaker', 'Army'); voices.appendChild(army);
-  assert.equal(V.mount(doc, fakeApi(), 0).parentNode, army);
+  assert.equal(V.mount(doc, fakeApi(), 0).parentNode, house);
   V.mount(doc, fakeApi({ copper: 3 }), 0);
-  assert.equal(army.children.length, 1);
+  assert.equal(house.children.length, 1);
+  assert.equal(army.children.length, 0);
   assert.match(doc.getElementById('holdings').textContent, /Not enough copper/);
   const d2 = makeDoc(), v2 = d2.createElement('ol'); v2.setAttribute('id', 'voices'); d2.body.appendChild(v2);
   assert.equal(V.mount(d2, fakeApi(), 0).parentNode, v2);

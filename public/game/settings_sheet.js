@@ -49,7 +49,7 @@
   function toggle(doc, w, gear) {
     win = w; btn = gear; if (!sheet) { make(doc); }
     if (!sheet.hidden) { close(); return; }
-    var other = doc.getElementById('building-sheet'); if (other) { other.hidden = true; }
+    if (root.AtlasPanelX && root.AtlasPanelX.exclusive) { root.AtlasPanelX.exclusive('settings-sheet'); }
     sheet.hidden = false; btn.setAttribute('aria-expanded', 'true'); say('Settings · this device');
     sheet.querySelector('.bs-card').focus();
   }
