@@ -39,12 +39,13 @@
     });
     function announce(sentence, ok, cause) {
       state.textContent = sentence;
-      state.dataset.state = ok ? 'LIVE' : 'NO_DATA';
+      state.dataset.state = ok ? 'MEDIDO' : 'NO_DATA';
       state.dataset.cause = ok ? '' : cause;
-      var frame = {v:'preceptoros.acho/1',id:'world/nodes',t:0,
-        atoms:[{k:'state',r:sentence,i:[]}],bands:['ink'],change:[sentence],
-        sound:'NO_DATA',soundCause:'node_selector_sound_not_measured',motion:'NO_DATA',
-        seal:ok?'LIVE':'NO_DATA'};
+      var F = root.AtlasStateFrames;
+      if (!F || !F.stateFrame) { state.dataset.acho = 'NO_DATA(frame_core_unavailable)'; return; }
+      var frame = F.stateFrame({id:'world/nodes',sentence:sentence,waves:[]});
+      frame.seal = !ok ? 'NO_DATA' : nodes.length ? 'LIVE' : 'STATIC';
+      if (F.valida(frame).length) { state.dataset.acho = 'NO_DATA(frame_breaks_the_law)'; return; }
       state.dataset.acho = JSON.stringify(frame);
       if (typeof win.CustomEvent === 'function') {
         doc.dispatchEvent(new win.CustomEvent('acho:event', { detail: { id: 'world/nodes', frame: frame } }));
