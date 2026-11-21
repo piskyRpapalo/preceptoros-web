@@ -1,5 +1,5 @@
-// OpenWorld: one same-origin map and state; the state file is its only server input.
-// Unlisted nodes do not exist; with none alive the floor is drawn and NO_DATA is said. Fixed ticks drive the palette, never wall-clock time.
+// OpenWorld map: only verified server state supplies nodes.
+// No nodes without evidence. Empty state says NO_DATA; rendering uses fixed ticks.
 // Reduced motion keeps the sky still.
 (function (raiz) {
   'use strict';
