@@ -10,6 +10,7 @@ import { readFileSync } from 'node:fs';
 import { resolve, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { launchChrome } from './chrome_launch.mjs';
+import { attachChatHistoryFixture } from './chatlive_history_fixture.mjs';
 import { worldState } from '../worker/world_state.js';
 
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
@@ -37,6 +38,12 @@ const pend = new Map();
 const PEQUENOS = `JSON.stringify([...document.querySelectorAll('a[href],button,select,input,[role="tab"]')].filter((e) => {
   if (e.matches('.skip,.sr') || e.closest('.sr,[hidden]')) { return false; }
   const r = e.getBoundingClientRect(), cs = getComputedStyle(e);
+  // A wrapped checkbox is activated by its entire visible label. Measure the
+  // real activation target, not just the 13px glyph; reject short labels.
+  if (e.matches('input[type=checkbox]') && e.parentElement?.tagName === 'LABEL') {
+    const label = e.parentElement, target = label.getBoundingClientRect();
+    if (label.textContent.trim() && target.width >= 43.5 && target.height >= 43.5) return false;
+  }
   return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none' && (r.width < 43.5 || r.height < 43.5);
 }).map((e) => { const r = e.getBoundingClientRect(); return (e.id ? '#' + e.id : e.tagName.toLowerCase()) + ' «' + (e.textContent || e.value || '').trim().slice(0, 30) + '» ' + Math.round(r.width) + 'x' + Math.round(r.height); }))`;
 
@@ -59,6 +66,7 @@ async function main() {
   const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   await cmd('Runtime.enable'); await cmd('Page.enable'); await cmd('Network.enable');
+  await attachChatHistoryFixture(cmd);
   await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
 
   // 1 · /creation.html: zero exceptions on load.
@@ -76,15 +84,19 @@ async function main() {
   const enMapa = JSON.parse(await ev(PEQUENOS));
   ok(enMapa.length === 0, '/openworld/ has targets under 44x44: ' + enMapa.join(' | '));
   // One full-map showcase; content leaves and communication stay closed until requested.
-  const orden = JSON.parse(await ev(`JSON.stringify((() => { const t = (s) => document.querySelector(s).getBoundingClientRect(), m=t('#map'), s=t('#surface'), c=t('#chat'), p=document.querySelector('#gamepad #view-joystick') /* gamepad (2026-11-07) */, pr=p?.getBoundingClientRect(), b=t('#map .cats'); return { mapa:m.top, mapaFin:m.bottom, lienzoFin:s.bottom, chat:c.top, pad:!!p, padTop:pr?.top||0,padBottom:pr?.bottom||0,padRight:pr?.right||0,mapRight:m.right,barraTop:b.top,barraBottom:b.bottom,barCount:document.querySelectorAll('#map .cats button').length,padGone:!document.querySelector('.walk-pad'),directions:document.querySelectorAll('[data-direction]').length,profileHidden:document.querySelector('.cats [data-cat=Profile]').hidden,hojas:document.querySelectorAll('.sheet,#map [role=tablist]').length,ancho:document.documentElement.scrollWidth }; })())`));
-  ok(orden.mapa === 0 && orden.mapaFin >= 844 && orden.chat === 0 && orden.pad && orden.padTop >= orden.mapa && orden.padBottom <= orden.mapaFin && orden.padRight <= orden.mapRight && orden.barraTop >= orden.lienzoFin && orden.barraBottom <= orden.mapaFin && orden.barCount === 3 && orden.padGone && orden.directions === 0 && orden.profileHidden && orden.hojas <= 1 && orden.ancho <= 390, 'the phone page is not a single full-map showcase with retired walk controls: ' + JSON.stringify(orden));
+  const orden = JSON.parse(await ev(`JSON.stringify((() => { const t = (s) => document.querySelector(s).getBoundingClientRect(), m=t('#map'), s=t('#surface'), c=t('#chat'), p=document.querySelector('#gamepad #view-joystick') /* gamepad (2026-11-07) */, pr=p?.getBoundingClientRect(), b=t('#map [role=group][aria-label=\"OpenWorld panels\"]'); return { mapa:m.top, mapaFin:m.bottom, lienzoFin:s.bottom, chat:c.top, pad:!!p, padTop:pr?.top||0,padBottom:pr?.bottom||0,padRight:pr?.right||0,mapRight:m.right,barraTop:b.top,barraBottom:b.bottom,barCount:document.querySelector('#map [role=group][aria-label=\"OpenWorld panels\"]').querySelectorAll(':scope > button').length, chatTopCount:document.querySelectorAll('#map-communication > button').length,padGone:!document.querySelector('.walk-pad'),directions:document.querySelectorAll('[data-direction]').length,profileHidden:document.querySelector('.cats [data-cat=Profile]').hidden,hojas:document.querySelectorAll('.sheet,#map [role=tablist]').length,ancho:document.documentElement.scrollWidth }; })())`));
+  ok(orden.mapa === 0 && orden.mapaFin >= 844 && orden.chat === 0 && orden.pad && orden.padTop >= orden.mapa && orden.padBottom <= orden.mapaFin && orden.padRight <= orden.mapRight && orden.barraTop >= orden.lienzoFin && orden.barraBottom <= orden.mapaFin && orden.barCount === 3 && orden.chatTopCount === 1 && orden.padGone && orden.directions === 0 && orden.profileHidden && orden.hojas <= 1 && orden.ancho <= 390, 'the phone page is not a single full-map showcase with retired walk controls: ' + JSON.stringify(orden));
 
-  // 4 · Army (TF-2: in the Play category, opened first): its voice in the panel shows, honest content, the link to the full army page.
-  const army = JSON.parse(await ev(`(async () => { const p=document.querySelector('.cats [data-cat=Profile]'); document.querySelector('#visitor-start').click();
-    for(let i=0;i<30 && !document.querySelector('#visitor-end');i++) await new Promise(r=>setTimeout(r,100)); p.click();
-    const s = document.getElementById('army-visit').closest('li'), r = s.getBoundingClientRect(); return JSON.stringify({ visible: r.height > 0, texto: s.innerText, enlace: !!s.querySelector('a[href="/game/army.html"]'), quien: s.dataset.speaker }); })()`));
-  ok(army.visible && army.quien === 'Army', 'the Army voice is not in the panel: ' + JSON.stringify(army));
-  ok(/^Army\s+NO_DATA: no troops adopted in this visit yet|^Army\s+Troops of this visit/.test(army.texto) && !army.enlace, 'the Army voice does not say its troops or NO_DATA, or still carries the retired army link: ' + army.texto);
+  // #924 split Profile and Army: only after a signed local visit may Army open.
+  // Read the genuine #army-visit status, not concatenated House/holdings text.
+  const army = JSON.parse(await ev(`(async () => { const p=document.querySelector('.cats [data-cat=Army]'); document.querySelector('#visitor-start').click();
+    for(let i=0;i<30 && !document.querySelector('#visitor-end');i++) await new Promise(r=>setTimeout(r,100));
+    if (p.hidden) return JSON.stringify({visible:false,cause:'Army unavailable after visit started'});
+    p.click(); const state=document.getElementById('army-visit'), s=state.closest('li'), r=s.getBoundingClientRect();
+    return JSON.stringify({visible:r.height>0, texto:state.textContent.trim(), enlace:!!s.querySelector('a[href="/game/army.html"]'), quien:s.dataset.speaker, selected:p.getAttribute('aria-pressed')}); })()`));
+  ok(army.visible && army.quien === 'Army' && army.selected === 'true', 'the signed visitor cannot open Army: ' + JSON.stringify(army));
+  ok(/^(?:NO_DATA: no troops adopted in this visit yet\.|Troops of this visit: [0-9]+\.)$/.test(army.texto) && !army.enlace,
+    'Army must show measured troop count or its absence, never a retired page link: ' + JSON.stringify(army));
   // the radio tabs: Echoes hides the Radio list, Radio shows it again.
   const radio = JSON.parse(await ev(`(async () => { const p = () => new Promise((r) => setTimeout(r, 120)); document.querySelector('.cats [data-cat=Communication]').click(); const c = document.getElementById('radio-chat'); if (!c) { return JSON.stringify({ falta: true }); }
     if (c.querySelector('.radio-chat-alterna').getAttribute('aria-expanded') !== 'true') c.querySelector('.radio-chat-alterna').click(); await p(); const tabs = [...c.querySelectorAll('[role=tab]')], l = document.getElementById('radio-chat-lista');
@@ -101,6 +113,8 @@ async function main() {
   ok(no404.length === 0, '«Check live nodes» requested a missing endpoint: ' + no404.join(' '));
   ok(/Live nodes (NO_DATA: \S|online)/.test(frase || '') && /world_publisher_unavailable$/.test(frase || ''), '«Check live nodes» did not announce a sentence with its cause: ' + frase);
   ok(excepciones.length === 0, '/ or /openworld/ threw: ' + excepciones.join(' | '));
+  const historyReads = await ev('window.__chatHistoryFixtureReads');
+  ok(Number.isSafeInteger(historyReads) && historyReads > 0, 'Chat Live history was not read through the local-only test fixture');
   ok(externas.length === 0, 'external requests: ' + externas.join(' '));
   console.log(JSON.stringify({ piece: 'ojo-carbono', receipt: fallos.length ? 'ROJO' : 'VERDE', landing_small: enLanding.length, openworld_small: enMapa.length, refresh: frase && frase.split(' · ').pop(), fallos }));
 }
