@@ -152,3 +152,30 @@ test('Fresh signed node identifiers use the exact Aduana canonical alphabet, inc
   ];
   assert.deepEqual(new Set(N.liveNodes(live).map(x=>x.id)), new Set(['primer-ancla','nodo.1.alpha','nodo.2_beta']));
 });
+
+test('offline OpenWorld: every script and stylesheet /openworld/ loads is precached by the service worker', () => {
+  // Measured on production ka (2026-11-21): 24 scripts were not precached, so OpenWorld could not start offline.
+  const lists = readFileSync(new URL('../../public/sw-listas.js', import.meta.url), 'utf8');
+  const loaded = [...html.matchAll(/(?:src|href)="(\/[^"?#]+\.(?:js|css))/g)].map((m) => m[1]);
+  assert.ok(loaded.length > 40, 'the page lists its scripts');
+  assert.deepEqual(loaded.filter((p) => !lists.includes("'" + p + "'")), []);
+});
+
+test('offline OpenWorld: scripts the page pulls in at run time are precached too (followed transitively)', () => {
+  // '/game/' + n + '.js' loaders (gamepad.js, map_aura.js) and literal .src assignments; 6 were missing on ka.
+  const lists = readFileSync(new URL('../../public/sw-listas.js', import.meta.url), 'utf8');
+  const read = (n) => { try { return readFileSync(new URL('../../public/game/' + n, import.meta.url), 'utf8'); } catch { return null; } };
+  const queue = [...html.matchAll(/src="\/game\/([^"?#]+\.js)/g)].map((m) => m[1]), seen = new Set(), dyn = new Set();
+  while (queue.length) {
+    const f = queue.shift(); if (seen.has(f)) continue; seen.add(f);
+    const lines = (read(f) || '').split('\n');
+    lines.forEach((l, i) => {
+      const names = [];
+      if (l.includes("'/game/' + n + '.js'")) for (const m of ((lines[i - 1] || '') + l).matchAll(/'([a-z0-9_]+)'/g)) names.push(m[1] + '.js');
+      for (const m of l.matchAll(/\.src = '\/game\/([a-z0-9_]+\.js)'/g)) names.push(m[1]);
+      for (const n of names) if (read(n) !== null) { dyn.add('/game/' + n); queue.push(n); }
+    });
+  }
+  assert.ok(dyn.size >= 30, 'the run-time loaders were found: ' + dyn.size);
+  assert.deepEqual([...dyn].filter((p) => !lists.includes("'" + p + "'")), []);
+});

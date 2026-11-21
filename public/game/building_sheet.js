@@ -70,7 +70,6 @@
   function focusFirst() { var f = list.querySelector('button'); if (f) { f.focus(); } }
   function close() { sheet.hidden = true; btn.setAttribute('aria-expanded', 'false'); btn.focus(); }
   function openSheet() {
-    if (root.AtlasPanelX && root.AtlasPanelX.exclusive) { root.AtlasPanelX.exclusive('building-sheet'); }
     sheet.hidden = false; btn.setAttribute('aria-expanded', 'true');
     if (data) { draw(want); want = null; focusFirst(); return; }
     say('Loading the nine buildings…');
