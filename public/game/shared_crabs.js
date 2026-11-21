@@ -75,9 +75,12 @@
       if (!remote) { return; }
       var seal = verified === true ? 'LIVE' : 'NO_DATA', why = verified === true ? '' : (cause || 'unverified');
       line.dataset.state = seal; line.dataset.cause = why;
-      var frame = { v: 'preceptoros.acho/1', id: 'online/visit', t: 0,
-        atoms: [{ k: 'presence', r: text, i: [] }], bands: ['ink'], change: [text],
-        sound: 'NO_DATA', soundCause: 'online_status_audio_not_measured', motion: 'NO_DATA', seal: seal };
+      // Use the same bounded Acho frame core as map/presence. A missing frame is NO_DATA, not a fake renderer.
+      var F = root.AtlasStateFrames;
+      if (!F || !F.stateFrame) { line.dataset.acho = 'NO_DATA(frame_core_unavailable)'; return; }
+      var frame = F.stateFrame({ id: 'online/visit', sentence: text, waves: [] });
+      frame.seal = seal;
+      if (F.valida(frame).length) { line.dataset.acho = 'NO_DATA(frame_breaks_the_law)'; return; }
       line.dataset.acho = JSON.stringify(frame);
       if (changed && typeof win.CustomEvent === 'function') {
         doc.dispatchEvent(new win.CustomEvent('acho:event', { detail: { id: frame.id, frame: frame } }));
@@ -207,7 +210,16 @@
       say('NO_DATA · this visit is not shared.', 'visit_not_shared', false);
       renderPeople(null); updateButton();
     }
-    box.addEventListener('visitor:render', function (e) { account = e.detail && e.detail.account ? e.detail.account : null; updateButton(); });
+    box.addEventListener('visitor:render', function (e) {
+      account = e.detail && e.detail.account ? e.detail.account : null;
+      // A real visitor is independent of a colony node. Reuse the EXISTING local free-walk
+      // cabin (0,0) when no node is LIVE. This is a crab spawn, NOT a node/service admission.
+      if (account && remote && !walker()) {
+        var ow = root.AtlasOpenworldView && root.AtlasOpenworldView();
+        if (ow && ow.controls && ow.controls.start) { ow.controls.start(true); }
+      }
+      updateButton();
+    });
     box.addEventListener('visitor:end', function () {
       account = null; if (remote) { consent.checked = false; }
       stop(''); if (!remote) { button.hidden = true; say(''); }
