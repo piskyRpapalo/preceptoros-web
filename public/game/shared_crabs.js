@@ -1,16 +1,7 @@
-// Shared crabs on the one map (Seam A, Mesa #34). EXPERIMENT: this piece does nothing unless the page runs on
-// loopback AND names a TEST authority by its port (?presence=8812). On the public site there is no authority, so
-// nothing is offered, nothing is asked of the network and nothing is drawn.
-// A future production authority can be reached via crab_presence_remote.js with explicit config — that adapter
-// defaults OFF, requires HTTPS, origin allowlist, consent, identity separation and bounded errors.
-// With a test authority and a visit, one button asks for consent. After it:
-//   - every hex the crab walks is signed (atlas.paso/1) and sent; the authority decides the cell;
-//   - a crab that stands still signs «still here» (atlas.presente/1) so it is not forgotten;
-//   - the authority's view around the crab is read while the page is visible, and the other crabs are drawn on the
-//     same map with the same crab body; a silent crab is drawn pale and its label says STALE (never colour alone);
-//   - each change is ONE event with four readings from crab_presence_acho.js: the live line (eye and screen reader),
-//     its notes (ear: a nearer crab is a higher note) and an «acho:event» with the frame (machine).
-// Parameters of the experiment, not policy: ?poll=ms (look every), ?beat=ms (still-here every), ?radius=hexes.
+// One OpenWorld presence layer for signed local TEST and consent-gated HTTPS Aduana.
+// Loopback ?presence=<port> is TEST-only. Public authority config is fixed, never URL-selected.
+// Visits are ephemeral and independent of nodes. Only the authority decides crab positions and TTL.
+// Existing comic crab painter and Acho show the same state; no second multiplayer engine.
 (function (root) {
   'use strict';
   // Pure: authority(location) → 'http://127.0.0.1:<port>' or null. Only loopback, only a port: no page can be
@@ -23,16 +14,12 @@
   // Requires crab_presence_remote.js to be loaded. The config must come from a page-level constant
   // (REMOTE_PRESENCE_CONFIG) — never from URL params, to prevent injection.
   // consentGranted must be exactly true (from a user event or separate consent flow); missing → null.
-  // NO_DATA(public_consent_UI_not_wired) — public loader remains OFF, no UI wired.
-  function remoteConfig(loc, consentGranted) {
-    if (consentGranted !== true) { return null; }
-    var R = root.AtlasCrabPresenceRemote;
-    if (!R || !R.create) { return null; }
-    var cfg = root.REMOTE_PRESENCE_CONFIG;
-    if (!cfg) { return null; } // no config → fail closed, nothing offered
-    var adapter = R.create(cfg, loc && loc.ancestorOrigins ? loc : (typeof window !== 'undefined' ? window : null), true);
-    if (!adapter) { return null; } // origin or URL rejected → fail closed
-    return adapter;
+  // The actual Window (never Location) supplies location.origin and fetch. Only the explicit click may call this.
+  function remoteConfig(win, consentGranted) {
+    if (consentGranted !== true || !win || !win.location || typeof win.fetch !== 'function') { return null; }
+    var R = root.AtlasCrabPresenceRemote, cfg = root.REMOTE_PRESENCE_CONFIG;
+    if (!R || !R.create || !cfg) { return null; }
+    return R.create(cfg, win, true);
   }
   function param(loc, name, fallback, min) {
     var m = new RegExp('[?&]' + name + '=(\\d{1,6})(?:&|$)').exec((loc && loc.search) || ''), n = m ? Number(m[1]) : fallback;
@@ -53,16 +40,75 @@
 
   function mount(doc, win) {
     var box = doc.getElementById('visitor-play'), surface = doc.getElementById('surface'), auth = authority(win.location);
-    if (!box || !surface || !auth) { return null; }
+    var remote = !auth && win.location && win.location.origin === 'https://preceptoros.org' && !!win.REMOTE_PRESENCE_CONFIG;
+    if (!box || !surface || (!auth && !remote)) { return null; }
     var POLL = param(win.location, 'poll', 500, 100), BEAT = param(win.location, 'beat', 2000, 500), RADIUS = param(win.location, 'radius', 12, 1);
-    var account = null, me = null, pos = null, view = null, others = null, lastLine = '', sentAt = 0, soundAt = 0, timers = [], audio = null, said = [], heard = [], coop = null;
+    var account = null, me = null, pos = null, view = null, others = null, lastLine = '', sentAt = 0, soundAt = 0, timers = [], audio = null, said = [], heard = [], coop = null, adapter = null, joining = false;
     var wrap = doc.createElement('div'); wrap.id = 'shared-crabs';
-    var button = doc.createElement('button'); button.type = 'button'; button.id = 'shared-crabs-join'; button.style.minHeight = '44px'; button.style.minWidth = '44px';
-    button.textContent = 'Share my crab on this map · test authority'; button.hidden = true;
-    var line = doc.createElement('p'); line.id = 'shared-crabs-line'; line.setAttribute('role', 'status'); line.setAttribute('aria-live', 'polite');
-    wrap.appendChild(button); wrap.appendChild(line); box.appendChild(wrap);
-    function say(text) { if (text !== line.textContent) { line.textContent = text; } }
+    var button = remote ? doc.getElementById('online-share') : doc.createElement('button');
+    var line = remote ? doc.getElementById('online-status') : doc.createElement('p');
+    var consent = remote ? doc.getElementById('online-consent') : null;
+    var disconnect = remote ? doc.getElementById('online-disconnect') : null;
+    var people = remote ? doc.getElementById('online-player-list') : null;
+    var peopleToggle = remote ? doc.getElementById('online-players-toggle') : null;
+    var peoplePanel = remote ? doc.getElementById('online-players') : null;
+    if (!button || !line || (remote && (!consent || !disconnect || !people || !peopleToggle || !peoplePanel))) { return null; }
+    if (!remote) {
+      button.type = 'button'; button.id = 'shared-crabs-join'; button.style.minHeight = '44px'; button.style.minWidth = '44px';
+      button.textContent = 'Share my crab on this map · test authority'; button.hidden = true;
+      line.id = 'shared-crabs-line'; line.setAttribute('role', 'status'); line.setAttribute('aria-live', 'polite');
+      wrap.appendChild(button); wrap.appendChild(line);
+    }
+    box.appendChild(wrap);
+    function say(text, cause, verified) {
+      var changed = text !== line.textContent;
+      if (changed) { line.textContent = text; }
+      if (!remote) { return; }
+      var seal = verified === true ? 'LIVE' : 'NO_DATA', why = verified === true ? '' : (cause || 'unverified');
+      line.dataset.state = seal; line.dataset.cause = why;
+      // Use the same bounded Acho frame core as map/presence. A missing frame is NO_DATA, not a fake renderer.
+      var F = root.AtlasStateFrames;
+      if (!F || !F.stateFrame) { line.dataset.acho = 'NO_DATA(frame_core_unavailable)'; return; }
+      var frame = F.stateFrame({ id: 'online/visit', sentence: text, waves: [] });
+      frame.seal = seal;
+      if (F.valida(frame).length) { line.dataset.acho = 'NO_DATA(frame_breaks_the_law)'; return; }
+      line.dataset.acho = JSON.stringify(frame);
+      if (changed && typeof win.CustomEvent === 'function') {
+        doc.dispatchEvent(new win.CustomEvent('acho:event', { detail: { id: frame.id, frame: frame } }));
+      }
+    }
+    function renderPeople(data) {
+      if (!remote) { return; }
+      var rows = data && Array.isArray(data.crabs) ? data.crabs.filter(function (c) {
+        return c && /^crab-[0-9a-f]{8}$/.test(c.id || '') && Number.isSafeInteger(c.q) && Number.isSafeInteger(c.r) && (c.seal === 'LIVE' || c.seal === 'STALE');
+      }).slice(0, 16) : [];
+      var count = rows.filter(function (c) { return c.seal === 'LIVE'; }).length;
+      peopleToggle.textContent = 'Players (' + count + ')';
+      while (people.firstChild) { people.removeChild(people.firstChild); }
+      if (!rows.length) {
+        var missing = doc.createElement('li'); missing.textContent = 'NO_DATA: no visitors verified by the shared authority.';
+        people.appendChild(missing);
+      }
+      rows.forEach(function (c) {
+        var li = doc.createElement('li');
+        li.textContent = (me && c.id === me.id ? 'You · ' : 'Visitor · ') + c.id + ' · ' + c.seal + ' · hex ' + c.q + ',' + c.r;
+        people.appendChild(li);
+      });
+    }
+    function showConsent() {
+      if (!remote) { return; }
+      peoplePanel.hidden = false; peopleToggle.setAttribute('aria-expanded', 'true');
+      var nt = doc.getElementById('online-nodes-toggle'), np = doc.getElementById('online-nodes');
+      if (nt && np) { np.hidden = true; nt.setAttribute('aria-expanded', 'false'); }
+    }
+    function updateButton() {
+      if (remote) {
+        button.hidden = false; button.disabled = !!me || joining;
+        disconnect.hidden = !me;
+      } else { button.hidden = !account || !!me || joining; }
+    }
     function send(path, body) {
+      if (remote) { return adapter ? adapter.send(path, body) : Promise.resolve({ ok: false, cause: 'consent_required' }); }
       return win.fetch(auth + path, { method: 'POST', body: JSON.stringify(body), cache: 'no-store', credentials: 'omit' }).then(function (r) { return r.json(); }, function () { return null; });
     }
     function load(src, name) {
@@ -74,9 +120,19 @@
     function walker() { var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(), C = ow && ow.controls; return C && C.walker ? C.walker() : null; }
     function redraw() { var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(); if (ow && ow.redraw) { ow.redraw(); } }
     function stop(cause) {
-      timers.forEach(function (t) { win.clearInterval(t); }); timers = []; me = null; view = null; others = null; heard = [];
+      timers.forEach(function (t) { win.clearInterval(t); }); timers = []; me = null; view = null; others = null; heard = []; joining = false;
       if (coop) { coop.stop(); coop = null; }
-      if (cause) { say('NO_DATA · sharing stopped · ' + cause); } button.hidden = !account; redraw();
+      if (adapter) { adapter.end(); adapter = null; }
+      if (remote) {
+        var recovery = cause === 'visit_already_open' || cause === 'authority_unreachable' ||
+          cause === 'chain_broken' || cause === 'replayed_step';
+        say(cause ? 'NO_DATA · sharing stopped · ' + cause +
+          '. Server presence expires by TTL.' + (recovery ?
+            ' For a new independent session, end your local visit and start a fresh ephemeral visit.' : '') :
+          'NO_DATA · this visit is not shared.', cause || 'visit_not_shared', false);
+        renderPeople(null);
+      } else if (cause) { say('NO_DATA · sharing stopped · ' + cause); }
+      updateButton(); redraw();
     }
     function refused(r) { stop((r && r.cause) || 'authority_unreachable'); }
     function hear(frame) {
@@ -88,40 +144,82 @@
       if (!me || doc.visibilityState === 'hidden') { return; }
       var id = me.id, v = await me.look({ q: pos.q, r: pos.r, radius: RADIUS });
       if (!me || me.id !== id) { return; }
-      if (!v || !Array.isArray(v.crabs)) { say('NO_DATA · the authority does not answer'); return; }
+      if (!v || !Array.isArray(v.crabs)) {
+        if (remote) { view = null; others = null; lastLine = ''; renderPeople(null); redraw(); }
+        say('NO_DATA · the authority does not answer', v && v.cause || 'authority_unreachable', false); return;
+      }
       if (!v.crabs.some(function (c) { return c.id === id; })) { stop('this visit was forgotten by the authority'); return; }
       view = v;
       var d = root.AtlasCrabPresenceAcho.describe(v, id, root.AtlasStateFrames, others, heard);
-      if (!d.ok) { say('NO_DATA · ' + d.cause); return; }
+      if (!d.ok) { say('NO_DATA · ' + d.cause, d.cause, false); return; }
+      renderPeople(v);
       others = d.others; heard = heard.concat(d.events || []).slice(-24);
       if (coop) { coop.see(v, d.others, pos); }
       if (d.line !== lastLine) {
-        lastLine = d.line; say(d.line); said.push(d.line); if (said.length > 40) { said.shift(); }
+        lastLine = d.line; say(remote ? 'Online · ' + d.line : d.line, '', remote); said.push(d.line); if (said.length > 40) { said.shift(); }
         doc.dispatchEvent(new win.CustomEvent('acho:event', { detail: { id: 'presence/' + id, frame: d.frame, view: v, news: d.news } }));
         hear(d.frame); redraw();
       }
     }
     async function join() {
+      if (joining || me) { return; }
       var w = walker();
-      if (!account || !w) { say('NO_DATA · start a visit and stand on the map first'); return; }
-      button.hidden = true; say('Asking the test authority…');
-      var Ctx = win.AudioContext || win.webkitAudioContext; try { audio = audio || (Ctx ? new Ctx() : null); } catch (e) { audio = null; }
+      if (!account || !w) {
+        showConsent(); say('NO_DATA · start a local visitor session before sharing.', 'visitor_not_started', false); return;
+      }
+      if (remote && consent.checked !== true) {
+        showConsent(); say('NO_DATA · check the consent box before sharing this visit.', 'consent_required', false); return;
+      }
+      joining = true; updateButton();
+      if (remote) {
+        showConsent();
+        adapter = remoteConfig(win, true);
+        if (!adapter) { stop('no_data_public_backend'); return; }
+      }
+      if (!remote) { button.hidden = true; }
+      say(remote ? 'Connecting to the approved HTTPS authority…' : 'Asking the test authority…', 'connecting', false);
+      var Ctx = win.AudioContext || win.webkitAudioContext;
+      try { audio = audio || (Ctx ? new Ctx() : null); } catch (e) { audio = null; }
       var got = await Promise.all([load('/game/crab_presence_client.js', 'AtlasCrabPresenceClient'), load('/game/crab_presence_acho.js', 'AtlasCrabPresenceAcho'), load('/game/acho_sonify.js', 'AtlasSonifyAcho'), load('/game/acho_math.js', 'AtlasAchoMath')]);
       if (got[3]) { got.push(await load('/game/acho_score.js', 'AtlasAchoScore'), await load('/game/coop_beacon.js', 'AtlasCoopBeacon')); }
       if (!got[0] || !got[1]) { stop('piece_not_loaded'); return; }
-      w = walker(); var mine = await got[0].join(account, send, true, [w.q, w.r]);
+      w = walker();
+      if (!w) { stop('visitor_position_unavailable'); return; }
+      var mine = await got[0].join(account, send, true, [w.q, w.r], remote ? { requireGenesis: true } : null);
       if (!mine.ok) { stop(mine.cause); return; }
-      me = mine; pos = { q: w.q, r: w.r }; sentAt = Date.now(); lastLine = ''; others = null;
-      say('Shared as ' + me.id + ' · the authority holds your cell'); wrap.dataset.id = me.id;
-      // The beacon, together: only when the authority names a beacon and the pieces loaded. Otherwise presence alone.
+      joining = false; me = mine; pos = { q: w.q, r: w.r }; sentAt = Date.now(); lastLine = ''; others = null;
+      say('Shared as ' + me.id + ' · awaiting first authority view', 'waiting_for_view', false); wrap.dataset.id = me.id;
+      updateButton();
+      // Reuse the same verified beacon and comic crab painter; no parallel multiplayer renderer.
       if (root.AtlasCoopBeacon && me.beacon) { coop = root.AtlasCoopBeacon.mount({ doc: doc, win: win, client: me, beacon: me.beacon, stage: doc.getElementById('stage'), surface: surface, redraw: redraw, audio: function () { return audio; } }); }
       timers.push(win.setInterval(look, POLL));
       timers.push(win.setInterval(function () { if (me && Date.now() - sentAt >= BEAT) { sentAt = Date.now(); me.beat().then(function (r) { if (me && r && r.ok === false && r.cause !== 'beat_too_soon') { refused(r); } }); } }, Math.max(250, Math.round(BEAT / 4))));
       look();
     }
     button.addEventListener('click', join);
-    box.addEventListener('visitor:render', function (e) { account = e.detail && e.detail.account ? e.detail.account : null; if (!me) { button.hidden = !account; } });
-    box.addEventListener('visitor:end', function () { account = null; stop(''); button.hidden = true; say(''); });
+    if (remote) {
+      disconnect.addEventListener('click', function () { consent.checked = false; stop('visitor_disconnected'); });
+      consent.addEventListener('change', function () { if (!consent.checked && me) { stop('consent_revoked'); } });
+      doc.addEventListener('visibilitychange', function () {
+        if (doc.visibilityState === 'hidden' && me) { stop('page_hidden'); }
+      });
+      say('NO_DATA · this visit is not shared.', 'visit_not_shared', false);
+      renderPeople(null); updateButton();
+    }
+    box.addEventListener('visitor:render', function (e) {
+      account = e.detail && e.detail.account ? e.detail.account : null;
+      // A real visitor is independent of a colony node. Reuse the EXISTING local free-walk
+      // cabin (0,0) when no node is LIVE. This is a crab spawn, NOT a node/service admission.
+      if (account && remote && !walker()) {
+        var ow = root.AtlasOpenworldView && root.AtlasOpenworldView();
+        if (ow && ow.controls && ow.controls.start) { ow.controls.start(true); }
+      }
+      updateButton();
+    });
+    box.addEventListener('visitor:end', function () {
+      account = null; if (remote) { consent.checked = false; }
+      stop(''); if (!remote) { button.hidden = true; say(''); }
+    });
     win.addEventListener('pagehide', function () { stop(''); });
     // Every hex the crab walks: one signed step. The authority's cell is the truth; a refusal ends the sharing aloud.
     box.addEventListener('visitor:advance', function () {
