@@ -1,9 +1,10 @@
-// G1 · LA VENTANA GRANDE (odd/tasks/mundo-grande.md, web#608), proved in a real browser on /openworld/ at the edge phone's
+// G1 · LA VENTANA GRANDE (odd/tasks/mundo-grande.md, web#608, updated web#924), proved in a real browser on /openworld/ at the edge phone's
 // size (360×716 CSS). Laws:
 // - before Explore, the map keeps its measured half (this is the starting point, not a law);
 // - the Explore button and the view bar are retired (Sovereign, 2026-11-07): the map carries only the two joysticks;
 // - openworld_page.js stays under 20 KiB and openworld/index.html under 8 KiB; map_wide.js stays under 4 KiB.
-// Sabotages: sin-composer removes the scroll needed by Talk; sin-highlight restores the overlapping floating ! on Play. Both must turn red.
+// - WEB #924: Chat Live (Communication) moved to separate TOP #map-communication; lower .cats bar has Welcome only before visit.
+// Sabotages: sin-composer removes Chat Live focus; sin-highlight restores the overlapping floating ! on Play. Both must turn red.
 // Uso: node atlas/map_wide_browser.mjs [carpeta-captura]
 import { createServer } from 'node:http';
 import { readFileSync, writeFileSync, statSync, existsSync } from 'node:fs';
@@ -11,6 +12,7 @@ import { resolve, extname, join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { launchChrome } from './chrome_launch.mjs';
+import { attachChatHistoryFixture } from './chatlive_history_fixture.mjs';
 
 const RAIZ = fileURLToPath(new URL('../', import.meta.url));
 const PUBLIC = join(RAIZ, 'public/');
@@ -25,14 +27,18 @@ function sirve(raiz) {
       let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
       let cuerpo = readFileSync(f);
-      if (ruta === '/game/terminal_panel.js' && SAB === 'sin-composer') { cuerpo = Buffer.from(String(cuerpo).replace("entry.scrollIntoView({ block: 'nearest', inline: 'nearest' });", '')); }
+      if (ruta === '/game/terminal_panel.js' && SAB === 'sin-composer') {
+        const source = String(cuerpo), anchor = 'input.focus({preventScroll:true});';
+        if (!source.includes(anchor)) { throw new Error('NO_DATA(sabotage_anchor_missing)'); }
+        cuerpo = Buffer.from(source.replace(anchor, ''));
+      }
       if (ruta === '/game/first_adventure.js' && SAB === 'sin-highlight') { cuerpo = Buffer.from(String(cuerpo).replace("bang.hidden = !!el.closest('#gamepad'); if (!bang.hidden) { place(el); }", "bang.hidden = false; place(el);")); }
       res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
   });
   return new Promise((r) => s.listen(0, '127.0.0.1', () => r(s)));
 }
-const fallos = [], medidas = {};
+const fallos = [], medidas = {}, externas = [];
 const ok = (cond, que) => { if (!cond) { fallos.push(que); } };
 let ws = null, ch = null, srv = null, id = 0;
 const pend = new Map();
@@ -61,12 +67,15 @@ async function main() {
   ws.addEventListener('message', (m) => {
     const d = JSON.parse(m.data);
     if (d.id && pend.has(d.id)) { pend.get(d.id)(d); pend.delete(d.id); }
+    if (d.method === 'Network.requestWillBeSent') { const u = d.params.request.url; if (/^https?:/.test(u) && new URL(u).origin !== origen) { externas.push(u); } }
     if (d.method === 'Runtime.exceptionThrown') { const x = d.params.exceptionDetails; fallos.push('exception: ' + String(x.exception?.description || x.text).split('\n')[0].slice(0, 90)); }
   });
   const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   const foto = async (n) => { if (CAPTURA) { const g = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, n), Buffer.from(g.result.data, 'base64')); } };
-  await cmd('Runtime.enable'); await cmd('Page.enable');
+  await cmd('Runtime.enable'); await cmd('Page.enable'); await cmd('Network.enable');
+  await cmd('Network.setBlockedURLs', { urls: ['https://api.preceptoros.org/*'] });
+  await attachChatHistoryFixture(cmd);
   await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });
   await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2500);
   await ev("document.querySelector('.cats [data-cat=Welcome]').click(), true");
@@ -105,28 +114,105 @@ async function main() {
   await foto('g1-antes.png');
   await ev("document.querySelector('.cats [data-cat=Welcome]').click(), true");
 
-  // The terminal controls belong below the map; panels cover the map, not the conversation.
+  // WEB #924: Chat Live (Communication) is in TOP #map-communication; lower .cats bar has Welcome only before visit.
+  // Verify: Welcome below, Chat Live top, exact ONE #voices sheet, panel exclusivity, click open/close,
+  // composer visible >=44px and focused, no offscreen/overlap, 2 joysticks, single map.
   const terminal = await ev(`(() => { const stage = document.getElementById('stage'), voices = document.getElementById('voices'),
-// Main's narrow terminal has two visible leaves; Welcome owns map places, Communication owns chat.
-    bar = document.querySelector('.cats'), joy = document.querySelector('#gamepad > #view-joystick'), // gamepad (2026-11-07): stick and leaves sit in the gamepad under the map
-   
-    composer = document.getElementById('entry'), buttons = bar && [...bar.querySelectorAll('button')].filter(b=>!b.hidden);
-    if (!bar || !joy || !buttons || buttons.length !== 2) return null;
-    const welcome=bar.querySelector('[data-cat=Welcome]'); welcome.click();
-    const placesInWelcome=!!voices.querySelector('#map-node-list'); welcome.click();
-    const communication=bar.querySelector('[data-cat=Communication]'); communication.click();
-    const out = { panelOnMap: voices.parentElement === stage && !voices.hidden,
-      barBelowMap: !!bar.closest('#map > #gamepad') && bar.getBoundingClientRect().top >= stage.getBoundingClientRect().bottom,
-      joyOnMap: joy.parentElement.parentElement === stage.parentElement, chatClosed: document.getElementById('chat').hidden,
-      composerVisible: composer.getBoundingClientRect().height >= 44 && composer.getBoundingClientRect().bottom <= innerHeight, pressed: communication.getAttribute('aria-pressed'),
-      noInvisibleTargets: !stage.querySelector(':scope > #map-proxies, :scope > .hitl-mark'),
-      placesInPanel: placesInWelcome };
-    communication.click(); out.closed = voices.hidden;
-    out.allPanels = Array.from(buttons).every(b => { b.click(); const ok = b.getAttribute('aria-pressed') === 'true' && !voices.hidden &&
-      Array.from(voices.querySelectorAll('[data-speaker]')).some(v => v.dataset.cat === b.dataset.cat && getComputedStyle(v).display !== 'none'); b.click(); return ok && voices.hidden; });
-    return out; })()`);
+    bar = document.querySelector('#gamepad .gp-mid > .cats'), // lower bar in gamepad: Welcome (visible), Profile/Army (hidden before visit)
+    topBar = document.getElementById('map-communication'), // TOP: Chat Live button + channel select
+    joy = document.querySelector('#gamepad > #view-joystick'),
+    composer = document.getElementById('entry');
+    // 1. Lower bar: exactly 1 visible button (Welcome) before visit.
+    const lowerButtons = bar && [...bar.querySelectorAll('button')].filter(b => !b.hidden);
+    if (!bar || !joy || !topBar || !voices || lowerButtons.length !== 1) return { fail: 'structure', bar: !!bar, lowerButtons: lowerButtons?.length, topBar: !!topBar, joy: !!joy, voices: !!voices };
+    const welcome = lowerButtons[0];
+    if (welcome.dataset.cat !== 'Welcome') return { fail: 'welcome-not-first', cat: welcome.dataset.cat };
+    // 2. TOP bar: Chat Live button present.
+    const chatLiveBtn = topBar.querySelector('[data-cat=Communication]');
+    if (!chatLiveBtn) return { fail: 'no-chat-live-top' };
+    // 3. Exact ONE #voices sheet.
+    const voicesCount = document.querySelectorAll('#voices').length;
+    if (voicesCount !== 1) return { fail: 'voices-count', count: voicesCount };
+    // 4. Panel is on the map (stage), initially closed.
+    const panelOnMap = voices.parentElement === stage;
+    const initiallyClosed = voices.hidden;
+    // 5. Welcome click opens panel, shows Welcome voices, hides others.
+    welcome.click();
+    const welcomeOpen = !voices.hidden && getComputedStyle(voices).display !== 'none';
+    const welcomeVoicesVisible = [...voices.querySelectorAll('[data-speaker]')].some(v => v.dataset.cat === 'Welcome' && getComputedStyle(v).display !== 'none');
+    const otherVoicesHidden = [...voices.querySelectorAll('[data-speaker]')].filter(v => v.dataset.cat !== 'Welcome').every(v => getComputedStyle(v).display === 'none');
+    // Panel overlaps the map (covers it, not the chat).
+    const vRect = voices.getBoundingClientRect(), sRect = stage.getBoundingClientRect();
+    const overlapsMap = vRect.top < sRect.bottom;
+    // 6. Welcome click again closes.
+    welcome.click();
+    const welcomeClosed = voices.hidden;
+    // 7. Chat Live click: opens panel, composer (#open-chat-text) visible >=44px and focused.
+    chatLiveBtn.click();
+    const chatOpen = !voices.hidden && getComputedStyle(voices).display !== 'none';
+    const chatVoicesVisible = [...voices.querySelectorAll('[data-speaker]')].some(v => v.dataset.cat === 'Communication' && getComputedStyle(v).display !== 'none');
+    const chatOtherHidden = [...voices.querySelectorAll('[data-speaker]')].filter(v => v.dataset.cat !== 'Communication').every(v => getComputedStyle(v).display === 'none');
+    // Chat Live composer is #open-chat-text (open_talk.js), not #entry (Guide form).
+    const chatComposer = document.getElementById('open-chat-text');
+    const cRect = chatComposer ? chatComposer.getBoundingClientRect() : { height: 0, bottom: 0, top: 0 };
+    const composerVisible = chatComposer && cRect.height >= 44 && cRect.bottom <= innerHeight && cRect.top >= 0;
+    const composerFocused = chatComposer && (document.activeElement === chatComposer || chatComposer.contains(document.activeElement));
+    // Chat Live button aria-pressed = true.
+    const chatPressed = chatLiveBtn.getAttribute('aria-pressed') === 'true';
+    // 8. Chat Live click again closes.
+    chatLiveBtn.click();
+    const chatClosed = voices.hidden;
+    // 9. Bar below map.
+    const barBelowMap = bar.getBoundingClientRect().top >= sRect.bottom - 1;
+    // 10. No invisible targets on stage.
+    const noInvisibleTargets = !stage.querySelector(':scope > #map-proxies, :scope > .hitl-mark');
+    // 11. Single map canvas (#surface) — other overlay canvases (invocation, fog) are allowed.
+    const singleMap = document.getElementById('surface') !== null;
+    // 12. No offscreen: voices within viewport.
+    const vRect2 = voices.getBoundingClientRect();
+    const noOffscreen = vRect2.bottom <= innerHeight && vRect2.right <= innerWidth;
+    return { panelOnMap, initiallyClosed, welcomeOpen, welcomeVoicesVisible, otherVoicesHidden, overlapsMap,
+      welcomeClosed, chatOpen, chatVoicesVisible, chatOtherHidden, composerVisible, composerFocused,
+      chatPressed, chatClosed, barBelowMap, noInvisibleTargets, singleMap, noOffscreen };
+  })()`);
   medidas.terminal = terminal;
-  ok(terminal && Object.values(terminal).every(v => v === true || v === 'true'), 'terminal layout or panel toggle failed: ' + JSON.stringify(terminal));
+  const terminalChecks = {
+    panelOnMap: 'voices panel not mounted on stage',
+    initiallyClosed: 'voices panel not initially closed',
+    welcomeOpen: 'Welcome click does not open panel',
+    welcomeVoicesVisible: 'Welcome voices not visible when Welcome open',
+    otherVoicesHidden: 'non-Welcome voices not hidden when Welcome open',
+    overlapsMap: 'panel does not overlap the map',
+    welcomeClosed: 'Welcome click does not close panel',
+    chatOpen: 'Chat Live click does not open panel',
+    chatVoicesVisible: 'Communication voices not visible when Chat Live open',
+    chatOtherHidden: 'non-Communication voices not hidden when Chat Live open',
+    composerVisible: 'composer not visible >=44px or offscreen when Chat Live open',
+    composerFocused: 'composer not focused when Chat Live open',
+    chatPressed: 'Chat Live button aria-pressed not true when open',
+    chatClosed: 'Chat Live click does not close panel',
+    barBelowMap: 'lower bar not below map',
+    noInvisibleTargets: 'invisible targets on stage',
+    singleMap: 'map canvas #surface missing',
+    noOffscreen: 'voices panel offscreen or overlapping viewport'
+  };
+  if (terminal && terminal.fail) {
+    fallos.push('terminal structure failed: ' + JSON.stringify(terminal));
+  } else if (terminal) {
+    for (const [key, msg] of Object.entries(terminalChecks)) {
+      if (terminal[key] !== true) {
+        fallos.push(msg + ': ' + JSON.stringify(terminal));
+      }
+    }
+  } else {
+    fallos.push('terminal evaluation returned null');
+  }
+
+  // No real third-party GET after clicking Chat Live: fixture must have been used.
+  const fixtureReads = await ev('window.__chatHistoryFixtureReads');
+  ok(Number.isSafeInteger(fixtureReads) && fixtureReads > 0,
+    'Chat Live did not use the test-only history fixture: ' + fixtureReads);
+  ok(externas.length === 0, 'browser tried to call an external host: ' + externas.slice(0, 3).join(', '));
 
   console.log(JSON.stringify({ piece: 'g1-ventana-grande', sabotaje: SAB || null, receipt: fallos.length ? 'ROJO' : 'VERDE', medidas, fallos }));
 }
