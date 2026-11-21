@@ -1,5 +1,5 @@
 // Canonical public presence endpoint. Static, origin-pinned; never configurable by visitors or query strings.
-// Aduana owns deployment, policy and grants. This does not establish service availability or consent.
+// The public gateway owns deployment, policy and grants. This does not establish service availability or consent.
 (function (root) {
   'use strict';
   if (!root || !root.location || root.location.origin !== 'https://preceptoros.org') { return; }

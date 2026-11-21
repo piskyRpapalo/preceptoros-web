@@ -1,4 +1,4 @@
-// One OpenWorld presence layer for signed local TEST and consent-gated HTTPS Aduana.
+// One OpenWorld presence layer for signed local TEST and consent-gated HTTPS authority.
 // Loopback ?presence=<port> is TEST-only. Public authority config is fixed, never URL-selected.
 // Visits are ephemeral and independent of nodes. Only the authority decides crab positions and TTL.
 // Existing comic crab painter and Acho show the same state; no second multiplayer engine.

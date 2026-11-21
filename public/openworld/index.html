@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>OpenWorld · PreceptorOS</title>
-<meta name="description" content="OpenWorld map and chat; the floor, and the live nodes when any.">
+<meta name="description" content="OpenWorld map, chat and verified nodes.">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png">
 <link rel="canonical" href="https://preceptoros.org/openworld/">
 <meta property="og:title" content="PreceptorOS · OpenWorld">
-<meta property="og:description" content="The map and chat; the floor, and the live nodes when any.">
+<meta property="og:description" content="Map, chat and verified nodes.">
 <meta property="og:url" content="https://preceptoros.org/openworld/">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://preceptoros.org/assets/og-card.png">
@@ -69,7 +69,7 @@
 <li class="voice" data-speaker="Map"><p class="state" id="state" aria-live="polite">Nodes online: checking…</p>
 <details class="tech"><summary>Technical details</summary><p id="state-tech"></p></details></li>
 <li class="voice" data-speaker="Floor"><p class="state" id="floor-state" aria-live="polite">Loading the map…</p>
-<details class="tech"><summary>Technical details</summary><p id="floor-tech">Map floor: loading the 7 chunks around the centre.</p></details></li>
+<details class="tech"><summary>Technical details</summary><p id="floor-tech">Map floor: loading nearby chunks.</p></details></li>
 <li class="voice" id="voice-walkers" data-speaker="Walkers"></li>
 <li class="voice" id="voice-zoom" data-speaker="Zoom"></li>
 <li class="voice" data-speaker="House" data-title="summons"><div id="visitor-play" aria-label="House"></div></li>
@@ -93,7 +93,7 @@
 <button type="submit">Send</button>
 </form>
 <p class="state" id="chat-note">The guide is still asleep; you can wake it below.</p>
-<details class="tech"><summary>Technical details</summary><p>NO_DATA: no local answer model is connected until you download the optional browser brain.</p></details>
+<details class="tech"><summary>Technical details</summary><p>NO_DATA: no local answer model is connected.</p></details>
 </section>
 </main>
 <script src="/game/semantic_table.js"></script>
