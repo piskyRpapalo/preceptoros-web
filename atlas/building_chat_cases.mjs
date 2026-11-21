@@ -66,11 +66,22 @@ test('Node 0 conversation remembers settled turns only within its building visit
   const wait = () => new Promise((done) => setImmediate(done));
   function sandbox(withThread = true) {
     const requests = [], log = [], created = [], pending = [];
-    const visitorPanel = { listeners: {}, addEventListener(name, cb) { this.listeners[name] = cb; } };
+    const visitorAccount = { info: () => ({ seed: 'a'.repeat(64) }) };
+    const visitorPanel = {
+      listeners: {},
+      addEventListener(name, cb) { this.listeners[name] = cb; },
+      dispatchEvent(event) {
+        if (event.type === 'visitor:tick' && this.listeners['visitor:render']) {
+          this.listeners['visitor:render']({ detail: { account: visitorAccount } });
+        }
+      }
+    };
     const root = {
       AtlasEdificios: { formaDe: () => 'hex-prism' },
       AtlasThreadWindow: withThread ? W : null,
-      AtlasVisitorAccount: { create: async () => ({ info: () => ({ seed: 'a'.repeat(64) }) }) },
+      // A building must not silently create a new visitor key; this factory is a tripwire.
+      AtlasVisitorAccount: { create() { throw new Error('building_minted_unapproved_identity'); } },
+      Event: class Event { constructor(type) { this.type = type; } },
       AtlasTerminalPanel: {
         mounted: { show() {} },
         decir(doc, list, id, text) { list.push({ id, text }); }
@@ -101,7 +112,7 @@ test('Node 0 conversation remembers settled turns only within its building visit
     };
     const page = { doc, entry: { before() {} }, state: { textContent: '' },
       line(kind, text) { log.push({ kind, text }); } };
-    return { C: root.AtlasBuildingChat, root, requests, pending, created, log, page, visitorPanel };
+    return { C: root.AtlasBuildingChat, root, requests, pending, created, log, page, visitorPanel, visitorAccount };
   }
   const b = { id: 'observatorio-primer-ancla' }, app = sandbox();
   app.C.open(b, app.page);
@@ -147,6 +158,21 @@ test('Node 0 conversation remembers settled turns only within its building visit
   ended.C.ask('Recall my secret'); await wait(); await wait();
   assert.equal(ended.requests.length, 2);
   assert.ok(!ended.requests[1].text.includes('ocean'), 'new visit must not inherit prior history');
+
+  const noVisitor = sandbox(); noVisitor.visitorPanel.dispatchEvent = function () {};
+  noVisitor.C.open(b, noVisitor.page);
+  noVisitor.C.ask('Do not mint another identity'); await wait(); await wait();
+  assert.equal(noVisitor.requests.length, 0, 'no visitor account means no chat request');
+  assert.ok(noVisitor.log.some((x) => /visit_not_started/.test(x.text)),
+    'missing account gives visible NO_DATA, not silent success');
+  const swapped = sandbox(); swapped.C.open(b, swapped.page);
+  swapped.C.ask('The code is lighthouse'); await wait(); await wait();
+  swapped.visitorPanel.listeners['visitor:render']({ detail: { account: { info: () => ({ seed: 'c'.repeat(64) }) } } });
+  swapped.C.open(b, swapped.page);
+  swapped.C.ask('Remember the code'); await wait(); await wait();
+  assert.equal(swapped.requests.length, 2);
+  assert.equal(swapped.requests[1].seed, 'c'.repeat(64));
+  assert.ok(!swapped.requests[1].text.includes('lighthouse'), 'new identity cannot inherit old memory');
 
   const noThread = sandbox(false); noThread.C.open(b, noThread.page);
   noThread.C.ask('Explain electricity'); await wait();
