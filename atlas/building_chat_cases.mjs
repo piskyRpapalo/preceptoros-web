@@ -161,7 +161,7 @@ test('Node 0 conversation remembers settled turns only within its building visit
 
   const noVisitor = sandbox(); noVisitor.visitorPanel.dispatchEvent = function () {};
   noVisitor.C.open(b, noVisitor.page);
-  noVisitor.C.ask('Do not mint another identity'); await wait(); await wait();
+  noVisitor.C.ask('Explain electricity without a visit'); await wait(); await wait();
   assert.equal(noVisitor.requests.length, 0, 'no visitor account means no chat request');
   assert.ok(noVisitor.log.some((x) => /visit_not_started/.test(x.text)),
     'missing account gives visible NO_DATA, not silent success');
