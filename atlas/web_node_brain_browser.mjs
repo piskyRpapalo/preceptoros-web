@@ -5,6 +5,7 @@ import { createServer } from 'node:http';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, extname, join } from 'node:path';
 import { launchChrome } from './chrome_launch.mjs';
+import { attachChatHistoryFixture } from './chatlive_history_fixture.mjs';
 import { fileURLToPath } from 'node:url';
 
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
@@ -48,6 +49,7 @@ async function main() {
   const cmd = (method, params = {}) => new Promise((r) => { const n = ++id; pend.set(n, r); ws.send(JSON.stringify({ id: n, method, params })); });
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   await cmd('Network.enable'); await cmd('Runtime.enable'); await cmd('Page.enable');
+  await attachChatHistoryFixture(cmd);
   await cmd('Page.navigate', { url: origen + '/openworld/?colony=alone' }); await espera(2500);
   // Before the click: nothing of the model is asked for, and the brain module is not even loaded.
   ok(modelos.length === 0 && (await ev('typeof window.AtlasWebNodeBrain')) === 'undefined', 'the brain loaded before the click');
@@ -77,6 +79,8 @@ async function main() {
   ok(r.text === 'Tap a hex to walk, or open Welcome and choose a node place; press Enter on a focused place to go in. The view joystick pans the map; its arrow keys work only while it has focus.', 'the guide did not give the real controls: ' + r.text);
   ok(!/Map panel/i.test(r.text), 'the guide names a panel that does not exist in the final controls: ' + r.text);
   ok(modelos.length === 6, 'expected manifest + 5 chunks + nothing else from /models/: ' + modelos.length);
+  const historyReads = await ev('window.__chatHistoryFixtureReads');
+  ok(Number.isSafeInteger(historyReads) && historyReads > 0, 'the explicit Chat Live action did not use synthetic local history');
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
   const speaker = JSON.parse(await ev(`(async () => { const w=(ms)=>new Promise(r=>setTimeout(r,ms)), map=document.querySelector('.cats [data-cat=Welcome]'); map.click();
     for(let i=0;i<50;i++){const b=document.querySelector('#map-node-list [data-node=home]');if(b){b.click();break;}await w(100);}

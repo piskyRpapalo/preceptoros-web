@@ -6,6 +6,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { launchChrome } from './chrome_launch.mjs';
+import { attachChatHistoryFixture } from './chatlive_history_fixture.mjs';
 
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
 const CAPTURE = process.argv[2] || null;
@@ -68,27 +69,7 @@ async function main() {
   };
   await command('Runtime.enable'); await command('Page.enable'); await command('Network.enable');
   await command('Network.setBlockedURLs', { urls: ['https://api.preceptoros.org/*'] });
-  // CI is an offline-origin browser test. It must not send ANY request to a public API.
-  // Explicitly opening Chat Live asks for public 24h history; a synthetic empty reply is
-  // injected ONLY into this ephemeral Chrome page. All other fetches keep real behavior,
-  // and Network.requestWillBeSent still rejects every external-origin attempt.
-  await command('Page.addScriptToEvaluateOnNewDocument', { source: `
-    (() => {
-      if (location.hostname !== '127.0.0.1') return;
-      const realFetch = window.fetch.bind(window);
-      window.__chatHistoryFixtureReads = 0;
-      window.fetch = function(input, init) {
-        const url = typeof input === 'string' ? input : input && input.url;
-        if (url === 'https://api.preceptoros.org/api/v1/ingesta/dia' && (!init || !init.method || init.method === 'GET')) {
-          window.__chatHistoryFixtureReads++;
-          return Promise.resolve(new Response(JSON.stringify({ mensajes: [] }), {
-            status: 200, headers: { 'content-type': 'application/json' }
-          }));
-        }
-        return realFetch(input, init);
-      };
-    })();
-  ` });
+  await attachChatHistoryFixture(command);
   await command('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   await command('Page.navigate', { url: origin + '/openworld/?colony=alone' }); await wait(2000);
 
