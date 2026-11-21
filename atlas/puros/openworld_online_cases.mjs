@@ -31,7 +31,7 @@ test('The actual page contains visible, labelled buttons BETWEEN joysticks and r
     assert.ok(html.includes('id="'+id+'"'), 'missing '+id);
   }
   assert.match(css, /#online-actions\{position:absolute/);
-  assert.match(css, /bottom:4px;left:76px;right:76px/);
+  assert.match(css, /bottom:4px;left:50%;right:auto;width:140px;transform:translateX\(-50%\)/);
   assert.match(css, /min-height:44px/);
   assert.match(css, /focus-visible/);
   assert.match(css, /forced-colors:active/);
