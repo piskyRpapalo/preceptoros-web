@@ -604,3 +604,14 @@ test('JUDGE R4: missing fetch cannot create active transport', () => {
   delete win.fetch;
   assert.equal(R.create(GOOD_CFG, win, true), null);
 });
+
+test('send: a failed request while the browser is offline says network_offline, not authority_unreachable', async () => {
+  const down = () => Promise.reject(new Error('net'));
+  const off = { ...mockWin('https://hexelion.example.com', down), navigator: { onLine: false } };
+  let r = await R.create(GOOD_CFG, off, true).send('/open', { key: 'x', consent: true });
+  assert.deepEqual([r.ok, r.cause], [false, 'network_offline']);
+  const on = { ...mockWin('https://hexelion.example.com', down), navigator: { onLine: true } };
+  r = await R.create(GOOD_CFG, on, true).send('/open', { key: 'x', consent: true });
+  assert.equal(r.cause, 'authority_unreachable', 'online but unreachable stays authority_unreachable');
+  assert.equal(R.bounded('network_offline'), 'network_offline');
+});
