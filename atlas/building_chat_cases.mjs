@@ -67,6 +67,7 @@ test('Node 0 conversation remembers settled turns only within its building visit
   function sandbox(withThread = true) {
     const requests = [], log = [], created = [], pending = [];
     const visitorAccount = { info: () => ({ seed: 'a'.repeat(64) }) };
+    const question = { value: '' };
     const visitorPanel = {
       account: visitorAccount,
       listeners: {},
@@ -103,7 +104,7 @@ test('Node 0 conversation remembers settled turns only within its building visit
     runInNewContext(readFileSync(new URL('../public/game/building_chat.js', import.meta.url), 'utf8'), root);
     const doc = {
       defaultView: root,
-      getElementById(id) { return id === 'chat-h' ? { textContent: '' } : id === 'log' ? log : id === 'visitor-play' ? visitorPanel : null; },
+      getElementById(id) { return id === 'chat-h' ? { textContent: '' } : id === 'log' ? log : id === 'visitor-play' ? visitorPanel : id === 'question' ? question : null; },
       createElement(tag) {
         const item = { tag, style: {}, hidden: false, listeners: {},
           addEventListener(name, cb) { this.listeners[name] = cb; } };
@@ -113,7 +114,7 @@ test('Node 0 conversation remembers settled turns only within its building visit
     };
     const page = { doc, entry: { before() {} }, state: { textContent: '' },
       line(kind, text) { log.push({ kind, text }); } };
-    return { C: root.AtlasBuildingChat, root, requests, pending, created, log, page, visitorPanel, visitorAccount };
+    return { C: root.AtlasBuildingChat, root, requests, pending, created, log, page, visitorPanel, visitorAccount, question };
   }
   const b = { id: 'observatorio-primer-ancla' }, app = sandbox();
   app.C.open(b, app.page);
@@ -175,6 +176,27 @@ test('Node 0 conversation remembers settled turns only within its building visit
   assert.equal(swapped.requests.length, 2);
   assert.equal(swapped.requests[1].seed, 'c'.repeat(64));
   assert.ok(!swapped.requests[1].text.includes('lighthouse'), 'new identity cannot inherit old memory');
+
+  // A second message while a remote turn is unsettled must not reuse the
+  // same chain; the draft is preserved (the map submit handler already cleared it).
+  const competing = sandbox(); competing.C.open(b, competing.page);
+  competing.root.delayed = true;
+  competing.C.ask('Explain the fjord'); await wait(); await wait();
+  competing.question.value = 'newer draft';
+  competing.C.ask('Compare the fjord'); await wait(); await wait();
+  assert.equal(competing.requests.length, 1,
+    'a second unsettled turn cannot reuse chain or race thread');
+  assert.equal(competing.question.value, 'newer draft Compare the fjord');
+  assert.ok(competing.log.some((x) => /NO_DATA.*chat_turn_pending/.test(x.text)),
+    'pending turn must explain the refusal accessibly');
+  competing.root.delayed = false;
+  competing.pending[0]({ ok: true, text: 'First settled answer',
+    chain: { tic: 1, hash: 'b'.repeat(64), sello: {} } });
+  await wait(); await wait();
+  competing.C.ask('Continue the fjord explanation'); await wait(); await wait();
+  assert.equal(competing.requests.length, 2,
+    'new outbound turn becomes possible after the first settles');
+  assert.ok(competing.requests[1].text.includes('First settled answer'));
 
   const noThread = sandbox(false); noThread.C.open(b, noThread.page);
   noThread.C.ask('Explain electricity'); await wait();
