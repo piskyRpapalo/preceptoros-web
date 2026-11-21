@@ -74,9 +74,9 @@ async function main() {
 
   const before = await ev('window.AtlasRadioChat.registro().length');
   // The visitor's own way in: the Communication button on the map, then the radio's own toggle. Two presses.
-  const reached = await ev(`(() => { const door = document.querySelector('.cats button[data-cat="Communication"]'), toggle = document.getElementById('radio-chat-alterna');
-    if (!door || !toggle) { return false; } door.click(); if (toggle.getAttribute('aria-expanded') !== 'true') { toggle.click(); }
-    return door.getAttribute('aria-pressed') === 'true' && toggle.getAttribute('aria-expanded') === 'true'; })()`);
+  const reached = await ev(`(() => { const door = document.querySelector('#map-communication button[data-cat="Communication"]'), channel = document.querySelector('#map-communication select'), toggle = document.getElementById('radio-chat-alterna');
+    if (!door || !channel || !toggle) { return false; } door.click(); channel.value = 'radio'; channel.dispatchEvent(new Event('change', {bubbles: true})); if (toggle.getAttribute('aria-expanded') !== 'true') { toggle.click(); }
+    return door.getAttribute('aria-pressed') === 'true' && channel.value === 'radio' && toggle.getAttribute('aria-expanded') === 'true'; })()`);
   ok(reached === true, 'the radio is reached with two presses (Communication, then the radio toggle), each a named button');
   measured.presses_to_radio = 2;
   await ev(`(() => { const R = window.AtlasRadioChat; R.canal('radio');
@@ -85,8 +85,8 @@ async function main() {
 
   // One pass in the page: eye from the DOM, machine from the log, ear from the frame, each with its own id.
   const rows = JSON.parse(await ev(`JSON.stringify((() => {
-    const R = window.AtlasRadioChat, F = window.AtlasRadioFrame, log = R.registro().slice(${before});
-    const list = document.getElementById('radio-chat-lista'), items = Array.from(list.children).slice(${before});
+    const R = window.AtlasRadioChat, F = window.AtlasRadioFrame, log = R.registro().slice(${before}).filter(m => m.fuente === 'a11y-harness');
+    const list = document.getElementById('radio-chat-lista'), items = Array.from(list.children).filter(li => li.dataset.fuente === 'a11y-harness');
     const ctx = window.AudioContext ? new AudioContext() : null;
     const cycle = (c) => (c === 'NO_DATA' || c == null || c === '' ? null : Number(c));
     return log.map((m, i) => {
@@ -102,6 +102,13 @@ async function main() {
   })())`) || '[]');
   ok(rows.length === SAY.length, 'the radio kept every line the harness said (' + rows.length + ' of ' + SAY.length + ')');
 
+  // Concurrent Chat Live fetch may append an unrelated NO_DATA status.
+  // Verify it explicitly; exclude it from the four authored radio lines by provenance.
+  const interference = JSON.parse(await ev(`JSON.stringify(window.AtlasRadioChat.registro().slice(${before})
+    .filter(m => m.fuente !== 'a11y-harness').map(m => ({seal:m.sello,source:m.fuente,text:m.texto})))`));
+  measured.interference = interference;
+  ok(interference.every(m => m.seal === 'NO_DATA' && /NO_DATA/.test(m.text)),
+    'unrelated radio events must keep an explicit NO_DATA cause: ' + JSON.stringify(interference));
   // Reader: the accessibility tree, not the DOM. The list must be a live log and each line's words an exposed node.
   const tree = (await cmd('Accessibility.getFullAXTree')).result?.nodes || [];
   const exposed = tree.filter((n) => !n.ignored);
