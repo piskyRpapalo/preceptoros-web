@@ -14,11 +14,11 @@
 4. `suite_census --check`: `atlas/puros/openworld_online_cases.mjs` was not in `gate.yml`. Declared.
 5. Offline presence said `authority_unreachable`; with `navigator.onLine === false` it now says `network_offline`.
 
-## Blocked effect
-`version_sw_gate` needs a new SW VERSION for the changed cached routes. The Mesa assigns the letter
-(`AGENTS.md:32`); Central proposed `preceptoros-2026-25-ka`, pending the Sovereign's explicit assignment.
-Until then the VERSION stays `preceptoros-2026-25-jz`: `NO_DATA(seal_letter_unassigned)`.
-After assignment: `python3 atlas/world.py` → `python3 counters.py` → `python3 bin/seal.py --sellar --version <V>`.
+## Service-worker VERSION
+`version_sw_gate` needs a new SW VERSION for the changed cached routes; the Mesa assigns the letter (`AGENTS.md:32`).
+Central proposed `preceptoros-2026-25-ka`; **the Sovereign assigned it on 2026-11-21**. Checked unused in every branch
+before use. Applied with the native chain: `atlas/world.py` → `counters.py` → `bin/seal.py --sellar --version`.
+`DEPLOY.md` precache count 182 → 186 (`bin/count_routes.py`).
 
 ## Not measured
 Production deploy (`manual-worker-deploy`), public CSP with `https://preceptoros.mvp.local`, physical three-crab E2E.
