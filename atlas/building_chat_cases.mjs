@@ -66,6 +66,7 @@ test('Node 0 conversation remembers settled turns only within its building visit
   const wait = () => new Promise((done) => setImmediate(done));
   function sandbox(withThread = true) {
     const requests = [], log = [], created = [], pending = [];
+    const visitorPanel = { listeners: {}, addEventListener(name, cb) { this.listeners[name] = cb; } };
     const root = {
       AtlasEdificios: { formaDe: () => 'hex-prism' },
       AtlasThreadWindow: withThread ? W : null,
@@ -90,7 +91,7 @@ test('Node 0 conversation remembers settled turns only within its building visit
     runInNewContext(readFileSync(new URL('../public/game/building_chat.js', import.meta.url), 'utf8'), root);
     const doc = {
       defaultView: root,
-      getElementById(id) { return id === 'chat-h' ? { textContent: '' } : id === 'log' ? log : null; },
+      getElementById(id) { return id === 'chat-h' ? { textContent: '' } : id === 'log' ? log : id === 'visitor-play' ? visitorPanel : null; },
       createElement(tag) {
         const item = { tag, style: {}, hidden: false, listeners: {},
           addEventListener(name, cb) { this.listeners[name] = cb; } };
@@ -100,7 +101,7 @@ test('Node 0 conversation remembers settled turns only within its building visit
     };
     const page = { doc, entry: { before() {} }, state: { textContent: '' },
       line(kind, text) { log.push({ kind, text }); } };
-    return { C: root.AtlasBuildingChat, root, requests, pending, created, log, page };
+    return { C: root.AtlasBuildingChat, root, requests, pending, created, log, page, visitorPanel };
   }
   const b = { id: 'observatorio-primer-ancla' }, app = sandbox();
   app.C.open(b, app.page);
@@ -137,6 +138,15 @@ test('Node 0 conversation remembers settled turns only within its building visit
   pending.pending[0]({ ok: true, text: 'Late answer', chain: { tic: 1 } });
   await wait(); await wait();
   assert.equal(pending.log.length, lengthBefore, 'late responses must not re-enter ended visits');
+
+  const ended = sandbox(); ended.C.open(b, ended.page);
+  ended.C.ask('The secret is ocean'); await wait(); await wait();
+  assert.equal(ended.requests.length, 1);
+  ended.visitorPanel.listeners['visitor:end']();
+  ended.C.open(b, ended.page);
+  ended.C.ask('Recall my secret'); await wait(); await wait();
+  assert.equal(ended.requests.length, 2);
+  assert.ok(!ended.requests[1].text.includes('ocean'), 'new visit must not inherit prior history');
 
   const noThread = sandbox(false); noThread.C.open(b, noThread.page);
   noThread.C.ask('Explain electricity'); await wait();
