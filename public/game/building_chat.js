@@ -114,6 +114,7 @@
     if (!inside) { return; }
     var id = inside.id; inside = null; generation += 1;
     if (thread) { thread.clear(); } thread = null; chain = null;
+    busy(false);
     leave.hidden = true; rackBtn.hidden = true; jewelBtn.hidden = true; title(null);
     page.state.textContent = 'Left building ' + id;
   }
@@ -159,6 +160,16 @@
   }
   function hexelion(b, text) {
     var w = page.doc.defaultView || root, windowThread = thread, ticket = generation;
+    if (asking) {
+      // openworld_page already cleared its input: preserve the new draft without
+      // sending a second turn under the same chat chain.
+      var input = page.doc.getElementById('question');
+      if (input && typeof input.value === 'string') {
+        input.value = input.value.trim() ? input.value + ' ' + text : text;
+      }
+      say('hexelion', 'NO_DATA · chat_turn_pending; message restored to input');
+      return;
+    }
     if (!windowThread) {
       say('hexelion', 'NO_DATA · thread_window_unavailable');
       return;
@@ -169,9 +180,14 @@
       say('hexelion', 'NO_DATA · ' + String(e && e.message || 'context_invalid').slice(0, 120));
       return;
     }
+    busy(true);
+    function release() { if (inside === b && generation === ticket) { busy(false); } }
     load('/game/classroom_chat.js', 'AtlasAulaChat', function (A) {
       if (inside !== b || generation !== ticket) { return; }
-      if (!A) { say('hexelion', 'NO_DATA · not_loaded: the door to Hexelion did not load.'); return; }
+      if (!A) {
+        say('hexelion', 'NO_DATA · not_loaded: the door to Hexelion did not load.');
+        release(); return;
+      }
       // Use the crab's already-consented visit key; never mint a second identity here.
       var account = visit ? Promise.resolve(visit) : Promise.reject(new Error('visit_not_started'));
       account.then(function (v) {
@@ -188,7 +204,7 @@
         if (inside === b && generation === ticket) {
           say('hexelion', 'NO_DATA · ' + String(e && e.message || e).slice(0, 120));
         }
-      });
+      }).then(release);
     });
   }
   function open(building, p) {
