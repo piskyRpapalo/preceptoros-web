@@ -103,11 +103,18 @@
   // screen reader hears the building as it hears the map. While a building is open, the chat input asks its bot; Escape
   // or the 44 px «Leave building» button closes it, and #state says so.
   var inside = null, page = null, leave = null, rackBtn = null, jewelBtn = null, asking = false, chain = null, visit = null;
+  var thread = null, generation = 0;
+  function freshThread() {
+    var W = root.AtlasThreadWindow;
+    return W && typeof W.create === 'function' ? W.create() : null;
+  }
   function title(b) { var h = page.doc.getElementById('chat-h'); if (h) { h.textContent = titleOf(b); } }
   function busy(on) { asking = on; rackBtn.disabled = on; jewelBtn.disabled = on; }
   function leaveBuilding() {
     if (!inside) { return; }
-    var id = inside.id; inside = null; leave.hidden = true; rackBtn.hidden = true; jewelBtn.hidden = true; title(null);
+    var id = inside.id; inside = null; generation += 1;
+    if (thread) { thread.clear(); } thread = null; chain = null;
+    leave.hidden = true; rackBtn.hidden = true; jewelBtn.hidden = true; title(null);
     page.state.textContent = 'Left building ' + id;
   }
   // say(id, text, title): one line in the conversation with its voice (terminal_panel.js LAS VOCES); a script line drops
@@ -151,17 +158,36 @@
     });
   }
   function hexelion(b, text) {
-    var w = page.doc.defaultView || root;
+    var w = page.doc.defaultView || root, windowThread = thread, ticket = generation;
+    if (!windowThread) {
+      say('hexelion', 'NO_DATA · thread_window_unavailable');
+      return;
+    }
+    var outgoing;
+    try { outgoing = windowThread.outbound(text, 600); }
+    catch (e) {
+      say('hexelion', 'NO_DATA · ' + String(e && e.message || 'context_invalid').slice(0, 120));
+      return;
+    }
     load('/game/classroom_chat.js', 'AtlasAulaChat', function (A) {
+      if (inside !== b || generation !== ticket) { return; }
       if (!A) { say('hexelion', 'NO_DATA · not_loaded: the door to Hexelion did not load.'); return; }
       var account = visit ? Promise.resolve(visit) : (root.AtlasVisitorAccount ? root.AtlasVisitorAccount.create(true) : Promise.reject(new Error('no visit')));
       account.then(function (v) {
-        visit = v; return A.turn(w.fetch.bind(w), v.info().seed, text, chain, '/openworld/#' + b.id);
+        if (inside !== b || generation !== ticket) { return null; }
+        visit = v;
+        return A.turn(w.fetch.bind(w), v.info().seed, outgoing, chain, '/openworld/#' + b.id);
       }).then(function (r) {
-        chain = r.chain; if (inside !== b) { return; }
+        if (!r || inside !== b || generation !== ticket) { return; }
+        chain = r.chain;
+        if (r.ok) { windowThread.append('you', text); windowThread.append('node0', r.text); }
         say('hexelion', r.ok ? r.text + (r.cut ? ' [shortened]' : '') : A.plain(r.cause) + (r.retry ? ' · wait ' + r.retry + ' s' : ''));
         if (r.ok && A.renderReceipt) A.renderReceipt(page.doc, page.doc.getElementById('log'), r.receiptState);
-      }).catch(function (e) { say('hexelion', 'NO_DATA · ' + String(e && e.message || e).slice(0, 120)); });
+      }).catch(function (e) {
+        if (inside === b && generation === ticket) {
+          say('hexelion', 'NO_DATA · ' + String(e && e.message || e).slice(0, 120));
+        }
+      });
     });
   }
   function open(building, p) {
@@ -186,6 +212,8 @@
       p.doc.addEventListener('keydown', function (e) { if (e.key === 'Escape' && inside) { e.preventDefault(); leaveBuilding(); } });
     }
     if (inside && inside.id === building.id) { return; }
+    if (thread) { thread.clear(); }
+    generation += 1; thread = freshThread();
     inside = building; leave.hidden = false; rackBtn.hidden = false; jewelBtn.hidden = false; title(building);
     chain = { tic: 0, hash: null, sello: null };
     // Appended, never overwritten: what was just said (e.g. the HITL «Needs you» opening) stays in the state log.
