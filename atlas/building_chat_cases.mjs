@@ -68,11 +68,12 @@ test('Node 0 conversation remembers settled turns only within its building visit
     const requests = [], log = [], created = [], pending = [];
     const visitorAccount = { info: () => ({ seed: 'a'.repeat(64) }) };
     const visitorPanel = {
+      account: visitorAccount,
       listeners: {},
       addEventListener(name, cb) { this.listeners[name] = cb; },
       dispatchEvent(event) {
         if (event.type === 'visitor:tick' && this.listeners['visitor:render']) {
-          this.listeners['visitor:render']({ detail: { account: visitorAccount } });
+          this.listeners['visitor:render']({ detail: { account: this.account } });
         }
       }
     };
@@ -167,7 +168,8 @@ test('Node 0 conversation remembers settled turns only within its building visit
     'missing account gives visible NO_DATA, not silent success');
   const swapped = sandbox(); swapped.C.open(b, swapped.page);
   swapped.C.ask('The code is lighthouse'); await wait(); await wait();
-  swapped.visitorPanel.listeners['visitor:render']({ detail: { account: { info: () => ({ seed: 'c'.repeat(64) }) } } });
+  swapped.visitorPanel.account = { info: () => ({ seed: 'c'.repeat(64) }) };
+  swapped.visitorPanel.listeners['visitor:render']({ detail: { account: swapped.visitorPanel.account } });
   swapped.C.open(b, swapped.page);
   swapped.C.ask('Remember the code'); await wait(); await wait();
   assert.equal(swapped.requests.length, 2);
