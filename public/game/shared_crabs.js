@@ -43,7 +43,7 @@
     var remote = !auth && win.location && win.location.origin === 'https://preceptoros.org' && !!win.REMOTE_PRESENCE_CONFIG;
     if (!box || !surface || (!auth && !remote)) { return null; }
     var POLL = param(win.location, 'poll', 500, 100), BEAT = param(win.location, 'beat', 2000, 500), RADIUS = param(win.location, 'radius', 12, 1);
-    var account = null, me = null, pos = null, view = null, others = null, lastLine = '', sentAt = 0, soundAt = 0, timers = [], audio = null, said = [], heard = [], coop = null, adapter = null, joining = false;
+    var account = null, me = null, pos = null, view = null, others = null, lastLine = '', sentAt = 0, soundAt = 0, timers = [], audio = null, said = [], heard = [], coop = null, adapter = null, joining = false, generation = 0;
     var wrap = doc.createElement('div'); wrap.id = 'shared-crabs';
     var button = remote ? doc.getElementById('online-share') : doc.createElement('button');
     var line = remote ? doc.getElementById('online-status') : doc.createElement('p');
@@ -120,6 +120,7 @@
     function walker() { var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(), C = ow && ow.controls; return C && C.walker ? C.walker() : null; }
     function redraw() { var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(); if (ow && ow.redraw) { ow.redraw(); } }
     function stop(cause) {
+      generation++; // Invalidate every in-flight load/open before changing the local session.
       timers.forEach(function (t) { win.clearInterval(t); }); timers = []; me = null; view = null; others = null; heard = []; joining = false;
       if (coop) { coop.stop(); coop = null; }
       if (adapter) { adapter.end(); adapter = null; }
@@ -170,7 +171,7 @@
       if (remote && consent.checked !== true) {
         showConsent(); say('NO_DATA · check the consent box before sharing this visit.', 'consent_required', false); return;
       }
-      joining = true; updateButton();
+      joining = true; var ticket = ++generation; updateButton();
       if (remote) {
         showConsent();
         adapter = remoteConfig(win, true);
@@ -181,11 +182,14 @@
       var Ctx = win.AudioContext || win.webkitAudioContext;
       try { audio = audio || (Ctx ? new Ctx() : null); } catch (e) { audio = null; }
       var got = await Promise.all([load('/game/crab_presence_client.js', 'AtlasCrabPresenceClient'), load('/game/crab_presence_acho.js', 'AtlasCrabPresenceAcho'), load('/game/acho_sonify.js', 'AtlasSonifyAcho'), load('/game/acho_math.js', 'AtlasAchoMath')]);
+      if (ticket !== generation || (remote && !consent.checked)) { return; }
       if (got[3]) { got.push(await load('/game/acho_score.js', 'AtlasAchoScore'), await load('/game/coop_beacon.js', 'AtlasCoopBeacon')); }
+      if (ticket !== generation || (remote && !consent.checked)) { return; }
       if (!got[0] || !got[1]) { stop('piece_not_loaded'); return; }
       w = walker();
       if (!w) { stop('visitor_position_unavailable'); return; }
       var mine = await got[0].join(account, send, true, [w.q, w.r], remote ? { requireGenesis: true } : null);
+      if (ticket !== generation || (remote && !consent.checked)) { return; }
       if (!mine.ok) { stop(mine.cause); return; }
       joining = false; me = mine; pos = { q: w.q, r: w.r }; sentAt = Date.now(); lastLine = ''; others = null;
       say('Shared as ' + me.id + ' · awaiting first authority view', 'waiting_for_view', false); wrap.dataset.id = me.id;
@@ -199,9 +203,9 @@
     button.addEventListener('click', join);
     if (remote) {
       disconnect.addEventListener('click', function () { consent.checked = false; stop('visitor_disconnected'); });
-      consent.addEventListener('change', function () { if (!consent.checked && me) { stop('consent_revoked'); } });
+      consent.addEventListener('change', function () { if (!consent.checked && (me || joining)) { stop('consent_revoked'); } });
       doc.addEventListener('visibilitychange', function () {
-        if (doc.visibilityState === 'hidden' && me) { stop('page_hidden'); }
+        if (doc.visibilityState === 'hidden' && (me || joining)) { stop('page_hidden'); }
       });
       say('NO_DATA · this visit is not shared.', 'visit_not_shared', false);
       renderPeople(null); updateButton();
