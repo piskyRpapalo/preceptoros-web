@@ -5,8 +5,8 @@
 #gamepad .gp-mid :is(.gp-b,.cats button){background-color:var(--afffaf0);border-color:var(--a1d1b26);box-shadow:0 4px 0 var(--a1d1b26);font-weight:900}
 #gamepad #gp-play:not([hidden]),
 body:not(:has(#log .turn.them.pending)) #gamepad:has(#gp-play[hidden]) .gp-mid [data-fa-next]:not([hidden]),
-body:has(#log .turn.them.pending) #gamepad:has(#gp-play[hidden]) .cats [data-cat=Communication]:not([hidden]),
-body:not(:has(#log .turn.them.pending)) #gamepad:has(#gp-play[hidden]):not(:has(.gp-mid [data-fa-next]:not([hidden]))) .cats [data-cat=Communication]:not([hidden]){background-color:var(--affe58a);border-width:3px;box-shadow:0 4px 0 var(--a1d1b26);font-weight:900}
+body:has(#log .turn.them.pending) #map:has(#gamepad #gp-play[hidden]) #map-communication [data-cat=Communication]:not([hidden]),
+body:not(:has(#log .turn.them.pending)) #map:has(#gamepad #gp-play[hidden]):not(:has(#gamepad .gp-mid [data-fa-next]:not([hidden]))) #map-communication [data-cat=Communication]:not([hidden]){background-color:var(--affe58a);border-width:3px;box-shadow:0 4px 0 var(--a1d1b26);font-weight:900}
 #gamepad .gp-mid :is(.gp-b,.cats button):active{box-shadow:0 1px 0 var(--a1d1b26)}
 #gamepad .gp-mid :is(.gp-b,.cats button):disabled{opacity:.55}
 @media (forced-colors:active){
@@ -18,8 +18,8 @@ body:has(#log .turn.them.pending) #gamepad:has(#gp-play[hidden]) .cats [data-cat
 @media (forced-colors:active){
 #gamepad #gp-play:not([hidden]),
 body:not(:has(#log .turn.them.pending)) #gamepad:has(#gp-play[hidden]) .gp-mid [data-fa-next]:not([hidden]),
-body:has(#log .turn.them.pending) #gamepad:has(#gp-play[hidden]) .cats [data-cat=Communication]:not([hidden]),
-body:not(:has(#log .turn.them.pending)) #gamepad:has(#gp-play[hidden]):not(:has(.gp-mid [data-fa-next]:not([hidden]))) .cats [data-cat=Communication]:not([hidden]){
+body:has(#log .turn.them.pending) #map:has(#gamepad #gp-play[hidden]) #map-communication [data-cat=Communication]:not([hidden]),
+body:not(:has(#log .turn.them.pending)) #map:has(#gamepad #gp-play[hidden]):not(:has(#gamepad .gp-mid [data-fa-next]:not([hidden]))) #map-communication [data-cat=Communication]:not([hidden]){
   border-width:3px;outline:3px solid Highlight;outline-offset:-3px;
 }}
 

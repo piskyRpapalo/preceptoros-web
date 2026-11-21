@@ -21,7 +21,7 @@ async function main(){
  const measure=()=>ev(`JSON.stringify((()=>{
   const p=document.getElementById('gamepad'), c=getComputedStyle(p), maskEl=document.getElementById('gp-play');
   const visible=e=>{const r=e.getBoundingClientRect(),cs=getComputedStyle(e);return !e.hidden&&r.width>0&&r.height>0&&cs.visibility!=='hidden'&&cs.display!=='none'};
-  const buttons=[...p.querySelectorAll('.gp-mid button')].filter(visible);
+  const buttons=[...p.querySelectorAll('.gp-mid button'),...document.querySelectorAll('#map-communication button')].filter(visible);
   const forced=matchMedia('(forced-colors:active)').matches;
   const v=document.createElement('i');v.style.color='var(--affe58a)';document.body.appendChild(v);const yellow=getComputedStyle(v).color;v.remove();
   return {phase:document.documentElement.dataset.owPhase,primary:buttons.filter(b=>{
@@ -39,7 +39,7 @@ async function main(){
   // a missing CSS asset stays RED after the bounded 90 × 150 ms gate.
   let ready=false;
   for(let j=0;j<90&&!ready;j++){
-    ready=await ev("(()=>{const p=document.getElementById('gp-play');return !!document.getElementById('gamepad')&&!!document.querySelector('#gamepad #gp-letters')&&!!document.querySelector('#gamepad .cats [data-cat=Communication]')&&!!p&&String(getComputedStyle(p,'::before').maskImage).includes('url(')&&parseFloat(getComputedStyle(p).borderTopWidth)>=3})()");
+    ready=await ev("(()=>{const p=document.getElementById('gp-play');return !!document.getElementById('gamepad')&&!!document.querySelector('#gamepad #gp-letters')&&!!document.querySelector('#map-communication [data-cat=Communication]')&&!!p&&String(getComputedStyle(p,'::before').maskImage).includes('url(')&&parseFloat(getComputedStyle(p).borderTopWidth)>=3})()");
     if(!ready)await wait(150);
   }
   ok(ready,'gamepad CSS and Acho mask not ready at '+w);if(!ready)continue;
