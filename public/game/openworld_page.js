@@ -168,6 +168,16 @@
     draw(); renderFrases();
     if (more) { raiz.requestAnimationFrame(step); } else { looping = false; }
   }
+  // The online node picker navigates ONLY to the currently measured LIVE colony already on this map.
+  // It never creates a node, signs a grant, opens a private service or changes the historical record.
+  doc.addEventListener('online:walk-node', function (e) {
+    var id = e.detail && e.detail.id;
+    var found = colonia && Array.isArray(colonia.nodes) && colonia.nodes.some(function (n) {
+      return n.id === id && colony_seals[n.id] === 'LIVE' && Number.isSafeInteger(n.q) && Number.isSafeInteger(n.r);
+    });
+    if (!found) { if (CCT) { CCT.say('NO_DATA: node has no fresh verified heartbeat.'); } return; }
+    if (CCT && CCT.walkTo(id)) { walkLoop(); }
+  });
   surface.addEventListener('click', function (e) {
     if (!CCT || !CP) { return; }
     var r = surface.getBoundingClientRect();
@@ -290,6 +300,12 @@
       raiz.AtlasOpenworldState.leer(merged);
       live = 'ok'; live_fuente = d.cobertura && d.cobertura.fuente ? String(d.cobertura.fuente).slice(0, 40) : 'NO_DATA';
       accept(merged); render();
+      // One vetted feed shared by the map, the selector, screen readers and Acho. Never fetch a second node index.
+      doc.dispatchEvent(new raiz.CustomEvent('world:nodes', { detail: {
+        ok: d.cobertura && d.cobertura.estado === 'MEDIDO',
+        nodes: merged.colonia.nodes, buildings: merged.colonia.buildings,
+        source: '/api/world-state', cause: d.cobertura && d.cobertura.causa
+      } }));
       if (d.cobertura && d.cobertura.estado === 'NO_DATA') { state.textContent += ' · Live nodes NO_DATA: ' + d.cobertura.causa; }
     },
     fail: function (cause) { live = cause; if (tutorial) { accept(tutorial); } render(); state.textContent += ' · Live nodes NO_DATA: ' + cause; }
