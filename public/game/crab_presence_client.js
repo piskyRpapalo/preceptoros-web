@@ -12,11 +12,24 @@
   var enc = new TextEncoder();
   function hex(buffer) { return Array.from(new Uint8Array(buffer), function (v) { return v.toString(16).padStart(2, '0'); }).join(''); }
   async function digest(text) { return hex(await root.crypto.subtle.digest('SHA-256', enc.encode(text))); }
-  async function join(account, send, consent, start) {
+  async function join(account, send, consent, start, options) {
     if (consent !== true) { return { ok: false, cause: 'consent_required' }; }
     var key = account.info().publicKey, seq = 0, prev = 'genesis', last = null, busy = Promise.resolve();
     var opened = await send('/open', start ? { key: key, consent: true, start: start } : { key: key, consent: true });
     if (!opened || opened.ok !== true) { return { ok: false, cause: (opened && opened.cause) || 'authority_unreachable' }; }
+    // The production Durable Object creates a fresh unpredictable chain genesis at /open.
+    // A reused session's first signed step MUST NOT fall back to the local TEST literal.
+    if (options && options.requireGenesis === true) {
+      if (typeof opened.genesis !== 'string' || !/^[0-9a-f]{64}$/.test(opened.genesis)) {
+        return { ok: false, cause: 'genesis_missing_or_invalid' };
+      }
+      prev = opened.genesis;
+    } else if (opened.genesis !== undefined) {
+      if (typeof opened.genesis !== 'string' || !/^[0-9a-f]{64}$/.test(opened.genesis)) {
+        return { ok: false, cause: 'genesis_invalid' };
+      }
+      prev = opened.genesis;
+    }
     // One record at a time: two records signed at once would share a sequence number and one would be refused.
     function sign(record) {
       var run = busy.then(async function () {
