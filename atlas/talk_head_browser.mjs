@@ -92,7 +92,7 @@ async function main() {
     ok(await hasta('!!document.getElementById("visitor-start") && !!window.AtlasTalkHead', 15000), w + ': page or head not loaded');
     await ev('document.getElementById("visitor-start").click()');
     ok(await hasta('!!document.getElementById("visitor-beacon")', 10000), w + ': visit');
-    await ev('(()=>{const c=document.querySelector(".cats [data-cat=Communication]"); if(c) c.click(); return 1})()');
+    await ev('(()=>{const b=document.querySelector("#map-communication button[data-cat=Communication]"), q=document.querySelector("#map-communication select"); if(!b||!q)throw new Error("visible_chat_controls_missing"); b.click(); q.value="chat"; q.dispatchEvent(new Event("change",{bubbles:true})); return 1})()');
     const r = JSON.parse(await ev(ASK + '(' + reduce + ')')); medidas[w] = { steps: (r.steps || []).length, headW: r.headW, buttons: r.buttons };
     const full = 'Node 0 · ' + TEXT;
     ok(r.reader === full && r.veiled && r.isHead && r.artHidden && !r.liveInHead && r.invalidReceiptShown, w + ': the reader does not get the full accessible answer beside the head, or missing fail-closed receipt: ' + JSON.stringify({ reader: r.reader, veiled: r.veiled, head: r.isHead, art: r.artHidden, live: r.liveInHead, receiptNoData: r.invalidReceiptShown }));
