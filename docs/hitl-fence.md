@@ -139,3 +139,40 @@ line — the law of hashes), the slug (`[A-Za-z0-9#._-]+`), and the date (betwee
 the head commit's date and today). A sign-off served on a moved head needs a
 new line. Re-fire without a new push: edit the pull request body (the
 `edited` event re-runs `hitl`).
+
+
+## Goal-scoped networking HITL · 22 November 2026
+
+An authenticated **OWNER GOAL** can authorize multiple networking PR heads inside
+one narrowly scoped objective. Post **one** new comment as GitHub account
+`piskyRpapalo` to the existing private issue `piskyRpapalo/buzon#30`:
+
+```text
+AUTORIZACION GOAL SOBERANO
+HITL-GOAL: web-network-wiring-20261122 network piskyRpapalo/preceptoros-web claude/network- 2026-11-30 public/game/network_*.js,atlas/network_*.py
+```
+
+The agent writes one unsigned reference in each covered PR description:
+
+`USES-GOAL: web-network-wiring-20261122`
+
+The same OWNER goal grants **code/PR review eligibility** to successive commits
+without re-signing each SHA. The required `hitl` check evaluates the
+exact changed-file list on each PR update: owner API login and public numeric ID,
+unaltered author comment, matching repository and same-repository source, branch
+prefix, UTC expiry within 14 days of creation, 12 or fewer safe path patterns
+and at most 100 modified/added files. Sensitive identity/auth, signing, policy,
+secrets, deployment workflows, HITL sources, deletion and rename remain excluded.
+An owner-originated `REVOKE-GOAL: web-network-wiring-20261122`
+permanently invalidates that goal ID.
+
+The existing exact-head `FIRMA SOBERANO` remains the fallback for PRs
+without a valid scope. No automatic merge, live deployment, privileged grant,
+remote system change or cryptographic signature is implied by a goal. CI remains
+independent. After creating a goal, rerun that PR's own hitl job once; future
+commits rerun it automatically without another human action.
+
+**Security limitation:** GitHub user identity is not an SSHSIG signature.
+An agent that holds OWNER-equivalent write credentials to the private register
+could impersonate the author. Keep registry write access separate from agent
+tokens; never copy tokens or private keys into a PR.
