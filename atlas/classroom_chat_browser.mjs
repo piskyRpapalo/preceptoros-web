@@ -99,7 +99,7 @@ async function main() {
 
   // Turn 2: Hexelion sleeps → plain words with the cause; the request carried the seal and the expected hash.
   await envia('Are you there?');
-  ok(await hasta("document.getElementById('chat-log').innerText.includes('Hexelion is asleep right now.')", 5000), 'a sleeping Hexelion is not said in plain words: ' + await log());
+  ok(await hasta("document.getElementById('chat-log').innerText.includes('The rack assistant is asleep right now.')", 5000), 'a sleeping Hexelion is not said in plain words: ' + await log());
   const c2 = JSON.parse((await ev('window.__llamadas[1] && window.__llamadas[1].body')) || '{}');
   ok(c2.tic === 2 && c2.hash_esperado === sha(BURBUJA) && c2.sello && c2.sello.tic === 1 && c2.estado?.visita === c1.estado?.visita, 'turn 2 does not carry the seal of turn 1: ' + JSON.stringify(c2).slice(0, 200));
 

@@ -6,15 +6,15 @@
   'use strict';
   var API = 'https://api.preceptoros.org/api/v1/chat', V = 'preceptoros.chat/1', MAX = 600, DB = 'aula-chat';
   var PLAIN = {
-    nodo_dormido: 'Hexelion is asleep right now.', aula_rechaza: 'Hexelion is not taking visitors right now.',
-    respuesta_fuera_de_ley: 'Hexelion answered something we cannot show.', aula_sin_llave: 'The door to Hexelion is not set up yet.',
-    limitador_ausente: 'The door to Hexelion is not set up yet.', tiempo_agotado: 'Hexelion took too long to answer.',
+    nodo_dormido: 'The rack assistant is asleep right now.', aula_rechaza: 'The rack assistant is not taking visitors right now.',
+    respuesta_fuera_de_ley: 'The rack assistant answered something we cannot show.', aula_sin_llave: 'The door to the rack assistant is not set up yet.',
+    limitador_ausente: 'The door to the rack assistant is not set up yet.', tiempo_agotado: 'The rack assistant took too long to answer.',
     limite_visita: 'Wait a minute before the next message.', limite_red: 'Too many messages from your network; wait a minute.',
     visita_agotada: 'This visit has used all its turns. Leave and come back for a new one.',
     stale: 'Your chat was out of step; it starts again.', cief_invalido: 'That message could not be sent as it is.',
     offline: 'You are offline, so nothing was sent.', red: 'The door did not answer. Try again in a moment.'
   };
-  function plain(cause) { return 'NO_DATA · ' + (PLAIN[cause] || 'Hexelion could not answer.') + ' (' + cause + ')'; }
+  function plain(cause) { return 'NO_DATA · ' + (PLAIN[cause] || 'The rack assistant could not answer.') + ' (' + cause + ')'; }
   // The CIEF of one turn: state + intent + context + expected hash + tic (doctrine 1).
   function cief(visita, text, chain, page) {
     return { v: V, estado: { visita: visita }, intencion: 'chat', contexto: { texto: text, pagina: page || '/chat/' },
@@ -64,12 +64,12 @@
   }
   function receiptSummary(result) {
     if (!result || !result.ok) return 'NO_DATA · Decision receipt unavailable or invalid.';
-    return result.verdict.state === 'PROPOSED' ? 'Decision proposed. Hexelion advises; it never signs.' : 'NO_DATA · ' + result.verdict.cause;
+    return result.verdict.state === 'PROPOSED' ? 'Decision proposed. The rack assistant advises; it never signs.' : 'NO_DATA · ' + result.verdict.cause;
   }
   function renderReceipt(doc, list, result) {
     if (!list || (result && result.cause === 'receipt_unavailable')) return; // a door that sends no receipt is not an error line (2026-11-09); an invalid one still says so
     var item = doc.createElement('li'); item.className = 'turn receipt';
-    var label = doc.createElement('p'); label.textContent = 'Hexelion · ' + receiptSummary(result); item.appendChild(label);
+    var label = doc.createElement('p'); label.textContent = 'Rack assistant · provenance NO_DATA · ' + receiptSummary(result); item.appendChild(label);
     if (result && result.ok) {
       var details = doc.createElement('details'), summary = doc.createElement('summary'), body = doc.createElement('pre');
       summary.textContent = 'Receipt details'; summary.style.minHeight = '44px';

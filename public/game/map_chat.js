@@ -3,7 +3,9 @@
   var doc = root.document, form = doc.getElementById('entry'), log = doc.getElementById('log'), note = doc.getElementById('chat-note');
   if (!form || !log) { return; }
   var ready = false, busy = false, loading = false, offline = false;
-  var NAME = 'Node 0';
+  // The gateway does not say which model, host or sources answer, nor bind them to a node (Mesa #51, 2026-11-22):
+  // until it does, the remote voice is a rack assistant with provenance NO_DATA, never «Node 0» or private Hexelion.
+  var NAME = 'Rack assistant', WHY = 'model_or_rag_provenance_unverified';
   var model = 'PreceptorOS-guide-20261109', context = 'The map · local visitor practice';
   var zone = doc.createElement('div'); zone.id = 'map-brain';
   var guide = doc.querySelector('#voices [data-speaker="Models"]');
@@ -15,11 +17,11 @@
   var selected = doc.createElement('p'); selected.id = 'brain-context'; selected.textContent = context; zone.append(selected);
   var modeLabel = doc.createElement('label'); modeLabel.htmlFor = 'chat-destination'; modeLabel.textContent = 'Who answers';
   var mode = doc.createElement('select'); mode.id = 'chat-destination'; mode.style.minHeight = '44px';
-  [['local', 'Device guide'], ['hexelion', NAME + ' · on the rack']].forEach(function (item) {
+  [['local', 'Device guide'], ['hexelion', NAME + ' · provenance unverified']].forEach(function (item) {
     var option = doc.createElement('option'); option.value = item[0]; option.textContent = item[1]; mode.append(option);
   });
   form.prepend(modeLabel, mode);
-  var remoteNotice = doc.createElement('p'); remoteNotice.textContent = NAME + ' is the rack AI (Hexelion). On Send, your message, the session thread (when it fits) and an ephemeral visit hash go to the chat gateway. The thread clears at visit end; the AI advises and never signs.'; remoteNotice.hidden = true; form.prepend(remoteNotice);
+  var remoteNotice = doc.createElement('p'); remoteNotice.textContent = NAME + ' behind the public chat gateway · NO_DATA(' + WHY + '): the gateway does not show which model, host or sources answer, and it is not a verified OWNER node. On Send, your message, the session thread (when it fits) and an ephemeral visit hash go to the chat gateway. The thread clears at visit end; it advises and never signs.'; remoteNotice.id = 'chat-remote-notice'; remoteNotice.dataset.state = 'NO_DATA'; remoteNotice.dataset.cause = WHY; remoteNotice.hidden = true; form.prepend(remoteNotice);
   var aulaLoad = null;
   function loadAula() {
     if (root.AtlasAulaChat) return Promise.resolve(root.AtlasAulaChat);
