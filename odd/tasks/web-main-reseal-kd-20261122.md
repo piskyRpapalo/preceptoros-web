@@ -9,3 +9,8 @@ phase log is `phase_M0_cases.mjs --sabotage`, which must fail; the plain case is
 
 Change: only the native chain — `atlas/world.py` → `counters.py` → `bin/seal.py --sellar --version kd`.
 No limit, gate or source change.
+
+Second cause, found by the local gate (both passes): #948 renamed the remote voice, but two browser tests still
+pinned the old names — `talk_head_browser` looked for speaker «Node 0» (and the receipt now shares the speaker, so
+it is skipped by class), `rack_ideas_browser` expected «Hexelion · Decision proposed…». Tests follow the label; no
+source change. talk_head VERDE ×2, sabotages ojo/voz/duo ROJO; rack_ideas VERDE, sabotage ROJO.
