@@ -14,5 +14,5 @@ public/downloads/*.gguf
 .aider*
 /target/
 
-# Salidas transitorias del navegador: la evidencia canónica vive en pruebas/recibos.
+# Transient browser-run logs; retain authoritative outcomes in tests/receipts.
 /d_*_browser.log
