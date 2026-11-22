@@ -104,11 +104,13 @@ async function main() {
   let paso = crab;
   // a near hex with no building and no guardian under the finger (a fogged building now speaks instead of walking)
   const libre = (x, y) => ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(), px = (${x} - r.left) * s.width / r.width, py = (${y} - r.top) * s.height / r.height, MP = window.AtlasMapPainter, F = window.AtlasMapFog, B = window.AtlasNodeBeacon;
-    return document.elementFromPoint(${x}, ${y}) === s && !(MP && MP.markAt && MP.markAt(px, py)) && !(F && F.askAt && F.askAt(px, py)) && !(B && B.hitAt && B.hitAt(px, py)); })()`);
+    const e = document.elementFromPoint(${x}, ${y}), c = e && e !== s ? (e.closest('[id]') || e) : null;
+    // why a point is not free, named: the card on top, or the map's own mark, fog or building under the finger
+    return c ? 'card:' + (c.id || c.tagName) : MP && MP.markAt && MP.markAt(px, py) ? 'mark' : F && F.askAt && F.askAt(px, py) ? 'fog' : B && B.hitAt && B.hitAt(px, py) ? 'building' : true; })()`);
   medidas.walk_tries = [];
   for (const [x, y] of [[250, 330], [110, 330], [180, 200], [250, 250], [110, 250], [180, 400], [250, 400], [110, 400]]) {
     if (lugar(paso.h1) !== lugar(crab.h1)) { break; }
-    if (!(await libre(x, y))) { medidas.walk_tries.push([x, y, 'occupied']); continue; } medidas.walk_tries.push([x, y]);
+    const free = await libre(x, y); if (free !== true) { medidas.walk_tries.push([x, y, free]); continue; } medidas.walk_tries.push([x, y]);
     for (const type of ['mousePressed', 'mouseReleased']) { await cmd('Input.dispatchMouseEvent', { type, x, y, button: 'left', clickCount: 1 }); }
     paso = await hasta((m) => lugar(m.h1) !== lugar(crab.h1), 3000);
   }
