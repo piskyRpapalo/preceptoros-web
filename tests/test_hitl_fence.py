@@ -133,5 +133,94 @@ class Cerco(unittest.TestCase):
             self.assertFalse(decide_con([])[0])
 
 
+
+from hitl_fence import decide_goal, _goal_ref  # noqa: E402
+
+GOAL_ID = "web-network-wiring-20261122"
+GOAL_REPO = "piskyRpapalo/preceptoros-web"
+GOAL_PREFIX = "claude/network-"
+GRANT_BODY = ("AUTORIZACION GOAL SOBERANO\n"
+              f"HITL-GOAL: {GOAL_ID} network {GOAL_REPO} {GOAL_PREFIX} "
+              "2026-11-30 public/game/network_*.js,atlas/network_*.py")
+
+
+def owner_grant(body=GRANT_BODY, user=None, updated=None):
+    stamp = "2026-11-22T08:00:00Z"
+    return {"body": body, "user": user or {"login": "piskyRpapalo", "id": 284823701},
+            "created_at": stamp, "updated_at": updated or stamp}
+
+
+def scoped_pr(branch=GOAL_PREFIX + "repair", repo=GOAL_REPO):
+    return {"base": {"ref": "main", "repo": {"full_name": GOAL_REPO}},
+            "head": {"ref": branch, "repo": {"full_name": repo}}}
+
+
+def changed(path="public/game/network_connect.js", status="modified"):
+    return [{"filename": path, "status": status}]
+
+
+class GoalFence(unittest.TestCase):
+    def test_one_goal_accepts_multiple_heads_without_new_signature(self):
+        for branch in ("claude/network-fix-a", "claude/network-fix-b"):
+            ok, reason = decide_goal([owner_grant()], GOAL_ID, scoped_pr(branch),
+                                     changed(), "2026-11-23")
+            self.assertTrue(ok, reason)
+
+    def test_agent_forged_author_or_id_denied(self):
+        for actor in ({"login": "evil", "id": 284823701},
+                      {"login": "piskyRpapalo", "id": 2}):
+            self.assertFalse(decide_goal([owner_grant(user=actor)], GOAL_ID,
+                                         scoped_pr(), changed(), "2026-11-23")[0])
+
+    def test_no_grant_denied(self):
+        self.assertFalse(decide_goal([], GOAL_ID, scoped_pr(), changed(), "2026-11-23")[0])
+
+    def test_unsafe_ref_and_multiple_refs_denied(self):
+        self.assertIsNone(_goal_ref("goal web-network-wiring-20261122"))
+        self.assertEqual(_goal_ref(f"USES-GOAL: {GOAL_ID}"), GOAL_ID)
+        self.assertIsNone(_goal_ref(f"USES-GOAL: {GOAL_ID}\nUSES-GOAL: {GOAL_ID}"))
+
+    def test_wrong_branch_and_fork_denied(self):
+        self.assertFalse(decide_goal([owner_grant()], GOAL_ID,
+                                     scoped_pr("claude/unrelated"), changed(), "2026-11-23")[0])
+        self.assertFalse(decide_goal([owner_grant()], GOAL_ID,
+                                     scoped_pr(repo="thirdparty/web"), changed(), "2026-11-23")[0])
+
+    def test_outside_and_privileged_files_denied(self):
+        for path in ("public/game/unrelated.js", ".github/workflows/hitl.yml",
+                     "atlas/hitl_fence.py", "public/game/network_auth.js",
+                     "public/game/network_../secrets.js"):
+            self.assertFalse(decide_goal([owner_grant()], GOAL_ID, scoped_pr(),
+                                         changed(path), "2026-11-23")[0], path)
+
+    def test_removals_and_renames_denied(self):
+        for status in ("removed", "renamed"):
+            self.assertFalse(decide_goal([owner_grant()], GOAL_ID, scoped_pr(),
+                                         changed(status=status), "2026-11-23")[0])
+
+    def test_owner_can_revoke_once(self):
+        revoke = owner_grant(f"REVOKE-GOAL: {GOAL_ID}")
+        self.assertFalse(decide_goal([owner_grant(), revoke], GOAL_ID,
+                                     scoped_pr(), changed(), "2026-11-23")[0])
+
+    def test_expired_and_long_grants_denied(self):
+        self.assertFalse(decide_goal([owner_grant()], GOAL_ID, scoped_pr(),
+                                     changed(), "2026-12-01")[0])
+        extended = GRANT_BODY.replace("2026-11-30", "2027-01-01")
+        self.assertFalse(decide_goal([owner_grant(extended)], GOAL_ID,
+                                     scoped_pr(), changed(), "2026-11-23")[0])
+
+    def test_edited_owner_grant_denied(self):
+        self.assertFalse(decide_goal([owner_grant(updated="2026-11-23T00:00:00Z")],
+                                     GOAL_ID, scoped_pr(), changed(), "2026-11-23")[0])
+
+    def test_empty_file_list_denied(self):
+        self.assertFalse(decide_goal([owner_grant()], GOAL_ID, scoped_pr(),
+                                     [], "2026-11-23")[0])
+
+    def test_old_sha_gate_survives(self):
+        self.assertTrue(decide_con([firma(f"HITL: {CABEZA} web#319 2026-10-25")])[0])
+
+
 if __name__ == "__main__":
     unittest.main()
