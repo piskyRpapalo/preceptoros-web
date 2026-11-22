@@ -15,13 +15,17 @@
   }
   // Pure: does this tap close the open panel? A still tap (moved ≤ 10 px) on the map canvas while a panel is open.
   function outside(open, id, moved) { return !!open && id === 'surface' && moved <= 10; }
+  var ONLINE = [['online-players', 'online-players-toggle'], ['online-nodes', 'online-nodes-toggle']];
+  function onlineOpen() { return ONLINE.some(function (p) { var s = doc.getElementById(p[0]); return s && !s.hidden; }); }
+  function closeOnline() { ONLINE.forEach(function (p) { var s = doc.getElementById(p[0]), t = doc.getElementById(p[1]); if (s && !s.hidden) { s.hidden = true; if (t) { t.setAttribute('aria-expanded', 'false'); } } }); }
   function openCat() { return doc.querySelector('#map .cats button[aria-pressed="true"]') || doc.querySelector('#entry-tools[aria-expanded="true"]'); }
   function anyOpen() {
     var button = openCat();
-    return !!((button && button.dataset.cat !== 'Communication') || ['building-sheet', 'settings-sheet'].some(function (id) { var s = doc.getElementById(id); return s && !s.hidden; }));
+    return !!((button && button.dataset.cat !== 'Communication') || onlineOpen() || ['building-sheet', 'settings-sheet'].some(function (id) { var s = doc.getElementById(id); return s && !s.hidden; }));
   }
   function closeAll() {
     var b = openCat(); if (b) { b.click(); }
+    closeOnline();
     ['building-sheet', 'settings-sheet'].forEach(function (id) {
       var s = doc.getElementById(id); if (s && !s.hidden) { var c = s.querySelector('.bs-bar > .bs-tool:last-child'); if (c) { c.click(); } }
     });
@@ -30,6 +34,7 @@
   // (keep = its id) closes the other sheet through its own Close, and the open map category (Chat Live stays at the top);
   // opening a category (keep = null) closes both sheets. Escape, outside click and the sheets' Close keep their paths.
   function exclusive(keep) {
+    if (keep !== 'online') { closeOnline(); }
     ['building-sheet', 'settings-sheet'].forEach(function (id) {
       var s = doc.getElementById(id); if (id === keep || !s || s.hidden) { return; }
       var c = s.querySelector('.bs-bar > .bs-tool:last-child'); if (c) { c.click(); }
@@ -54,6 +59,8 @@
     });
     // The Town sheet stays under its 8000 B ceiling: it opens by its own button, so one panel at a time is kept here.
     if (root.MutationObserver) { new root.MutationObserver(function (all) { all.forEach(function (m) { if (m.target.id === 'building-sheet' && !m.target.hidden) { exclusive('building-sheet'); } }); }).observe(doc.body || doc.documentElement, { attributes: true, attributeFilter: ['hidden'], subtree: true }); }
+    // Opening Visitors or Nodes closes the sheets and the open map category (Chat Live stays), after their own handler.
+    doc.addEventListener('click', function (e) { var t = e.target && e.target.closest ? e.target.closest('#online-share, #online-players-toggle, #online-nodes-toggle') : null; if (t) { root.setTimeout(function () { if (onlineOpen()) { exclusive('online'); } }, 0); } });
     var down = null;                             // capture on the document runs before the map's own tap handlers
     doc.addEventListener('pointerdown', function (e) { down = { x: e.clientX, y: e.clientY, open: anyOpen() }; }, true);
     doc.addEventListener('click', function (e) {

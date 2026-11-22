@@ -43,7 +43,8 @@ export async function realFloor() {
 // accepted and when its cell was first served to another visitor: that difference is the latency of the experiment.
 // authority({ law, cells, sabotage }) → (sabotage 'sin-firma' stops checking signatures, to prove the cases catch it)
 // { listen() → origin, close(), tick(n), state(), counts }. Bodies over 1,024 B are refused.
-export function authority({ law, cells = floor(), sabotage = '', tick_ms = 0, host = '127.0.0.1', port = 0 }) {
+// genesis: true answers /open like the production Durable Object, with a fresh unpredictable 64-hex chain genesis.
+export function authority({ law, cells = floor(), sabotage = '', tick_ms = 0, host = '127.0.0.1', port = 0, genesis = false }) {
   let state = P.empty(), tick = 0, chain = Promise.resolve(), timer = null;
   const pending = {}, seen = [], lit = [];
   const deps = { verify: sabotage === 'sin-firma' ? async () => true : verify, digest, walk: WALK, cells, beacon: cells.beacon || null }, counts = { open: 0, step: 0, view: 0, refused: {}, bytesIn: 0, bytesOut: 0 };
@@ -53,7 +54,9 @@ export function authority({ law, cells = floor(), sabotage = '', tick_ms = 0, ho
       counts.open++;
       const r = await P.open(state, { key: body && body.key, consent: body && body.consent, tick, start: body && body.start }, law, deps);
       if (!r.ok) { refuse(r.cause); return { ok: false, cause: r.cause }; }
-      state = r.state; return { ok: true, id: state.visits[body.key].id, beacon: deps.beacon };
+      state = r.state;
+      if (genesis) { const g = hex(wc.getRandomValues(new Uint8Array(32))); state.visits[body.key].last = g; return { ok: true, id: state.visits[body.key].id, beacon: deps.beacon, genesis: g }; }
+      return { ok: true, id: state.visits[body.key].id, beacon: deps.beacon };
     }
     if (path === '/step') {
       counts.step++;
