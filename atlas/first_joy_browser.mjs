@@ -115,6 +115,29 @@ async function main() {
     paso = await hasta((m) => lugar(m.h1) !== lugar(crab.h1), 3000);
   }
   medidas.walk = { from: lugar(crab.h1), to: lugar(paso.h1) };
+  // Failed-path evidence only: preserve the real tap/movement verdict. A CI red
+  // must say whether a news bubble, FA panel, hidden sheet or delayed stylesheet
+  // intercepted the map. Never click through an obstruction or retry differently.
+  if (medidas.walk.from === medidas.walk.to) {
+    const debug = await ev(`JSON.stringify((() => {
+      const names = ['preceptor-talk', 'fa', 'surface', 'stage', 'building-sheet'];
+      const node = (id) => {
+        const e = document.getElementById(id);
+        if (!e) return { id, present: false };
+        const st = getComputedStyle(e), r = e.getBoundingClientRect();
+        return { id, present: true, className: typeof e.className === 'string' ? e.className : '',
+          hidden: !!e.hidden, display: st.display, visibility: st.visibility,
+          pointerEvents: st.pointerEvents, zIndex: st.zIndex,
+          rect: [Math.round(r.x), Math.round(r.y), Math.round(r.width), Math.round(r.height)] };
+      };
+      const css = [...document.querySelectorAll('link[rel=stylesheet]')]
+        .filter((e) => /talk\\.css|openworld\\.css/.test(e.href))
+        .map((e) => ({ name: e.href.split('/').pop(), loaded: !!e.sheet }));
+      return { readyState: document.readyState,
+        overlays: names.map(node), stylesheets: css };
+    })())`);
+    try { medidas.occlusion = JSON.parse(debug); } catch { medidas.occlusion = { causa: 'debug_snapshot_unavailable' }; }
+  }
   ok(medidas.walk.from !== medidas.walk.to, 'a tap on a near hex does not walk the crab: ' + JSON.stringify(medidas.walk));
 
   // 3 · the building is a door: two presses inside Node land in the panel that holds the summons.
