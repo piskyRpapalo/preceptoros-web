@@ -210,6 +210,7 @@ jobs:
             node atlas/dock_native_browser.mjs
             node atlas/journey_single_mount_browser.mjs
             node atlas/building_sheet_browser.mjs
+            node atlas/openworld_overlap_browser.mjs
             node atlas/first_joy_browser.mjs
             node atlas/acho_claim_browser.mjs
             node atlas/sound_first_browser.mjs
