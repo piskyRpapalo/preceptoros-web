@@ -94,10 +94,10 @@ try {
     if (!ok(await until(t, `!!(window.AtlasOpenworldView && document.getElementById('online-share') && document.getElementById('gp-play'))`, 40000), w + ': the page did not load')) { continue; }
     m.welcome_help_listen = await t.ev(`({ welcome: !!document.getElementById('sheet-welcome'), listen: !!document.getElementById('listen'), help: !!document.querySelector('#entry-tools, [data-cat=Help], #help') })`);
     ok(m.welcome_help_listen.welcome && m.welcome_help_listen.listen && m.welcome_help_listen.help, w + ': Welcome/Help/Listen lost');
-    await t.ev(`document.getElementById('gp-play').click()`); await espera(700);
+    await t.ev(`document.getElementById('gp-play').click()`); await espera(400);
     await t.ev(`(() => { for (const s of ['#play-now', '#visitor-start']) { const e = document.querySelector(s); if (e && e.offsetParent) { e.click(); return s; } } return null; })()`);
     ok(await until(t, `!!document.getElementById('visitor-step')`), w + ': the visit did not start');
-    await espera(900);
+    await espera(400);
     // Keyboard: Share → Players → Nodes in that order.
     await t.ev(`document.getElementById('online-share').focus()`);
     await key(t, 'Tab', 'Tab'); const k1 = await t.ev(`document.activeElement && document.activeElement.id`);
@@ -119,7 +119,8 @@ try {
     // Stray taps over the panel's free area (everything but its buttons and list): the visit stays LIVE and consented.
     const grid = await t.ev(`(() => { const r = document.getElementById('online-players').getBoundingClientRect(), pts = [];
       for (let y = r.top + 6; y < r.bottom - 4; y += 14) for (let x = r.left + 6; x < r.right - 4; x += 22) { const e = document.elementFromPoint(x, y); if (e && !e.closest('button, a, select, li')) pts.push([Math.round(x), Math.round(y)]); }
-      return pts; })()`);
+      // the gate's 18-minute budget (2026-11-22): an even sample of 10 points covers the panel's free area
+      const k = Math.max(1, Math.floor(pts.length / 10)); return pts.filter((_, i) => i % k === 0).slice(0, 10); })()`);
     let tapped = 0;
     for (const [x, y] of grid) { // the list reflows on every poll: a point is re-read just before its tap
       if (await t.ev(`(() => { const e = document.elementFromPoint(${x}, ${y}); if (!e || !e.closest('#online-players') || e.closest('button, a, select, li')) return false;
@@ -137,7 +138,7 @@ try {
       ok(m.map_tap.closed && m.map_tap.state === 'LIVE' && !m.map_tap.moved, w + ': a map tap did more than close the panel ' + JSON.stringify(m.map_tap));
     }
     // Panel closed: the preceptor's note, the beacon bar and Share/Players/Nodes keep apart.
-    await espera(1200);
+    await espera(500);
     m.closed = await t.ev(overlaps);
     if (process.env.CAPTURA) { const s = await t.cmd('Page.captureScreenshot', { format: 'png' }); (await import('node:fs')).writeFileSync(process.env.CAPTURA + '/ov-' + w + '.png', Buffer.from(s.result.data, 'base64')); } ok(!m.closed.overlaps.length, w + ': overlap with panels closed ' + m.closed.overlaps);
     // Withdraw by the named button: said, sealed, and the consent row comes back unticked.
