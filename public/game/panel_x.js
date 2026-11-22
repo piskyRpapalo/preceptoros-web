@@ -52,6 +52,8 @@
         var CS = root.AtlasCrabStage; if (w === 'close+look' && CS && CS.look) { CS.look(); }
       }, 0);
     });
+    // The Town sheet stays under its 8000 B ceiling: it opens by its own button, so one panel at a time is kept here.
+    if (root.MutationObserver) { new root.MutationObserver(function (all) { all.forEach(function (m) { if (m.target.id === 'building-sheet' && !m.target.hidden) { exclusive('building-sheet'); } }); }).observe(doc.body || doc.documentElement, { attributes: true, attributeFilter: ['hidden'], subtree: true }); }
     var down = null;                             // capture on the document runs before the map's own tap handlers
     doc.addEventListener('pointerdown', function (e) { down = { x: e.clientX, y: e.clientY, open: anyOpen() }; }, true);
     doc.addEventListener('click', function (e) {

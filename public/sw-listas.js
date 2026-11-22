@@ -3,6 +3,7 @@ const IDIOMAS = ['es', 'en', 'fr', 'pt', 'it', 'de', 'ru', 'el', 'ar'];
 const PAGINAS = [''];
 
 // P2/P3 (2026-11-01): the map chunks are precached by exact name; atlas/bake_chunks.mjs --check keeps them equal to the baked files.
+// Offline OpenWorld (2026-11-21): every script /openworld/ loads is precached (30 were missing on production ka).
 const JUEGO = [
   '/creation.html', '/assets/atlas-coord.js', '/assets/radio_message_log.js', '/assets/worm_transition.js',
   '/game/values.js', '/game/gacha.js', '/game/db.js', '/game/core.js', '/game/canon.js',
@@ -24,6 +25,12 @@ const JUEGO = [
   '/assets/openworld.css', '/assets/openworld_experience.css', '/game/openworld_online.css',
   '/game/openworld_online_config.js', '/game/crab_presence_remote.js', '/game/shared_crabs.js',
   '/game/palette_cycle.js', '/game/openworld_state.js', '/game/colony_page.js', '/game/colony_controls.js', '/game/hitl_walkers.js',
+  '/game/classroom_chat.js', '/game/acho_sonify.js', '/game/chunk_router.js', '/game/building_chat.js', '/game/crab_trail.js', '/game/node_live.js',
+  '/game/global_map.js', '/game/map_scene.js', '/game/land_art.js', '/game/tutorial_walk.js', '/game/walk_route.js', '/game/visitor_account.js',
+  '/game/visitor_eggs.js', '/game/wave_rules.js', '/game/visitor_battle.js', '/game/battle_replay_controls.js', '/game/visitor_battle_ui.js',
+  '/game/visitor_conquest.js', '/game/hatch_reveal.js', '/game/visitor_play.js', '/game/world_feed.js', '/game/online_nodes.js',
+  '/game/thread_window.js', '/game/map_chat.js', '/game/bb_radio.js', '/game/radio_frame.js', '/game/live_invocation.js', '/game/openworld_page.js',
+  '/game/sound_first.js', '/game/openworld_experience.js',
   '/game/tutorial-phases.css', '/face/', '/get-the-app/', '/aduana/', '/face/basic.html',
   '/face/face_openworld_terminal.js', '/game/army.html', '/game/face_canon.css', '/game/face_terminal.js',
   '/game/map_chart.js', '/game/town_plan.js', '/game/map_chunks.js', '/game/place_name.js', '/game/map_painter.js', '/game/terminal_panel.js', '/game/map_focus.js', '/game/visitor_walk.js', '/game/welcome_card.js', '/game/web_node_brain.js', '/map/chart.json', '/art/sea-palette.json',

@@ -247,7 +247,9 @@ ok('el shell trae la puerta y NO trae /play/ (corte Norte 7 C)', rutas.includes(
 ok('el shell YA NO trae portadas de lengua (301 a `/`)', !rutas.some(r => /^\/(ar|de|el|en|es|fr|it|pt|ru)\/$/.test(r)));
 ok('el shell trae la identidad y el canal', ['/assets/auth.js', '/assets/send.js', '/assets/pwa.js'].every(r => rutas.includes(r)));
 ok('page-comment.js sale del shell (retirada con /play/, corte Norte 7 D)', !rutas.includes('/assets/page-comment.js'));
-ok('el shell YA NO trae nada del hub', !rutas.some(r => /community|benchmark|playground|onboarding|profile|instalar|hub\.json|hitos|chat|caras\//.test(r)));
+// 2026-11-21: the OpenWorld chats (map, classroom, building; offline device guide) are not the retired hub chat; only these exact paths pass.
+const OW_CHATS = ['/game/map_chat.js', '/game/classroom_chat.js', '/game/building_chat.js'];
+ok('el shell YA NO trae nada del hub', !rutas.some(r => !OW_CHATS.includes(r) && /community|benchmark|playground|onboarding|profile|instalar|hub\.json|hitos|chat|caras\//.test(r)));
 // NINGUNA DE LAS DOS FAMILIAS VIAJA YA, y la segunda cayo el 2026-09-20.
 //
 // Los ojos se fueron el 2026-09-05 --los pintaba solo la portada de la raiz,
