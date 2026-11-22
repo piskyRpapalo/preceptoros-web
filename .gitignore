@@ -13,3 +13,6 @@ historial/
 public/downloads/*.gguf
 .aider*
 /target/
+
+# Salidas transitorias del navegador: la evidencia canónica vive en pruebas/recibos.
+/d_*_browser.log
