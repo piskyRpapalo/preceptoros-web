@@ -2,7 +2,7 @@
   'use strict';
   var doc = root.document, box = doc.getElementById('visitor-play');
   if (!box) { return; }
-  var game = null, account = null, waiting = false, hatching = {};
+  var game = null, account = null, waiting = false, hatching = {}, visitGeneration = 0;
   var mapHeading = doc.getElementById('map-h'), mapSurface = doc.getElementById('surface'), visitName = null;
   function updateMapHeading() {
     var view = root.AtlasOpenworldView && root.AtlasOpenworldView(), controls = view && view.controls;
@@ -46,22 +46,41 @@
     var box = nextText && nextText.closest('#next'), fin = !!(s && s.troops && s.troops.length && t === 'Ask the guide in the chat.');
     if (box && box.classList.contains('folded') !== fin) { box.classList.toggle('folded', fin); box.setAttribute('aria-disabled', String(fin)); }
   }
-  async function start() { account = await root.AtlasVisitorAccount.create(true); game = await root.AtlasVisitorEggs.create(account); }
+  async function newVisit(consent) {
+    var generation = visitGeneration, candidate = await root.AtlasVisitorAccount.create(consent), candidateGame = null;
+    try {
+      if (generation !== visitGeneration) { throw new Error('Visit ended during initialization'); }
+      candidateGame = await root.AtlasVisitorEggs.create(candidate);
+      var key = await candidate.proveVisit(consent);
+      if (generation !== visitGeneration) { throw new Error('Visit ended during initialization'); }
+      account = candidate; game = candidateGame;
+      return key;
+    } catch (error) {
+      if (candidateGame) { try { candidateGame.end(); } catch (_) { /* discard partial visit */ } }
+      candidate.end(); throw error;
+    }
+  }
+  async function start() { await newVisit(true); }
+  // pagehide also fires for a page entering the back/forward cache. The account ends its
+  // signing key there; release the matching game reference too, so pageshow can only
+  // start a fresh visit instead of trying to reuse a dead account.
+  root.addEventListener('pagehide', function () {
+    visitGeneration++;
+    if (game) { try { game.end(); } catch (_) { /* account has already ended */ } }
+    game = null; account = null; hatching = {};
+  });
+  root.addEventListener('pageshow', function () { render(); });
   root.AtlasVisitorPlay = { enter: async function (consent) {
     if (consent !== true || waiting) { throw new Error('Visit unavailable'); }
-    waiting = true;
+    waiting = true; var generation = visitGeneration;
     try {
       var key;
       if (game) {
         key = await account.proveVisit(consent);
       } else {
-        var candidate = await root.AtlasVisitorAccount.create(consent);
-        try {
-          key = await candidate.proveVisit(consent);
-          game = await root.AtlasVisitorEggs.create(candidate);
-          account = candidate;
-        } catch (error) { candidate.end(); throw error; }
+        key = await newVisit(consent);
       }
+      if (generation !== visitGeneration || !game || !account) { throw new Error('Visit ended during proof'); }
       if (!game.state().claimed) { game.beacon(); }
       return { publicKey: key, state: game.state() };
     } finally { waiting = false; render(); }
