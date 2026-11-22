@@ -177,9 +177,9 @@ async function main() {
     return JSON.stringify({ bien, reciboLi, cerrada, pagina: vistos[0] && vistos[0].contexto.pagina, tics: vistos.map((v) => v.tic) }); })()`));
   medidas.hexelion = hex;
   ok(hex.bien === 'Hexelion · The first node is where every visit starts.', 'Hexelion\'s live answer is not shown: ' + hex.bien);
-  ok(/Hexelion · Decision proposed\. Hexelion advises; it never signs\./.test(hex.reciboLi || '') && /Payload SHA-256: [0-9a-f]{64}/.test(hex.reciboLi || ''), 'the decision receipt is not shown beside the answer: ' + hex.reciboLi);
+  ok(/Rack assistant · provenance NO_DATA · Decision proposed\. The rack assistant advises; it never signs\./.test(hex.reciboLi || '') && /Payload SHA-256: [0-9a-f]{64}/.test(hex.reciboLi || ''), 'the decision receipt is not shown beside the answer: ' + hex.reciboLi);
   ok(hex.pagina === '/openworld/#b-home', 'the door does not know the building: ' + hex.pagina);
-  ok(/^Hexelion · NO_DATA · Hexelion is not taking visitors right now\. \(aula_rechaza\)$/.test(hex.cerrada || ''), 'a closed door is not said with its cause: ' + hex.cerrada);
+  ok(/^Hexelion · NO_DATA · The rack assistant is not taking visitors right now\. \(aula_rechaza\)$/.test(hex.cerrada || ''), 'a closed door is not said with its cause: ' + hex.cerrada);
   ok(JSON.stringify(hex.tics) === '[1,2]', 'the turns do not chain: ' + JSON.stringify(hex.tics));
 
   // 4d · «voices»: the building lists who can speak here, one by one, from the pinned table (the contributors included);
