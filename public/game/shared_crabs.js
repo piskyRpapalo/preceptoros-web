@@ -105,6 +105,8 @@
       if (remote) {
         button.hidden = false; button.disabled = !!me || joining;
         disconnect.hidden = !me;
+        // Shared: the consent row leaves the panel so a stray tap cannot withdraw it; «Disconnect my visit» does (2026-11-22).
+        var cl = doc.getElementById('online-consent-label'); if (cl) { cl.hidden = !!me; }
       } else { button.hidden = !account || !!me || joining; }
     }
     function send(path, body) {

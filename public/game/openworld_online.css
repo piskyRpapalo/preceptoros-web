@@ -19,3 +19,8 @@
 @media (max-width:360px){#online-actions{gap:2px}#online-actions button{padding:4px 1px;font-size:.72rem}}
 @media (forced-colors:active){#online-actions button,#online-panels > section,#online-panels :is(button,select){color:CanvasText;background:Canvas;border-color:CanvasText;forced-color-adjust:none}#online-actions button:focus-visible,#online-panels :focus-visible{outline:3px solid Highlight}}
 @media (prefers-reduced-motion:reduce){#online-actions button,#online-panels > section{transition:none;animation:none}}
+/* 2026-11-22 · measured at 320–780 px: the stage foot belongs to Share/Players/Nodes, so the beacon bar sits above it;
+   while Visitors or Nodes is open, the beacon bar and a docked preceptor note step aside until it closes. */
+#stage > #coop-beacon{bottom:56px!important}
+#online-panels label[hidden]{display:none}
+#stage:has(#online-panels > section:not([hidden])) > :is(#coop-beacon,#preceptor-talk.pt-docked){visibility:hidden}
