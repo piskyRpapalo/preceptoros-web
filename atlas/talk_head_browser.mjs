@@ -72,9 +72,9 @@ async function main() {
     const m=document.getElementById('chat-destination'); m.value='hexelion'; m.dispatchEvent(new Event('change'));
     q.value='Who are you?'; f.dispatchEvent(new Event('submit',{cancelable:true})); await w(150);
     // A synthetic successful turn has no signed receipt: the real serializer
-    // correctly appends a NO_DATA receipt AFTER Node0. Find the Node0 message
+    // correctly appends a NO_DATA receipt AFTER the rack assistant (WEB #948). Find its message
     // by speaker rather than assuming it is the final list element.
-    const li=[...log.children].reverse().find(x=>x.dataset.speaker==='Node 0'), th=li&&li.previousElementSibling, says=th&&th.querySelector('.th-says'), out={};
+    const li=[...log.children].reverse().find(x=>x.dataset.speaker==='Rack assistant'&&!x.classList.contains('receipt')), th=li&&li.previousElementSibling, says=th&&th.querySelector('.th-says'), out={};
     out.invalidReceiptShown=[...log.children].some(x=>/Decision receipt unavailable or invalid/.test(x.textContent));
     out.reader=li&&li.textContent; out.veiled=li&&li.classList.contains('th-veiled'); out.isHead=!!(th&&th.classList.contains('th'));
     out.artHidden=!!(th&&th.querySelector('.th-art[aria-hidden=true]')); out.liveInHead=!!(th&&th.querySelector('[aria-live],[role=status]'));
@@ -94,7 +94,7 @@ async function main() {
     ok(await hasta('!!document.getElementById("visitor-beacon")', 10000), w + ': visit');
     await ev('(()=>{const b=document.querySelector("#map-communication button[data-cat=Communication]"), q=document.querySelector("#map-communication select"); if(!b||!q)throw new Error("visible_chat_controls_missing"); b.click(); q.value="chat"; q.dispatchEvent(new Event("change",{bubbles:true})); return 1})()');
     const r = JSON.parse(await ev(ASK + '(' + reduce + ')')); medidas[w] = { steps: (r.steps || []).length, headW: r.headW, buttons: r.buttons };
-    const full = 'Node 0 · ' + TEXT;
+    const full = 'Rack assistant · ' + TEXT;
     ok(r.reader === full && r.veiled && r.isHead && r.artHidden && !r.liveInHead && r.invalidReceiptShown, w + ': the reader does not get the full accessible answer beside the head, or missing fail-closed receipt: ' + JSON.stringify({ reader: r.reader, veiled: r.veiled, head: r.isHead, art: r.artHidden, live: r.liveInHead, receiptNoData: r.invalidReceiptShown }));
     if (!reduce) {
       ok(r.state === 'speaking' && TEXT.startsWith(r.first) && r.first.length < TEXT.length, w + ': not revealed progressively from the start: ' + r.first);
