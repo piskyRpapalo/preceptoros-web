@@ -27,6 +27,11 @@
   function showMap(push) {
     active = true; intro.inert = true; doc.body.classList.add('world-active');
     frame.setAttribute('aria-hidden', 'false'); frame.tabIndex = 0;
+    // Keep the landing preview's authoritative feed asleep until explicit entry.
+    // The iframe validates this same-origin handoff before reading /api/world-state.
+    if (frame.contentWindow) {
+      frame.contentWindow.postMessage({ type: 'preceptoros:enter-openworld' }, win.location.origin);
+    }
     if (push) { win.history.pushState({ preceptorOpenworld: true }, '', '/#openworld'); }
     frame.focus(); preview();
   }

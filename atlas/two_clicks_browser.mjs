@@ -19,6 +19,16 @@ function sirve(raiz) {
   const s = createServer((req, res) => {
     try {
       let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
+      if (ruta === '/api/world-state') {
+        // Local-only world fixture: landing entry now deliberately activates
+        // the existing feed, so signed-visit browser tests must serve its v2 contract.
+        const fixture = { esquema: 'preceptoros.openworld-estado/2', cobertura: { estado: 'MEDIDO' },
+          colonia: { nodes: [
+            { id: 'fixture-node-one', alive: true, seal: 'LIVE', since: '2026-11-23', q: 0, r: 0 },
+            { id: 'fixture-node-two', alive: true, seal: 'LIVE', since: '2026-11-23', q: 1, r: 0 }
+          ], buildings: [], units: [] } };
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(fixture)); return;
+      }
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
       const cuerpo = readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
@@ -146,18 +156,25 @@ async function main() {
   ok(postSign.endExists, 'after one click no visit is active — visitor-end missing');
   ok(postSign.copper >= 100, 'after one click the copper is below 100: ' + postSign.copper);
   ok(postSign.summonEnabled, 'after one click the reef summon button is not enabled');
-  ok(postSign.state.includes('signed on this device'), '#state does not announce signed visit: ' + postSign.state);
+  ok(postSign.state.includes('Nodes online: 2'), '#state does not show the measured node feed after entry: ' + postSign.state);
   ok(postSign.result.includes('signed on this device'), 'welcome-result does not confirm signed visit: ' + postSign.result);
   ok(postSign.mapTop >= 0 && postSign.mapTop < 844, 'after sign the map scrolled away: top=' + postSign.mapTop);
   ok(clics === 1, 'reaching the game took ' + clics + ' clicks, expected 1');
   await foto('one-click-signed.png');
+
+  // Signed entry opens the existing Welcome panel; close it with its own toggle before
+  // measuring map controls, since the product intentionally hides the sticks under panels.
+  await ev(`(() => { const b = document.querySelector('#gamepad .cats [data-cat=\"Welcome\"]'); if (b && b.getAttribute('aria-pressed') === 'true') b.click(); })()`);
+  await espera(250);
 
   // --- Step 4: Verify map controls, summon labels, joysticks (Ojo del Doogee) ---
   const ojo = JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('surface'), m = c.getBoundingClientRect();
     const sum = [1, 2, 3, 4].map((n) => (document.getElementById('visitor-summon-tc' + n) || {}).textContent || '');
     const zb = [...document.querySelectorAll('#map .view-joy button')].map((b) => { const r = b.getBoundingClientRect(); return { l: b.getAttribute('aria-label'), w: r.width, h: r.height }; });
     const pl = JSON.parse(c.dataset.places || '[]');
-    return { bar: !!document.getElementById('zoom-controls'), mapTop: m.top, scrollY: scrollY, sum, step: (document.getElementById('visitor-step') || {}).textContent, zb, pl,
+    return { bar: !!document.getElementById('zoom-controls'), mapTop: m.top, scrollY: scrollY, sum, step: (document.getElementById('visitor-step') || {}).textContent, zb,
+      panel: { hidden: document.getElementById('voices')?.hidden, category: document.getElementById('voices')?.dataset.activeCategory,
+        gamepad: getComputedStyle(document.getElementById('gamepad')).display, camera: getComputedStyle(document.getElementById('view-joystick')).display }, pl,
       overlap: pl.some((a, i) => pl.some((b, j) => i < j && a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h)) }; })())`));
   ok(/^Summon at the Reef · 50 copper$/.test(ojo.sum[0]), 'the reef summon is not human: ' + ojo.sum[0]);
   ok(ojo.sum.slice(1).every((t) => /^Summon at the [A-Z][a-z]+ · \d+ copper \+ \d+ light · needs \d+ more/.test(t)) && !ojo.sum.some((t) => /tc\d/.test(t)), 'summon labels are not human or do not say what is missing: ' + JSON.stringify(ojo.sum));
@@ -173,6 +190,8 @@ async function main() {
     return house ? String(house.contains(play)) : 'NO_DATA';
   })()`);
   ok(tabCheck === 'true', 'House voice tab does not contain visitor-play: ' + tabCheck);
+  await ev("document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))");
+  await espera(250);
 
   // --- Step 5: Verify welcome card separately via direct /openworld/ navigation ---
   // The welcome card IS still supported when navigating directly to /openworld/ without a prior sign.
@@ -224,6 +243,7 @@ async function main() {
   const welcomeStatus = await evDirect(`(() => {
     const el = document.getElementById('welcome-live');
     if (!el) return null;
+    document.dispatchEvent(new CustomEvent('world:summary', { detail: { ok: false, cause: 'node_feed_not_checked' } }));
     const initial = el.textContent;
     document.dispatchEvent(new CustomEvent('world:summary', { detail: { ok: true, live: 2 } }));
     const measured = el.textContent;

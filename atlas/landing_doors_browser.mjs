@@ -16,6 +16,14 @@ function sirve(raiz) {
   const s = createServer((req, res) => {
     try {
       let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
+      if (ruta === '/api/world-state') {
+        const fixture = { esquema: 'preceptoros.openworld-estado/2', cobertura: { estado: 'MEDIDO' },
+          colonia: { nodes: [
+            { id: 'fixture-node-one', alive: true, seal: 'LIVE', since: '2026-11-23', q: 0, r: 0 },
+            { id: 'fixture-node-two', alive: true, seal: 'LIVE', since: '2026-11-23', q: 1, r: 0 }
+          ], buildings: [], units: [] } };
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(fixture)); return;
+      }
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
       const cuerpo = readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
@@ -85,14 +93,29 @@ async function main() {
   const world = JSON.parse(await ev(`(async()=>{const f=document.getElementById('landing-world');
     for(let t=0;t<80;t++){const c=f.contentDocument?.querySelector('#surface');let n=0;if(c?.width&&c?.height){const x=c.getContext('2d').getImageData(0,0,c.width,c.height).data;for(let i=3;i<x.length;i+=4)if(x[i])n++;}if(n>2000)break;await new Promise(r=>setTimeout(r,100));}
     const d=f.contentDocument, canvas=d?.querySelector('#surface'), before=d?.defaultView?.performance?.timeOrigin;
+    for(let t=0;t<80 && !/state\.json lists no node/.test(d?.getElementById('state-tech')?.textContent||'');t++) await new Promise(r=>setTimeout(r,100));
+    const feedBefore=d?.getElementById('online-nodes-state')?.dataset.cause;
     const ink=canvas?(()=>{const x=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;let n=0;for(let i=3;i<x.length;i+=4)if(x[i])n++;return n;})():0;
+    document.getElementById('look-around').click();
+    for(let t=0;t<80 && d?.getElementById('online-node-select')?.options.length!==3;t++) await new Promise(r=>setTimeout(r,100));
+    const nodeState=d?.getElementById('online-nodes-state'), feedAfter=nodeState?.textContent,
+      options=[...(d?.getElementById('online-node-select')?.options||[])].map(x=>x.value),
+      machine=(()=>{try{return JSON.parse(nodeState?.dataset.acho||'')}catch(e){return null}})(),
+      machineSentence=machine?.atoms?.find(x=>x.k==='world/nodes')?.r, mapState=d?.getElementById('state')?.textContent;
     document.getElementById('start').click(); await new Promise(r=>setTimeout(r,250));
     const entered=document.body.classList.contains('world-active') && getComputedStyle(document.querySelector('main')).display==='none' && f.getAttribute('aria-hidden')==='false';
     const same=d===f.contentDocument && before===d?.defaultView?.performance?.timeOrigin && d?.querySelectorAll('canvas').length===1;
     history.back(); await new Promise(r=>setTimeout(r,150));
-    return JSON.stringify({loaded:!!canvas,canvases:d?.querySelectorAll('canvas').length||0,ink,entered,same,restored:!document.body.classList.contains('world-active')});})()`));
+    history.back(); await new Promise(r=>setTimeout(r,150));
+    return JSON.stringify({loaded:!!canvas,canvases:d?.querySelectorAll('canvas').length||0,ink,entered,same,restored:!document.body.classList.contains('world-active'),feedBefore,feedAfter,options,feedStatus:nodeState?.dataset.state,machineSentence,mapState});})()`));
   ok(world.loaded && world.canvases === 1 && world.ink > 2000, 'the intro has no painted shared map behind it: ' + JSON.stringify(world));
   ok(world.entered && world.same && world.restored, 'OpenWorld did not reveal and preserve the same single map instance: ' + JSON.stringify(world));
+  ok(world.feedBefore === 'node_feed_not_checked',
+    'hidden landing preview unexpectedly rendered node feed before entry: ' + JSON.stringify(world));
+  ok(world.options.join() === ',fixture-node-one,fixture-node-two' && /2 independently reported LIVE nodes/.test(world.feedAfter || ''),
+    'explicit landing entry did not activate the authoritative node feed: ' + JSON.stringify(world));
+  ok(world.feedStatus === 'MEDIDO' && world.machineSentence === world.feedAfter && /Nodes online: 2/.test(world.mapState || ''),
+    'visible, map and machine-readable node states disagree: ' + JSON.stringify(world));
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
   // North D1: the install guide, at phone width: nothing external, no sideways scroll, no missing value, the landing links it.
   // /get-the-app/ is reached from the map's Help and Settings now (settings_sheet.js, map_links.js), not from the landing.
