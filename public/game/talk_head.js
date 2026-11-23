@@ -10,7 +10,7 @@
   // the speaking face is the pixel bust (Sovereign 2026-11-16: «esta es la cara que habla»): closed, half, open. The sheet's
   // flash and eye-ring frames are not mouth shapes and stay out of speech (no flicker). Index 0 is closed; 1–4 open.
   var FACES = ['/assets/caras/preceptor-habla0-180.webp', '/assets/caras/preceptor-habla1-180.webp', '/assets/caras/preceptor-habla2-180.webp', '/assets/caras/preceptor-habla1-180.webp', '/assets/caras/preceptor-habla2-180.webp'];
-  var MS_PER_CHAR = 38, MIN = 280, MAX = 2600, STOP = 320, BREATH = 140;
+  var MS_PER_CHAR = 34, MIN = 240, MAX = 2600, STOP = 220, BREATH = 80, TICK = 34; // one letter a tick: fluid, not word jumps
   // Pure: phrases(text) → the text cut at its natural stops (. ! ? ; : and « · »), long ones again at commas; joining
   // them gives the text back exactly.
   function phrases(text) {
@@ -58,9 +58,9 @@
     }
     function step() {
       if (i >= list.length) { end(); return; }
-      var p = list[i++], t = pace(p, speed), k = 0, n = Math.max(1, Math.round(t.say / 110));
+      var p = list[i++], t = pace(p, speed), k = 0, n = Math.max(1, Math.round(t.say / TICK));
       win.clearInterval(beat);
-      beat = win.setInterval(function () { k++; var c = p.slice(0, Math.ceil(p.length * Math.min(1, k / n))); if (k < n) { c = c.slice(0, c.lastIndexOf(' ') + 1); } paint(shown + c, k >= n ? 0 : mouth(p, k)); if (k >= n) { win.clearInterval(beat); } }, 110);
+      beat = win.setInterval(function () { k++; var c = p.slice(0, Math.ceil(p.length * Math.min(1, k / n))); paint(shown + c, k >= n ? 0 : mouth(p, Math.floor(k / 3))); if (k >= n) { win.clearInterval(beat); } }, TICK);
       timer = win.setTimeout(function () { win.clearInterval(beat); shown += p; paint(shown, 0); timer = win.setTimeout(step, t.rest); }, t.say);
     }
     skipB.addEventListener('click', end); // the voice, if on, goes on: it says the same text

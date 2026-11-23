@@ -8,7 +8,26 @@
   var MIN = 44, TAU = Math.PI * 2, MS = 360;
   // The Acho palette of /openworld/ panels and pad, as CSS tokens --a<hex> (openworld.css holds no raw colour).
   var ACHO = '04334a 0b6e8f 1d1b26 fffdf6 3d3950 ffe58a d49a1c b8401a b8f0a8 3f9a3a 1f7a32 a8e3ff 2a8fc4 0b5d9a ffc2b3 d0573d b8331c dcc8ff 7a52c7 5b2fb0 ffd0e6 c44d8a a3266a e6e8ef 7c8296 3d4252 157a45 4a4558 f4ecda e6dbc3 8a7a63 fffaf0 b9ab90 ddd2ba c8b99c d8be78';
-  if (root.document) { ACHO.split(' ').forEach(function (h) { root.document.documentElement.style.setProperty('--a' + h, '#' + h); }); }
+  // Dark by default, like the app (Sovereign, 2026-11-23): each token keeps its role and takes its night value.
+  // localStorage ow-theme=light keeps the day palette for whoever chose it.
+  var NIGHT = '04334a0c2533 0b6e8f3aa0c0 1d1b26ece7f8 fffdf6241e34 3d3950cfc8e6 ffe58a4a3d10 d49a1ce8b44a b8401ae9774f b8f0a81e4a2c ' +
+    '3f9a3a6cc466 1f7a326fd98a a8e3ff17405a 2a8fc463b9ec 0b5d9a143a5e ffc2b35a2a24 d0573dec8068 b8331cec6d55 dcc8ff3a2c63 7a52c7b49cf2 ' +
+    '5b2fb0a88cf2 ffd0e6552442 c44d8ae683b5 a3266ad96fa3 e6e8ef2b2d3c 7c82969aa0b5 3d4252c0c5d6 157a4552c98b 4a4558bdb6d3 f4ecda1f1a2c ' +
+    'e6dbc32b2440 8a7a638f86a8 fffaf018141f b9ab905c5276 ddd2ba332b49 c8b99c4a4062 d8be78e2cc8e';
+  var NIGHT_MAP = {}; NIGHT.split(' ').forEach(function (p) { NIGHT_MAP[p.slice(0, 6)] = p.slice(6); });
+  // theme() → 'dark' | 'light'; theme(name) paints the tokens, keeps the choice on this device and returns it.
+  function theme(name) {
+    var ls = null; try { ls = root.localStorage || null; } catch (e) { ls = null; }
+    if (name !== 'dark' && name !== 'light') { try { return ls && ls.getItem('ow-theme') === 'light' ? 'light' : 'dark'; } catch (e) { return 'dark'; } }
+    if (name === 'light' || (ls && ls.getItem('ow-theme'))) { try { ls.setItem('ow-theme', name); } catch (e) { /* kept for this visit only */ } }
+    if (root.document) {
+      var de = root.document.documentElement, night = name === 'dark';
+      ACHO.split(' ').forEach(function (h) { de.style.setProperty('--a' + h, '#' + (night && NIGHT_MAP[h] ? NIGHT_MAP[h] : h)); });
+      de.dataset.acho = name; de.style.colorScheme = name;
+    }
+    return name;
+  }
+  theme(theme());
   var SOIL = [['sea', '#64ae91'], ['blue', '#348ea2'], ['grass', '#6eb75d'], ['sand', '#d8be78'],
     ['clay', '#c19964'], ['sun', '#eacb56'], ['sky', '#45cbd4'], ['moss', '#a9bf68']];
   function r3(x) { return Math.round(x * 1000) / 1000; }
@@ -106,7 +125,7 @@
     pad.appendChild(joy); pad.appendChild(mid); pad.appendChild(right);
     stage.parentNode.insertBefore(pad, stage.nextSibling);
     // Pieces that join once the pad exists: the Town sheet, the preceptor's box, the living crab, panel close, the map layers.
-    ['building_sheet', 'preceptor_talk', 'crab_body', 'panel_x', 'map_aura', 'guardian_pressure', 'map_fog_layer', 'node_beacon', 'gestation_toast', 'holdings_map', 'worm_panels', 'building_skins', 'guide_next', 'haptics', 'way_by_ear', 'ow_calm'].forEach(function (n) { var e = doc.createElement('script'); e.src = '/game/' + n + '.js'; doc.head.appendChild(e); });
+    ['building_sheet', 'preceptor_talk', 'crab_body', 'panel_x', 'map_aura', 'guardian_pressure', 'map_fog_layer', 'node_beacon', 'gestation_toast', 'holdings_map', 'worm_panels', 'building_skins', 'guide_next', 'haptics', 'way_by_ear', 'ow_calm', 'acho_grammar'].forEach(function (n) { var e = doc.createElement('script'); e.src = '/game/' + n + '.js'; doc.head.appendChild(e); });
     var stage = doc.createElement('script'); stage.src = '/game/crab_stage.js'; doc.head.appendChild(stage); // duels and eggs on the map
     // The Aa letters button (type_scale.js) joins the middle once the pad exists.
     var letters = doc.createElement('script'); letters.src = '/game/type_scale.js'; doc.head.appendChild(letters);
@@ -115,7 +134,7 @@
   }
 
   var api = { MIN: MIN, SOIL: SOIL, BUTTONS: BUTTONS, fnv1a: fnv1a, spectrum: spectrum, value: value, curve: curve, path: path,
-    svg: svg, gesture: gesture, target: target, paint: paint, move: move, mount: mount };
+    svg: svg, gesture: gesture, target: target, paint: paint, move: move, mount: mount, theme: theme };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasGamepad = api;
   if (root.document && root.document.getElementById) { mount(root.document, root); }

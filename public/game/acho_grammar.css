@@ -1,0 +1,29 @@
+/* Acho grammar (acho_grammar.js): one card per row, its figure first, its seal as a glyph. Acho palette tokens only. */
+.ag-sr{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.bs-sheet>.bs-list{grid-template-columns:1fr;gap:8px}
+.bs-sheet .bs-card.ag-card{--gp-svg:none;display:flex;align-items:center;gap:12px;min-height:56px;padding:6px 14px 6px 8px;font-weight:700;line-height:1.25;text-align:left}
+.ag-fig{order:-1;flex:none;width:42px;height:42px;overflow:visible}
+.ag-fig path{fill:color-mix(in srgb,var(--ag,var(--a3f9a3a)) 22%,transparent);stroke:var(--ag,var(--a3f9a3a));stroke-width:2.6;stroke-linejoin:round}
+.bs-card[data-seal=NO_DATA] .ag-fig path{fill:none;stroke:var(--a8a7a63);stroke-dasharray:2 3}
+.bs-sheet .bs-card[data-seal=NO_DATA].ag-card{font-weight:400;box-shadow:none}
+.ag-glyph{margin-left:auto;flex:none;font-size:20px;line-height:1;color:var(--a1d1b26)}
+.bs-card[data-seal=LIVE] .ag-glyph{color:var(--a1f7a32)}
+.bs-card[data-seal=NO_DATA] .ag-glyph{color:var(--a8a7a63)}
+.bs-sheet>.bs-list>li{order:0}.bs-sheet>.bs-list>.ag-fold{order:1}.bs-sheet>.bs-list>.ag-asleep{order:2}
+.bs-sheet>.bs-list:not(.ag-open)>.ag-asleep{display:none}
+.bs-sheet .ag-sum.ag-card{display:flex;align-items:center;gap:12px;min-height:56px;padding:6px 14px 6px 8px;border-style:dashed;box-shadow:none;font-weight:400}
+.ag-sum::before{content:'';order:-1;flex:none;width:38px;height:38px;border:2px dotted var(--a8a7a63);border-radius:50%}
+.ag-sum[aria-expanded=true]::before{border-style:solid}
+#gamepad :is(.gp-mid .gp-b,.gp-mid .cats button,.view-stick){position:relative;overflow:visible}
+.ag-halo{position:absolute;inset:-8px;width:calc(100% + 16px);height:calc(100% + 16px);pointer-events:none;overflow:visible}
+.ag-halo path{fill:none;stroke:var(--ag,var(--a1d1b26));stroke-width:2.4;stroke-linejoin:round;opacity:.9}
+@media (forced-colors:active){.ag-fig path,.ag-halo path{stroke:CanvasText;fill:none}.ag-glyph{color:CanvasText}}
+:root[data-acho=dark] :is(.bs-sheet,#voices.map-voices[data-active-category]){color-scheme:dark}
+:root[data-acho=dark] .bs-sheet:is([data-skin=tower],[data-skin=workshop]){--sk-head:var(--a1d1b26)}
+#fa .fa-news{margin:0 0 6px;font-size:.85rem;font-weight:700;color:var(--a3d3950)}
+/* The pad as a controller (Sovereign, 2026-11-23): with the sticks in sight, the face buttons sit in a diamond like
+   A·B·X·Y, each one a small stick cap with its own Acho ring. With a sheet open the sticks hide and the row stays. */
+#map:not(:has(#voices.map-voices:not([data-active-category=Communication]):not([hidden]),.bs-sheet:not([hidden]),dialog[open],.revela)) #gamepad .gp-mid.ag-face{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,38px);gap:0 6px;justify-content:center;align-content:center;max-width:none;padding-top:0;flex-wrap:nowrap}
+#map:not(:has(#voices.map-voices:not([data-active-category=Communication]):not([hidden]),.bs-sheet:not([hidden]),dialog[open],.revela)) #gamepad .gp-mid.ag-face::after{display:none}
+#gamepad .gp-mid.ag-face .cats{display:contents}
+#gamepad .gp-mid.ag-face :is(.gp-b,.cats button){align-self:center;justify-self:center;background-image:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--afffdf6) 70%,var(--gp,var(--a1d1b26))) 0 40%,var(--afffdf6) 70%);box-shadow:0 3px 0 var(--a1d1b26),inset 0 -4px 6px color-mix(in srgb,var(--a1d1b26) 25%,transparent)}
