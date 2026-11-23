@@ -44,6 +44,30 @@ test('STALE history remains in the publisher seal ledger but never enters the vi
   assert.equal(r.hidden, 1);
 });
 
+test('persistent buildings retain their authorized plot and honest owner seal without becoming nodes', () => {
+  const r = S.leer({ ...v2([alive('beelink', 0, 0)]), edificios_principales: [
+    { id: 'casa-tank-3', node: 'tank-3', q: 3, r: 0, estado: 'OFFLINE' }
+  ], cobertura_edificios: { estado: 'MEDIDO', valor: 1, fuente: 'node_buildings' } });
+  assert.deepEqual(r.colonia.nodes.map(n => n.id), ['beelink']);
+  assert.deepEqual(r.colonia.buildings, []);
+  assert.deepEqual(r.principalBuildings, [
+    { id: 'casa-tank-3', node: 'tank-3', q: 3, r: 0, estado: 'OFFLINE' }
+  ]);
+  assert.deepEqual(r.principalBuildingsCoverage, { estado: 'MEDIDO', valor: 1, fuente: 'node_buildings' });
+  const old = S.leer(v2([]));
+  assert.deepEqual(old.principalBuildingsCoverage,
+    { estado: 'NO_DATA', causa: 'persistent_building_projection_not_published' });
+});
+
+test('sabotage: malformed or duplicate persistent-building rows fail closed', () => {
+  const base = v2([]);
+  assert.throws(() => S.leer({ ...base, edificios_principales: [{ id: 'x', node: 'n', q: 0, r: 0, estado: 'MAYBE' }] }), /malformed principal building/);
+  assert.throws(() => S.leer({ ...base, edificios_principales: [
+    { id: 'x', node: 'n', q: 0, r: 0, estado: 'OFFLINE' },
+    { id: 'y', node: 'n', q: 1, r: 0, estado: 'LIVE' }
+  ] }), /duplicate principal building owner or id/);
+});
+
 test('a node that is not alive, or sealed NO_DATA or ERROR, is never drawn; it is counted as hidden', () => {
   const r = S.leer(v2([
     alive('a', 0, 0),

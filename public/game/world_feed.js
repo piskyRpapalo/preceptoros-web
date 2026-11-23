@@ -25,7 +25,9 @@
   // always here (Sovereign, 2026-11-07): an empty colony is drawn as the floor and NO_DATA, never as a filler node.
   function merge(tutorial, live) {
     var l = live.colonia;
-    return {esquema: live.esquema, nodes: [], colonia: {nodes: l.nodes, buildings: l.buildings, units: l.units}};
+    return {esquema: live.esquema, nodes: [], edificios_principales: live.edificios_principales,
+      cobertura_edificios: live.cobertura_edificios,
+      colonia: {nodes: l.nodes, buildings: l.buildings, units: l.units}};
   }
   // follow({win, button, tutorial(), live(merged, d), fail(cause)}) → {read}. The heartbeat is read when asked, by the
   // button, and again every minute while the page is visible. Hidden or gone, the claim falls back with its cause and

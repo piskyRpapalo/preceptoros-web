@@ -13,8 +13,25 @@
   var V1 = 'preceptoros.openworld-estado/1', V2 = 'preceptoros.openworld-estado/2';
   var DATE = /^\d{4}-\d{2}-\d{2}$/;
   var LOOKS = ['basic', 'ocean', 'flat'];   // IC7-S4 (D11): the node's own face and colour family; default basic
+  var ID = /^[a-z0-9][a-z0-9._-]{0,63}$/;
 
   function fail(cause) { throw new Error('openworld_state: ' + cause); }
+
+  // Persistent public buildings do not imply a currently connected node. This sibling
+  // projection deliberately stays outside IC1 colonia.nodes and its LIVE-only selectors.
+  function principalBuildings(rows) {
+    if (rows === undefined) { return []; } // v2 deployed before the additive field
+    if (!Array.isArray(rows) || rows.length > 64) { fail('principal buildings must be a bounded array'); }
+    var owners = Object.create(null), buildings = Object.create(null);
+    return rows.map(function (b) {
+      if (!b || typeof b !== 'object' || typeof b.id !== 'string' || !ID.test(b.id)
+        || typeof b.node !== 'string' || !ID.test(b.node) || !Number.isSafeInteger(b.q) || !Number.isSafeInteger(b.r)
+        || ['LIVE', 'STALE', 'OFFLINE'].indexOf(b.estado) < 0) { fail('malformed principal building'); }
+      if (owners[b.node] || buildings[b.id]) { fail('duplicate principal building owner or id'); }
+      owners[b.node] = true; buildings[b.id] = true;
+      return { id: b.id, node: b.node, q: b.q, r: b.r, estado: b.estado };
+    });
+  }
 
   // One node row, checked field by field. Anything unknown or malformed is refused, never guessed.
   function node(n) {
@@ -50,6 +67,13 @@
       fail('schema v2 needs colonia with nodes and buildings arrays');
     }
     var nodes = c.nodes.map(node);
+    var landmarks = principalBuildings(e.edificios_principales);
+    var landmarkCoverage = e.cobertura_edificios && e.cobertura_edificios.estado === 'MEDIDO'
+      && Number.isSafeInteger(e.cobertura_edificios.valor) && e.cobertura_edificios.valor === landmarks.length
+      && e.cobertura_edificios.fuente === 'node_buildings'
+      ? { estado: 'MEDIDO', valor: landmarks.length, fuente: 'node_buildings' }
+      : { estado: 'NO_DATA', causa: e.cobertura_edificios && typeof e.cobertura_edificios.causa === 'string'
+        ? e.cobertura_edificios.causa.slice(0, 80) : 'persistent_building_projection_not_published' };
     var visibles = nodes.filter(function (n) { return n.alive && SHOWN.indexOf(n.seal) >= 0; });
     var ids = {};
     visibles.forEach(function (n) { ids[n.id] = true; });
@@ -71,6 +95,8 @@
       seals: seals,
       looks: looks,
       mana: mana,
+      principalBuildings: landmarks,
+      principalBuildingsCoverage: landmarkCoverage,
       pending: pending,
       hidden: nodes.length - visibles.length
     };

@@ -102,13 +102,19 @@ async function main() {
   // 2 · a tap on a near hex walks: the heading says the new place.
   const lugar = (h) => h.replace(/^Visitor-[0-9a-f]{8} · /, '');
   let paso = crab;
-  // a near hex with no building and no guardian under the finger (a fogged building now speaks instead of walking)
+  // Find a genuinely free nearby map point from the rendered viewport. Do not tap through the welcome/news cards;
+  // their height varies with the real tutorial sentence and viewport. A fogged building still speaks instead of walking.
   const libre = (x, y) => ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(), px = (${x} - r.left) * s.width / r.width, py = (${y} - r.top) * s.height / r.height, MP = window.AtlasMapPainter, F = window.AtlasMapFog, B = window.AtlasNodeBeacon;
     const e = document.elementFromPoint(${x}, ${y}), c = e && e !== s ? (e.closest('[id]') || e) : null;
     // why a point is not free, named: the card on top, or the map's own mark, fog or building under the finger
     return c ? 'card:' + (c.id || c.tagName) : MP && MP.markAt && MP.markAt(px, py) ? 'mark' : F && F.askAt && F.askAt(px, py) ? 'fog' : B && B.hitAt && B.hitAt(px, py) ? 'building' : true; })()`);
   medidas.walk_tries = [];
-  for (const [x, y] of [[250, 330], [110, 330], [180, 200], [250, 250], [110, 250], [180, 400], [250, 400], [110, 400]]) {
+  const map = await ev(`(() => { const r = document.getElementById('surface').getBoundingClientRect(); return { left: Math.ceil(r.left + 18), right: Math.floor(r.right - 18), top: Math.ceil(r.top + 18), bottom: Math.floor(r.bottom - 18) }; })()`);
+  const points = [];
+  for (let y = map.top; y <= map.bottom; y += 22) { for (let x = map.left; x <= map.right; x += 22) { points.push([x, y]); } }
+  const cx = (map.left + map.right) / 2, cy = (map.top + map.bottom) / 2;
+  points.sort((a, b) => (a[0] - cx) ** 2 + (a[1] - cy) ** 2 - ((b[0] - cx) ** 2 + (b[1] - cy) ** 2));
+  for (const [x, y] of points) {
     if (lugar(paso.h1) !== lugar(crab.h1)) { break; }
     const free = await libre(x, y); if (free !== true) { medidas.walk_tries.push([x, y, free]); continue; } medidas.walk_tries.push([x, y]);
     for (const type of ['mousePressed', 'mouseReleased']) { await cmd('Input.dispatchMouseEvent', { type, x, y, button: 'left', clickCount: 1 }); }
