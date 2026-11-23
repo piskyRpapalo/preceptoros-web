@@ -80,6 +80,14 @@
     // news(text, who): an observed result/resource notice, not a second talking character.
     // The adventure owns the speaking bust; this notification keeps its original text, aria-live and OK.
     function news(text, who, open) {
+      // One message on the map (Sovereign, 2026-11-23): while the first adventure's card speaks at the top, a result is
+      // written inside it, under the step, instead of opening a second box at the foot of the map.
+      var fa = doc.getElementById('fa');
+      if (fa && !fa.hidden && fa.offsetParent) {
+        var fn = doc.getElementById('fa-news');
+        if (!fn) { fn = doc.createElement('p'); fn.id = 'fa-news'; fn.className = 'fa-news'; fn.setAttribute('role', 'status'); var l = fa.querySelector('.fa-line'); fa.insertBefore(fn, l ? l.nextSibling : null); }
+        fn.textContent = who + ' · ' + text; return;
+      }
       // The resting bubble is gone from the map (Sovereign, 2026-11-14: it covered the world). Only a result that was
       // asked for (a fogged building, a duel) shows here, open, until OK; then nothing rests on the map again.
       var back = at; void open; box.classList.add('pt-news'); box.classList.remove('pt-min', 'pt-new'); who0.setAttribute('aria-expanded', 'true'); unhead(); line.textContent = text; who0.textContent = who; row.textContent = ''; // A result is a receipt, not a second preceptor face.
