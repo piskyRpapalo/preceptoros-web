@@ -162,6 +162,11 @@ async function main() {
   ok(clics === 1, 'reaching the game took ' + clics + ' clicks, expected 1');
   await foto('one-click-signed.png');
 
+  // Signed entry opens the existing Welcome panel; close it with its own toggle before
+  // measuring map controls, since the product intentionally hides the sticks under panels.
+  await ev(`(() => { const b = document.querySelector('#gamepad .cats [data-cat=\"Welcome\"]'); if (b && b.getAttribute('aria-pressed') === 'true') b.click(); })()`);
+  await espera(250);
+
   // --- Step 4: Verify map controls, summon labels, joysticks (Ojo del Doogee) ---
   const ojo = JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('surface'), m = c.getBoundingClientRect();
     const sum = [1, 2, 3, 4].map((n) => (document.getElementById('visitor-summon-tc' + n) || {}).textContent || '');
