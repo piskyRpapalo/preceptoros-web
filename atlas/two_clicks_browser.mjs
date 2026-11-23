@@ -19,6 +19,16 @@ function sirve(raiz) {
   const s = createServer((req, res) => {
     try {
       let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
+      if (ruta === '/api/world-state') {
+        // Local-only world fixture: landing entry now deliberately activates
+        // the existing feed, so signed-visit browser tests must serve its v2 contract.
+        const fixture = { esquema: 'preceptoros.openworld-estado/2', cobertura: { estado: 'MEDIDO' },
+          colonia: { nodes: [
+            { id: 'fixture-node-one', alive: true, seal: 'LIVE', since: '2026-11-23', q: 0, r: 0 },
+            { id: 'fixture-node-two', alive: true, seal: 'LIVE', since: '2026-11-23', q: 1, r: 0 }
+          ], buildings: [], units: [] } };
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(fixture)); return;
+      }
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
       const cuerpo = readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
