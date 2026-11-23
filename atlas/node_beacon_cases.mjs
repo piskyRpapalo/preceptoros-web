@@ -50,6 +50,34 @@ test('frame: the machine reads the same truth (status, source, age, talks) in un
   assert.equal(B.frame({ id: 'doggee-s110', seal: 'STALE', since: '2026-11-09' }, '2026-11-15').talks, null);
 });
 
+test('persisted offline building has an honest map silhouette, keyboard door, Acho event frame, and no LIVE promotion', () => {
+  const beforePlan = globalThis.AtlasTownPlan, beforeState = globalThis.AtlasOpenworldState;
+  let measured = null, caption = '';
+  globalThis.AtlasOpenworldState = createRequire(import.meta.url)('../public/game/openworld_state.js');
+  globalThis.AtlasTownPlan = { hall(_g, x, y, step, _sq, _H, lit) {
+    measured = { x, y, step, lit }; return { x0: x - step, x1: x + step, y0: y - step * 3, y1: y + step };
+  } };
+  const g = { save(){}, restore(){}, fillText(t){caption=t;}, fillRect(){}, strokeRect(){}, measureText(t){return {width:t.length*7};} };
+  const data = { esquema: 'preceptoros.openworld-estado/2', colonia: { nodes: [], buildings: [], units: [] },
+    edificios_principales: [{ id: 'casa-tank-3', node: 'tank-3', q: 3, r: 0, estado: 'OFFLINE' }] };
+  try {
+    B.use(data);
+    const view = { P: (q, r) => ({ x: q, y: r }), turn: (x, y) => ({ x, y }),
+      world: { cells: { at: {} } }, G: { cx: 195, cy: 420, k: 1, tilt: 1 }, height: () => 0, HSTEP: 7,
+      H: { T: { FRONT_DOOR: { 'PROPUESTA.base': '#ffee77' }, NEUTRAL: { ink: '#171321', paper: '#fff' } },
+        css: String, rgbOf: x => x, shade: x => x } };
+    B.draw(g, view, { width: 390, clientWidth: 390, height: 844 });
+    assert.deepEqual(measured, { x: 198, y: 420, step: 8, lit: false });
+    assert.match(caption, /casa-tank-3.*Tank 3.*OFFLINE/);
+    assert.equal(B.buildings()[0].estado, 'OFFLINE');
+    assert.equal(B.nodes().length, 0, 'the persisted structure must not materialize an offline node');
+    assert.equal(B.hitAt(198, 420).principal.estado, 'OFFLINE');
+  } finally {
+    if (beforePlan === undefined) delete globalThis.AtlasTownPlan; else globalThis.AtlasTownPlan = beforePlan;
+    if (beforeState === undefined) delete globalThis.AtlasOpenworldState; else globalThis.AtlasOpenworldState = beforeState;
+  }
+});
+
 test('airplane-mode node beacon refuses API traffic and does not keep stale LIVE nodes', () => {
   const src = readFileSync(new URL('../public/game/node_beacon.js', import.meta.url), 'utf8');
   let calls = 0;

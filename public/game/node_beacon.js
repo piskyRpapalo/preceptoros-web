@@ -8,9 +8,9 @@
 // Projection only: this file sends nothing about the visitor; the only call is its read of /api/world-state.
 (function (root) {
   'use strict';
-  var NAMES = { 'primer-ancla': 'Node 0', onexstation: 'Onexstation', 'doggee-s110': 'Doogee S110' };
+  var NAMES = { 'primer-ancla': 'Node 0', onexstation: 'Onexstation', 'doggee-s110': 'Doogee S110', 'tank-3': 'Tank 3' };
   var TALKS = { 'primer-ancla': 'Node 0' }; // the public name of its chatbot (the Hexelion model answers through the gateway) // the chatbot each node declares; absent = cannot talk (NO_DATA)
-  var WS = '/api/world-state', nodes = [], hits = [], asked = 0, cause = '', told = {}; // WS: a worker route, not a file
+  var WS = '/api/world-state', nodes = [], landmarks = [], hits = [], asked = 0, cause = '', told = {}; // WS: a worker route, not a file
   var DAY = 86400000;
   function nameOf(n) { return NAMES[n.id] || n.id; }
   // Pure: label(n) → the words on the node's pill: a speech mark when it can talk, its name, then live or asleep + day.
@@ -32,6 +32,11 @@
       n.seal === 'LIVE' && Number.isSafeInteger(n.q) && Number.isSafeInteger(n.r) &&
       typeof n.since === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(n.since); })
       .map(function (n) { return { id: n.id, q: n.q, r: n.r, seal: 'LIVE', since: n.since }; });
+  }
+  function principalBuildings(d) {
+    var S = root.AtlasOpenworldState;
+    if (!S || !S.leer) { return []; }
+    try { return S.leer(d).principalBuildings || []; } catch (e) { return []; }
   }
   // Pure: frame(n, today) → the machine's view of the same truth (an Acho frame under 1,024 bytes).
   function frame(n, today) {
@@ -80,24 +85,25 @@
       nodes = []; cause = 'offline; no fresh verified heartbeat'; doors(); return;
     }
     root.fetch(WS, { cache: 'no-store' }).then(function (r) { if (!r.ok) { cause = 'world-state answered ' + r.status; return null; } return r.json(); }).then(function (d) {
-      if (d) { nodes = pick(d); cause = nodes.length ? '' : 'no node admitted in World'; nodes.forEach(tell); }
+      if (d) { landmarks = principalBuildings(d); nodes = pick(d); cause = nodes.length ? '' : 'no currently LIVE node'; nodes.forEach(tell); }
       doors(); var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(); if (ow && ow.redraw) { ow.redraw(); }
     }).catch(function () { nodes = []; cause = 'world-state unreachable'; doors(); });
   }
   // draw(g, V, s): called by map_chunks.js youLayer after the fog, before the names and the crab.
   function draw(g, V, s) {
-    load(); hits = []; if (!nodes.length) { return; } var placed = []; // label boxes so far: no pill covers another
+    load(); hits = []; if (!nodes.length && !landmarks.length) { return; } var placed = []; // label boxes so far: no pill covers another
     var H = V.H, K = Math.max(V.G.k, 0.5), dpr = s.width / (s.clientWidth || s.width), ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), paper = H.css(H.rgbOf(H.T.NEUTRAL.paper));
     var gold = H.rgbOf(H.T.FRONT_DOOR['PROPUESTA.base'] || H.T.NEUTRAL.paper), dark = H.css(H.shade(H.rgbOf(H.T.NEUTRAL.paper), 0.62));
     nodes.forEach(function (n) {
+      if (landmarks.some(function (b) { return b.node === n.id; })) { return; }
       var k = K, c = V.world.cells.at[n.q + ',' + n.r], h0 = V.P(n.q, n.r), p = V.turn(h0.x, h0.y), live = n.seal === 'LIVE', talk = !!TALKS[n.id];
       var x = V.G.cx + p.x * V.G.k + 30 * k, y = V.G.cy + p.y * V.G.k - (c ? V.height(c) * V.HSTEP : 0) * V.G.k - 4 * k, top = y - (talk ? 62 : 44) * k;
       if (x < -60 || x > s.width + 60 || y < -80 || y > s.height + 80) { return; }
-      var TP = root.AtlasTownPlan;
-      if (talk && TP && TP.hall) { // the node that talks is the town hall on its own cell (town_plan.js), the crab at its door
+      var TP = root.AtlasTownPlan, main = n.principal;
+      if ((talk || main) && TP && TP.hall) { // reuse the established dominant town-hall silhouette for principal buildings
         var e1 = V.P(n.q + 1, n.r), step = Math.max(8, Math.abs(e1.x - h0.x) * V.G.k), cx = x - 30 * k, cy = y - 0.5 * step * Math.min(1, 0.866 * (V.G.tilt || 1)); // stable hex pitch BEFORE orbit/tilt; only zoom changes size
         var hb = TP.hall(g, cx, cy, step, Math.min(1, 0.866 * (V.G.tilt || 1)), H, live);
-        var t0 = label(n), f0 = Math.round(13 * dpr); g.save(); g.font = '800 ' + f0 + 'px ui-rounded, system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineWidth = Math.max(1.5, 2.2 * k); g.strokeStyle = ink;
+        var t0 = main ? main.id + ' · ' + nameOf(n) + ' · ' + main.estado : label(n), f0 = Math.round(13 * dpr); g.save(); g.font = '800 ' + f0 + 'px ui-rounded, system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineWidth = Math.max(1.5, 2.2 * k); g.strokeStyle = ink;
         var w0 = g.measureText(t0).width + 20 * dpr, h0 = f0 + 14 * dpr, ly0 = hb.y0 - h0 / 2 - 6 * dpr, lx0 = Math.max(w0 / 2 + 4, Math.min(s.width - w0 / 2 - 4, cx));
         g.fillStyle = live ? H.css(gold) : paper; g.beginPath(); g.moveTo(lx0 - w0 / 2 + h0 / 2, ly0 - h0 / 2); g.arc(lx0 + w0 / 2 - h0 / 2, ly0, h0 / 2, -Math.PI / 2, Math.PI / 2);
         g.arc(lx0 - w0 / 2 + h0 / 2, ly0, h0 / 2, Math.PI / 2, Math.PI * 1.5); g.closePath(); g.fill(); g.stroke(); g.fillStyle = ink; g.fillText(t0, lx0, ly0 + dpr); g.restore();
@@ -124,6 +130,23 @@
       g.arc(lx - tw / 2 + th / 2, ly, th / 2, Math.PI / 2, Math.PI * 1.5); g.closePath(); g.fill(); g.stroke(); g.fillStyle = ink; g.fillText(t, lx, ly + dpr);
       g.restore();
       hits.push({ n: n, x0: Math.min(lx - tw / 2, x - 22 * dpr), x1: Math.max(lx + tw / 2, x + 22 * dpr), y0: Math.min(ly - th / 2, top - 22 * dpr), y1: Math.max(y + 4 * dpr, ly + th / 2) });
+    });
+    landmarks.forEach(function (b) {
+      var TP = root.AtlasTownPlan; if (!TP || !TP.hall) { return; }
+      var k = K, c = V.world.cells.at[b.q + ',' + b.r], h0 = V.P(b.q, b.r), p = V.turn(h0.x, h0.y);
+      var x = V.G.cx + p.x * V.G.k, y = V.G.cy + p.y * V.G.k - (c ? V.height(c) * V.HSTEP : 0) * V.G.k;
+      if (x < -100 || x > s.width + 100 || y < -120 || y > s.height + 120) { return; }
+      var step = Math.max(8, Math.abs(V.P(b.q + 1, b.r).x - h0.x) * V.G.k), sq = Math.min(1, 0.866 * (V.G.tilt || 1));
+      var hb = TP.hall(g, x, y, step, sq, H, b.estado === 'LIVE');
+      var caption = b.id + ' · ' + (NAMES[b.node] || b.node) + ' · ' + b.estado, fs = Math.round(12 * dpr);
+      g.save(); g.font = '800 ' + fs + 'px ui-rounded, system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      var w = g.measureText(caption).width + 20 * dpr, h = fs + 14 * dpr, lx = Math.max(w / 2 + 4, Math.min(s.width - w / 2 - 4, x)), ly = hb.y0 - h / 2 - 6 * dpr;
+      g.lineWidth = Math.max(1.5, 2.2 * k); g.strokeStyle = ink; g.fillStyle = H.css(b.estado === 'LIVE' ? gold : paper);
+      g.fillRect(lx - w / 2, ly - h / 2, w, h); g.strokeRect(lx - w / 2, ly - h / 2, w, h);
+      g.fillStyle = ink; g.fillText(caption, lx, ly + dpr); g.restore();
+      placed.push({ x: lx, y: ly, w: w, h: h });
+      var owner = nodes.find(function (n) { return n.id === b.node; }) || { id: b.node, seal: b.estado, since: null };
+      hits.push({ n: Object.assign({}, owner, { principal: b }), x0: Math.min(hb.x0, lx - w / 2), x1: Math.max(hb.x1, lx + w / 2), y0: ly - h / 2, y1: hb.y1 });
     });
   }
   function hitAt(px, py) { for (var i = 0; i < hits.length; i++) { var h = hits[i]; if (px >= h.x0 && px <= h.x1 && py >= h.y0 && py <= h.y1) { return h.n; } } return null; }
@@ -153,12 +176,14 @@
     root.document.addEventListener('click', function (e) {
       var sf = root.document.getElementById('surface'); if (!sf || e.target !== sf || !hits.length) { return; }
       var r = sf.getBoundingClientRect(), n = r.width ? hitAt((e.clientX - r.left) * (sf.width / r.width), (e.clientY - r.top) * (sf.height / r.height)) : null;
-      if (n) { e.stopImmediatePropagation(); e.preventDefault(); open(n); }
+      if (n) { e.stopImmediatePropagation(); e.preventDefault();
+        if (n.principal) { root.document.dispatchEvent(new root.CustomEvent('world:building-selected', { detail: { building: n.principal } })); }
+        else { open(n); } }
     }, true);
   }
   // use(data): a harness hands a world-state it measured elsewhere (the page itself reads only its own /api/world-state).
-  function use(d) { nodes = pick(d); asked = Date.now(); cause = nodes.length ? '' : 'no node admitted in World'; nodes.forEach(tell); doors(); return nodes; }
-  var api = { nodes: function () { return nodes.slice(); }, NAMES: NAMES, TALKS: TALKS, label: label, age: age, describe: describe, pick: pick, frame: frame, draw: draw, hitAt: hitAt, open: open, use: use };
+  function use(d) { landmarks = principalBuildings(d); nodes = pick(d); asked = Date.now(); cause = nodes.length ? '' : 'no currently LIVE node'; nodes.forEach(tell); doors(); return nodes; }
+  var api = { nodes: function () { return nodes.slice(); }, buildings: function () { return landmarks.slice(); }, NAMES: NAMES, TALKS: TALKS, label: label, age: age, describe: describe, pick: pick, frame: frame, draw: draw, hitAt: hitAt, open: open, use: use };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasNodeBeacon = api;
 })(typeof window !== 'undefined' ? window : globalThis);
