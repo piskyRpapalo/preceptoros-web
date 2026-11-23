@@ -21,9 +21,10 @@
     var toggle = doc.getElementById('online-nodes-toggle'), panel = doc.getElementById('online-nodes'),
       otherToggle = doc.getElementById('online-players-toggle'), otherPanel = doc.getElementById('online-players'),
       select = doc.getElementById('online-node-select'), visit = doc.getElementById('online-node-visit'),
-      state = doc.getElementById('online-nodes-state'), service = doc.getElementById('online-node-service');
+      state = doc.getElementById('online-nodes-state'), service = doc.getElementById('online-node-service'),
+      buildingState = doc.getElementById('online-buildings-state'), buildingList = doc.getElementById('online-buildings-list');
     if (!toggle || !panel || !otherToggle || !otherPanel || !select || !visit || !state || !service) { return null; }
-    var nodes = [], buildings = [];
+    var nodes = [], principalBuildings = [], principalBuildingCoverage = { estado: 'NO_DATA', causa: 'not_checked' };
     function setPanel(button, element, open) {
       element.hidden = !open;
       button.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -42,6 +43,8 @@
       state.textContent = sentence;
       state.dataset.state = ok ? 'MEDIDO' : 'NO_DATA';
       state.dataset.cause = ok ? '' : cause;
+      state.dataset.world = JSON.stringify({ liveNodes: nodes.map(function (n) { return n.id; }), principalBuildings: principalBuildings,
+        principalBuildingsCoverage: principalBuildingCoverage });
       var F = root.AtlasStateFrames;
       if (!F || !F.stateFrame) { state.dataset.acho = 'NO_DATA(frame_core_unavailable)'; return; }
       var frame = F.stateFrame({id:'world/nodes',sentence:sentence,waves:[]});
@@ -49,21 +52,51 @@
       if (F.valida(frame).length) { state.dataset.acho = 'NO_DATA(frame_breaks_the_law)'; return; }
       state.dataset.acho = JSON.stringify(frame);
       if (typeof win.CustomEvent === 'function') {
-        doc.dispatchEvent(new win.CustomEvent('acho:event', { detail: { id: 'world/nodes', frame: frame } }));
+        doc.dispatchEvent(new win.CustomEvent('acho:event', { detail: { id: 'world/nodes', frame: frame,
+          world: { liveNodes: nodes.map(function (n) { return n.id; }), principalBuildings: principalBuildings,
+            principalBuildingsCoverage: principalBuildingCoverage } } }));
       }
     }
     function updateService() {
       var id = select.value, found = nodes.some(function (n) { return n.id === id; });
       visit.disabled = !found;
       if (!found) { service.textContent = 'NO_DATA: no verified node selected.'; return; }
-      var b = buildings.find(function (x) { return x && x.node === id && typeof x.id === 'string'; });
-      service.textContent = (b ? 'Recorded building ' + b.id + '. ' : '') +
+      var b = principalBuildings.find(function (x) { return x && x.node === id && typeof x.id === 'string'; });
+      service.textContent = (b ? 'Persistent principal building ' + b.id + ' · ' + b.estado + '. ' : '') +
         'NO_DATA: this node has no independently verified service grant for this control.';
     }
+    function selectBuilding(b) {
+      if (typeof win.CustomEvent === 'function') { doc.dispatchEvent(new win.CustomEvent('world:building-selected', { detail: { building: b } })); }
+    }
+    function buildingView(b) {
+      var sentence = 'Principal building ' + b.id + ', owned by ' + b.node + ', parcel ' + b.q + ', ' + b.r
+        + '. Node status ' + b.estado + '. The building remains registered while the node is offline; this is not a LIVE heartbeat.';
+      var F = root.AtlasStateFrames, frame = F && F.stateFrame
+        ? F.stateFrame({ id: 'building/' + b.id, sentence: sentence, waves: [] })
+        : { v: 'preceptoros.acho/1', id: 'building/' + b.id, atoms: [{ k: 'principal-building', r: sentence, i: [] }], change: [sentence], sound: 'NO_DATA: no building sound declared' };
+      frame.seal = b.estado; frame.status = b.estado; frame.source = 'gateway:/api/world-state';
+      frame.owner = b.node; frame.q = b.q; frame.r = b.r;
+      return { sentence: sentence, frame: frame };
+    }
+    doc.addEventListener('world:building-selected', function (event) {
+      var b = event.detail && event.detail.building;
+      if (!b || typeof b.id !== 'string' || ['LIVE', 'STALE', 'OFFLINE'].indexOf(b.estado) < 0) { return; }
+      var view = buildingView(b), frame = view.frame;
+      doc.dispatchEvent(new win.CustomEvent('acho:event', { detail: { id: 'building/' + b.id,
+        event: { kind: 'building.state', status: b.estado, source: 'gateway' }, frame: frame, news: [] } }));
+      var ow = win.AtlasOpenworldView && win.AtlasOpenworldView();
+      if (ow && ow.controls && ow.controls.say) { ow.controls.say(view.sentence); }
+      var B = root.AtlasNodeBeacon, owner = B && B.nodes && B.nodes().find(function (n) { return n.id === b.node; });
+      if (owner && B.TALKS[owner.id]) { B.open(owner); }
+    });
     function render(data) {
       var old = select.value;
       nodes = liveNodes(data && data.nodes);
-      buildings = data && Array.isArray(data.buildings) ? data.buildings.slice(0, 64) : [];
+      principalBuildings = data && Array.isArray(data.principalBuildings) ? data.principalBuildings.filter(function (b) {
+        return b && typeof b.id === 'string' && ID.test(b.id) && typeof b.node === 'string' && ID.test(b.node)
+          && Number.isSafeInteger(b.q) && Number.isSafeInteger(b.r) && ['LIVE', 'STALE', 'OFFLINE'].indexOf(b.estado) >= 0;
+      }).slice(0, 64) : [];
+      principalBuildingCoverage = data && data.principalBuildingsCoverage || { estado: 'NO_DATA', causa: 'persistent_building_projection_not_published' };
       while (select.firstChild) { select.removeChild(select.firstChild); }
       var empty = doc.createElement('option'); empty.value = ''; empty.textContent = nodes.length ? 'Choose a live node' : 'No verified live nodes';
       select.appendChild(empty);
@@ -74,10 +107,28 @@
       });
       if (nodes.some(function (n) { return n.id === old; })) { select.value = old; }
       else { select.value = ''; }
-      toggle.textContent = 'Nodes (' + nodes.length + ')';
+      var buildingsMeasured = principalBuildingCoverage.estado === 'MEDIDO';
+      toggle.textContent = 'Nodes (' + nodes.length + ') · Buildings (' + (buildingsMeasured ? principalBuildings.length : 'NO_DATA') + ')';
+      if (buildingState) { buildingState.textContent = buildingsMeasured
+        ? principalBuildings.length + ' persistent principal building' + (principalBuildings.length === 1 ? '' : 's') +
+          ' registered in Aduana. Their status does not increase the LIVE node count.'
+        : 'NO_DATA: ' + (principalBuildingCoverage.causa || 'persistent_building_projection_not_published'); }
+      if (buildingList) {
+        while (buildingList.firstChild) { buildingList.removeChild(buildingList.firstChild); }
+        principalBuildings.forEach(function (b) {
+          var li = doc.createElement('li'), button = doc.createElement('button'); button.type = 'button';
+          button.textContent = b.id + ' · ' + b.node + ' · ' + b.estado;
+          button.setAttribute('aria-label', 'Principal building ' + b.id + ', owner ' + b.node + ', status ' + b.estado +
+            ', parcel ' + b.q + ', ' + b.r + '. Offline status does not mean a LIVE node.');
+          button.addEventListener('click', function () { selectBuilding(b); }); li.appendChild(button); buildingList.appendChild(li);
+        });
+        if (!principalBuildings.length) { var emptyBuilding = doc.createElement('li'); emptyBuilding.textContent = buildingsMeasured
+          ? 'No verified principal buildings are currently projected.' : (buildingState ? buildingState.textContent : 'NO_DATA: building registry not checked.'); buildingList.appendChild(emptyBuilding); }
+      }
       if (data && data.ok) {
-        announce(nodes.length + ' independently reported LIVE node' + (nodes.length === 1 ? '' : 's') +
-          ' from /api/world-state. Only LIVE nodes are selectable.', true, '');
+        announce(nodes.length + ' independently reported LIVE node' + (nodes.length === 1 ? '' : 's') + ' from /api/world-state; ' +
+          (buildingsMeasured ? principalBuildings.length + ' persistent principal building' + (principalBuildings.length === 1 ? '' : 's') +
+            ' registered in Aduana' : 'principal-building count NO_DATA') + '. Building records do not create LIVE nodes.', true, '');
       } else {
         announce('NO_DATA: ' + ((data && data.cause) || 'node_state_not_verified'), false,
           ((data && data.cause) || 'node_state_not_verified'));
@@ -92,16 +143,17 @@
     });
     doc.addEventListener('world:nodes', function (event) {
       var d = event.detail || {};
-      render({ ok: d.ok === true, nodes: d.nodes, buildings: d.buildings, cause: d.cause });
+      render({ ok: d.ok === true, nodes: d.nodes, buildings: d.buildings, principalBuildings: d.principalBuildings,
+        principalBuildingsCoverage: d.principalBuildingsCoverage, cause: d.cause });
     });
     doc.addEventListener('world:summary', function (event) {
       var d = event.detail || {};
-      if (d.ok !== true) { render({ ok: false, nodes: [], buildings: [], cause: d.cause || 'node_feed_failed' }); }
+      if (d.ok !== true) { render({ ok: false, nodes: [], buildings: [], principalBuildings: [], cause: d.cause || 'node_feed_failed' }); }
     });
     render({ ok: false, nodes: [], cause: 'node_feed_not_checked' });
     return { state: function () { return { nodes: nodes.slice(), selected: select.value }; } };
   }
-  var api = { liveNodes: liveNodes, mount: mount, mounted: null };
+  var api = { liveNodes: liveNodes, buildingView: function (b) { return b && buildingView(b); }, mount: mount, mounted: null };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasOnlineNodes = api;
   if (root.document) { api.mounted = mount(root.document, root); }
