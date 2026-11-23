@@ -111,7 +111,7 @@
       toggle.textContent = 'Nodes (' + nodes.length + ') · Buildings (' + (buildingsMeasured ? principalBuildings.length : 'NO_DATA') + ')';
       if (buildingState) { buildingState.textContent = buildingsMeasured
         ? principalBuildings.length + ' persistent principal building' + (principalBuildings.length === 1 ? '' : 's') +
-          ' registered in Aduana. Their status does not increase the LIVE node count.'
+          ' registered in the admission registry. Their status does not increase the LIVE node count.'
         : 'NO_DATA: ' + (principalBuildingCoverage.causa || 'persistent_building_projection_not_published'); }
       if (buildingList) {
         while (buildingList.firstChild) { buildingList.removeChild(buildingList.firstChild); }
@@ -128,7 +128,7 @@
       if (data && data.ok) {
         announce(nodes.length + ' independently reported LIVE node' + (nodes.length === 1 ? '' : 's') + ' from /api/world-state; ' +
           (buildingsMeasured ? principalBuildings.length + ' persistent principal building' + (principalBuildings.length === 1 ? '' : 's') +
-            ' registered in Aduana' : 'principal-building count NO_DATA') + '. Building records do not create LIVE nodes.', true, '');
+            ' registered in the admission registry' : 'principal-building count NO_DATA') + '. Building records do not create LIVE nodes.', true, '');
       } else {
         announce('NO_DATA: ' + ((data && data.cause) || 'node_state_not_verified'), false,
           ((data && data.cause) || 'node_state_not_verified'));
