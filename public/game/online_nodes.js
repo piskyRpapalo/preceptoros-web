@@ -108,7 +108,7 @@
       if (nodes.some(function (n) { return n.id === old; })) { select.value = old; }
       else { select.value = ''; }
       var buildingsMeasured = principalBuildingCoverage.estado === 'MEDIDO';
-      toggle.textContent = 'Nodes (' + nodes.length + ') · Buildings (' + (buildingsMeasured ? principalBuildings.length : 'NO_DATA') + ')';
+      toggle.textContent = 'Nodes (' + nodes.length + ')';
       if (buildingState) { buildingState.textContent = buildingsMeasured
         ? principalBuildings.length + ' persistent principal building' + (principalBuildings.length === 1 ? '' : 's') +
           ' registered in the admission registry. Their status does not increase the LIVE node count.'

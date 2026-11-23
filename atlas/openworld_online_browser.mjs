@@ -51,7 +51,7 @@ async function main(){
       threeButtons:v?.row?.length===3&&v.row.every(x=>x.exists&&x.height>=44&&x.width>=44),
       noOverlap:Array.isArray(q)&&q.length===4&&q[1]>=q[0]&&q[2]<=q[3],
       zeroNode:v?.panel===true&&v.state==='MEDIDO'&&v.hasAcho&&v.options===1&&v.disabled===true,
-      persistentOfflineBuilding:v?.measured?.toggle==='Nodes (0) · Buildings (1)'&&v.measured.button==='casa-tank-3 · tank-3 · OFFLINE'&&v.measured.buttonHeight>=44&&v.measured.aria.includes('status OFFLINE')&&v.measured.world.principalBuildings[0].estado==='OFFLINE'&&v.measured.event?.frame?.status==='OFFLINE'&&v.measured.event?.frame?.owner==='tank-3'&&v.measured.event?.frame?.sound.startsWith('NO_DATA:'),
+      persistentOfflineBuilding:v?.measured?.toggle==='Nodes (0)'&&v.measured.buildings.startsWith('1 persistent principal building')&&v.measured.button==='casa-tank-3 · tank-3 · OFFLINE'&&v.measured.buttonHeight>=44&&v.measured.aria.includes('status OFFLINE')&&v.measured.world.principalBuildings[0].estado==='OFFLINE'&&v.measured.event?.frame?.status==='OFFLINE'&&v.measured.event?.frame?.owner==='tank-3'&&v.measured.event?.frame?.sound.startsWith('NO_DATA:'),
       legacyNoData:v?.legacy?.startsWith('NO_DATA:'),
       nodeFreeWalker:v?.walker?.join(',')==='0,0',
       labeled:v?.aria?.every(x=>x==='online-players'||x==='online-nodes')===false // share points to online-players, players and nodes own panels
