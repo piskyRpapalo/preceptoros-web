@@ -162,7 +162,8 @@
 @media (prefers-reduced-motion:reduce){.worm-burst{display:none}}
 
 /* Chat Live is a transparent top HUD, not a second Communication window.
-   The same Acho, Listen button and existing voice / radio elements remain intact. */
+   The same Acho, Listen button and existing voice / radio elements remain intact.
+   Its head stays pinned while the HUD scrolls (S110, 2026-11-23): a focused field scrolled the close (✕) out of view. */
 #stage > #map-communication{position:absolute;inset:6px auto auto 6px;display:flex;align-items:center;gap:6px;z-index:9;width:auto;max-width:calc(100% - 12px);padding:0;background:none;border:0;transform:none}
 #map-communication :is(button,select){min-width:44px;min-height:44px;padding:4px 10px;background:color-mix(in srgb,var(--afffdf6) 88%,transparent);color:var(--a1d1b26);border:1px solid var(--a1d1b26);border-radius:12px;font:inherit;box-shadow:none}
 #stage #map-communication button{flex:0 0 auto;white-space:nowrap;width:auto;height:auto;aspect-ratio:auto}
@@ -170,7 +171,7 @@
 #stage #map-communication select{max-width:min(13rem,45vw)}
 #stage #map-communication select[hidden]{display:none}
 #stage #voices.map-voices[data-active-category=Communication]{animation:none;inset:54px auto auto 6px;width:min(30rem,calc(100% - 12px));height:auto;max-height:min(62dvh,34rem);overflow-y:auto;overscroll-behavior:contain;align-content:start;gap:6px;padding:0 2px 4px;border:0;border-radius:0;box-shadow:none;background:transparent;color:var(--a1d1b26)}
-#voices[data-active-category=Communication] .sheet-head{position:static;display:flex;align-items:center;gap:6px;margin:0;padding:5px 8px;border:1px solid color-mix(in srgb,var(--a1d1b26) 45%,transparent);border-radius:14px;background:color-mix(in srgb,var(--afffdf6) 85%,transparent);box-shadow:none}
+#voices[data-active-category=Communication] .sheet-head{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:6px;margin:0;padding:5px 8px;border:1px solid color-mix(in srgb,var(--a1d1b26) 45%,transparent);border-radius:14px;background:color-mix(in srgb,var(--afffdf6) 85%,transparent);box-shadow:none}
 #voices[data-active-category=Communication] .sheet-head::before{display:none}
 #voices[data-active-category=Communication] .sheet-head h2{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 #voices[data-active-category=Communication] .sheet-head .acho{flex:0 0 36px;width:36px;height:36px;margin:0}
