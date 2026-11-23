@@ -293,19 +293,16 @@
       .then(function (d) { tutorial = d; accept(d); render(); if (seguir && !landingMode) { seguir.read(); } })
       .catch(function () { state.textContent = 'NO_DATA: tutorial state unavailable.'; });
   }
-  // Latido visible (odd/tasks/latido-visible.md): world_feed.js follow reads it on load, by button, every minute.
   var seguir = raiz.AtlasWorldFeed && raiz.fetch && colonia_fuente !== 'fixture' ? raiz.AtlasWorldFeed.follow({ win: raiz, button: doc.getElementById('world-refresh'),
     tutorial: function () { return tutorial; },
     live: function (merged, d) {
       var worldState = raiz.AtlasOpenworldState.leer(merged);
       live = 'ok'; live_fuente = d.cobertura && d.cobertura.fuente ? String(d.cobertura.fuente).slice(0, 40) : 'NO_DATA';
       accept(merged); render();
-      // One vetted feed shared by the map, the selector, screen readers and Acho. Never fetch a second node index.
       doc.dispatchEvent(new raiz.CustomEvent('world:nodes', { detail: {
         ok: d.cobertura && d.cobertura.estado === 'MEDIDO',
         nodes: merged.colonia.nodes, buildings: merged.colonia.buildings,
-        principalBuildings: worldState.principalBuildings || [],
-        principalBuildingsCoverage: worldState.principalBuildingsCoverage,
+        principalBuildings: worldState.principalBuildings || [], principalBuildingsCoverage: worldState.principalBuildingsCoverage,
         source: '/api/world-state', cause: d.cobertura && d.cobertura.causa
       } }));
       if (d.cobertura && d.cobertura.estado === 'NO_DATA') { state.textContent += ' · Live nodes NO_DATA: ' + d.cobertura.causa; }
