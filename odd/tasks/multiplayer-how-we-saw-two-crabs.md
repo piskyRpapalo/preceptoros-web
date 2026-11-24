@@ -51,3 +51,15 @@ Measured on 2026-11-24 with `atlas/shared_crabs_browser.mjs` (two local Chromium
 - Two LIVE crabs together: **20 `/view` in 10 s**, about 1/s each. It was 2/s each.
 - One crab alone after the other left: **2 `/view` in 12 s**.
 - The whole two-crab walk stayed VERDE: steps, four readings, STALE and gone.
+
+## Three crabs on the public site (2026-11-24 13:14Z)
+
+`atlas/public_crabs_e2e.mjs` takes the public road: it opens https://preceptoros.org/openworld/ and uses the public presence authority (no loopback). Each crab is a person's visit: Play, the consent box, then Share.
+
+First receipt (VERDE, three Beelink Chromium processes):
+- Three different crabs, and each one saw all **3 LIVE**.
+- Each crab walked one hex. The other two held it at the new cell after **0.6–0.8 s**.
+- One page closed. The others read it **STALE at 7.6 s**, and the authority forgot it at **27.7 s**.
+- Afterwards, everyone else disconnected on purpose.
+
+For a physical phone, add `PHONES=<serial>`: its Chrome opens the public URL the way a person would. This needs the owner's go-ahead, because the Doogee is read-only by default.
