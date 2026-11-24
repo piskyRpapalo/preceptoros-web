@@ -64,8 +64,9 @@ async function main() {
   const scenes = []; let vid = null;
   const shot = async (n, name, info) => {
     await espera(700);
-    // invariant (P0): no capture where content is open (a panel, a card, a dialog, a troop reveal) and a stick still stands
-    const cover = await ev(`(()=>{const open=!!document.querySelector('#voices.map-voices:not([hidden]),.bs-sheet:not([hidden]),dialog[open],.revela'); const stick=[...document.querySelectorAll('#view-joystick,#character-joystick')].some(e=>e.getClientRects().length); return open&&stick})()`);
+    // invariant (P0): no capture where content is open (a panel, a card, a dialog, a troop reveal) and a stick still stands.
+    // Talk (Communication) is the exception: since 75dba2c8 (2026-11-20) the chat sits above the map with both sticks, the same rule as ow_calm.css.
+    const cover = await ev(`(()=>{const open=!!document.querySelector('#voices.map-voices:not([data-active-category=Communication]):not([hidden]),.bs-sheet:not([hidden]),dialog[open],.revela'); const stick=[...document.querySelectorAll('#view-joystick,#character-joystick')].some(e=>e.getClientRects().length); return open&&stick})()`);
     ok(!cover, n + ': content is open and a stick still stands');
     // the ephemeral id is masked in the picture only (restored at once): the gallery is anonymised, the play is not
     await ev(`(()=>{const h=document.getElementById('map-h'); if(!h) return 0; h.dataset.mask=h.textContent.replace(/Visitor-[0-9a-f]{8}/,'Visitor-········'); let st=document.getElementById('e2e-mask'); if(!st){st=document.createElement('style'); st.id='e2e-mask'; st.textContent='#map-h{font-size:0!important}#map-h::after{content:attr(data-mask);font-size:1rem}'; document.head.append(st);} return 1})()`);
