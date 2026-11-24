@@ -11,6 +11,7 @@
   'use strict';
   var G, O, CT, EV = 1680, BORN = 1400, CRAB = 35, CORNER = [[0.82, 0.18], [0.2, 0.7]], END = 1800; // CRAB: the back crab's width in its own units; CORNER[side]: 0 the opponent (ghost), 1 the crab // EV: one hit every 1680 ms, three times the older step: fights are lovely to watch (Sovereign, 2026-11-08); the result does not change
   // The wave renderer loads with the first hatch (hatch_reveal.js); the face asks for it too, and reads the globals per fight.
+  if (root.document && !root.AtlasWaveField) { var f = root.document.createElement('script'); f.src = '/game/wave_field.js'; root.document.head.appendChild(f); }
   if (root.document && !root.AtlasOnda) { var w = root.document.createElement('script'); w.src = '/game/wave_render.js'; root.document.head.appendChild(w); }
   // front(lifeOpp, lifeCrab, end, gana) → where the middle line stands on the diagonal from the crab's corner (0) to the
   // opponent's (1). It leans toward the side losing life; at the end the winner pushes it into the loser's corner. Pure.
@@ -48,6 +49,7 @@
   }
   // scene(cv, def, asa, combat, op): op.log() → the combat's hits, in order (the caller hands them over).
   function scene(cv, def, asa, combate, op) {
+    var WF = op && op.campo && root.AtlasWaveField, wf = WF && WF.scene(cv, def, asa, combate, op); if (wf) { return wf; } // on the map floor (wave_field.js)
     G = root.AtlasGacha; O = root.AtlasOnda; CT = root.AtlasComicTokens;
     op = op || {};
     var log = op.log || function () { return []; };

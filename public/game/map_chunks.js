@@ -205,7 +205,7 @@
       names(g, V, w, s.width / (s.getBoundingClientRect().width || s.width), x, y);
       if (B && !s.dataset.duel) { B.draw(g, x, y, Math.max(k, 0.5), B.pose(T.steps, still ? 1 : T.p, still ? 1 : T.gp), V.H, B.beat(ow.signal || null, Date.now()), oval); if (T.busy) { B.loop(ow.redraw); } }
       var W = s.width, Hh = s.height;
-      if (!s.dataset.look && (x < W * 0.25 || x > W * 0.75 || y < Hh * 0.3 || y > Hh * 0.7)) {
+      if (!s.dataset.look && !s.dataset.field && (x < W * 0.25 || x > W * 0.75 || y < Hh * 0.3 || y > Hh * 0.7)) {
         s.dataset.panx = String(Math.round((Number(s.dataset.panx) || 0) + W / 2 - x));
         s.dataset.pany = String(Math.round((Number(s.dataset.pany) || 0) + Hh / 2 - y));
         if (ow.redraw && root.requestAnimationFrame) { root.requestAnimationFrame(function () { ow.redraw(); }); }
