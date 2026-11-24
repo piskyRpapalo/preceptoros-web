@@ -1,5 +1,5 @@
 // Experiment E2 (Mesa #34, 2026-11-14) · the odds that sound. NOT served: a pure prototype for the Desk to judge.
-// One tier of the honest lottery becomes one harmonic table, in the format the waves already carry
+// One tier of the honest summon odds becomes one harmonic table, in the format the waves already carry
 // ([[k, ax, ay, ph], ...]), so acho_sonify.js sounds it with no new sound code: the second harmonic sets the degree of
 // the scale from the tier's rare + unique odds (a luckier tier is a higher note), the first carries the common odds
 // and the third the rare and unique ones as modulation. Same numbers for the eye, the ear and the machine.

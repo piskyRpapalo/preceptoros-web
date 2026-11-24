@@ -69,7 +69,7 @@ test('fresh: a message already said by another region is silence', () => {
   assert.equal(S.fresh(['Preceptor · Visit started. Copper 0, light 0.'], 'Visit started. Copper 0, light 0.'), '');
 });
 test('fresh: a line that extends the one just said gives only its tail', () => {
-  const a = 'Honest lottery · See the odds before you roll · LIVE · piece gacha.js · missions D4';
+  const a = 'House · summons · See the odds before you summon · LIVE · piece gacha.js · missions D4';
   assert.equal(S.fresh([a], a + ' · per thousand normal 600'), 'per thousand normal 600');
 });
 test('fresh: a new message is said whole; sabotage: an empty one is never said', () => {

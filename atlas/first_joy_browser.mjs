@@ -2,7 +2,7 @@
 // the whole first visit in a real browser, with nothing but the page. Laws held here, at 360×716:
 // - cold: nothing of the visit is stored; one press on «Play now» (44 px) makes the visitor an ephemeral crab, no login;
 // - a tap on a near hex walks the crab: the heading says the new place;
-// - a building is a door: Node → Honest lottery → Roll lands the visitor in the panel that holds the summons, in two
+// - a building is a door: Node → Coliseum → Summons lands the visitor in the panel that holds the summons, in two
 //   presses, with keyboard focus on a pressable 44 px control there; the same state is on screen (the House panel) and
 //   in the machine-readable tree (the Profile button is pressed, the sheet is closed). A file name is not an outcome;
 // - before Play, the same door says NO_DATA with its cause and opens nothing;
@@ -76,11 +76,11 @@ async function main() {
   const pulsa = (sel, texto) => ev(`(() => { const all = [...document.querySelectorAll(${JSON.stringify(sel)})];
     const b = ${JSON.stringify(texto || null)} ? all.find((x) => x.firstChild && x.firstChild.textContent.startsWith(${JSON.stringify(texto || '')})) : all[0];
     if (!b) return false; b.focus(); b.click(); return true; })()`);
-  const puerta = async () => { // Node → Honest lottery → Roll, by the buttons a keyboard reaches
+  const puerta = async () => { // Node → Coliseum → Summons, by the buttons a keyboard reaches
     ok(await pulsa('#gp-town'), 'no Node button');
     await hasta((m) => m.sheet);
-    for (let i = 0; i < 30 && !(await pulsa('#building-sheet .bs-card', 'Honest lottery')); i++) { await espera(100); }
-    for (let i = 0; i < 30 && !(await pulsa('#building-sheet .bs-card', 'Roll')); i++) { await espera(100); }
+    for (let i = 0; i < 30 && !(await pulsa('#building-sheet .bs-card', 'Coliseum')); i++) { await espera(100); }
+    for (let i = 0; i < 30 && !(await pulsa('#building-sheet .bs-card', 'Summons')); i++) { await espera(100); }
   };
 
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
@@ -91,7 +91,7 @@ async function main() {
   // Before Play, the door is honest: it names its cause and opens nothing.
   await puerta();
   const antes = await hasta((m) => /NO_DATA · /.test(m.line), 2500); medidas.beforePlay = antes.line;
-  ok(/NO_DATA · /.test(antes.line) && antes.profile !== 'true' && antes.sheet, 'before Play, Roll does not say NO_DATA with its cause: ' + JSON.stringify([antes.line, antes.profile, antes.sheet]));
+  ok(/NO_DATA · /.test(antes.line) && antes.profile !== 'true' && antes.sheet, 'before Play, Summons does not say NO_DATA with its cause: ' + JSON.stringify([antes.line, antes.profile, antes.sheet]));
   await pulsa('#building-sheet .bs-bar > .bs-tool:last-child');
 
   // 1 · one press: an ephemeral crab, no login, nothing stored.
@@ -150,7 +150,7 @@ async function main() {
   await puerta();
   const dentro = await hasta((m) => m.profile === 'true' && !m.sheet, 3000);
   medidas.door = { presses: 2, sheet: dentro.sheet, profile: dentro.profile, house: dentro.house, summons: dentro.summons, focus: dentro.focus };
-  ok(dentro.profile === 'true' && dentro.house && dentro.summons, 'Roll does not open the panel that holds the summons: ' + JSON.stringify(medidas.door));
+  ok(dentro.profile === 'true' && dentro.house && dentro.summons, 'Summons does not open the panel that holds the summons: ' + JSON.stringify(medidas.door));
   ok(!dentro.sheet, 'the sheet stays over the opened panel');
   const f = dentro.focus;
   ok(f && f.inPanel && f.tag === 'BUTTON' && !f.off && f.box[0] >= 44 && f.box[1] >= 44, 'focus does not land on a pressable 44 px control in the panel: ' + JSON.stringify(f));

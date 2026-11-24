@@ -1,7 +1,7 @@
 // Building interiors, piece 2 (mission «Los nueve edificios por dentro», Mesa reparto §2), proved in a real browser on
 // /openworld/ at 320×568, 360×740, 420×642 and 1024×768. Laws:
 // - one «Town» button in the gamepad middle, 44 px, with its Acho spectrum, opens one sheet;
-// - the sheet shows the nine buildings of public/game/building_interiors.json, in order; focus moves into it;
+// - the sheet shows the eight buildings (no lottery, 2026-11-24) of public/game/building_interiors.json, in order; focus moves into it;
 // - each building shows exactly its contract options; each option says LIVE with its piece or NO_DATA with its cause;
 // - every control is at least 44 px and Acho-painted; no horizontal overflow;
 // - Escape goes back to the doors, then closes and returns focus to Town; reduced motion keeps cards still.
@@ -25,7 +25,7 @@ const EFFECT = {
   letters: { page: `document.documentElement.getAttribute('data-type-step') || document.documentElement.style.cssText`, changes: true },
   audio: { page: `document.documentElement.dataset.audioOnly || 'off'`, changes: true, twice: true },
   odds: { line: (t) => Object.keys(GACHA.TCS).every((tc) => t.includes(tc + ' ' + GACHA.odds(tc).join('/'))) },
-  gaps: { line: (t, doc) => t.includes(doc.buildings.flatMap((b) => b.options).filter((o) => !DOORS.live(o)).length + ' of 36 options are NO_DATA') },
+  gaps: { line: (t, doc) => t.includes(doc.buildings.flatMap((b) => b.options).filter((o) => !DOORS.live(o)).length + ' of ' + doc.buildings.flatMap((b) => b.options).length + ' options are NO_DATA') },
   pulse: { line: (t) => /^Pulse · .*(MEASURED|NO_DATA)/.test(res(t)) },
   notebook: { line: (t) => /saved$|notebook_download_failed$/.test(t) },
   typo: { line: (t) => /nothing_selected/.test(t) },
@@ -107,9 +107,9 @@ async function main() {
     const t = JSON.parse(town); medidas['town' + n] = t;
     ok(t.inMid && t.acho && t.w >= 44 && t.h >= 44, n + ': the Node button is not a 44 px Acho button in the gamepad middle: ' + JSON.stringify(t));
     await ev(`document.getElementById('gp-town').click()`);
-    const doors = await espera_hoja((m) => m.cards.length === 9);
+    const doors = await espera_hoja((m) => m.cards.length === 8);
     medidas['doors' + n] = { n: doors.cards.length, h: doors.h, focus: doors.focus };
-    ok(doors.open && doors.expanded === 'true' && doors.cards.length === 9, n + ': the sheet does not show the nine buildings: ' + JSON.stringify(doors.cards.length));
+    ok(doors.open && doors.expanded === 'true' && doors.cards.length === 8, n + ': the sheet does not show the eight buildings: ' + JSON.stringify(doors.cards.length));
     ok(doors.cards.every((c, i) => c.t.startsWith(contrato.buildings[i].name)), n + ': the doors are not the contract buildings in order');
     ok(doors.conquestFirst, n + ': the Conquest card (flags, building types, build) is not first in Node');
     ok(doors.boxH >= 140 && doors.padB <= H, n + ': the sheet is not really visible, or pushes the gamepad out: ' + JSON.stringify([doors.boxH, doors.padB]));
@@ -182,16 +182,16 @@ async function main() {
     }
     // Escape: back to the doors, then closed with focus on Town.
     const esc = `document.getElementById('building-sheet').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))`;
-    await ev(esc); const atras = await espera_hoja((m) => m.cards.length === 9);
+    await ev(esc); const atras = await espera_hoja((m) => m.cards.length === 8);
     await ev(esc); const fin = JSON.parse(await ev(MEDIR));
-    ok(atras.cards.length === 9 && !fin.open && fin.expanded === 'false' && /gp-b/.test(fin.focus || ''), n + ': Escape does not go back then close: ' + JSON.stringify([atras.cards.length, fin.open, fin.focus]));
+    ok(atras.cards.length === 8 && !fin.open && fin.expanded === 'false' && /gp-b/.test(fin.focus || ''), n + ': Escape does not go back then close: ' + JSON.stringify([atras.cards.length, fin.open, fin.focus]));
     // Repeated panel travel: no route stacks, stranded focus or horizontal overflow.
     // Focus is verified on the real active element, not inferred from aria-expanded alone.
     let stable = 0;
     for (let turn = 0; turn < 10; turn++) {
       await ev(`document.getElementById('gp-town').click()`);
-      const opened = await espera_hoja((m) => m.open && m.expanded === 'true' && m.cards.length === 9);
-      const openedOk = opened.open && opened.expanded === 'true' && opened.cards.length === 9 &&
+      const opened = await espera_hoja((m) => m.open && m.expanded === 'true' && m.cards.length === 8);
+      const openedOk = opened.open && opened.expanded === 'true' && opened.cards.length === 8 &&
         /bs-card/.test(opened.focus || '') && opened.scroll <= opened.ancho && opened.small.length === 0;
       await ev(esc);
       const closed = await espera_hoja((m) => !m.open && m.expanded === 'false');

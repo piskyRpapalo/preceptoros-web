@@ -6,7 +6,7 @@
 (function (root) {
   'use strict';
   // option id → the category (terminal_panel.js CATS) that holds its piece. Checked against the interiors contract.
-  var DOORS = { 'play-without-account': 'Welcome', 'welcome-again': 'Welcome', 'land-tutorial': 'Welcome', voices: 'Communication', roll: 'Army', pet: 'Army', summons: 'Army' };
+  var DOORS = { 'play-without-account': 'Welcome', 'welcome-again': 'Welcome', 'land-tutorial': 'Welcome', voices: 'Communication', pet: 'Army', summons: 'Army' };
 
   // Pure: verdict(id, button) → null (no door) or { open, line }. button is { hidden, label } or null when absent.
   function verdict(id, button) {

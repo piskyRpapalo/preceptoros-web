@@ -9,9 +9,6 @@
 .bs-sheet[data-skin] .bs-card[data-seal=LIVE]{box-shadow:inset 0 -6px 0 var(--sk-acc),0 4px 0 var(--a1d1b26)}
 .bs-sheet[data-skin] .bs-line{color:var(--sk-head)}
 
-/* lottery · a fairground: candy stripes, tickets with notches */
-.bs-sheet[data-skin=lottery]{--sk-bg:var(--affe58a);--sk-acc:var(--ad49a1c);background-image:repeating-linear-gradient(135deg,transparent 0 18px,color-mix(in srgb,var(--ad49a1c) 22%,transparent) 18px 36px)}
-.bs-sheet[data-skin=lottery] .bs-card{border-style:dashed;border-radius:10px;background-image:radial-gradient(circle at 0 50%,var(--affe58a) 9px,transparent 10px),radial-gradient(circle at 100% 50%,var(--affe58a) 9px,transparent 10px)}
 /* doctor · a clinic: a soft cross grid, rounded calm cards */
 .bs-sheet[data-skin=doctor]{--sk-bg:var(--afffdf6);--sk-acc:var(--aa8e3ff);background-image:linear-gradient(var(--aa8e3ff) 2px,transparent 2px),linear-gradient(90deg,var(--aa8e3ff) 2px,transparent 2px);background-size:28px 28px;background-position:-1px -1px}
 .bs-sheet[data-skin=doctor] .bs-card{border-radius:28px;border-color:var(--a2a8fc4)}

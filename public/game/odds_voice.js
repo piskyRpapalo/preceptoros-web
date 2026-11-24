@@ -24,7 +24,7 @@
     var w = waves(G);
     if (!w) { return { ok: false, cause: 'odds_do_not_add_to_1000' }; }
     var line = 'per thousand ' + G.RAREZAS.join('/') + ' · ' + Object.keys(G.TCS).map(function (t) { return t + ' ' + G.odds(t).join('/'); }).join(' · ');
-    var frame = F.stateFrame({ id: 'lottery/odds', sentence: line, waves: w }), bad = F.valida(frame);
+    var frame = F.stateFrame({ id: 'summon/odds', sentence: line, waves: w }), bad = F.valida(frame);
     if (bad.length) { return { ok: false, cause: 'frame_breaks_the_law' }; }
     return { ok: true, id: 'acho:' + ('0000000' + A.hash32(JSON.stringify(frame)).toString(16)).slice(-8), line: line, frame: frame };
   }

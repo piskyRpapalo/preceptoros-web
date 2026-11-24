@@ -12,10 +12,10 @@ test('nextKey: the chosen key is the one whose real step (dirOf, camera turn inc
   });
 });
 test('line: arrival, a heading of one or two keys, a new heading — and the chip says the same facts', () => {
-  assert.equal(W.line('Lottery', 1, ['ArrowUp']), 'You are next to Lottery. Open Node to go in.');
-  assert.equal(W.line('Lottery', 4, ['ArrowLeft', 'ArrowUp']), 'Lottery: 4 hexes away. Next: Left arrow, then Up arrow.');
-  assert.match(W.line('Lottery', 4, ['ArrowRight'], 'turn'), /^New heading\. /);
-  assert.equal(W.chipText('Lottery', 4, ['ArrowLeft', 'ArrowUp']), '◎ Lottery · 4 hexes · ← ↑');
+  assert.equal(W.line('Coliseum', 1, ['ArrowUp']), 'You are next to Coliseum. Open Node to go in.');
+  assert.equal(W.line('Coliseum', 4, ['ArrowLeft', 'ArrowUp']), 'Coliseum: 4 hexes away. Next: Left arrow, then Up arrow.');
+  assert.match(W.line('Coliseum', 4, ['ArrowRight'], 'turn'), /^New heading\. /);
+  assert.equal(W.chipText('Coliseum', 4, ['ArrowLeft', 'ArrowUp']), '◎ Coliseum · 4 hexes · ← ↑');
 });
 test('heading: alternating Left/Up is one heading in either order (no «turn» at every zigzag step)', () => {
   assert.equal(W.heading(['ArrowLeft', 'ArrowUp']), W.heading(['ArrowUp', 'ArrowLeft']));

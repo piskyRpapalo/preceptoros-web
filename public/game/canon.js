@@ -55,16 +55,16 @@
     return { u32: u32, uniforme: uniforme };
   }
 
-    function loteria(pesos, g) {
+    function sorteo(pesos, g) {
     var total = 0;
     pesos.forEach(function (p) {
-      if (!Number.isSafeInteger(p) || p < 0) { throw new RangeError('loteria: peso ' + p); }
+      if (!Number.isSafeInteger(p) || p < 0) { throw new RangeError('sorteo: peso ' + p); }
       total += p;
     });
-    if (total < 1) { throw new RangeError('loteria: sin peso'); }
+    if (total < 1) { throw new RangeError('sorteo: sin peso'); }
     var r = g.uniforme(total), acum = 0;
     for (var i = 0; i < pesos.length; i++) { acum += pesos[i]; if (r < acum) { return i; } }
-    throw new Error('loteria: inalcanzable');
+    throw new Error('sorteo: inalcanzable');
   }
 
     function puntosBasicos(pesos) {
@@ -76,7 +76,7 @@
     function satura(x, min, max) { return x < min ? min : x > max ? max : x; }
 
   var AtlasCanon = { canon: canon, huella: huella, sha: sha, ordena: ordena, generador: generador,
-                     loteria: loteria, puntosBasicos: puntosBasicos, satura: satura, HEX64: HEX64 };
+                     sorteo: sorteo, puntosBasicos: puntosBasicos, satura: satura, HEX64: HEX64 };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasCanon; }
   else { raiz.AtlasCanon = AtlasCanon; }
 })(this);

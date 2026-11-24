@@ -1,4 +1,4 @@
-// E4 / L13 · the gap board. Read the nine buildings (/game/building_interiors.json) and say, out loud, what is still
+// E4 / L13 · the gap board. Read the eight buildings (/game/building_interiors.json) and say, out loud, what is still
 // NO_DATA: how many options, which mission each one waits for, and why. Nothing is invented: the board only counts
 // what the contract already declares. Pure; the building sheet calls it from the Agora («Neighbours and the gap board»).
 (function (root) {

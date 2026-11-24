@@ -25,9 +25,9 @@ test('proposal mode: exactly one Nexo, with tutorial NPC buildings outside Node 
 test('proposal mode ignores old local multi-building data and reports missing tutorial locations', () => {
   const w = world();
   w.singleNexo = true;
-  const a = T.plan(w, MC.KINDS, mix, [{q:1,r:1,id:'lottery',own:true}]);
+  const a = T.plan(w, MC.KINDS, mix, [{q:1,r:1,id:'choir',own:true}]);
   assert.equal(a.nexo.count, 1);
-  assert.equal(a.markList.some((m) => m.id === 'lottery'), false);
+  assert.equal(a.markList.some((m) => m.id === 'choir'), false);
   const small = {cells:{list:[[0,0,0,'floor']], at:{'0,0':[0,0,0,'floor']}},singleNexo:true};
   const b = T.plan(small, MC.KINDS, mix, []);
   assert.deepEqual(b.tutorialMissing, T.TUTORIAL);
@@ -41,7 +41,7 @@ test('ring(R) has 6R distinct hexes, all at distance R; slots spread evenly', ()
 });
 test('plan: one of each kind is the node\'s, on the ring, inside the territory; every NPC building is outside', () => {
   const p = T.plan(world(), MC.KINDS, mix, []), own = p.markList.filter((m) => !m.fog), npc = p.markList.filter((m) => m.fog);
-  assert.deepEqual(own.map((m) => m.id).sort(), MC.KINDS.map((k) => k[0]).sort());
+  assert.deepEqual(own.map((m) => m.id).sort(), MC.KINDS.filter((k) => k[0]).map((k) => k[0]).sort()); // the retired lottery slot stays empty
   assert.ok(own.every((m) => T.hexDist([m.q, m.r], [0, 0]) === T.RING && p.city[m.q + ',' + m.r]));
   assert.ok(npc.length > 10 && npc.every((m) => T.hexDist([m.q, m.r], [0, 0]) > T.TERR + 1 && !p.city[m.q + ',' + m.r]));
 });
@@ -51,7 +51,7 @@ test('plan: the territory is coloured to TERR and nothing beyond; the square aro
 });
 test('plan is deterministic, and map_chunks.landmarks uses it', () => {
   assert.deepEqual(T.plan(world(), MC.KINDS, mix, []).markList, T.plan(world(), MC.KINDS, mix, []).markList);
-  const w = world(); MC.landmarks(w); assert.equal(w.markList.filter((m) => !m.fog).length, MC.KINDS.length); assert.ok(w.city['0,0']);
+  const w = world(); MC.landmarks(w); assert.equal(w.markList.filter((m) => !m.fog).length, MC.KINDS.filter((k) => k[0]).length); assert.ok(w.city['0,0']);
 });
 test('sabotage: an NPC building moved inside the territory is caught', () => {
   const p = T.plan(world(), MC.KINDS, mix, []), m = p.markList.find((x) => x.fog); m.q = 1; m.r = 1;

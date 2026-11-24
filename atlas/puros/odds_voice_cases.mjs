@@ -7,7 +7,7 @@ const require = createRequire(import.meta.url);
 const V = require('./odds_voice.js'), G = require('../../public/game/gacha.js'), F = require('../../public/game/state_frames.js');
 const S = require('../../public/game/acho_sonify.js'), C = require('../../public/game/acho_claim.js'), TA = require('../../public/game/town_actions.js');
 let line = null; TA.run('odds', { load: (s, n, then) => then(G) }, (t) => { line = t; });
-const frame = F.stateFrame({ id: 'lottery/odds', sentence: 'Honest lottery · ' + line, waves: V.waves(G) });
+const frame = F.stateFrame({ id: 'summon/odds', sentence: 'Summon odds · ' + line, waves: V.waves(G) });
 
 test('the frame with the real sentence and its four waves obeys the law of the syllable', () => {
   assert.deepEqual(F.valida(frame), []);

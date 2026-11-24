@@ -5,7 +5,7 @@
 // Every number comes from the ledger. A heal that cannot be paid is disabled, and its button says why.
 (function (root) {
   'use strict';
-  var KINDS = ['workshop', 'lottery', 'customs', 'hostel', 'tower', 'choir', 'agora', 'doctor', 'coliseum', 'visitor-house'];
+  var KINDS = ['workshop', 'lottery', 'customs', 'hostel', 'tower', 'choir', 'agora', 'doctor', 'coliseum', 'visitor-house']; /* [deprecated 2026-11-24] 'lottery' only keeps the WASM ledger's kind index; the web shows no lottery */
   var FULL = 1000, HEAL_PERCENT = 10, HEAL_BIOMASS = 5;
 
   function el(doc, tag, cls, text) {

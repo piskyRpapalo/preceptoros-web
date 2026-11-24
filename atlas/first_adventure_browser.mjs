@@ -79,9 +79,9 @@ async function main() {
   let s = await st(); trail.push(s.step);
   ok(s.marks.join() === 'gp-play' && !s.bang && await ev("document.getElementById('fa').hidden"),
     'arrival must keep only Welcome, with Play highlighted but no second adventure card or marker: ' + JSON.stringify(s.marks));
-  ok(['workshop', 'agora', 'lottery', 'choir', 'customs', 'tower', 'visitor-house'].every((k) => s.states[k] === 'locked') && ['hostel', 'coliseum', 'doctor'].every((k) => s.states[k] === 'available'), 'before a conquest the town is not reduced to hall, hostel, coliseum and doctor: ' + JSON.stringify(s.states));
-  const told = await ev(`(()=>{const V=AtlasMapPainter.view(), m=V.world.markList.find(x=>x.town&&x.id==='lottery'); return AtlasOwCalm.tell(m,'Lottery');})()`);
-  ok(/^Lottery is locked: it opens after your first conquest/.test(told || ''), 'a locked building does not say what opens it: ' + told);
+  ok(['workshop', 'agora', 'choir', 'customs', 'tower', 'visitor-house'].every((k) => s.states[k] === 'locked') && ['hostel', 'coliseum', 'doctor'].every((k) => s.states[k] === 'available'), 'before a conquest the town is not reduced to hall, hostel, coliseum and doctor: ' + JSON.stringify(s.states));
+  const told = await ev(`(()=>{const V=AtlasMapPainter.view(), m=V.world.markList.find(x=>x.town&&x.id==='choir'); return AtlasOwCalm.tell(m,'Choir');})()`);
+  ok(/^Choir is locked: it opens after your first conquest/.test(told || ''), 'a locked building does not say what opens it: ' + told);
   // Welcome owns arrival; Play starts the visit, then the first-adventure marker guides the remaining steps.
   for (let i = 0; i < 12; i++) {
     s = await st(); if (s.step === 'practice') { break; }
@@ -96,7 +96,7 @@ async function main() {
   ok(path.length >= 3 && hop(path), 'Go to the coliseum is not a walk of one hex per step: ' + JSON.stringify(path));
   s = await st(); ok(s.marks.join() === 'bs-challenge', 'at the coliseum «!» is not on the practice wave: ' + JSON.stringify(s.marks));
   await press(); ok(await hasta(`document.getElementById('fa').dataset.step==='conquest'`, 30000), 'the practice wave does not move the adventure on'); trail.push('practice');
-  s = await st(); ok(Object.values(s.states).filter((v) => v === 'locked').length === 7, 'a practice wave opened buildings: it must win nothing');
+  s = await st(); ok(Object.values(s.states).filter((v) => v === 'locked').length === 6, 'a practice wave opened buildings: it must win nothing');
   await ev(`(()=>{const b=document.querySelector('#building-sheet .bs-bar button:last-child'); if(b) b.click(); return 1})()`); await espera(300);
   // the real fight waits for the whole squad: while an egg hatches Go is off and the card says why (no silent block)
   if (await ev(`document.getElementById('fa-go').disabled`)) {
@@ -112,7 +112,7 @@ async function main() {
   const won = await ev(`AtlasOwCalm.wins()`);
   if (won > 0) {
     trail.push('conquest');
-    ok(s.step === 'town' && ['workshop', 'agora', 'visitor-house'].every((k) => s.states[k] === 'available') && s.states.lottery === 'locked', 'a real win does not open the three basics (and only them): ' + JSON.stringify(s));
+    ok(s.step === 'town' && ['workshop', 'agora', 'visitor-house'].every((k) => s.states[k] === 'available') && s.states.choir === 'locked', 'a real win does not open the three basics (and only them): ' + JSON.stringify(s));
   } else {
     ok(s.step === 'conquest' && Object.values(s.states).filter((v) => v === 'locked').length === 7, 'a lost fight moved the adventure or opened the town: ' + JSON.stringify(s));
     const said = await ev(`document.querySelector('#fa .fa-line').textContent + ' | ' + document.getElementById('fa-ok').textContent`); medidas.lossSaid = said.slice(0, 90);
