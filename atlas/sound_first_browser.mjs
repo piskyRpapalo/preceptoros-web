@@ -117,8 +117,8 @@ async function main() {
 
   // Playing by ear: focus says the control's name; a press says the visible message that follows, after the name.
   await ev(`document.getElementById('gp-town').focus()`);
-  const foco = await hasta((m) => m.said[m.said.length - 1] === 'Node: the buildings of this node', 1500); medidas.focus = foco.said[foco.said.length - 1];
-  ok(medidas.focus === 'Node: the buildings of this node', 'by ear: the focused control does not say its name: ' + medidas.focus);
+  const foco = await hasta((m) => m.said[m.said.length - 1] === 'Buildings: the buildings of this node', 1500); medidas.focus = foco.said[foco.said.length - 1];
+  ok(medidas.focus === 'Buildings: the buildings of this node', 'by ear: the focused control does not say its name: ' + medidas.focus);
   await ev(`document.getElementById('gp-town').click()`);
   const hoja = await hasta((m) => m.said.some((t) => /^Node · choose a building$/.test(t)), 3000);
   const cartas = hoja.said.slice(foco.said.length); medidas.sheet = cartas;

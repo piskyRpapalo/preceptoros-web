@@ -63,10 +63,13 @@ async function probe() {
     await new Promise(r=>setTimeout(r,100));
   }
   const talk=q('#preceptor-talk'), line=talk&&talk.querySelector('.pt-line');
-  const talkBox=talk?rect(talk):null;
+  // One message on the map (Sovereign, 2026-11-23): while the first adventure's card speaks, the result is written
+  // inside it (#fa-news) instead of a second box; either place counts, as long as it is seen inside the scene.
+  const fa=q('#fa'), fan=q('#fa-news'), inCard=!!fa&&!fa.hidden&&!!fan&&fan.textContent.includes('Visit started');
+  const talkBox=inCard?rect(fa):talk?rect(talk):null;
   const talkStyle=talk&&getComputedStyle(talk);
-  const pop=!!talk && !!line && line.textContent.includes('Visit started') &&
-    talkStyle.visibility!=='hidden' && talkStyle.display!=='none';
+  const pop=inCard || (!!talk && !!line && line.textContent.includes('Visit started') &&
+    talkStyle.visibility!=='hidden' && talkStyle.display!=='none');
   return{on,box,st,small,count:buttons.length,moved,coord,message,gone,
     pop,talkBox,talkText:line&&line.textContent.slice(0,125),
     scroll:document.documentElement.scrollWidth,width:innerWidth};

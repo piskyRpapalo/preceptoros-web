@@ -40,8 +40,8 @@
   function say(id) { var i = index(id); return i < 0 ? '' : STEPS[i][1]; }
   // Pure: target(id, v) → the selectors of the one control to mark «!», first visible wins ('' when Go is the action).
   function target(id, v) {
-    return { play: ['#gp-play', '#welcome-play'], meet: ['#fa-ok'], beacon: ['#visitor-beacon', '.cats [data-cat=Profile]'],
-      summon: ['#visitor-summon-tc1', '.cats [data-cat=Profile]'], practice: v && v.at ? ['#bs-challenge'] : ['#fa-go'], // town: first record the win (visitor_conquest.js verifies it)
+    return { play: ['#gp-play', '#welcome-play'], meet: ['#fa-ok'], beacon: ['#visitor-beacon', '.cats [data-cat=Army]'],
+      summon: ['#visitor-summon-tc1', '.cats [data-cat=Army]'], practice: v && v.at ? ['#bs-challenge'] : ['#fa-go'], // town: first record the win (visitor_conquest.js verifies it)
       conquest: v && v.at ? ['#bs-challenge'] : ['#fa-go', '#fa-ok'], town: ['#visitor-conquer', '#fa-ok'], explore: ['#fa-ok'] }[id] || [];
   }
   var api = { TOUR: TOUR, STEPS: STEPS, IDS: IDS, step: step, say: say, target: target, index: index };

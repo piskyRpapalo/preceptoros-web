@@ -12,7 +12,7 @@
   var sheet = null, line = null, win = null, btn = null;
   function say(t) { line.textContent = t; }
   function run(id, label) {
-    if (id === 'theme') { var GP = root.AtlasGamepad, t = GP && GP.theme ? GP.theme(GP.theme() === 'dark' ? 'light' : 'dark') : null; say(t ? label + ' · ' + (t === 'dark' ? 'night' : 'day') + ' · kept on this device' : label + ' · NO_DATA · pad_not_loaded'); return; }
+    if (id === 'theme') { var GP = root.AtlasNight, t = GP ? GP.theme(GP.theme() === 'dark' ? 'light' : 'dark') : null; say(t ? label + ' · ' + (t === 'dark' ? 'night' : 'day') + ' · kept on this device' : label + ' · NO_DATA · pad_not_loaded'); return; }
     if (id === 'install') { var a = sheet.ownerDocument.getElementById('app-install'); if (a) { a.click(); say(label + ' · asked'); } else { win.location.assign('/get-the-app/'); } return; }
     var BS = root.AtlasBuildingSheet, load = function (src, name, then) {
       if (root[name]) { then(root[name]); return; }

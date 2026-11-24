@@ -163,7 +163,7 @@ async function main() {
     chatLiveBtn.click();
     const chatClosed = voices.hidden;
     // 9. Bar below map.
-    const barBelowMap = bar.getBoundingClientRect().top >= sRect.bottom - 1;
+    const barBelowMap = bar.getBoundingClientRect().top >= stage.getBoundingClientRect().bottom - 1; // the same frame: the pad changes height while a panel is open
     // 10. No invisible targets on stage.
     const noInvisibleTargets = !stage.querySelector(':scope > #map-proxies, :scope > .hitl-mark');
     // 11. Single map canvas (#surface) — other overlay canvases (invocation, fog) are allowed.
