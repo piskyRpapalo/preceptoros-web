@@ -185,7 +185,18 @@
     return s.importKey('raw', bytes(claveHex), { name: 'Ed25519' }, false, ['verify'])
       .then(function (k) {
         return s.verify({ name: 'Ed25519' }, k, bytes(firmaHex), new TextEncoder().encode(texto));
+      }, function (e) {
+        // Android WebView 113 (the APP) has no Ed25519 in WebCrypto: the visit signs with ed25519_lite (visitor_account.js),
+        // so the army ledger must verify with the same bytes, or the beacon copper and every summon fail (measured
+        // 2026-11-24: «importKey … Unrecognized name», the APP crab stuck at practice with no egg). Same rule: lite only on
+        // NotSupportedError.
+        if (!e || e.name !== 'NotSupportedError') { throw e; }
+        return liteWeb().then(function (L) { return L.verify(s, bytes(claveHex), bytes(firmaHex), new TextEncoder().encode(texto)); });
       });
+  }
+  function liteWeb() {
+    if (raiz.AtlasEd25519) { return Promise.resolve(raiz.AtlasEd25519); }
+    return new Promise(function (ok, no) { var sc = raiz.document.createElement('script'); sc.src = '/game/ed25519_lite.js'; sc.onload = function () { ok(raiz.AtlasEd25519); }; sc.onerror = no; raiz.document.head.appendChild(sc); });
   }
 
 
