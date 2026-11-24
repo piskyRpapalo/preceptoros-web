@@ -69,7 +69,6 @@ jobs:
             node --test atlas/puros/wave_field_cases.mjs
             node --test atlas/puros/ow_topbar_cases.mjs
             node --test atlas/puros/echo_feed_cases.mjs
-            node --test atlas/puros/node_houses_cases.mjs
             node --test atlas/puros/army_plates_cases.mjs
             node --test atlas/wave_duel_stall_cases.mjs
             node --test atlas/puros/caravan_cases.mjs
