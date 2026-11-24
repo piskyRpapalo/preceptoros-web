@@ -1,5 +1,5 @@
 // Ed25519 (RFC 8032) for browsers whose WebCrypto does not know it yet (2026-11-24: Android System WebView 113 inside
-// the APP — «Algorithm: Unrecognized name» — so Play failed and the APP's crab could not join the shared map).
+// the APP — «Algorithm: Unrecognized name» — so Play failed and the APP's crab could not join the other crabs on the map).
 // Same algorithm, same bytes: a 32-byte public key and a 64-byte signature that any Ed25519 verifier accepts (the
 // presence authority included). Loaded ONLY when crypto.subtle rejects Ed25519 (visitor_account.js); SHA-512 still
 // comes from WebCrypto. The seed lives in this closure, in memory, and ends with the visit, like the native key.
