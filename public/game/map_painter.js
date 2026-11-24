@@ -118,7 +118,7 @@
   }
 
   // 3.5D · one ImageBitmap per (chunk, zoom bucket, angle, dpr), day + night; per frame only blits, sea crests and haze.
-  var heldKb = 0, cache = { scope: '', map: {}, bakes: 0, hits: 0 }, LIMIT_BMP = 14, LIT_LO = 0.84;
+  var cache = { scope: '', map: {}, bakes: 0, hits: 0 }, LIMIT_BMP = 14, LIT_LO = 0.84;
   function groupsOf(world) {
     if (world.groups) { return world.groups; }
     var by = {}, open = [], edge = [];
@@ -170,8 +170,6 @@
   function floorBaked(g, G, world, t, reduced, env) {
     if (!world || !world.cells.list.length) { return 0; }
     var k = G.k, kb = zoomBucket(k), s = k / kb, lit = litOf(t, reduced), turn = turnOf(G);
-    var sf = root.document && root.document.getElementById('surface'); // a camera tween (crab_stage.js) blits the last bake scaled: one bake at its end, not one per frame
-    if (sf && sf.dataset.tween && heldKb && Math.abs(k / heldKb - 1) < 0.6) { kb = heldKb; s = k / kb; } heldKb = kb;
     // The key carries the angle: a turn re-bakes (openworld_browser: baked = live at 120°).
     var ang = G.angle !== undefined ? G.angle : (Number(env.angle) || 0);
     var scope = kb + '|' + ang + '|' + (env.dpr || 1), mk = G.turn ? ang : 0;   // mk: bounds memo

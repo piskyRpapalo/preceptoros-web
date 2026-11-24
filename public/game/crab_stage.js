@@ -21,14 +21,13 @@
   }
   function tween(s, v, z0, z1, p0, p1, done) {
     var t0 = null, ms = still() ? 0 : MS;
-    s.dataset.tween = '1';
     function frame(ts) {
       if (t0 === null) { t0 = ts; }
       var p = ms ? (ts - t0) / ms : 1;
       s.dataset.zoom = String(ease(z0, z1, p));
       if (p1) { setPan(s, { x: Math.round(ease(p0.x, p1.x, p)), y: Math.round(ease(p0.y, p1.y, p)) }); }
       v.redraw(); if (!p1) { follow(s); }
-      if (p < 1) { root.requestAnimationFrame(frame); } else { delete s.dataset.tween; v.redraw(); if (done) { done(); } }
+      if (p < 1) { root.requestAnimationFrame(frame); } else { v.redraw(); if (done) { done(); } }
     }
     if (root.requestAnimationFrame) { root.requestAnimationFrame(frame); } else { frame(0); }
   }
