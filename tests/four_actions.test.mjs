@@ -8,7 +8,7 @@ import path from 'node:path';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(path.join(ROOT, p), 'utf8');
-const APK_SHA = '9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b';
+const APK_SHA = '0a8a996de1e7723f22740877a988c121dc59c056f02989e3e68b22da04497ab5';
 
 // Returns the list of breaches (empty = clean). `html` is the homepage, `js` the scripts it loads.
 export function violations(html, js) {
@@ -24,7 +24,7 @@ export function violations(html, js) {
   // An affirmative claim only: «is registered» / «has been registered». «Not registered until…» is the honest sentence.
   if (/\b(is|was|has been|are|now)\s+(now\s+)?(registered|registrad[oa])\b/i.test(js.companion_text || '')) out.push('Create Companion claims a registration');
   if (!js.companion.includes('Nothing was sent') || !js.companion.includes('NO_DATA')) out.push('Create Companion does not say nothing is sent or what is NO_DATA');
-  if (!js.three.includes("var APK = 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk'")) out.push('Download App does not point at the official GitHub Release');
+  if (!js.three.includes("var APK = 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v16-20261124/PreceptorOS-android-0.3.1-v16.apk'")) out.push('Download App does not point at the official GitHub Release');
   if (!js.companion.includes("e.key === 'Escape'")) out.push('Create Companion cannot be closed with Escape');
   if (!js.three.includes('It is not the PreceptorOS APP and has no model inside')) out.push('the OpenWorld file is not said to be not the app');
   if (js.three.split(APK_SHA).length - 1 !== 1) out.push('Android download must show its published SHA-256 exactly once');

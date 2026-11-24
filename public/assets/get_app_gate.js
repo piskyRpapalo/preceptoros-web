@@ -12,7 +12,7 @@
   var TITULO = { pwa: 'The web app', app: 'The app · your node' };
   var NOTA = {
     pwa: 'This site, installed: it opens without the browser bar and plays offline after the first visit.',
-    app: 'Local memory and a local AI on your own machine (' + datos.version + '). Android v7 ships the native APP with a small local model; node admission requires separate approval.'
+    app: 'Local memory and a local AI on your own machine (' + datos.version + '). Android v16 ships the native APP with a small local model; node admission requires separate approval.'
   };
 
   function sistema() {
