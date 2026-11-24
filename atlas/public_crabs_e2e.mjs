@@ -114,7 +114,11 @@ async function main() {
         if (!L || L.step === 'explore') { break; }
         if (L.id !== id) { fallos.push(t.name + ' stopped being shared at ' + L.step + ' (' + L.id + ')'); break; }
         if (!L.next && /hatching/.test(await t.ev(`(document.querySelector('#fa .fa-line') || {}).textContent || ''`))) { // the egg hatches: waiting, with words, is the step
-          const h0 = Date.now(); await until(t, `!!document.querySelector('[data-fa-next]')`, 90000, 500); (medidas.hatch_ms = medidas.hatch_ms || []).push(Date.now() - h0); continue; }
+          const h0 = Date.now(), hatched = await until(t, `!!document.querySelector('[data-fa-next]')`, 90000, 500); (medidas.hatch_ms = medidas.hatch_ms || []).push(Date.now() - h0);
+          // No egg ever hatches when the visit could not sign (APP WebView 113 before db.js lite, 2026-11-24): that run looped
+          // 45 × 90 s in silence. A hatch that never ends is a dead end, named with the panel's own NO_DATA line.
+          if (!hatched) { fallos.push(t.name + ': nothing hatched in 90 s at ' + L.step + ' · ' + JSON.stringify(await t.ev(`(document.getElementById('visitor-play').textContent.match(/NO_DATA[^.]*\./) || ['no NO_DATA line'])[0]`))); break; }
+          continue; }
         if (!L.next) { await espera(1500); if (!(await t.ev(LOOK)).next) { fallos.push(t.name + ': dead end at ' + L.step + ' ' + JSON.stringify(await t.ev(`(() => { const g = document.getElementById('fa-go'), c = document.getElementById('bs-challenge'), bs = document.getElementById('building-sheet'), st = window.AtlasVisitorPlay && AtlasVisitorPlay.state ? AtlasVisitorPlay.state() : null;
           return { go: g && { hidden: g.hidden, dis: g.disabled, txt: g.textContent }, chal: c && { dis: c.disabled, txt: c.textContent.slice(0, 60) }, sheet: bs && !bs.hidden, h: bs && (bs.querySelector('h2,h3') || {}).textContent, line: (document.querySelector('#fa .fa-line') || {}).textContent, sel: document.getElementById('surface').dataset.sel, panel: !document.getElementById('online-players').hidden }; })()`))); break; } continue; }
         await t.ev(`(() => { const e = document.querySelector('[data-fa-next]'); e && e.click(); return 1; })()`);
