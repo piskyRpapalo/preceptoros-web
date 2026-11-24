@@ -124,7 +124,7 @@ async function main() {
       throw new Error('NO_DATA: ' + t.name + ' cannot run the experiment');
     }
     await t.ev(SPY);
-    await t.ev(`(document.getElementById('play-now').click(), true)`);
+    await t.ev(`(document.getElementById('play-now').click(), true)`); await new Promise((r) => setTimeout(r, 200)); await t.ev(`(document.getElementById('welcome-play') && document.getElementById('welcome-play').offsetParent && document.getElementById('welcome-play').click(), true)`);
     ok(await until(t, `(() => { const b = document.getElementById('shared-crabs-join'); return !!b && !b.hidden; })()`, 20000), t.name + ': no share button after starting a visit');
     const before = await t.ev(`AtlasSharedCrabs.mounted.state().id`);
     ok(before === null, t.name + ': nothing may be shared before the consent press');

@@ -60,7 +60,8 @@
       candidate.end(); throw error;
     }
   }
-  async function start() { await newVisit(true); }
+  // Play / Start never create an account (2026-11-24): they reopen the one HITL entry; only «Sign HITL» signs.
+  async function start() { var W = root.AtlasWelcome; if (W && W.open) { W.open(); return; } throw new Error('sign HITL first'); }
   // pagehide also fires for a page entering the back/forward cache. The account ends its
   // signing key there; release the matching game reference too, so pageshow can only
   // start a fresh visit instead of trying to reuse a dead account.
@@ -88,7 +89,7 @@
   if (playNow) {
     playNow.addEventListener('click', async function () {
       if (waiting || game) { return; } waiting = true; playNow.disabled = true;
-      try { await start(); status.textContent = 'Action completed in this visit.'; } catch (error) { status.textContent = 'NO_DATA: ' + error.message; }
+      try { await start(); status.textContent = 'Sign HITL to take a piece, or look around.'; } catch (error) { status.textContent = 'NO_DATA: ' + error.message; }
       finally { waiting = false; playNow.disabled = false; render(); }
     });
   }

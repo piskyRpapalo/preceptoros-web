@@ -33,7 +33,7 @@ let ws = null, ch = null, srv = null, id = 0;
 const pend = new Map();
 const VISITA = `(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), $ = (i) => document.getElementById(i);
   for (let i = 0; i < 50 && !$('visitor-start') && !$('play-now'); i++) await w(100);
-  ($('visitor-start') || $('play-now')).click(); for (let i = 0; i < 80 && !$('visitor-beacon'); i++) await w(100);
+  ($('visitor-start') || $('play-now')).click(); await w(200); if ($('welcome-play') && $('welcome-play').offsetParent) $('welcome-play').click(); for (let i = 0; i < 80 && !$('visitor-beacon'); i++) await w(100);
   $('visitor-beacon').click(); for (let i = 0; i < 80 && $('visitor-summon-tc1').disabled; i++) await w(100);
   $('visitor-summon-tc1').click(); for (let i = 0; i < 80 && !/Summoned/.test($('state').textContent); i++) await w(50);
   await w(250); const L = $('invocation-layer');

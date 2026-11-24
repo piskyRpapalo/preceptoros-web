@@ -98,7 +98,8 @@ test('One HITL: signing shares with no second consent; Disconnect while /open is
     assert.ok(mounted);
     assert.equal(els['online-status'].dataset.cause, 'not_signed', 'unsigned: a ghost crab that shares nothing');
     assert.equal(opened, 0);
-    els['visitor-play'].emit('visitor:render', { detail: { account: {} } });   // the one HITL signature
+    const signed = {};
+    els['visitor-play'].emit('visitor:render', { detail: { account: signed } });   // the one HITL signature
     await new Promise(resolve => setImmediate(resolve)); // wait for module loading and /open pending
     assert.equal(opened, 1, 'the signed visitor shares with no checkbox and no click');
     els['online-disconnect'].emit('click');
@@ -110,6 +111,15 @@ test('One HITL: signing shares with no second consent; Disconnect while /open is
     assert.equal(els['online-status'].dataset.cause, 'visitor_disconnected');
     assert.equal(timeouts, 0, 'a visitor who disconnected is never rejoined by itself');
     assert.equal(opened, 1);
+    // Codex 2026-11-24 regression: any re-render of the SAME visit (a step, a battle) must not undo Disconnect.
+    els['visitor-play'].emit('visitor:render', { detail: { account: signed } });
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(opened, 1, 'visitor:render of the same account must not reactivate presence after Disconnect');
+    assert.equal(els['online-status'].dataset.cause, 'visitor_disconnected');
+    // A new signed visit (a new HITL) shares again.
+    els['visitor-play'].emit('visitor:render', { detail: { account: {} } });
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(opened, 2, 'a new HITL visit shares again');
   } finally {
     for (const [name, saved] of before) {
       if (saved.present) globalThis[name] = saved.value;
