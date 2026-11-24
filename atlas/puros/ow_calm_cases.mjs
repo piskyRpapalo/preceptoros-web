@@ -20,7 +20,7 @@ test('label in name: the accessible name begins with the visible name, and keeps
   assert.equal(C.label('Talk', 'Communication'), 'Talk · Communication');
   assert.equal(C.label('Play', 'Play now. Sign on this device.'), 'Play now. Sign on this device.');
   assert.equal(C.label('Node', 'Node: the buildings of this node'), 'Node: the buildings of this node');
-  Object.values(C.NAMES).forEach((n) => assert.ok(n.length <= 8 && /^[A-Z][a-z]+$/.test(n), n));
+  Object.values(C.NAMES).forEach((n) => assert.ok(n.length <= 9 && /^[A-Z][a-z]+$/.test(n), n)); // 9: «Buildings» (Sovereign, 2026-11-23); the pad shows icons alone now
 });
 test('sabotage: a phase that shows the embers before the visit is caught', () => {
   const bad = { ...C, shows: (w, p) => true };
