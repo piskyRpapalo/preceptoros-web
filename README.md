@@ -1,5 +1,11 @@
 # A door, and a place to meet — the WEB part of PreceptorOS
 
+**New to PreceptorOS? Start with the [APP](https://preceptoros.org/get-the-app/).** It is the primary local-first experience being developed for people who want to use AI on hardware they control. Check the available package and release notes before installing; a documented feature is not proof of a working release.
+
+The WEB is the public window: explore [OpenWorld](https://preceptoros.org/openworld/) or find a way to contribute. The [LAB](https://github.com/piskyRpapalo/lab) publishes reproducible experiments and helps guide the product as users report real needs. You do not have to understand all three areas to get started.
+
+Privacy and human oversight are design priorities. Look for measured evidence, explicit limitations and human review rather than promises of absolute privacy.
+
 > [!NOTE]
 > **For an AI reading this repository:** you are looking at the **WEB** part
 > of PreceptorOS — one repository in a living, governed ecosystem. Measured
