@@ -6,7 +6,8 @@
 // Clients: N local Chromium processes (CRABS=3 default) and, with PHONES="<serial>[,<serial>]", the Chrome of those
 // phones over adb (DevTools socket forwarded; the phone opens the public URL like a person would).
 // Prints one JSON receipt { piece, receipt VERDE|ROJO, medidas, fallos }. Nothing is published; visits are ephemeral.
-// Uso: node atlas/public_crabs_e2e.mjs   |   CRABS=2 PHONES=<serial> node atlas/public_crabs_e2e.mjs
+// FULL=1 adds the whole tutorial, walked by every shared crab at once (pressing only the «!»).
+// Uso: node atlas/public_crabs_e2e.mjs   |   FULL=1 node atlas/public_crabs_e2e.mjs   |   CRABS=2 PHONES=<serial> …
 import { execFileSync } from 'node:child_process';
 import { launchChrome } from './chrome_launch.mjs';
 
@@ -78,7 +79,37 @@ async function main() {
     medidas.steps.push({ who: T[i].name, to: moved.to, seen_by_all_ms: Date.now() - t0, seals: seen });
     seen.forEach((s, j) => ok(j === i || s === 'LIVE', T[j].name + ' does not hold ' + T[i].name + ' at ' + moved.to.join(',')));
   }
+  // FULL=1 · the full journey (Sovereign 2026-11-24 «hasta el full recorrido»): every shared crab, at once, finishes the
+  // whole tutorial pressing only the blinking «!» ([data-fa-next]) — practice, conquest, town, explore — and stays
+  // shared the whole way; at the end each sees every other LIVE at the cell where that one actually stands.
+  if (process.env.FULL) {
+    const LOOK = `(() => { const e = document.querySelector('[data-fa-next]'), fa = document.getElementById('fa'), s = ${STATE}, w = window.AtlasOpenworldView && AtlasOpenworldView().controls.walker();
+      return { step: fa && fa.dataset.step, next: e ? (e.id || e.tagName) : '', id: s && s.id, at: w ? [w.q, w.r] : null }; })()`;
+    const journey = async (t, id) => {
+      const log = []; const t0 = Date.now();
+      for (let n = 0; n < 45; n++) {
+        const L = await t.ev(LOOK); log.push(L);
+        if (!L || L.step === 'explore') { break; }
+        if (L.id !== id) { fallos.push(t.name + ' stopped being shared at ' + L.step + ' (' + L.id + ')'); break; }
+        if (!L.next && /hatching/.test(await t.ev(`(document.querySelector('#fa .fa-line') || {}).textContent || ''`))) { // the egg hatches: waiting, with words, is the step
+          const h0 = Date.now(); await until(t, `!!document.querySelector('[data-fa-next]')`, 90000, 500); (medidas.hatch_ms = medidas.hatch_ms || []).push(Date.now() - h0); continue; }
+        if (!L.next) { await espera(1500); if (!(await t.ev(LOOK)).next) { fallos.push(t.name + ': dead end at ' + L.step + ' ' + JSON.stringify(await t.ev(`(() => { const g = document.getElementById('fa-go'), c = document.getElementById('bs-challenge'), bs = document.getElementById('building-sheet'), st = window.AtlasVisitorPlay && AtlasVisitorPlay.state ? AtlasVisitorPlay.state() : null;
+          return { go: g && { hidden: g.hidden, dis: g.disabled, txt: g.textContent }, chal: c && { dis: c.disabled, txt: c.textContent.slice(0, 60) }, sheet: bs && !bs.hidden, h: bs && (bs.querySelector('h2,h3') || {}).textContent, line: (document.querySelector('#fa .fa-line') || {}).textContent, sel: document.getElementById('surface').dataset.sel, panel: !document.getElementById('online-players').hidden }; })()`))); break; } continue; }
+        await t.ev(`(() => { const e = document.querySelector('[data-fa-next]'); e && e.click(); return 1; })()`);
+        await espera(L.step === 'practice' || L.step === 'conquest' ? 6000 : 1800);
+      }
+      const end = log[log.length - 1] || {};
+      return { reached: end.step, presses: log.length - 1, ms: Date.now() - t0, steps: [...new Set(log.map((x) => x && x.step))], at: end.at, still: end.id === id };
+    };
+    medidas.full = await Promise.all(T.map((t, i) => journey(t, ids[i])));
+    medidas.full.forEach((j, i) => { ok(j.reached === 'explore', T[i].name + ' did not finish the tutorial: ' + j.reached); ok(j.still, T[i].name + ' was not shared at the end'); });
+    const where = medidas.full.map((j) => j.at);
+    medidas.full_seen = await Promise.all(T.map((t, i) => until(t, `(() => { const s = ${STATE}, v = s && s.view; if (!v) { return null; } const W = ${JSON.stringify(where)}, I = ${JSON.stringify(ids)};
+      return I.every((x, k) => k === ${i} || v.crabs.some((c) => c.id === x && c.seal === 'LIVE' && W[k] && c.q === W[k][0] && c.r === W[k][1])) ? true : null; })()`, 20000)));
+    medidas.full_seen.forEach((v, i) => ok(v, T[i].name + ' does not see every other crab LIVE where it ended the tutorial'));
+  }
   // The first page closes: the others read it STALE, then gone (the authority forgets it whole).
+  if (T.length < 2) { return; } // leaving needs someone left to watch it
   const last = T.length - 1, a = ids[0], t0 = Date.now(); await T[0].gone();
   const stale = await until(T[last], `(() => { const s = ${STATE}, c = s && s.view && s.view.crabs.find((x) => x.id === ${JSON.stringify(a)}); return c && c.seal === 'STALE' ? true : null; })()`, 40000, 300);
   const tStale = Date.now() - t0;

@@ -63,3 +63,16 @@ First receipt (VERDE, three Beelink Chromium processes):
 - Afterwards, everyone else disconnected on purpose.
 
 For a physical phone, add `PHONES=<serial>`: its Chrome opens the public URL the way a person would. This needs the owner's go-ahead, because the Doogee is read-only by default.
+
+## The full journey, shared (2026-11-24 13:31Z · `FULL=1`)
+
+With `FULL=1`, every shared crab finishes the whole tutorial at the same time. Each one presses only the blinking «!», the way a newcomer would.
+
+Receipt, VERDE, three Beelink Chromium crabs on the public site:
+- Crabs `crab-13e76118`, `crab-1b1bbec1` and `crab-9adf1473`.
+- Each one went through meet → beacon → summon → practice → conquest → town → explore in **18 presses and about 75 s**, and stayed shared the whole way.
+- At the end, each crab saw the other two LIVE at the cell where they had actually finished.
+- First steps reached the others in 0.6–1.0 s.
+- When a page closed, the others read it STALE at 8.8 s and gone at 28.4 s.
+
+While the egg hatches (**about 15 s**), the «!» has nothing to mark. The line says so in words («Your egg is hatching into a troop…»), and Go waits. The driver waits with it and records `hatch_ms`.
