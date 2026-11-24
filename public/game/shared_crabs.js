@@ -10,11 +10,8 @@
     var m = /[?&]presence=(\d{2,5})(?:&|$)/.exec((loc && loc.search) || '');
     return m && /^(127\.0\.0\.1|localhost)$/.test((loc && loc.hostname) || '') ? 'http://127.0.0.1:' + m[1] : null;
   }
-  // Pure: remoteConfig(location, consentGranted) → a validated remote adapter or null. Defaults OFF.
-  // Requires crab_presence_remote.js to be loaded. The config must come from a page-level constant
-  // (REMOTE_PRESENCE_CONFIG) — never from URL params, to prevent injection.
-  // consentGranted must be exactly true (from a user event or separate consent flow); missing → null.
-  // The actual Window (never Location) supplies location.origin and fetch. Only the explicit click may call this.
+  // Pure: remoteConfig(win, signed) → a validated remote adapter or null (OFF unless signed === true, the visitor's HITL).
+  // Config only from the page constant REMOTE_PRESENCE_CONFIG, never from the URL.
   function remoteConfig(win, consentGranted) {
     if (consentGranted !== true || !win || !win.location || typeof win.fetch !== 'function') { return null; }
     var R = root.AtlasCrabPresenceRemote, cfg = root.REMOTE_PRESENCE_CONFIG;
@@ -37,8 +34,7 @@
   }
   // Pure: label(crab) → the words under another crab: its short id, and STALE when it fell silent.
   function label(c) { return c.id.slice(5, 9) + (c.seal === 'STALE' ? ' · STALE' : ''); }
-  // Pure: slot(s) → the sideways place (in crab widths) of the s-th crab drawn on one hex: 0, +1, -1, +2, -2… Crowds, not
-  // piles (2026-11-15): two crabs on one cell stand side by side. s counts the visitor's own crab, which keeps the centre.
+  // Pure: slot(s) → sideways place (crab widths) of the s-th crab on one hex: 0, +1, -1, +2… (own crab keeps the centre).
   function slot(s) { return s ? (s % 2 ? 1 : -1) * Math.ceil(s / 2) : 0; }
   function oval(g, x, y, rx, ry, a0, a1) { for (var i = 0; i <= 16; i++) { var a = a0 + (a1 - a0) * i / 16; g.lineTo(x + rx * Math.cos(a), y + ry * Math.sin(a)); } }
 
@@ -51,12 +47,13 @@
     var wrap = doc.createElement('div'); wrap.id = 'shared-crabs';
     var button = remote ? doc.getElementById('online-share') : doc.createElement('button');
     var line = remote ? doc.getElementById('online-status') : doc.createElement('p');
-    var consent = remote ? doc.getElementById('online-consent') : null;
+    // One HITL covers sharing (2026-11-24). held: disconnected on purpose; paused: page hidden.
+    var held = false, paused = false, retries = 0;
     var disconnect = remote ? doc.getElementById('online-disconnect') : null;
     var people = remote ? doc.getElementById('online-player-list') : null;
     var peopleToggle = remote ? doc.getElementById('online-players-toggle') : null;
     var peoplePanel = remote ? doc.getElementById('online-players') : null;
-    if (!button || !line || (remote && (!consent || !disconnect || !people || !peopleToggle || !peoplePanel))) { return null; }
+    if (!button || !line || (remote && (!disconnect || !people || !peopleToggle || !peoplePanel))) { return null; }
     if (!remote) {
       button.type = 'button'; button.id = 'shared-crabs-join'; button.style.minHeight = '44px'; button.style.minWidth = '44px';
       button.textContent = 'Share my crab on this map · test authority'; button.hidden = true;
@@ -109,8 +106,6 @@
       if (remote) {
         button.hidden = false; button.disabled = !!me || joining;
         disconnect.hidden = !me;
-        // Shared: the consent row leaves the panel so a stray tap cannot withdraw it; «Disconnect my visit» does (2026-11-22).
-        var cl = doc.getElementById('online-consent-label'); if (cl) { cl.hidden = !!me; }
       } else { button.hidden = !account || !!me || joining; }
     }
     function send(path, body) {
@@ -131,17 +126,22 @@
       if (coop) { coop.stop(); coop = null; }
       if (adapter) { adapter.end(); adapter = null; }
       if (remote) {
-        var recovery = cause === 'visit_already_open' || cause === 'authority_unreachable' ||
-          cause === 'chain_broken' || cause === 'replayed_step';
-        say(cause ? 'NO_DATA · sharing stopped · ' + cause +
-          '. Server presence expires by TTL.' + (recovery ?
-            ' For a new independent session, end your local visit and start a fresh ephemeral visit.' : '') :
-          'NO_DATA · this visit is not shared.', cause || 'visit_not_shared', false);
+        say(cause ? 'NO_DATA · sharing stopped · ' + cause + (cause === 'visitor_disconnected' ? '. Disconnected by you; Share in Settings joins again.' : '. Server presence expires by TTL.') :
+          'Looking around as a ghost crab · sign HITL to take a piece. Nothing is shared.', cause || 'not_signed', false);
         renderPeople(null);
       } else if (cause) { say('NO_DATA · sharing stopped · ' + cause); }
-      updateButton(); redraw();
+      updateButton(); redraw(); again(cause);
     }
     function refused(r) { stop((r && r.cause) || 'authority_unreachable'); }
+    // auto: share once signed; a lost visit rejoins (same key, same id) up to 5 times, never after Disconnect.
+    function auto() {
+      if (!remote || !account || held || paused || me || joining) { return; }
+      join();
+    }
+    function again(cause) {
+      if (!remote || !account || held || retries >= 5 || cause === 'visitor_disconnected' || cause === '') { return; }
+      retries++; timers.push(win.setTimeout(auto, 15000 * retries));
+    }
     function hear(frame) {
       var S = root.AtlasSonifyAcho, now = Date.now();
       if (!S || !audio || now - soundAt < 1200) { return; }
@@ -174,9 +174,6 @@
       if (!account || !w) {
         showConsent(); say('NO_DATA · start a local visitor session before sharing.', 'visitor_not_started', false); return;
       }
-      if (remote && consent.checked !== true) {
-        showConsent(); say('NO_DATA · check the consent box before sharing this visit.', 'consent_required', false); return;
-      }
       joining = true; var ticket = ++generation; updateButton();
       if (remote) {
         showConsent();
@@ -188,32 +185,33 @@
       var Ctx = win.AudioContext || win.webkitAudioContext;
       try { audio = audio || (Ctx ? new Ctx() : null); } catch (e) { audio = null; }
       var got = await Promise.all([load('/game/crab_presence_client.js', 'AtlasCrabPresenceClient'), load('/game/crab_presence_acho.js', 'AtlasCrabPresenceAcho'), load('/game/acho_sonify.js', 'AtlasSonifyAcho'), load('/game/acho_math.js', 'AtlasAchoMath')]);
-      if (ticket !== generation || (remote && !consent.checked)) { return; }
+      if (ticket !== generation || (remote && !account)) { return; }
       if (got[3]) { got.push(await load('/game/acho_score.js', 'AtlasAchoScore'), await load('/game/coop_beacon.js', 'AtlasCoopBeacon')); }
-      if (ticket !== generation || (remote && !consent.checked)) { return; }
+      if (ticket !== generation || (remote && !account)) { return; }
       if (!got[0] || !got[1]) { stop('piece_not_loaded'); return; }
       w = walker();
       if (!w) { stop('visitor_position_unavailable'); return; }
       var mine = await got[0].join(account, send, true, [w.q, w.r], remote ? { requireGenesis: true } : null);
-      if (ticket !== generation || (remote && !consent.checked)) { return; }
+      if (ticket !== generation || (remote && !account)) { return; }
       if (!mine.ok) { stop(mine.cause); return; }
-      joining = false; me = mine; pos = { q: w.q, r: w.r }; sentAt = Date.now(); lastLine = ''; others = null;
+      joining = false; retries = 0; me = mine; pos = { q: w.q, r: w.r }; sentAt = Date.now(); lastLine = ''; others = null;
       say('Shared as ' + me.id + ' · awaiting first authority view', 'waiting_for_view', false); wrap.dataset.id = me.id;
       updateButton();
       // Reuse the same verified beacon and comic crab painter; no parallel multiplayer renderer.
       if (root.AtlasCoopBeacon && me.beacon) { coop = root.AtlasCoopBeacon.mount({ doc: doc, win: win, client: me, beacon: me.beacon, stage: doc.getElementById('stage'), surface: surface, redraw: redraw, audio: function () { return audio; } }); }
       (function tick(g, k) { var f = function () { tick(g, k); }; timers[k] = win.setTimeout(function () { if (me && g === generation) { look().then(f, f); } }, pace(view, me.id, POLL, FIXED)); })(generation, timers.length);
-      timers.push(win.setInterval(function () { if (me && Date.now() - sentAt >= BEAT) { sentAt = Date.now(); me.beat().then(function (r) { if (me && r && r.ok === false && r.cause !== 'beat_too_soon') { refused(r); } }); } }, Math.max(250, Math.round(BEAT / 4))));
+      timers.push(win.setInterval(function () { if (me && !paused && Date.now() - sentAt >= BEAT) { sentAt = Date.now(); me.beat().then(function (r) { if (me && r && r.ok === false && r.cause !== 'beat_too_soon') { refused(r); } }); } }, Math.max(250, Math.round(BEAT / 4))));
       look();
     }
-    button.addEventListener('click', join);
+    button.addEventListener('click', function () { held = false; retries = 0; join(); });
     if (remote) {
-      disconnect.addEventListener('click', function () { consent.checked = false; stop('visitor_disconnected'); });
-      consent.addEventListener('change', function () { if (!consent.checked && (me || joining)) { stop('consent_revoked'); } });
+      disconnect.addEventListener('click', function () { held = true; stop('visitor_disconnected'); });
       doc.addEventListener('visibilitychange', function () {
-        if (doc.visibilityState === 'hidden' && (me || joining)) { stop('page_hidden'); }
+        paused = doc.visibilityState === 'hidden';
+        if (paused) { return; }
+        if (me) { sentAt = 0; look(); } else { auto(); }
       });
-      say('NO_DATA · this visit is not shared.', 'visit_not_shared', false);
+      say('Looking around as a ghost crab · sign HITL to take a piece. Nothing is shared.', 'not_signed', false);
       renderPeople(null); updateButton();
     }
     box.addEventListener('visitor:render', function (e) {
@@ -224,10 +222,10 @@
         var ow = root.AtlasOpenworldView && root.AtlasOpenworldView();
         if (ow && ow.controls && ow.controls.start) { ow.controls.start(true); }
       }
-      updateButton();
+      updateButton(); if (account) { held = false; auto(); }
     });
     box.addEventListener('visitor:end', function () {
-      account = null; if (remote) { consent.checked = false; }
+      account = null; held = false;
       stop(''); if (!remote) { button.hidden = true; say(''); }
     });
     win.addEventListener('pagehide', function () { stop(''); });
@@ -250,7 +248,7 @@
       if (!me || !view || !V || !B || surface.dataset.duel) { return; }
       var g = surface.getContext('2d'), k = V.G.k, dpr = surface.width / (surface.getBoundingClientRect().width || surface.width), drawn = [];
       g.save(); g.setTransform(1, 0, 0, 1, 0, 0);
-      var rest = B.pose(0, 1, 1); rest.sp = 1; rest.look = null; // another crab: at rest, its own eyes (not this visitor's gestures)
+      var rest = B.pose(0, 1, 1); rest.sp = 1; rest.look = null; rest.other = true; // another crab: at rest, its own eyes (not this visitor's gestures)
       var here = {}; view.crabs.slice().sort(function (a, b) { return a.id === me.id ? -1 : b.id === me.id ? 1 : a.id < b.id ? -1 : 1; })
         .forEach(function (c) { var key = c.q + ',' + c.r; here[key] = (here[key] || 0) + 1; c.slot = here[key] - 1; });
       view.crabs.forEach(function (c) {

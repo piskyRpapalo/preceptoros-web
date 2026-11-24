@@ -38,14 +38,14 @@ test('the piece asks the network only through the authority it was given, with n
   assert.doesNotMatch(src, /localStorage|sessionStorage|document\.cookie|XMLHttpRequest|WebSocket/);
 });
 
-test('Revoking HTTPS consent while /open is pending never resurrects a shared crab', async () => {
-  // A slow authority may accept /open after the visitor withdraws consent.
-  // The client must not re-create its local session or start polling afterwards.
+test('One HITL: signing shares with no second consent; Disconnect while /open is pending never resurrects a crab', async () => {
+  // Sovereign 2026-11-24: the welcome HITL covers sharing, Players asks nothing. A slow authority may accept /open after
+  // the visitor disconnects: the client must not re-create its session, poll, or rejoin by itself afterwards.
   const names = ['AtlasCrabPresenceRemote','REMOTE_PRESENCE_CONFIG','AtlasCrabPresenceClient',
     'AtlasCrabPresenceAcho','AtlasSonifyAcho','AtlasAchoMath','AtlasAchoScore',
     'AtlasCoopBeacon','AtlasOpenworldView'];
   const before = new Map(names.map(n => [n, { present: Object.hasOwn(globalThis, n), value: globalThis[n] }]));
-  let reply, opened = 0, ended = 0, intervals = 0;
+  let reply, opened = 0, ended = 0, intervals = 0, timeouts = 0;
   class El {
     constructor(id = '') {
       this.id = id; this.hidden = false; this.disabled = false; this.checked = false;
@@ -78,7 +78,7 @@ test('Revoking HTTPS consent while /open is pending never resurrects a shared cr
     globalThis.AtlasCoopBeacon = {};
     globalThis.AtlasOpenworldView = () => ({ controls: { walker: () => ({q:0,r:0}) }, redraw() {} });
     const els = Object.fromEntries(['visitor-play','surface','online-share','online-status',
-      'online-consent','online-disconnect','online-player-list','online-players-toggle',
+      'online-disconnect','online-player-list','online-players-toggle',
       'online-players'].map(id => [id, new El(id)]));
     const doc = {
       visibilityState: 'visible', readyState: 'loading',
@@ -91,23 +91,25 @@ test('Revoking HTTPS consent while /open is pending never resurrects a shared cr
       REMOTE_PRESENCE_CONFIG: cfg, fetch: async () => { throw Error('no production network'); },
       addEventListener() {},
       setInterval: () => { intervals++; return intervals; },
-      clearInterval: () => {}
+      setTimeout: () => { timeouts++; return 0; },
+      clearInterval: () => {}, clearTimeout: () => {}
     };
     const mounted = S.mount(doc, win);
     assert.ok(mounted);
-    els['visitor-play'].emit('visitor:render', { detail: { account: {} } });
-    els['online-consent'].checked = true;
-    els['online-share'].emit('click');
+    assert.equal(els['online-status'].dataset.cause, 'not_signed', 'unsigned: a ghost crab that shares nothing');
+    assert.equal(opened, 0);
+    els['visitor-play'].emit('visitor:render', { detail: { account: {} } });   // the one HITL signature
     await new Promise(resolve => setImmediate(resolve)); // wait for module loading and /open pending
-    assert.equal(opened, 1);
-    els['online-consent'].checked = false;
-    els['online-consent'].emit('change');
-    assert.equal(ended, 1, 'revocation must end even a pending connection');
+    assert.equal(opened, 1, 'the signed visitor shares with no checkbox and no click');
+    els['online-disconnect'].emit('click');
+    assert.equal(ended, 1, 'Disconnect must end even a pending connection');
     reply({ ok: true, id: 'crab-12345678', beacon: null });
     await new Promise(resolve => setImmediate(resolve));
     assert.equal(mounted.state().id, null, 'late /open must not recreate presence');
     assert.equal(intervals, 0, 'late /open must not start polling or heartbeat');
-    assert.equal(els['online-status'].dataset.cause, 'consent_revoked');
+    assert.equal(els['online-status'].dataset.cause, 'visitor_disconnected');
+    assert.equal(timeouts, 0, 'a visitor who disconnected is never rejoined by itself');
+    assert.equal(opened, 1);
   } finally {
     for (const [name, saved] of before) {
       if (saved.present) globalThis[name] = saved.value;

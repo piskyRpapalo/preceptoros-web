@@ -74,8 +74,8 @@ async function enter(t) {
   ok(await until(t, `document.readyState === 'complete' && !!(window.AtlasSharedCrabs && AtlasSharedCrabs.mounted && document.getElementById('play-now'))`, 40000), t.name + ': shared crabs not mounted');
   await t.ev(`(document.getElementById('play-now').click(), true)`);
   ok(await until(t, `!!document.getElementById('visitor-beacon')`, 60000), t.name + ': the visit did not start after Play'); // an old WebView signs with ed25519_lite: loading it and making the key takes seconds
-  await until(t, `(() => { const b = document.getElementById('online-share'); return !!b && !b.disabled; })()`, 30000); // a reused page (the APP's) may keep Share busy a moment; the crab id below is the proof
-  await t.ev(`(() => { const c = document.getElementById('online-consent'); if (!c.checked) { c.click(); } document.getElementById('online-share').click(); return true; })()`);
+  await until(t, `(() => { const b = document.getElementById('online-share'), s = ${STATE}; return (s && s.id) || (!!b && !b.disabled); })()`, 30000); // one HITL (2026-11-24): the signed visit shares by itself; the crab id below is the proof
+  await t.ev(`(() => { const b = document.getElementById('online-share'); if (b && !b.disabled) { b.click(); } return true; })()`);
   const id = await until(t, `(() => { const s = ${STATE}; return s && s.id; })()`, 30000);
   ok(/^crab-[0-9a-f]{8}$/.test(id || ''), t.name + ': the public authority did not open the visit: ' + JSON.stringify(await t.ev(`({ line: document.getElementById('online-status').textContent, cause: document.getElementById('online-status').dataset.cause })`)));
   return id;
@@ -143,7 +143,7 @@ async function main() {
   // second crab); only after the authority forgets the visit (TTL) may the same visit open again, with a fresh
   // genesis — same crab id (the id is derived from the key), LIVE for the others, and its next signed step accepted.
   const b = ids[1], R = T.length >= 3 ? T[1] : null;
-  const share = `(() => { const c = document.getElementById('online-consent'); if (!c.checked) { c.click(); } document.getElementById('online-share').click(); return true; })()`;
+  const share = `(() => { const b = document.getElementById('online-share'); if (b && !b.disabled) { b.click(); } return true; })()`;
   const sees = (id, seal) => `(() => { const s = ${STATE}, v = s && s.view; if (!v) { return null; } const c = v.crabs.find((x) => x.id === ${JSON.stringify(id)}); return ${seal ? `c && c.seal === '${seal}' ? c : null` : '!c ? true : null'}; })()`;
   let again = null;
   if (R) {

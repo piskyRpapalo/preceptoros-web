@@ -8,7 +8,7 @@
   var lore = doc.getElementById('welcome-lore');
   var skip = doc.getElementById('welcome-skip-tutorial');
   if (lore) {
-    lore.textContent = 'You are an ephemeral crab: sign on this device, walk the map, conquer and talk. Crabs do not host services; nodes do (after the Sovereign activates them).';
+    lore.textContent = 'You are an ephemeral crab: sign on this device, walk the map, conquer and talk. Signing also shares your temporary crab key and map position with nearby visitors (never chat); Players lets you disconnect. Look around: a ghost crab that only watches. Crabs do not host services; nodes do.';
   }
   if (go) { go.textContent = 'Sign HITL, and take a piece'; }
   if (look) { look.textContent = 'Look around'; }
@@ -24,6 +24,10 @@
       ' Shared visitors: NO_DATA unless open authority is measured.';
   });
   function close() { card.hidden = true; }
+  // One signature (Sovereign 2026-11-24): without HITL the visitor only looks, as a ghost crab; the signed account ends it.
+  root.AtlasVisitorGhost = true;
+  play.addEventListener('visitor:render', function (e) { root.AtlasVisitorGhost = !(e.detail && e.detail.account); });
+  play.addEventListener('visitor:end', function () { root.AtlasVisitorGhost = true; });
   play.addEventListener('visitor:render', function () { if (go && !go.disabled) { close(); } });
   if (look) {
     look.addEventListener('click', function () { close(); var t = doc.getElementById('play-now'); if (t && !t.hidden) { t.focus({ preventScroll: true }); } });
