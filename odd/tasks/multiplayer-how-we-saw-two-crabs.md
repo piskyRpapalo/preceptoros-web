@@ -29,3 +29,25 @@ Status: **EXPERIMENT on loopback / USB only**. The public site has no presence a
 - Rate limits, abuse handling and privacy review for a public presence service.
 
 Related: `odd/tasks/crab-alive.md`, `atlas/coop_beacon_browser.mjs`, memory `handoff-2026-11-14-round5`.
+
+## The look breathes (2026-11-24 · request budget)
+
+On 2026-11-23, from 06:26Z, the public authority answered `503 authority_unreachable` to everyone. Two crabs had stayed shared all night. Each crab made about 2.5 requests per second: a `/view` every 500 ms, plus a signed beat every 2 s. That spent the free Durable Objects quota for the day.
+
+A `/view` keeps no crab alive; only a step or a beat does (`atlas/puros/crab_presence.js`: `seen` moves on `step`). So the page now paces its looks with `shared_crabs.js` → `pace(view, id, poll, fixed)`:
+
+| situation | next look | one crab's requests per second (with the 2 s beat) |
+|---|---|---|
+| another **LIVE** crab is in view | 1 s | 1.5 |
+| alone, or only STALE crabs in view | 4 s | **0.75** (was 2.5) |
+| right after your own accepted step | at once | — |
+| `?poll=` in the URL (tests, rehearsals) | fixed, as before | — |
+
+- An arrival still shows within about 4 s.
+- STALE (~10 s) and GONE (~30 s) are not affected, because they depend on steps and beats only.
+- The law is held in `atlas/puros/shared_crabs_cases.mjs` («pace…»).
+
+Measured on 2026-11-24 with `atlas/shared_crabs_browser.mjs` (two local Chromium crabs and the loopback authority), with no `?poll=`:
+- Two LIVE crabs together: **20 `/view` in 10 s**, about 1/s each. It was 2/s each.
+- One crab alone after the other left: **2 `/view` in 12 s**.
+- The whole two-crab walk stayed VERDE: steps, four readings, STALE and gone.

@@ -25,13 +25,17 @@
     var m = new RegExp('[?&]' + name + '=(\\d{1,6})(?:&|$)').exec((loc && loc.search) || ''), n = m ? Number(m[1]) : fallback;
     return n >= min ? n : fallback;
   }
-  // Pure: dirOf(from, to, DIRS) → the name of the one-hex step between two cells, or null (no step, or a jump).
+  // pace: next look in ms, 1 s near a LIVE crab, 4 s alone; ?poll= fixes it.
+  function pace(v, id, poll, fixed) {
+    var t = Math.max(poll, 1000); return fixed ? poll : (v && v.crabs || []).some(function (c) { return c.id !== id && c.seal === 'LIVE'; }) ? t : 4 * t;
+  }
+  // Pure: dirOf(from, to, DIRS) → the one-hex step's name, or null (no step, or a jump).
   function dirOf(a, b, DIRS) {
     var dq = b.q - a.q, dr = b.r - a.r, out = null;
     Object.keys(DIRS).forEach(function (k) { if (DIRS[k][0] === dq && DIRS[k][1] === dr) { out = k; } });
     return out;
   }
-  // Pure: label(crab) → what is written under another crab: its short id, and STALE in words when it fell silent.
+  // Pure: label(crab) → the words under another crab: its short id, and STALE when it fell silent.
   function label(c) { return c.id.slice(5, 9) + (c.seal === 'STALE' ? ' · STALE' : ''); }
   // Pure: slot(s) → the sideways place (in crab widths) of the s-th crab drawn on one hex: 0, +1, -1, +2, -2… Crowds, not
   // piles (2026-11-15): two crabs on one cell stand side by side. s counts the visitor's own crab, which keeps the centre.
@@ -42,7 +46,7 @@
     var box = doc.getElementById('visitor-play'), surface = doc.getElementById('surface'), auth = authority(win.location);
     var remote = !auth && win.location && win.location.origin === 'https://preceptoros.org' && !!win.REMOTE_PRESENCE_CONFIG;
     if (!box || !surface || (!auth && !remote)) { return null; }
-    var POLL = param(win.location, 'poll', 500, 100), BEAT = param(win.location, 'beat', 2000, 500), RADIUS = param(win.location, 'radius', 12, 1);
+    var POLL = param(win.location, 'poll', 500, 100), FIXED = param(win.location, 'poll', 0, 100), BEAT = param(win.location, 'beat', 2000, 500), RADIUS = param(win.location, 'radius', 12, 1);
     var account = null, me = null, pos = null, view = null, others = null, lastLine = '', sentAt = 0, soundAt = 0, timers = [], audio = null, said = [], heard = [], coop = null, adapter = null, joining = false, generation = 0;
     var wrap = doc.createElement('div'); wrap.id = 'shared-crabs';
     var button = remote ? doc.getElementById('online-share') : doc.createElement('button');
@@ -123,7 +127,7 @@
     function redraw() { var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(); if (ow && ow.redraw) { ow.redraw(); } }
     function stop(cause) {
       generation++; // Invalidate every in-flight load/open before changing the local session.
-      timers.forEach(function (t) { win.clearInterval(t); }); timers = []; me = null; view = null; others = null; heard = []; joining = false;
+      timers.forEach(function (t) { win.clearInterval(t); win.clearTimeout(t); }); timers = []; me = null; view = null; others = null; heard = []; joining = false;
       if (coop) { coop.stop(); coop = null; }
       if (adapter) { adapter.end(); adapter = null; }
       if (remote) {
@@ -198,7 +202,7 @@
       updateButton();
       // Reuse the same verified beacon and comic crab painter; no parallel multiplayer renderer.
       if (root.AtlasCoopBeacon && me.beacon) { coop = root.AtlasCoopBeacon.mount({ doc: doc, win: win, client: me, beacon: me.beacon, stage: doc.getElementById('stage'), surface: surface, redraw: redraw, audio: function () { return audio; } }); }
-      timers.push(win.setInterval(look, POLL));
+      (function tick(g, k) { var f = function () { tick(g, k); }; timers[k] = win.setTimeout(function () { if (me && g === generation) { look().then(f, f); } }, pace(view, me.id, POLL, FIXED)); })(generation, timers.length);
       timers.push(win.setInterval(function () { if (me && Date.now() - sentAt >= BEAT) { sentAt = Date.now(); me.beat().then(function (r) { if (me && r && r.ok === false && r.cause !== 'beat_too_soon') { refused(r); } }); } }, Math.max(250, Math.round(BEAT / 4))));
       look();
     }
@@ -234,10 +238,10 @@
       var to = { q: w.q, r: w.r }, d = dirOf(pos, to, W.DIRS);
       if (!d) { if (to.q !== pos.q || to.r !== pos.r) { stop('a jump is not a step'); } return; }
       pos = to; sentAt = Date.now();
-      me.step(d).then(function (r) { if (!me) { return; } if (!r || r.ok !== true) { refused(r); } else if (r.at.q !== to.q || r.at.r !== to.r) { stop('the authority and this page disagree on the cell'); } });
+      me.step(d).then(function (r) { if (!me) { return; } if (!r || r.ok !== true) { refused(r); } else if (r.at.q !== to.q || r.at.r !== to.r) { stop('the authority and this page disagree on the cell'); } else if (!FIXED) { look(); } });
     });
     // The other crabs, on the same map with the same body. Projection only: nothing here decides a position.
-    // This layer must be the LAST to draw (after the fog, the aura and the names of map_chunks.js), or the fog would
+    // This layer draws LAST (after fog, aura and names of map_chunks.js), or the fog would
     // cover the very crabs it shows: it is added once the document has finished loading.
     function layer() { surface.addEventListener('visitor:draw', paint); redraw(); }
     if (doc.readyState === 'complete') { layer(); } else { win.addEventListener('load', layer); }
@@ -268,7 +272,7 @@
     return { auth: auth, poll: POLL, beat: BEAT, radius: RADIUS, state: function () { return { id: me ? me.id : null, pos: pos, view: view, said: said.slice(), beacon: coop ? coop.state() : null }; } };
   }
 
-  var api = { authority: authority, remoteConfig: remoteConfig, dirOf: dirOf, label: label, slot: slot, mount: mount, mounted: null };
+  var api = { authority: authority, remoteConfig: remoteConfig, pace: pace, dirOf: dirOf, label: label, slot: slot, mount: mount, mounted: null };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasSharedCrabs = api;
   if (root.document && root.document.getElementById && root.location) { api.mounted = mount(root.document, root); }
