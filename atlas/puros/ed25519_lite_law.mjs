@@ -1,5 +1,5 @@
 // ed25519_lite (public/game/ed25519_lite.js): the fallback must be Ed25519 byte for byte, or the APP's crab is refused.
-//   node --test atlas/puros/ed25519_lite_cases.mjs
+//   node --test atlas/puros/ed25519_lite_law.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';

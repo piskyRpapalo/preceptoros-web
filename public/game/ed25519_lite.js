@@ -3,7 +3,7 @@
 // Same algorithm, same bytes: a 32-byte public key and a 64-byte signature that any Ed25519 verifier accepts (the
 // presence authority included). Loaded ONLY when crypto.subtle rejects Ed25519 (visitor_account.js); SHA-512 still
 // comes from WebCrypto. The seed lives in this closure, in memory, and ends with the visit, like the native key.
-// Checked against RFC 8032 §7.1 vectors and node:crypto in atlas/puros/ed25519_lite_cases.mjs.
+// Checked against RFC 8032 §7.1 vectors and node:crypto in atlas/puros/ed25519_lite_law.mjs.
 (function (root) {
   'use strict';
   var P = 2n ** 255n - 19n, N = 2n ** 252n + 27742317777372353535851937790883648493n;
