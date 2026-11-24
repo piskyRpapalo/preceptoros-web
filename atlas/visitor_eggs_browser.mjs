@@ -53,6 +53,9 @@ async function main() {
   ok(await hasta('!!document.getElementById("surface")', 10000), 'map loaded');
   ok(await hasta('!!document.getElementById("visitor-start")',10000),'visitor controls available');
   await ev('document.getElementById("visitor-start").click()');
+  // One HITL (2026-11-24): the start button only reopens the single entry; the visit needs its explicit signature.
+  await espera(250);
+  ok(await ev('(document.getElementById("welcome-play") && document.getElementById("welcome-play").offsetParent && (document.getElementById("welcome-play").click(), true)) || false'), 'HITL entry signed');
   ok(await hasta('!!document.getElementById("visitor-beacon")',10000),'visit started without Identity');
   // Voice Star: a fake verified brain:answer with a correct sha earns +25 copper and is announced in #state.
   ok(await ev('document.getElementById("visitor-voice-star").textContent') === 'Voice Star 0/4', 'Voice Star counter 0/4');

@@ -57,6 +57,9 @@ async function main() {
   await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/?colony=alone` });
   ok(await hasta('!!document.getElementById("visitor-start")', 15000), 'visitor controls available');
   await ev('document.getElementById("visitor-start").click()');
+  // One HITL (2026-11-24): the start button only reopens the single entry; the visit needs its explicit signature.
+  await espera(250);
+  ok(await ev('(document.getElementById("welcome-play") && document.getElementById("welcome-play").offsetParent && (document.getElementById("welcome-play").click(), true)) || false'), 'HITL entry signed');
   ok(await hasta('!!document.getElementById("visitor-beacon")', 10000), 'visit started');
   await ev('document.getElementById("visitor-beacon").click()');
   ok(await hasta('document.getElementById("visitor-beacon").disabled && !document.getElementById("visitor-summon-tc1").disabled', 10000), 'beacon granted once');

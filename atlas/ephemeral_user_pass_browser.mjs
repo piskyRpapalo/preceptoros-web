@@ -88,12 +88,19 @@ async function main() {
   // 2 · the visit: start, beacon (100 copper once), one game step.
   ok(await hasta('!!document.getElementById("visitor-start")', 5000), 'visit start button shown');
   ok(await pulsaId('visitor-start'), 'visit started');
+  // One HITL (2026-11-24): «Start an ephemeral visit» only reopens the single entry; the visit begins when the
+  // visitor signs that entry. The harness signs it explicitly — no visit is created without it.
+  await espera(250);
+  ok(await pulsaId('welcome-play'), 'HITL entry signed: «Sign HITL, and take a piece»');
   ok(await hasta('!!document.getElementById("visitor-beacon")', 10000), 'visit panel shows beacon');
   const titleDuringVisit = await ev(`document.getElementById('map-h').textContent`);
   // 2026-11-08: with an empty colony the visitor's crab is born at the cabin, so the title carries a real place too.
   ok((VACIA ? /^Visitor-[a-f0-9]{8} · [A-Z][a-z]{3,9} · 0, 0$/ : /^Visitor-[a-f0-9]{8} · [A-Z][a-z]{3,9} · -?\d+, -?\d+$/).test(titleDuringVisit), 'map title must identify the active ephemeral visit and its location: ' + titleDuringVisit);
-  ok(await pulsaId('visitor-beacon'), 'beacon claimed');
+  // One HITL (2026-11-24): signing the entry IS the visit, and that same signature claims the beacon once
+  // (AtlasVisitorPlay.enter). The claim is therefore already made here; the button must be off so a second
+  // claim is impossible, and the copper must read exactly 100 — the harness never claims for the visitor.
   await espera(300);
+  ok(await ev(`(() => { const b = document.getElementById('visitor-beacon'); return !!b && b.disabled; })()`), 'beacon claimed once by the signed entry (button off, no second claim)');
   const panel = await ev(`document.getElementById('visitor-play').textContent`);
   ok(/Copper 100/.test(panel), 'copper 100 after the beacon');
   ok(await ev(`(document.getElementById('visitor-play').dispatchEvent(new CustomEvent('visitor:advance')), true)`), 'one game step taken (the crab walks one hex)');
