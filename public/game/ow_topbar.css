@@ -29,3 +29,7 @@
 #stage > .tb-menu .tb-boss h3{margin:0 0 4px;font-size:.92rem}
 #stage > .tb-menu .tb-boss p{margin:4px 0 0;font-size:.74rem;line-height:1.3}
 #stage > .tb-menu .tb-boss canvas{display:block;border-radius:10px;background:color-mix(in srgb,var(--afffdf6) 6%,transparent)}
+#stage > .tb-menu .tb-feed .ef-log{margin:0;padding:0 0 0 2px;list-style:none;display:flex;flex-direction:column;gap:4px;font-size:.76rem;line-height:1.3;max-height:160px;overflow:auto}
+#stage > .tb-menu .tb-feed .ef-log b{display:inline-block;min-width:54px;margin-right:4px;padding:0 6px;border-radius:999px;border:1.5px solid currentColor;font-size:.66rem;text-transform:uppercase;text-align:center}
+/* the egg pill sits under the bar, never over its icons */
+#stage > #gestation#gestation{top:58px}

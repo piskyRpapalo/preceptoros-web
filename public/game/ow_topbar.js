@@ -56,6 +56,7 @@
     box.appendChild(copy); m.appendChild(box);
   }
   function echoes(m) {
+    var F = root.AtlasEchoFeed, fb = m.querySelector('.tb-feed'); if (F) { if (!fb) { fb = el('div', { class: 'tb-feed' }); m.insertBefore(fb, m.querySelector('#tb-quests')); } F.render(fb); } // the live echoes first (echo_feed.js)
     var p = m.querySelector('.tb-version') || el('p', { class: 'tb-version' }); p.textContent = vline(version); m.appendChild(p);
     if (version || !root.fetch) { return; }
     root.fetch('/atlas-world.json').then(function (r) { return r.json(); }).then(function (j) { version = j && j.version_sw; p.textContent = vline(version); }).catch(function () { p.textContent = vline(null); });
