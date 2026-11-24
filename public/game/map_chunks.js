@@ -99,8 +99,8 @@
 
 
   function shadow(g, c, x, top, o, H, hh) {
-    var tone = CITY && CITY[c[0] + ',' + c[1]], LA = root.AtlasLandArt; // land_art.js
-    if (LA && !tone) { LA.cell(g, c, x, top, o, H, CITY); }
+    var tone = 0, LA = root.AtlasLandArt; // one floor, one colour (Sovereign 2026-11-24): no district tones; land_art keeps the stones' grain
+    if (LA) { LA.cell(g, c, x, top, o, H, null); }
     if (tone) { // stone at the cabin; elsewhere the building's colour (2026-11-14)
       var tones = o.cityTones || (o.cityTones = {}), F = H.T.FRONT_DOOR, rgb = tone === 1 ? H.rgbOf(F['PROPUESTA.base']) : H.rgbOf(F[tone]);
       var cb = { base: tones[tone] || (tones[tone] = H.mix(H.rgbOf(H.T.NEUTRAL.paper), rgb, tone === 1 ? 0.22 : 0.5)) };
