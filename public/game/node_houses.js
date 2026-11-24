@@ -21,13 +21,13 @@
     if (!houses.length || !V || !s || !LM || !LM.building) { return; }
     var g = s.getContext('2d'), k = V.G.k, turn = V.turn;
     var corner = NB.map(function (d, i) { var e = NB[(i + 1) % 6], p = V.P(d[0] + e[0], d[1] + e[1]), r = turn(p.x, p.y); return [r.x / 3 * k, r.y / 3 * k]; });
-    var o = { k: k, corner: corner, lit: 1 };
+    var o = { k: k * 1.3, corner: corner.map(function (q) { return [q[0] * 1.3, q[1] * 1.3]; }), lit: 1 }; // the big node building: 1.3× with a spire (Sovereign 2026-11-24: node = big, a visitor's conquest = white «html»)
     g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.lineJoin = 'round';
     houses.forEach(function (h) {
       var c = V.world.cells.at[h.q + ',' + h.r], h0 = V.P(h.q, h.r), p = turn(h0.x, h0.y);
       var x = V.G.cx + p.x * k, top = V.G.cy + p.y * k - (c ? V.height(c) * V.HSTEP : 0) * k;
       if (x < -60 || x > s.width + 60 || top < -80 || top > s.height + 80) { return; }
-      LM.building(g, { id: h.id, tone: 'cyan', roof: 'cone' }, x, top, o, V.H);
+      LM.building(g, { id: h.id, tone: 'cyan', roof: 'spire' }, x, top, o, V.H);
     });
     g.restore();
   }
