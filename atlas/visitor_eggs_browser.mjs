@@ -79,7 +79,7 @@ async function main() {
   ok(await ev('typeof Identity === "undefined"'),'no persistent identity used');
   // TF-2: House lives in the Play category; the visitor opens it before tapping, so the size is measured there.
   await ev('document.querySelector(".cats [data-cat=Army]").click()');
-  const sizes=await ev('Array.from(document.querySelectorAll("#visitor-play button")).map(x=>x.getBoundingClientRect().height)');
+  const sizes=await ev('Array.from(document.querySelectorAll("#visitor-play button")).filter(x=>x.getClientRects().length).map(x=>x.getBoundingClientRect().height) /* only drawn buttons: Quests live in Echoes since 2026-11-23 */');
   ok(sizes.every(x=>x>=44),'accessible controls');
   const { createPublicKey, verify } = await import('node:crypto');
   const { spawnSync } = await import('node:child_process');

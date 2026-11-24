@@ -168,7 +168,7 @@ async function main() {
   ok(panel.sizes.every(([w]) => w <= 48), 'panel icons stretch across the map instead of remaining compact: ' + JSON.stringify(panel.sizes));
 
   const categories = JSON.parse(await evaluate(`JSON.stringify((() => {
-    const bs=[...document.querySelectorAll('.cats button')].filter(b=>!b.hidden), voices=document.getElementById('voices');
+    const bs=[...document.querySelectorAll('.cats button')].filter(b=>!b.hidden&&b.dataset.cat) /* Sound and Echoes share the bar since 2026-11-23: only category leaves count */, voices=document.getElementById('voices');
     const results=bs.map(b=>{b.click(); const cat=b.dataset.cat, own=[...voices.querySelectorAll('[data-speaker]')].filter(v=>v.dataset.cat===cat);
       const visible=own.some(v=>v.getBoundingClientRect().width>0 && getComputedStyle(v).display!=='none');
       const over=[...voices.querySelectorAll('[data-speaker]')].filter(v=>v.dataset.cat!==cat).every(v=>getComputedStyle(v).display==='none');
