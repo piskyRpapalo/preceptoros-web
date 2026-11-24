@@ -72,7 +72,7 @@ const STATE = `(() => { const m = window.AtlasSharedCrabs && AtlasSharedCrabs.mo
 let T = [];
 async function enter(t) {
   ok(await until(t, `document.readyState === 'complete' && !!(window.AtlasSharedCrabs && AtlasSharedCrabs.mounted && document.getElementById('play-now'))`, 40000), t.name + ': shared crabs not mounted');
-  await t.ev(`(document.getElementById('play-now').click(), true)`);
+  await t.ev(`(document.getElementById('play-now').click(), true)`); await new Promise((r) => setTimeout(r, 200)); await t.ev(`(document.getElementById('welcome-play') && document.getElementById('welcome-play').offsetParent && document.getElementById('welcome-play').click(), true)`);
   ok(await until(t, `!!document.getElementById('visitor-beacon')`, 60000), t.name + ': the visit did not start after Play'); // an old WebView signs with ed25519_lite: loading it and making the key takes seconds
   await until(t, `(() => { const b = document.getElementById('online-share'), s = ${STATE}; return (s && s.id) || (!!b && !b.disabled); })()`, 30000); // one HITL (2026-11-24): the signed visit shares by itself; the crab id below is the proof
   await t.ev(`(() => { const b = document.getElementById('online-share'); if (b && !b.disabled) { b.click(); } return true; })()`);

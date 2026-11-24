@@ -57,7 +57,8 @@
       throw error;
     } finally { go.disabled = false; }
   }
-  root.AtlasWelcome = { enter: enter, look: close };
+  root.AtlasWelcome = { enter: enter, look: close, open: function () { var c = doc.querySelector('.cats [data-cat=Welcome]'), li = card.closest && card.closest('[data-cat]'); if (c && (!li || li.style.display === 'none')) { c.click(); }
+    card.hidden = false; if (go) { go.focus({ preventScroll: true }); } } };
   if (go) { go.addEventListener('click', function () { enter(true, skip && skip.checked).catch(function () {}); }); }
   if (doc.getElementById('visitor-beacon')) { close(); } else { card.hidden = false; if (go) { go.focus({ preventScroll: true }); } }
 })(globalThis);
