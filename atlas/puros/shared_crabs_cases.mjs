@@ -114,3 +114,15 @@ test('Revoking HTTPS consent while /open is pending never resurrects a shared cr
     }
   }
 });
+
+test('pace: a look keeps no crab alive, so alone it breathes 4× slower; near a LIVE crab 1 s; ?poll= stays fixed', () => {
+  const v = (crabs) => ({ crabs });
+  assert.equal(S.pace(v([{ id: 'me', seal: 'LIVE' }]), 'me', 500, 0), 4000);
+  assert.equal(S.pace(v([{ id: 'me', seal: 'LIVE' }, { id: 'b', seal: 'LIVE' }]), 'me', 500, 0), 1000);
+  assert.equal(S.pace(v([{ id: 'me', seal: 'LIVE' }, { id: 'b', seal: 'STALE' }]), 'me', 500, 0), 4000, 'a STALE crab does not speed the look');
+  assert.equal(S.pace(null, 'me', 500, 0), 4000, 'no view yet: slow, never a burst');
+  assert.equal(S.pace(v([{ id: 'b', seal: 'LIVE' }]), 'me', 300, 300), 300, 'tests and rehearsals keep their fixed pace');
+  // Budget (2026-11-23 quota exhaustion): requests per second of one crab = looks + beats (beat 2 s).
+  const rate = (ms) => 1000 / ms + 0.5;
+  assert.ok(rate(S.pace(null, 'me', 500, 0)) <= 0.75 && rate(500) === 2.5, 'alone: 2.5 → 0.75 req/s');
+});
