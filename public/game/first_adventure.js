@@ -44,7 +44,9 @@
       summon: ['#visitor-summon-tc1', '.cats [data-cat=Army]'], practice: v && v.at ? ['#bs-challenge'] : ['#fa-go'], // town: first record the win (visitor_conquest.js verifies it)
       conquest: v && v.at ? ['#bs-challenge'] : ['#fa-go', '#fa-ok'], town: ['#visitor-conquer', '#fa-ok'], explore: ['#fa-ok'] }[id] || [];
   }
-  var api = { TOUR: TOUR, STEPS: STEPS, IDS: IDS, step: step, say: say, target: target, index: index };
+  // Pure: fair(guards, squad) → a fight worth walking to: no more guards than troops, no guard above the squad's best tier.
+  function fair(g, s) { var top = s.reduce(function (a, t) { return t.tc > a ? t.tc : a; }, 'tc1'); return g.length <= s.length && g.every(function (t) { return t.tc <= top; }); }
+  var api = { fair: fair, TOUR: TOUR, STEPS: STEPS, IDS: IDS, step: step, say: say, target: target, index: index };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   // One journey per page: a second script load must never install another card,
   // marker, listener, timer or independent progress state.
@@ -54,7 +56,7 @@
   if (!stage || !play) { return; }
   function get() { try { return root.localStorage.getItem(TOUR) || ''; } catch (e) { return ''; } }
   function put(v) { try { root.localStorage.setItem(TOUR, v); } catch (e) { /* not kept: the card still works this visit */ } if (root.AtlasOwCalm) { root.AtlasOwCalm.refresh(); } }
-  var threat = '', st = null, stAt = 0, tick = 0, met = false, seen = false, practised = false, lost = 0, later = false, at = '', walking = 0, said = '';
+  var threat = '', st = null, stAt = 0, tick = 0, met = false, seen = false, practised = false, lost = 0, unfair = -1, later = false, at = '', walking = 0, said = '';
   var card = doc.createElement('section'); card.id = 'fa'; card.setAttribute('aria-label', 'First adventure');
   var count = doc.createElement('p'); count.className = 'fa-count';
   var line = doc.createElement('p'); line.className = 'fa-line'; line.setAttribute('role', 'status');
@@ -108,14 +110,16 @@
     var hatching = id === 'conquest' && !walking && !at && st && (st.eggs || []).length > 0; // a real fight waits for the whole squad (measured: two reef troops win about half the time against two reef guards, one alone about one in ten)
     if (hatching) { words = 'Your other egg is still hatching. Wait for it: two troops win about half the time against the weakest guardians; one alone, about one time in ten.'; }
     else if (id === 'conquest' && threat && !lost) { words = threat; }
-    if (id === 'conquest' && lost) { words = 'The guardian wins this time (' + lost + (lost === 1 ? ' try' : ' tries') + '): nothing is conquered and the town stays as it was. Press Go: we walk to the next weakest guardian, or choose Later.'; }
+    var even = !(id === 'conquest' && st && unfair === (st.troops || []).length);
+    if (!even) { words = 'No fair fight near you: every guardian left outnumbers or outranks your ' + unfair + ' troops. Summon another troop in Army when you have the copper (three troops win about four in five against reef guards), or choose Later.'; }
+    else if (id === 'conquest' && lost) { words = 'The guardian wins this time (' + lost + (lost === 1 ? ' try' : ' tries') + '): nothing is conquered and the town stays as it was. Press Go: we walk to the next weakest guardian, or choose Later.'; }
     if (line.textContent !== words) { line.textContent = words; said = ''; }
     go.disabled = id === 'practice' && st && !(st.troops || []).length || hatching;
     // While an egg hatches Go cannot be pressed: it counts the seconds down (state's own remaining), never a silent wait.
     var left = (st && st.eggs || []).map(function (e) { return (e.remaining || 0) - Math.floor((Date.now() - stAt) / 1000); }), wait = go.disabled && left.length ? Math.max(0, (hatching ? Math.max : Math.min).apply(null, left)) : 0; // practice: the first troop; conquest: the whole squad
-    go.hidden = !(id === 'practice' || id === 'conquest') || !!at; go.textContent = walking ? 'Stop' : wait > 0 ? 'Go · ' + wait + ' s' : 'Go';
+    go.hidden = !(id === 'practice' || id === 'conquest') || !!at || !even; go.textContent = walking ? 'Stop' : wait > 0 ? 'Go · ' + wait + ' s' : 'Go';
     if (wait > 0 && !tick) { tick = root.setTimeout(function () { tick = 0; draw(); }, 1000); }
-    okB.hidden = !(id === 'meet' || id === 'town' || id === 'explore' || (id === 'conquest' && lost)); okB.textContent = id === 'conquest' ? 'Later' : 'OK';
+    okB.hidden = !(id === 'meet' || id === 'town' || id === 'explore' || (id === 'conquest' && (lost || !even))); okB.textContent = id === 'conquest' ? 'Later' : 'OK';
     card.dataset.step = id;
     // the preceptor's head speaks inside this card (talk_head.js); the map bubble stays free for real results
     Array.prototype.forEach.call(card.querySelectorAll('.th'), function (h) { if (said !== id + words) { h.remove(); } });
@@ -140,13 +144,16 @@
   }
   // weakest(list, w) → the grey building whose guardian fields the lightest patrol (values.js order), nearest first,
   // never one already lost to in this visit (a fight is deterministic: the same squad loses the same way). Read only.
+  // squad (the visit's troops) → only a FAIR fight: no more guards than troops, no higher tier (measured 2026-11-24, two
+  // reef troops: reef 53%, kelp 17%, ruins 7%; the old pick walked a loser up that ladder for 44 presses).
   var lostAt = {}, KINDS = { arrecife: 'reef guards', algas: 'kelp guards', ruinas: 'ruin guards', limo: 'silt guards', abismo: 'abyss guards', nucleo: 'core guards' };
-  function weakest(list, w) {
+  function weakest(list, w, squad) {
     var B = root.AtlasVisitorBattle, P = root.AtlasValores && root.AtlasValores.patrullas, best = null;
     list.forEach(function (m) {
       if (!m.fog || m.won || lostAt[m.q + ',' + m.r] || !B || !P) { return; }
       var pl = B.npcPlace('b:' + m.id + ':' + m.q + ',' + m.r); if (!pl) { return; }
-      var tc = pl.troops[0].tc, rank = P.findIndex(function (p) { return p.tc === tc && p.n === pl.troops.length; }), d = hexDist(w, m);
+      var tc = pl.troops[0].tc; if (squad && squad.length && !fair(pl.troops, squad)) { return; }
+      var rank = P.findIndex(function (p) { return p.tc === tc && p.n === pl.troops.length; }), d = hexDist(w, m);
       var c = { m: m, d: d, n: pl.troops.length, tc: tc, kind: KINDS[(P[rank] || {}).id] || 'guards', score: rank * 1000 + d };
       if (!best || c.score < best.score) { best = c; }
     });
@@ -158,7 +165,8 @@
     if (walking) { stop(); draw(); return; }
     var V = view(), list = V && V.world && V.world.markList || [], id = now(), m = null;
     if (id === 'practice') { m = list.filter(function (x) { return x.town && x.id === 'coliseum'; })[0]; }
-    if (id === 'conquest') { var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(), w = ow && ow.controls && ow.controls.walker && ow.controls.walker(), pick = w && weakest(list, w); m = pick && pick.m;
+    if (id === 'conquest') { var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(), w = ow && ow.controls && ow.controls.walker && ow.controls.walker(), tr = st && st.troops || [], pick = w && weakest(list, w, tr); m = pick && pick.m;
+      if (!pick && tr.length) { unfair = tr.length; draw(); return; }
       if (pick) { threat = line.textContent = 'Walking to the ' + String(m.id).replace(/-/g, ' ') + ' · ' + pick.d + ' hexes · its guardian fields ' + pick.n + ' ' + pick.kind + ' (' + pick.tc + '): the weakest near you.'; } }
     if (!m) { line.textContent = 'NO_DATA: no place for this step on the map.'; return; }
     walk(m, function () {});

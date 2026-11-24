@@ -31,3 +31,11 @@ test('four states never mixed: built from this device, accredited only from a si
 test('the «!» has one target list per step, and every step has words', () => {
   A.IDS.forEach((id) => { assert.ok(A.target(id, {}).length >= 1, id); assert.ok(A.say(id).length > 20, id); });
 });
+test('conquest walks only to a fair fight (2026-11-24: 2 reef troops win reef 53%, kelp 17%, ruins 7%)', () => {
+  const t = (tc, n) => Array.from({ length: n }, () => ({ tc })), two = t('tc1', 2);
+  assert.equal(A.fair(t('tc1', 2), two), true);   // reef: the tutorial's fight
+  assert.equal(A.fair(t('tc1', 3), two), false);  // kelp outnumbers two
+  assert.equal(A.fair(t('tc2', 2), two), false);  // a higher tier outranks
+  assert.equal(A.fair(t('tc1', 3), t('tc1', 3)), true);  // a third troop makes kelp fair
+  assert.equal(A.fair(t('tc2', 3), [...t('tc1', 2), { tc: 'tc2' }]), true);
+});
