@@ -67,6 +67,7 @@ jobs:
             node --test atlas/puros/decor_command_cases.mjs
             node --test atlas/puros/wave_duel_cases.mjs
             node --test atlas/puros/wave_field_cases.mjs
+            node --test atlas/puros/ow_topbar_cases.mjs
             node --test atlas/wave_duel_stall_cases.mjs
             node --test atlas/puros/caravan_cases.mjs
             node --test atlas/puros/building_doors_cases.mjs

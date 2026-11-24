@@ -71,7 +71,7 @@
     var grid = doc.createElement('div'); grid.className = 'ow-directions-grid';
     panel.appendChild(grid); stage.appendChild(panel);
     var brief = doc.createElement('p'); brief.id = 'ow-brief'; brief.setAttribute('role', 'status');
-    brief.setAttribute('aria-live', 'polite'); brief.textContent = 'Press Play now, then Walk crab. One press = one hex.';
+    brief.setAttribute('aria-live', 'polite'); brief.textContent = 'Press Play now, then walk with the crab stick or the arrow keys. One press = one hex.';
     stage.appendChild(brief);
     var coord = doc.createElement('span'); coord.id = 'ow-coords';
     coord.setAttribute('aria-label', 'Crab position'); stage.appendChild(coord);

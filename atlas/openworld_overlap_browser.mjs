@@ -98,9 +98,8 @@ try {
     await t.ev(`(() => { for (const s of ['#play-now', '#visitor-start']) { const e = document.querySelector(s); if (e && e.offsetParent) { e.click(); return s; } } return null; })()`);
     ok(await until(t, `!!document.getElementById('visitor-step')`), w + ': the visit did not start');
     await espera(400);
-    // Keyboard: Share → Players → Nodes in that order.
-    await t.ev(`document.getElementById('online-share').focus()`);
-    await key(t, 'Tab', 'Tab'); const k1 = await t.ev(`document.activeElement && document.activeElement.id`);
+    // Keyboard: Players → Nodes in that order (Share lives in Settings since 2026-11-23, ow_topbar.js).
+    await t.ev(`document.getElementById('online-players-toggle').focus()`); const k1 = await t.ev(`document.activeElement && document.activeElement.id`);
     await key(t, 'Tab', 'Tab'); const k2 = await t.ev(`document.activeElement && document.activeElement.id`);
     m.tab = [k1, k2]; ok(k1 === 'online-players-toggle' && k2 === 'online-nodes-toggle', w + ': Tab order ' + m.tab);
     // Open Visitors with Share (tutorial still running): cards apart, controls ≥ 44 px, ARIA in step with the panel.

@@ -80,7 +80,7 @@ async function main() {
       legacy.guide.css==='none' && legacy.welcome.visible,
       w + ': Help resurrects legacy tutorial or Guide, or hides Welcome: ' + JSON.stringify(legacy));
     ok(a.phase === 'arrive', w + ': phase before a visit is ' + a.phase);
-    ok(a.mid.length >= 4 && a.mid.every((b) => b.name && b.w >= 44 && b.h >= 44 && b.aria.toLowerCase().startsWith(b.name.toLowerCase()) && b.cs.includes(b.name)), w + ': a middle button has no visible name, is under 44 px or its name is not in its label: ' + JSON.stringify(a.mid));
+    ok(a.mid.length >= 4 && a.mid.every((b) => b.name && b.w >= 44 && b.h >= 44 && b.aria.toLowerCase().startsWith(b.name.toLowerCase()) && b.cs === 'none'), w + ': a middle button is under 44 px, its label does not begin with its name, or it still writes its name (icons alone, Sovereign 2026-11-23): ' + JSON.stringify(a.mid));
     ok(a.play && a.play.vis && a.play.border >= 3 && a.play.alone, w + ': Play is not the one primary action: ' + JSON.stringify(a.play));
     ok(a.padH <= 170, w + ': the gamepad grew and took the map\'s room: ' + a.padH);
     ok(!a.walk && a.embers === 0 && a.coordsW <= 1, w + ': something that cannot act yet is over the map: ' + JSON.stringify({ walk: a.walk, embers: a.embers, coords: a.coordsW }));
@@ -98,8 +98,8 @@ async function main() {
   ok(await hasta('document.documentElement.dataset.owPhase==="visit"', 10000), 'a visit does not move the phase to visit');
   await espera(400);
   const v = JSON.parse(await ev(MEASURE));
-  ok(v.walk && v.lockedBuildings === 7 && v.lockedEmbers === 0,
-    'visit must keep seven buildings locked and never show their mission embers: ' + JSON.stringify({ walk: v.walk, locked: v.lockedBuildings, lockedEmbers: v.lockedEmbers }));
+  ok(!v.walk && v.lockedBuildings === 7 && v.lockedEmbers === 0,
+    'visit must keep seven buildings locked, never show their mission embers, and no Walk crab over the map (the stick walks, 2026-11-23): ' + JSON.stringify({ walk: v.walk, locked: v.lockedBuildings, lockedEmbers: v.lockedEmbers }));
   await ev('localStorage.setItem("preceptoros.tour","skipped"); window.AtlasOwCalm.refresh()');
   ok(await hasta('document.documentElement.dataset.owPhase==="visit"', 3000), 'a skipped first adventure should stay in visit phase (not free)');
   const f = JSON.parse(await ev(MEASURE));
