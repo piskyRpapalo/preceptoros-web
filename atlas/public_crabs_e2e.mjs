@@ -1,7 +1,8 @@
 // N crabs on the PUBLIC site (https://preceptoros.org/openworld/) through the PUBLIC presence authority — the real
 // multiplayer road, not the loopback rehearsal of shared_crabs_browser.mjs. Each crab is a person's visit: Play, the
 // consent box, «Share». Then every crab walks one hex and every other crab must hold it at that cell, LIVE; then one
-// page closes and the others must read it STALE, then gone. Short on purpose (~2 min): the authority runs on a daily
+// page closes and the others must read it STALE, then gone; with 3+ clients a second one disconnects and reconnects
+// (instant re-open refused as visit_already_open; after the TTL the same ephemeral visit returns as the same crab). Short on purpose (~2 min): the authority runs on a daily
 // request quota (2026-11-23), and shared_crabs.js paces its looks (pace(): 1 s together, 4 s alone).
 // Clients: N local Chromium processes (CRABS=3 default) and, with PHONES="<serial>[,<serial>]", the Chrome of those
 // phones over adb (DevTools socket forwarded; the phone opens the public URL like a person would).
@@ -22,8 +23,17 @@ const adb = (serial, ...a) => execFileSync('adb', ['-s', serial, ...a], { encodi
 async function attach(wsUrl) {
   const ws = new WebSocket(wsUrl), pend = new Map(); let id = 0;
   await new Promise((r, j) => { ws.addEventListener('open', r); ws.addEventListener('error', () => j(new Error('WebSocket CDP'))); });
-  ws.addEventListener('message', (m) => { const d = JSON.parse(m.data); if (d.id && pend.has(d.id)) { pend.get(d.id)(d); pend.delete(d.id); } });
-  const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
+  // A DevTools call that never answers (a paused WebView, a closed socket) used to hang the whole run with no receipt
+  // (FULL=1 with the APP, 2026-11-24: killed by the outer timeout, nothing printed). Now each call has a deadline and a
+  // closed socket fails every pending call — the receipt names the call and the client instead of going silent.
+  const CDP_MS = Number(process.env.CDP_MS || 45000);
+  ws.addEventListener('message', (m) => { const d = JSON.parse(m.data); if (d.id && pend.has(d.id)) { pend.get(d.id).ok(d); pend.delete(d.id); } });
+  ws.addEventListener('close', () => { for (const [, p] of pend) { p.no(new Error('CDP socket closed during ' + p.method)); } pend.clear(); });
+  const cmd = (method, params = {}) => new Promise((ok, no) => {
+    const i = ++id, timer = setTimeout(() => { pend.delete(i); no(new Error('CDP no answer in ' + CDP_MS + ' ms: ' + method + ' ' + String(params.expression || params.url || '').slice(0, 90))); }, CDP_MS);
+    pend.set(i, { method, ok: (d) => { clearTimeout(timer); ok(d); }, no: (e) => { clearTimeout(timer); no(e); } });
+    ws.send(JSON.stringify({ id: i, method, params }));
+  });
   const ev = async (e) => { const r = await cmd('Runtime.evaluate', { expression: `(async () => JSON.stringify(await (${e})))()`, awaitPromise: true, returnByValue: true }); const v = r.result?.result?.value; return v === undefined ? null : JSON.parse(v); };
   await cmd('Runtime.enable'); await cmd('Page.enable');
   return { ev, cmd, close: () => { try { ws.close(); } catch {} } };
@@ -104,7 +114,11 @@ async function main() {
         if (!L || L.step === 'explore') { break; }
         if (L.id !== id) { fallos.push(t.name + ' stopped being shared at ' + L.step + ' (' + L.id + ')'); break; }
         if (!L.next && /hatching/.test(await t.ev(`(document.querySelector('#fa .fa-line') || {}).textContent || ''`))) { // the egg hatches: waiting, with words, is the step
-          const h0 = Date.now(); await until(t, `!!document.querySelector('[data-fa-next]')`, 90000, 500); (medidas.hatch_ms = medidas.hatch_ms || []).push(Date.now() - h0); continue; }
+          const h0 = Date.now(), hatched = await until(t, `!!document.querySelector('[data-fa-next]')`, 90000, 500); (medidas.hatch_ms = medidas.hatch_ms || []).push(Date.now() - h0);
+          // No egg ever hatches when the visit could not sign (APP WebView 113 before db.js lite, 2026-11-24): that run looped
+          // 45 × 90 s in silence. A hatch that never ends is a dead end, named with the panel's own NO_DATA line.
+          if (!hatched) { fallos.push(t.name + ': nothing hatched in 90 s at ' + L.step + ' · ' + JSON.stringify(await t.ev(`(document.getElementById('visitor-play').textContent.match(/NO_DATA[^.]*\./) || ['no NO_DATA line'])[0]`))); break; }
+          continue; }
         if (!L.next) { await espera(1500); if (!(await t.ev(LOOK)).next) { fallos.push(t.name + ': dead end at ' + L.step + ' ' + JSON.stringify(await t.ev(`(() => { const g = document.getElementById('fa-go'), c = document.getElementById('bs-challenge'), bs = document.getElementById('building-sheet'), st = window.AtlasVisitorPlay && AtlasVisitorPlay.state ? AtlasVisitorPlay.state() : null;
           return { go: g && { hidden: g.hidden, dis: g.disabled, txt: g.textContent }, chal: c && { dis: c.disabled, txt: c.textContent.slice(0, 60) }, sheet: bs && !bs.hidden, h: bs && (bs.querySelector('h2,h3') || {}).textContent, line: (document.querySelector('#fa .fa-line') || {}).textContent, sel: document.getElementById('surface').dataset.sel, panel: !document.getElementById('online-players').hidden }; })()`))); break; } continue; }
         await t.ev(`(() => { const e = document.querySelector('[data-fa-next]'); e && e.click(); return 1; })()`);
@@ -113,7 +127,7 @@ async function main() {
       const end = log[log.length - 1] || {};
       return { reached: end.step, presses: log.length - 1, ms: Date.now() - t0, steps: [...new Set(log.map((x) => x && x.step))], at: end.at, still: end.id === id };
     };
-    medidas.full = await Promise.all(T.map((t, i) => journey(t, ids[i])));
+    medidas.full = await Promise.all(T.map((t, i) => journey(t, ids[i]).catch((e) => { fallos.push(t.name + ' · FULL: ' + e.message); return { reached: 'NO_DATA', error: e.message }; })));
     medidas.full.forEach((j, i) => { ok(j.reached === 'explore', T[i].name + ' did not finish the tutorial: ' + j.reached); ok(j.still, T[i].name + ' was not shared at the end'); });
     const where = medidas.full.map((j) => j.at);
     medidas.full_seen = await Promise.all(T.map((t, i) => until(t, `(() => { const s = ${STATE}, v = s && s.view; if (!v) { return null; } const W = ${JSON.stringify(where)}, I = ${JSON.stringify(ids)};
@@ -123,11 +137,39 @@ async function main() {
   // The first page closes: the others read it STALE, then gone (the authority forgets it whole).
   if (T.length < 2) { return; } // leaving needs someone left to watch it
   const last = T.length - 1, a = ids[0], t0 = Date.now(); await T[0].gone();
-  const stale = await until(T[last], `(() => { const s = ${STATE}, c = s && s.view && s.view.crabs.find((x) => x.id === ${JSON.stringify(a)}); return c && c.seal === 'STALE' ? true : null; })()`, 40000, 300);
+  // RECONNECT (needs 3 clients: one leaves, one reconnects, one watches). At the same moment the first page closes,
+  // the second disconnects its visit and comes back on the SAME page. The identity contract stays whole: the key is
+  // ephemeral and lives only in this visit, so asking again at once is refused (visit_already_open, no replay, no
+  // second crab); only after the authority forgets the visit (TTL) may the same visit open again, with a fresh
+  // genesis — same crab id (the id is derived from the key), LIVE for the others, and its next signed step accepted.
+  const b = ids[1], R = T.length >= 3 ? T[1] : null;
+  const share = `(() => { const c = document.getElementById('online-consent'); if (!c.checked) { c.click(); } document.getElementById('online-share').click(); return true; })()`;
+  const sees = (id, seal) => `(() => { const s = ${STATE}, v = s && s.view; if (!v) { return null; } const c = v.crabs.find((x) => x.id === ${JSON.stringify(id)}); return ${seal ? `c && c.seal === '${seal}' ? c : null` : '!c ? true : null'}; })()`;
+  let again = null;
+  if (R) {
+    await R.ev(`(document.getElementById('online-disconnect').click(), true)`);
+    ok(!(await R.ev(STATE)).id, R.name + ': still shared after «Disconnect my visit»');
+    await R.ev(share);
+    again = await until(R, `(() => { const l = document.getElementById('online-status'), s = ${STATE}; return s && s.id ? 'OPENED:' + s.id : (l.dataset.cause && l.dataset.cause !== 'connecting' && l.dataset.cause !== 'visit_not_shared' ? l.dataset.cause : null); })()`, 20000);
+    ok(again === 'visit_already_open', R.name + ': an instant re-open must be refused as visit_already_open, got ' + again);
+  }
+  const stale = await until(T[last], sees(a, 'STALE'), 40000, 300);
   const tStale = Date.now() - t0;
-  const gone = await until(T[last], `(() => { const s = ${STATE}; return s && s.view && !s.view.crabs.some((x) => x.id === ${JSON.stringify(a)}) ? true : null; })()`, 60000, 500);
+  const gone = await until(T[last], sees(a, null), 60000, 500);
   medidas.leave = { stale_after_ms: stale ? tStale : null, gone_after_ms: gone ? Date.now() - t0 : null };
   ok(stale, 'the others must read the closed crab STALE'); ok(gone, 'the authority must forget the closed crab');
+  if (R) {
+    const forgot = await until(T[last], sees(b, null), 60000, 500), t1 = Date.now();
+    ok(forgot, 'the authority must forget the disconnected visit before it may open again');
+    await R.ev(share);
+    const id2 = await until(R, `(() => { const s = ${STATE}; return s && s.id; })()`, 30000);
+    const back = id2 && await until(T[last], sees(b, 'LIVE'), 30000, 300);
+    const moved = back && await R.ev(`(() => { const C = AtlasOpenworldView().controls, w0 = C.walker(); for (const d of ['east', 'south-east', 'north-east', 'west']) { C.step(d); const w = C.walker(); if (w.q !== w0.q || w.r !== w0.r) { return [w.q, w.r]; } } return null; })()`);
+    const held = moved && await until(T[last], `(() => { const c = (${sees(b, 'LIVE')}); return c && c.q === ${moved[0]} && c.r === ${moved[1]} ? true : null; })()`, 15000, 200);
+    medidas.reconnect = { who: R.name, instant: again, forgotten_after_ms: forgot ? t1 - t0 : null, same_id: id2 === b, live_again_ms: back ? Date.now() - t1 : null, step_after: moved, step_seen: !!held };
+    ok(id2 === b, R.name + ': the same visit must come back as the same crab (' + b + '), got ' + id2);
+    ok(back, T[last].name + ' does not see ' + b + ' LIVE again'); ok(held, T[last].name + ' does not hold the reconnected crab after its first new step');
+  } else { medidas.reconnect = 'NO_DATA(needs_three_clients)'; }
   // Disconnect the rest on purpose (consent off): nothing stays shared after the test.
   for (const t of T.slice(1)) { try { await t.ev(`(document.getElementById('online-disconnect').click(), true)`); } catch {} }
 }
