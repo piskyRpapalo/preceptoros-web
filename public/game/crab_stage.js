@@ -21,24 +21,25 @@
   }
   function tween(s, v, z0, z1, p0, p1, done) {
     var t0 = null, ms = still() ? 0 : MS;
+    s.dataset.tween = '1';
     function frame(ts) {
       if (t0 === null) { t0 = ts; }
       var p = ms ? (ts - t0) / ms : 1;
       s.dataset.zoom = String(ease(z0, z1, p));
       if (p1) { setPan(s, { x: Math.round(ease(p0.x, p1.x, p)), y: Math.round(ease(p0.y, p1.y, p)) }); }
       v.redraw(); if (!p1) { follow(s); }
-      if (p < 1) { root.requestAnimationFrame(frame); } else { v.redraw(); if (done) { done(); } }
+      if (p < 1) { root.requestAnimationFrame(frame); } else { delete s.dataset.tween; v.redraw(); if (done) { done(); } }
     }
     if (root.requestAnimationFrame) { root.requestAnimationFrame(frame); } else { frame(0); }
   }
   // focus(true) zooms into the crab and remembers the camera; focus(false) eases back to it.
-  function focus(on) {
+  function focus(on, z) {
     var s = surface(), v = view();
     if (!s || !v) { return false; }
     if (on && !saved) {
       saved = { z: Number(s.dataset.zoom) || 1, p: pan(s), look: s.dataset.look };
       delete s.dataset.look; s.dataset.stage = '1';
-      tween(s, v, saved.z, Math.max(saved.z, ZOOM), null, null);
+      tween(s, v, saved.z, Math.max(saved.z, z || ZOOM), null, null);
     } else if (!on && saved) {
       var back = saved; saved = null;
       tween(s, v, Number(s.dataset.zoom) || 1, back.z, pan(s), back.p, function () {
@@ -64,7 +65,7 @@
     if (!st) { return false; }
     origin(el); el.classList.add('on-map'); st.appendChild(el);
     if (st.scrollIntoView) { st.scrollIntoView({ block: 'nearest', behavior: still() ? 'auto' : 'smooth' }); }
-    focus(true); return true;
+    focus(true, el.tagName === 'DIALOG' ? 1.45 : ZOOM); return true; // a duel needs the field in sight (wave_field.js): one zoom, never two
   }
   // hold(dialog): the duel opens on the map, not over the page (visitor_battle_ui.js); false → the caller shows it as before.
   function hold(d) {

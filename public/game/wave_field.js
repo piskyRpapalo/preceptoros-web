@@ -8,7 +8,7 @@
 // otra, para), so the replay controls and the strip (combat_acho.js) keep working unchanged.
 (function (root) {
   'use strict';
-  var doc = root.document, TAU = Math.PI * 2, ZOOM = 1.45;
+  var doc = root.document, TAU = Math.PI * 2;
   if (doc && !root.AtlasCoreografia) { var s = doc.createElement('script'); s.src = '/game/battle_choreography.js'; doc.head.appendChild(s); }
   // place(W, H) → how the choreography's 1000 × 600 field lies on a W × H canvas: along the long side of the screen, the
   // crab's squad from the near end (u = 0), the guardian's from the far one. Pure; tested in wave_field_cases.
@@ -42,10 +42,10 @@
     function camera(W, Hh) {
       var x = Number(surf.dataset.youx), y = Number(surf.dataset.youy); if (!surf.dataset.youx || !isFinite(x)) { return null; }
       var P = place(W, Hh, x, y);
-      if (!shift && !surf.dataset.look) { shift = { x0: Number(surf.dataset.panx) || 0, y0: Number(surf.dataset.pany) || 0, dx: Math.round(P.crab.x - x), dy: Math.round(P.crab.y - y), t: vt, z0: Number(surf.dataset.zoom) || 1 }; }
+      if (!shift && !surf.dataset.look) { shift = { x0: Number(surf.dataset.panx) || 0, y0: Number(surf.dataset.pany) || 0, dx: Math.round(P.crab.x - x), dy: Math.round(P.crab.y - y), t: vt }; }
       if (shift && (shift.dx || shift.dy)) {
         var p = quieto ? 1 : Math.min(1, (vt - shift.t) / 700), e = 1 - Math.pow(1 - p, 3);
-        surf.dataset.panx = String(Math.round(shift.x0 + shift.dx * e)); surf.dataset.pany = String(Math.round(shift.y0 + shift.dy * e)); if (shift.z0 > ZOOM) { surf.dataset.zoom = String(shift.z0 + (ZOOM - shift.z0) * e); } // a wider look than the crab's close-up: the whole fight in frame
+        surf.dataset.panx = String(Math.round(shift.x0 + shift.dx * e)); surf.dataset.pany = String(Math.round(shift.y0 + shift.dy * e)); // a wider look than the crab's close-up: the whole fight in frame
       }
       return P;
     }
@@ -60,7 +60,7 @@
       g.globalAlpha = 1;
       // the guardian at its base, and a breathing ring where the fight is: the contested ground
       var gb = P.at(c.mapa.bases[0].x + 40, c.mapa.bases[0].y);
-      if (root.AtlasMapFog && root.AtlasMapFog.npc) { root.AtlasMapFog.npc(g, gb.x, gb.y + Math.sin(vt * 0.004) * 3 * dpr, R / 8, Hc); }
+      if (root.AtlasMapFog && root.AtlasMapFog.npc) { root.AtlasMapFog.npc(g, gb.x, gb.y + Math.sin(vt * 0.004) * 3 * dpr, Math.min(R / 8, 2.2 * dpr), Hc); }
       // shots: a bolt crossing from hitter to target in the hitter's colour, a burst where it lands
       c.tiros.forEach(function (s) {
         var a = P.at(s.x0, s.y0), b = P.at(s.x1, s.y1), hue = s.lado ? gold : violet;
