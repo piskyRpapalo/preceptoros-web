@@ -63,7 +63,7 @@ async function main() {
     const box = (e) => { const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; };
     const see = (e) => !!e && !e.hidden && e.getBoundingClientRect().width > 0 && getComputedStyle(e).visibility !== 'hidden';
     const play = document.getElementById('gp-play'), sheet = document.getElementById('building-sheet');
-    const prof = document.querySelector('.cats [data-cat=Profile]'), house = document.querySelector('#voices [data-speaker=House]');
+    const prof = document.querySelector('.cats [data-cat=Army]'), house = document.querySelector('#voices [data-speaker=House]');
     const a = document.activeElement;
     return { h1: document.getElementById('map-h').textContent, play: see(play) ? box(play) : null,
       stored: Object.keys(localStorage).length, login: document.querySelectorAll('input[type=password],input[type=email]').length,

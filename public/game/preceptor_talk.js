@@ -44,8 +44,16 @@
     if (stage) { stage.appendChild(box); box.classList.add('pt-bubble'); } else { pad.parentNode.insertBefore(box, pad); }
     var at = 'hello'; box.classList.add('pt-min'); // minimized by default: it never insists (Sovereign, 2026-11-08); a tap on its name opens it
     who.addEventListener('click', function () { var open = box.classList.toggle('pt-min') === false; who.setAttribute('aria-expanded', String(open)); box.classList.remove('pt-new'); place(); });
+    // inCard(text, who) → true when the first adventure's card is speaking at the top: the line is written inside it
+    // (#fa-news, its own status line) and no second box opens on the map (Sovereign, 2026-11-23: one message).
+    function inCard(text, who) {
+      var fa = doc.getElementById('fa'); if (!fa || fa.hidden || !fa.offsetParent) { return false; }
+      var fn = doc.getElementById('fa-news');
+      if (!fn) { fn = doc.createElement('p'); fn.id = 'fa-news'; fn.className = 'fa-news'; fn.setAttribute('role', 'status'); var fl = fa.querySelector('.fa-count'); fa.insertBefore(fn, fl ? fl.nextSibling : fa.firstChild); } // in the count's place: the card keeps its height
+      fn.textContent = text; fn.title = who || 'Preceptor'; return true;
+    }
     function draw() {
-      var l = LINES[at]; unhead(); line.textContent = l[0]; row.textContent = ''; box.dataset.at = at; box.classList.toggle('pt-rest', at === 'rest');
+      var l = LINES[at]; if (at !== 'hello' && at !== 'rest') { inCard(l[0], 'Preceptor'); } unhead(); line.textContent = l[0]; row.textContent = ''; box.dataset.at = at; box.classList.toggle('pt-rest', at === 'rest');
       l[1].forEach(function (a, i) {
         var b = doc.createElement('button'); b.type = 'button'; b.textContent = a[0];
         b.addEventListener('click', function () { at = choose(at, i); draw(); place(); });
@@ -82,12 +90,7 @@
     function news(text, who, open) {
       // One message on the map (Sovereign, 2026-11-23): while the first adventure's card speaks at the top, a result is
       // written inside it, under the step, instead of opening a second box at the foot of the map.
-      var fa = doc.getElementById('fa');
-      if (fa && !fa.hidden && fa.offsetParent) {
-        var fn = doc.getElementById('fa-news');
-        if (!fn) { fn = doc.createElement('p'); fn.id = 'fa-news'; fn.className = 'fa-news'; fn.setAttribute('role', 'status'); var l = fa.querySelector('.fa-line'); fa.insertBefore(fn, l ? l.nextSibling : null); }
-        fn.textContent = who + ' · ' + text; return;
-      }
+      if (inCard(text, who)) { return; }
       // The resting bubble is gone from the map (Sovereign, 2026-11-14: it covered the world). Only a result that was
       // asked for (a fogged building, a duel) shows here, open, until OK; then nothing rests on the map again.
       var back = at; void open; box.classList.add('pt-news'); box.classList.remove('pt-min', 'pt-new'); who0.setAttribute('aria-expanded', 'true'); unhead(); line.textContent = text; who0.textContent = who; row.textContent = ''; // A result is a receipt, not a second preceptor face.

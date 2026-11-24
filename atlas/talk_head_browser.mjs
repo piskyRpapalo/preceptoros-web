@@ -114,8 +114,8 @@ async function main() {
     [...box.querySelectorAll('.pt-row button')].find(b=>b.textContent==='OK').click(); await w(30);
     o.after=!box.querySelector('.th') && !line.classList.contains('th-veiled'); return JSON.stringify(o); })()`));
   ok(!n.veiled && !n.head && n.text === 'Your squad wins after 3 rounds.' && n.after, 'the lower result must remain a plain, accessible receipt; OK must clear it: ' + JSON.stringify(n));
-  // P0: The adventure owns the only preceptor bust. A resource/battle notification below
-  // never creates a second head, whether or not the adventure is visible.
+  // P0: The adventure owns the only preceptor bust. A resource/battle notification never creates a second head; while
+  // the adventure is visible it is written inside its card (#fa-news, one message on the map, Sovereign 2026-11-23).
   const duo = JSON.parse(await ev(`JSON.stringify((()=>{
     const fa=document.getElementById('fa'), pt=document.getElementById('preceptor-talk'), v=document.getElementById('voices');
     if (v) v.hidden=true; fa.hidden=false;
@@ -123,7 +123,7 @@ async function main() {
     AtlasPreceptorTalk.view.news('A result appears underneath.','Duel');
     if (${SAB === 'duo'}) AtlasTalkHead.show(pt.querySelector('.pt-line [aria-live]'),'A result appears underneath.');
     function visible(el){if(!el||el.hidden)return false;for(let p=el;p;p=p.parentElement){let c=getComputedStyle(p),r=p.getBoundingClientRect();if(c.display==='none'||c.visibility==='hidden'||!r.width||!r.height)return false;}return true;}
-    const top=fa.querySelector('.th-face'), low=pt.querySelector('.th-face'), result={upper:visible(top),lower:visible(low),extraHead:!!low,text:pt.querySelector('.pt-line [aria-live]').textContent,ok:[...pt.querySelectorAll('button')].some(x=>x.textContent==='OK')};
+    const top=fa.querySelector('.th-face'), low=pt.querySelector('.th-face'), fan=document.getElementById('fa-news'), result={upper:visible(top),lower:visible(low),extraHead:!!low,text:(fan?fan.textContent+' ':'')+pt.querySelector('.pt-line [aria-live]').textContent,ok:visible(fan)||[...pt.querySelectorAll('button')].some(x=>x.textContent==='OK')};
     fa.hidden=true; result.afterUpperHidden=!pt.querySelector('img.th-face');
     return result;
   })())`));

@@ -1,6 +1,6 @@
 // Terminals are always dark (Sovereign, 2026-11-08), proved in a real browser on /openworld/ at 420×642 in the light
 // and the dark theme. Laws: the open Welcome terminal (#voices) is dark (color-scheme dark, background luminance
-// < 0.05) in both themes; its text keeps >= 4.5:1; the page outside the terminals keeps the visitor's light theme.
+// < 0.05) in both themes; its text keeps >= 4.5:1; the page is night by default (2026-11-23), day only by the visitor's own choice.
 // Sabotage: SABOTAJE=tinta-palida (a panel heading in pale ink on the paper) ⇒ red. (sin-oscuro: retired with the dark law.)
 // Uso: node atlas/dark_terminals_browser.mjs [carpeta-captura]
 import { createServer } from 'node:http';
@@ -83,7 +83,9 @@ async function main() {
     ok(v.minContrast >= 4.5, scheme + ': terminal text under 4.5:1: ' + JSON.stringify(v));
     await foto('terminal-' + scheme + '.png');
   }
-  ok(medidas.light && medidas.light.page > 0.5, 'the page outside the terminals does not keep the light theme: ' + JSON.stringify(medidas.light && medidas.light.page));
+  // Night by default (Sovereign, 2026-11-23: «el color oscuro por defecto en la web, como en la app»): the page is dark
+  // whatever the system theme says; only a visitor's own day choice (Settings, ow-theme=light) brings the light page.
+  ok(medidas.light && medidas.light.page < 0.05, 'the page is not night by default: ' + JSON.stringify(medidas.light && medidas.light.page));
   console.log(JSON.stringify({ piece: 'dark-terminals', sabotaje: SAB || null, receipt: fallos.length ? 'ROJO' : 'VERDE', medidas, fallos }));
 }
 main().catch((e) => { fallos.push(String(e && e.message || e)); console.log(JSON.stringify({ piece: 'dark-terminals', sabotaje: SAB || null, receipt: 'ROJO', medidas, fallos })); })

@@ -38,8 +38,8 @@ async function main(){
   await ev("document.getElementById('fa-ok').click()");
   assert(await until("window.AtlasFirstAdventure.now()==='beacon' && document.getElementById('fa')?.dataset.step==='beacon'",7000),'split controller: model != card after meet '+w);
   const pre=JSON.parse(await metrics());
-  assert(pre.marker==='Profile','profile not highlighted before opening '+w+': '+JSON.stringify(pre));
-  await ev("document.querySelector('.cats [data-cat=Profile]').click()");
+  assert(pre.marker==='Army','profile not highlighted before opening '+w+': '+JSON.stringify(pre));
+  await ev("document.querySelector('.cats [data-cat=Army]').click()");
   assert(await until("document.querySelector('[data-fa-next]')?.id==='visitor-beacon'",7000),'beacon marker missing in Profile '+w);
   const opened=JSON.parse(await metrics());
   await ev("document.getElementById('visitor-beacon').click()");
@@ -47,7 +47,7 @@ async function main(){
   const rewarded=JSON.parse(await metrics());
   assert((rewarded.resources||'').includes('Copper 100'),'beacon reward not measured '+w+': '+JSON.stringify(rewarded));
   // The reward may close Profile. In that case the next honest action is reopening it, not a vanished summon.
-  if (rewarded.voicesHidden && rewarded.marker==='Profile') await ev("document.querySelector('.cats [data-cat=Profile]').click()");
+  if (rewarded.voicesHidden && rewarded.marker==='Army') await ev("document.querySelector('.cats [data-cat=Army]').click()");
   assert(await until("document.querySelector('[data-fa-next]')?.id==='visitor-summon-tc1'",7000),'reef summon not highlighted '+w+': '+JSON.stringify(rewarded));
   // No synthetic reward: first summon signs the real invocation and debits 50 copper.
   await ev("document.getElementById('visitor-summon-tc1').click()");

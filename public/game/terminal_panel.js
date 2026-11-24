@@ -103,9 +103,9 @@
       current = cat; voices.hidden = !cat;
       voices.dataset.activeCategory = cat || '';
       if (tools) { tools.setAttribute('aria-expanded', String(cat === 'Tools')); }
-      Array.prototype.forEach.call(voices.querySelectorAll('[data-speaker]'), function (li) { li.style.display = li.dataset.cat === cat ? '' : 'none'; });
+      Array.prototype.forEach.call(voices.querySelectorAll('[data-speaker]'), function (li) { li.style.display = li.dataset.cat === cat || (cat === 'Army' && li.dataset.cat === 'Profile') ? '' : 'none'; }); // Army holds the crab too (Sovereign 2026-11-23: four buttons)
       Object.keys(buttons).forEach(function (name) {
-        buttons[name].setAttribute('aria-pressed', String(name === cat));
+        buttons[name].setAttribute('aria-pressed', String(name === cat || (name === 'Army' && cat === 'Profile')));
         if (name === 'Communication') { buttons[name].setAttribute('aria-expanded', String(name === cat)); }
       });
       top.dataset.open = String(cat === 'Communication');
@@ -146,7 +146,7 @@
       var input = doc.getElementById('open-chat-text'); if (input) { input.focus(); }
     }); }
     function visit(on) {
-      hasVisit = !!on; if (buttons.Profile) { buttons.Profile.hidden = !hasVisit; }
+      hasVisit = !!on; if (buttons.Profile) { buttons.Profile.hidden = true; } // one Army button: Crab and Army are one leaf
       if (buttons.Army) { buttons.Army.hidden = !hasVisit; }
       if (!hasVisit && (current === 'Profile' || current === 'Army')) { show('Welcome'); }
     }

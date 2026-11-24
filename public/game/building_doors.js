@@ -6,7 +6,7 @@
 (function (root) {
   'use strict';
   // option id → the category (terminal_panel.js CATS) that holds its piece. Checked against the interiors contract.
-  var DOORS = { 'play-without-account': 'Welcome', 'welcome-again': 'Welcome', 'land-tutorial': 'Welcome', voices: 'Communication', roll: 'Profile', pet: 'Profile', summons: 'Profile' };
+  var DOORS = { 'play-without-account': 'Welcome', 'welcome-again': 'Welcome', 'land-tutorial': 'Welcome', voices: 'Communication', roll: 'Army', pet: 'Army', summons: 'Army' };
 
   // Pure: verdict(id, button) → null (no door) or { open, line }. button is { hidden, label } or null when absent.
   function verdict(id, button) {
@@ -30,7 +30,7 @@
     var first = null;
     Array.prototype.forEach.call(doc.querySelectorAll('#voices [data-speaker] button'), function (x) {
       var li = x.closest('[data-speaker]');
-      if (!first && li.dataset.cat === cat && !x.disabled && !x.hidden && x.getClientRects().length) { first = x; }
+      if (!first && (li.dataset.cat === cat || (cat === 'Army' && li.dataset.cat === 'Profile')) && !x.disabled && !x.hidden && x.getClientRects().length) { first = x; }
     });
     (first || b).focus();
     if (win && win.CustomEvent) { doc.dispatchEvent(new win.CustomEvent('building:act', { detail: { name: 'door:' + id } })); }

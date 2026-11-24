@@ -86,7 +86,7 @@
     if (!mid || doc.getElementById('gp-town')) { return null; }
     win = w;
     btn = button(doc, 'gp-b', '⌂', 'Node'); btn.id = 'gp-town';
-    btn.setAttribute('aria-label', 'Node: the buildings of this node'); btn.title = 'Node: the buildings of this node';
+    btn.setAttribute('aria-label', 'Buildings: the buildings of this node'); btn.title = 'Buildings: the buildings of this node';
     btn.setAttribute('aria-controls', 'building-sheet'); btn.setAttribute('aria-expanded', 'false');
     sheet = doc.createElement('section'); sheet.id = 'building-sheet'; sheet.className = 'bs-sheet'; sheet.hidden = true; sheet.setAttribute('aria-labelledby', 'bs-h');
     var bar = doc.createElement('div'); bar.className = 'bs-bar';

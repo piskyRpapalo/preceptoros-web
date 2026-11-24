@@ -114,7 +114,7 @@ async function main() {
     const antes = { gp: !!g && !g.hidden, real: !!p && !p.hidden }; g && g.click();
     for (let i = 0; i < 40 && p && !p.hidden; i++) await new Promise((r) => setTimeout(r, 100));
     await new Promise((r) => setTimeout(r, 50));
-    return JSON.stringify({ antes, real: !!p && !p.hidden, gp: !!g && !g.hidden, profile: !document.querySelector('#gamepad .cats [data-cat=Profile]').hidden }); })()`));
+    return JSON.stringify({ antes, real: !!p && !p.hidden, gp: !!g && !g.hidden, profile: !document.querySelector('#gamepad .cats [data-cat=Army]').hidden }); })()`)); // one Army button holds the crab (2026-11-23)
   const p = medidas.play;
   ok(p.antes.gp && p.antes.real && !p.real && !p.gp && p.profile, 'gamepad Play does not start the visit through Play now: ' + JSON.stringify(p));
 

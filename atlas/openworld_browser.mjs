@@ -134,7 +134,7 @@ async function main() {
     input.value='before visit'; form.requestSubmit(); await new Promise(r=>setTimeout(r,30));
     const withoutVisit=calls.length, informed=document.getElementById('log').textContent.includes('Start an ephemeral visit');
     document.getElementById('visitor-start').click(); await new Promise(r=>setTimeout(r,700));
-    const profileAvailable=!document.querySelector('.cats [data-cat=Profile]').hidden;
+    const profileAvailable=!document.querySelector('.cats [data-cat=Army]').hidden;
     document.querySelector('.cats [data-cat=Profile]').click();
     const profileHasVisit=!!document.querySelector('#visitor-play #visitor-end');
     AtlasTerminalPanel.mounted.show('Communication','chat');
@@ -142,7 +142,7 @@ async function main() {
     const response=document.getElementById('log').textContent.includes('Fixture response');
     const sent=calls.slice(); document.getElementById('visitor-end').click(); await new Promise(r=>setTimeout(r,100));
     input.value='after visit'; form.requestSubmit(); await new Promise(r=>setTimeout(r,30));
-    const afterEnd=calls.length, profileHiddenAfterEnd=document.querySelector('.cats [data-cat=Profile]').hidden; AtlasAulaChat.turn=original; mode.value='local'; mode.dispatchEvent(new Event('change')); input.value='';
+    const afterEnd=calls.length, profileHiddenAfterEnd=document.querySelector('.cats [data-cat=Army]').hidden; AtlasAulaChat.turn=original; mode.value='local'; mode.dispatchEvent(new Event('change')); input.value='';
     return {withoutVisit,informed,sent,response,afterEnd,profileAvailable,profileHasVisit,profileHiddenAfterEnd};
   })()`);
   ok(remoteChat && remoteChat.withoutVisit === 0 && remoteChat.informed && remoteChat.sent.length === 1 && /^[a-f0-9]{64}$/.test(remoteChat.sent[0].visit) && remoteChat.sent[0].page === '/openworld/' && remoteChat.response && remoteChat.afterEnd === 1 && remoteChat.profileAvailable && remoteChat.profileHasVisit && remoteChat.profileHiddenAfterEnd, 'Profile and remote chat must follow the active ephemeral visit only: ' + JSON.stringify(remoteChat));
