@@ -1,5 +1,6 @@
 // Cases for the page piece of shared crabs (pure parts). Uso: node --test atlas/puros/shared_crabs_cases.mjs
 import test from 'node:test';
+import './ed25519_lite_cases.mjs'; // the visit key's fallback (APP WebView without Ed25519) runs with the crabs it serves
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';

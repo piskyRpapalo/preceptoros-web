@@ -12,7 +12,8 @@ import { execFileSync } from 'node:child_process';
 import { launchChrome } from './chrome_launch.mjs';
 
 const URL0 = process.env.URL || 'https://preceptoros.org/openworld/';
-const PHONES = (process.env.PHONES || '').split(',').filter(Boolean), CRABS = Math.max(1, Number(process.env.CRABS || 3) - PHONES.length);
+const PHONES = (process.env.PHONES || '').split(',').filter(Boolean), APPS = (process.env.APPS || '').split(',').filter(Boolean);
+const CRABS = Math.max(0, Number(process.env.CRABS || 3) - PHONES.length - APPS.length);
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 const fallos = [], medidas = { url: URL0, clients: [] };
 const ok = (c, que) => { if (!c) { fallos.push(que); } return !!c; };
@@ -36,6 +37,15 @@ async function local(port) {
   await t.cmd('Page.navigate', { url: URL0 });
   return { ...t, name: 'chromium:' + port, gone: () => t.cmd('Page.navigate', { url: 'about:blank' }), end: () => { t.close(); ch.close && ch.close(); } };
 }
+// app(cdp) → the OpenWorld page already open INSIDE the PreceptorOS APP (OpenWorldActivity's WebView), reached through
+// its DevTools socket (adb forward tcp:<cdp> localabstract:webview_devtools_remote_<pid>; debuggable builds only).
+// It is not reloaded: the APP opened it the way a person does (Open World → Explore public Open World).
+async function app(cdp) {
+  const made = (await (await fetch(`http://127.0.0.1:${cdp}/json`)).json()).find((x) => x.type === 'page' && x.url.startsWith(URL0));
+  if (!made) { throw new Error('NO_DATA: no OpenWorld page inside the APP on ' + cdp); }
+  const t = await attach(made.webSocketDebuggerUrl), ua = await t.ev('navigator.userAgent');
+  return { ...t, name: 'APP-webview:' + cdp + (/; wv\)/.test(ua || '') ? '' : '?'), gone: () => t.ev(`(document.getElementById('online-disconnect').click(), true)`), end: () => t.close() };
+}
 async function phone(serial, cdp) {
   adb(serial, 'forward', 'tcp:' + cdp, 'localabstract:chrome_devtools_remote');
   adb(serial, 'shell', 'am', 'start', '--user', '0', '-n', 'com.android.chrome/com.google.android.apps.chrome.Main', '-a', 'android.intent.action.VIEW', '-d', "'" + URL0 + "'");
@@ -53,7 +63,7 @@ let T = [];
 async function enter(t) {
   ok(await until(t, `document.readyState === 'complete' && !!(window.AtlasSharedCrabs && AtlasSharedCrabs.mounted && document.getElementById('play-now'))`, 40000), t.name + ': shared crabs not mounted');
   await t.ev(`(document.getElementById('play-now').click(), true)`);
-  ok(await until(t, `(() => { const b = document.getElementById('online-share'); return !!b && !b.disabled; })()`, 30000), t.name + ': no Share after Play');
+  await until(t, `(() => { const b = document.getElementById('online-share'); return !!b && !b.disabled; })()`, 30000); // a reused page (the APP's) may keep Share busy a moment; the crab id below is the proof
   await t.ev(`(() => { const c = document.getElementById('online-consent'); if (!c.checked) { c.click(); } document.getElementById('online-share').click(); return true; })()`);
   const id = await until(t, `(() => { const s = ${STATE}; return s && s.id; })()`, 30000);
   ok(/^crab-[0-9a-f]{8}$/.test(id || ''), t.name + ': the public authority did not open the visit: ' + JSON.stringify(await t.ev(`({ line: document.getElementById('online-status').textContent, cause: document.getElementById('online-status').dataset.cause })`)));
@@ -62,6 +72,7 @@ async function enter(t) {
 async function main() {
   for (let i = 0; i < CRABS; i++) { T.push(await local(9700 + (process.pid % 50) * 4 + i)); }
   for (let i = 0; i < PHONES.length; i++) { T.push(await phone(PHONES[i], 9690 + i)); }
+  for (const p of APPS) { T.unshift(await app(p)); } // the APP crab first: it is the one that later leaves
   medidas.clients = T.map((t) => t.name);
   const ids = []; for (const t of T) { ids.push(await enter(t)); }
   medidas.crabs = ids; ok(new Set(ids).size === T.length && ids.every(Boolean), 'every client must be its own crab: ' + JSON.stringify(ids));

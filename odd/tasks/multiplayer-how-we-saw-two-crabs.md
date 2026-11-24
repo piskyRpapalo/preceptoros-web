@@ -76,3 +76,22 @@ Receipt, VERDE, three Beelink Chromium crabs on the public site:
 - When a page closed, the others read it STALE at 8.8 s and gone at 28.4 s.
 
 While the egg hatches (**about 15 s**), the «!» has nothing to mark. The line says so in words («Your egg is hatching into a troop…»), and Go waits. The driver waits with it and records `hatch_ms`.
+
+## The APP's crab joins (2026-11-24 14:25Z · `APPS=<cdp port>`)
+
+The APP (v16) opens the public OpenWorld inside its own WebView: Open World → «Explore public Open World».
+
+On an Android 14 image with System WebView **113**, Play failed with «Failed to execute 'generateKey' on 'SubtleCrypto': Algorithm: Unrecognized name». That WebView's WebCrypto has no Ed25519. Any phone with an old WebView (AOSP, no Play Store, not updated) was shut out of multiplayer.
+
+The fix is `public/game/ed25519_lite.js`:
+- It is RFC 8032 written with BigInt, and SHA-512 still comes from WebCrypto.
+- `visitor_account.js` loads it only when `generateKey('Ed25519')` throws `NotSupportedError`.
+- The keys and signatures are byte for byte the same (RFC §7.1 vectors, plus node:crypto in both directions), so the authority verifies them unchanged.
+- `info().crypto` says which path signed: `webcrypto` or `lite`.
+
+Receipt (Beelink, Android emulator `sdk_gphone64_x86_64` running the v16 APK, WebView 113; ed25519_lite injected before it was served):
+- The APP crab `crab-5bb9bc4e` and two Chromium crabs each saw all 3 LIVE on the public authority.
+- The APP crab's step reached the others in 1.8 s, and it held theirs.
+- When it left: STALE at 8.1 s, gone at 28.3 s.
+
+An emulator is a virtual device. This is not a physical receipt.
