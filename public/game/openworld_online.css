@@ -11,7 +11,6 @@
 #online-panels :is(button,select){min-width:44px;min-height:44px;padding:6px 8px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #online-panels button:disabled{opacity:.6}
 #online-panels label{display:flex;align-items:center;gap:8px;min-height:44px;font-size:.9rem}
-#online-consent{width:20px;height:20px;min-height:20px;flex:none;accent-color:currentColor}
 #online-panels p{margin:6px 0;font-size:.88rem;line-height:1.4;overflow-wrap:anywhere}
 #online-player-list{padding:0 0 0 20px;margin:6px 0;max-height:9rem;overflow:auto}
 #online-node-select{display:block;width:100%;margin:5px 0}

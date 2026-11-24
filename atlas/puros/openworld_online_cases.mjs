@@ -26,12 +26,14 @@ test('Expired, forged, malformed or repeated nodes never become selectable', () 
 });
 test('The actual page contains visible, labelled buttons BETWEEN joysticks and real state panels', () => {
   for (const id of ['online-actions','online-share','online-players-toggle','online-nodes-toggle',
-    'online-players','online-nodes','online-consent','online-status','online-player-list',
+    'online-players','online-nodes','online-status','online-player-list',
     'online-node-select','online-node-visit','online-nodes-state','online-disconnect']) {
     // The markup lives in openworld_online_config.js (loaded before the presence scripts) so the page keeps 8 KiB.
     const page = html + configText;
     assert.equal(page.split('id="'+id+'"').length - 1, 1, 'missing or duplicated '+id);
   }
+  // One HITL signature (Sovereign 2026-11-24): Players is state only, never a second consent box.
+  assert.ok(!/online-consent|type="checkbox"/.test(configText), 'Players must not ask for a second consent');
   assert.ok(configText.indexOf("insertAdjacentHTML('afterend'") < configText.indexOf("root.location.origin !== 'https://preceptoros.org'"),
     'the controls are built on every origin, before the production-only presence config');
   assert.match(css, /#online-actions\{position:absolute/);

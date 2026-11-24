@@ -70,7 +70,7 @@ const overlaps = `(() => { const ids = ${CARDS}, R = {};
     const x = Math.min(a.right, b.right) - Math.max(a.left, b.left), y = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
     if (x > 4 && y > 4) out.push(k[i] + '×' + k[j]); }
   return { visible: k, overlaps: out }; })()`;
-const small = `[...document.querySelectorAll('#online-actions button, #online-panels button, #online-panels select, #online-consent-label')]
+const small = `[...document.querySelectorAll('#online-actions button, #online-panels button, #online-panels select')]
   .filter((e) => !e.hidden && e.offsetParent && getComputedStyle(e).visibility !== 'hidden' && !e.closest('[hidden]'))
   .map((e) => { const r = e.getBoundingClientRect(); return [e.id, Math.round(r.width), Math.round(r.height)]; }).filter((x) => x[1] < 43.5 || x[2] < 43.5)`;
 const status = `(() => { const s = document.getElementById('online-status'); let f = null; try { f = JSON.parse(s.dataset.acho); } catch {}
@@ -107,14 +107,14 @@ try {
     m.open = await t.ev(overlaps); ok(!m.open.overlaps.length, w + ': overlap with Visitors open ' + m.open.overlaps);
     m.small = await t.ev(small); ok(!m.small.length, w + ': under 44 px ' + JSON.stringify(m.small));
     ok(await t.ev(`document.getElementById('online-players-toggle').getAttribute('aria-expanded') === 'true' && !document.getElementById('online-players').hidden`), w + ': aria-expanded out of step');
-    // Consent by its own box, then Share: LIVE.
-    await t.ev(`(() => { const c = document.getElementById('online-consent'); if (!c.checked) c.click(); document.getElementById('online-share').click(); })()`);
+    // One HITL (2026-11-24): the signed visit shares by itself, no box; Share only if it has not started yet.
+    await t.ev(`(() => { const b = document.getElementById('online-share'); if (b && !b.disabled) b.click(); })()`);
     ok(await until(t, `document.getElementById('online-status').dataset.state === 'LIVE'`), w + ': the visit never became LIVE');
     m.live = await t.ev(status);
     ok(m.live.role === 'status' && m.live.live === 'polite', w + ': status is not announced');
     ok(m.live.acho_seal === m.live.state && m.live.cause === '', w + ': seal/cause disagree ' + JSON.stringify(m.live));
-    m.consent_row_hidden = await t.ev(`(() => { const l = document.getElementById('online-consent-label'); return l.hidden && l.getClientRects().length === 0; })()`);
-    ok(m.consent_row_hidden === true, w + ': the consent row stays tappable while shared');
+    m.no_second_consent = await t.ev(`!document.querySelector('#online-players input[type=checkbox]')`);
+    ok(m.no_second_consent === true, w + ': Players asks for a second consent');
     // Stray taps over the panel's free area (everything but its buttons and list): the visit stays LIVE and consented.
     const grid = await t.ev(`(() => { const r = document.getElementById('online-players').getBoundingClientRect(), pts = [];
       for (let y = r.top + 6; y < r.bottom - 4; y += 14) for (let x = r.left + 6; x < r.right - 4; x += 22) { const e = document.elementFromPoint(x, y); if (e && !e.closest('button, a, select, li')) pts.push([Math.round(x), Math.round(y)]); }
@@ -126,8 +126,8 @@ try {
         // Chrome's touch adjustment snaps a tap within reach of a control onto it (on phones too): keep 24 px clear of every control.
         return ![...document.querySelectorAll('#online-players :is(button, a, select)')].some((c) => { const r = c.getBoundingClientRect(); return r.width && ${x} > r.left - 24 && ${x} < r.right + 24 && ${y} > r.top - 24 && ${y} < r.bottom + 24; }); })()`)) { await tap(t, x, y); tapped++; } }
     await espera(400);
-    m.stray = { taps: tapped, after: await t.ev(status), consent: await t.ev(`document.getElementById('online-consent').checked`) };
-    ok(m.stray.after.state === 'LIVE' && m.stray.consent === true, w + ': a stray tap withdrew the sharing ' + JSON.stringify(m.stray.after));
+    m.stray = { taps: tapped, after: await t.ev(status) };
+    ok(m.stray.after.state === 'LIVE', w + ': a stray tap withdrew the sharing ' + JSON.stringify(m.stray.after));
     // A tap on the visible map closes the open panel and nothing else (no step, sharing stays).
     const before = await t.ev(`(() => { const c = AtlasOpenworldView().controls.walker(); return c ? [c.q, c.r] : null; })()`);
     const free = await t.ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(); for (let y = r.top + 10; y < r.bottom - 10; y += 12) for (let x = r.left + 10; x < r.right - 10; x += 12) { if (document.elementFromPoint(x, y) === s) return [Math.round(x), Math.round(y)]; } return null; })()`);
@@ -140,11 +140,12 @@ try {
     await espera(500);
     m.closed = await t.ev(overlaps);
     if (process.env.CAPTURA) { const s = await t.cmd('Page.captureScreenshot', { format: 'png' }); (await import('node:fs')).writeFileSync(process.env.CAPTURA + '/ov-' + w + '.png', Buffer.from(s.result.data, 'base64')); } ok(!m.closed.overlaps.length, w + ': overlap with panels closed ' + m.closed.overlaps);
-    // Withdraw by the named button: said, sealed, and the consent row comes back unticked.
+    // Withdraw by the named button: said, sealed, and it does not come back by itself.
     await t.ev(`(() => { document.getElementById('online-players-toggle').click(); document.getElementById('online-disconnect').click(); })()`);
     await espera(500);
-    m.withdrawn = { ...(await t.ev(status)), row_back: await t.ev(`!document.getElementById('online-consent-label').hidden && !document.getElementById('online-consent').checked`) };
-    ok(m.withdrawn.state === 'NO_DATA' && /visitor_disconnected/.test(m.withdrawn.cause) && m.withdrawn.row_back, w + ': withdrawal not said ' + JSON.stringify(m.withdrawn));
+    await espera(1500);
+    m.withdrawn = await t.ev(status);
+    ok(m.withdrawn.state === 'NO_DATA' && /visitor_disconnected/.test(m.withdrawn.cause), w + ': withdrawal not said or undone by itself ' + JSON.stringify(m.withdrawn));
   }
 } catch (e) { fallos.push('exception: ' + String(e).slice(0, 200)); }
 t.close(); await ch.close(); await auth.close();

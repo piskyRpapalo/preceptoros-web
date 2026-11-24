@@ -52,12 +52,14 @@
   // draw(g, x, y, k, P, H, alpha): the crab body in Acho (shell from the polar wave, claws, legs, eyes on stalks).
   function draw(g, x, y, k, P, H, ringAlpha, oval) {
     var F = H.T.FRONT_DOOR, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), paper = H.rgbOf(H.T.NEUTRAL.paper);
-    var sea = H.mix(H.rgbOf(F.cyan), H.rgbOf(F['FIRMADO.base']), 0.35), R = 12 * k, dip = sink(P.sp === undefined ? sp : P.sp), cy = y - 11 * k - P.bob * 2 * k + dip * 2.2 * k, i, a, L = P.look === undefined ? look : P.look;
+    // Look around without signing HITL (Sovereign 2026-11-24): the viewer's own crab is a ghost, grey and see-through.
+    var gh = root.AtlasVisitorGhost === true && !P.other, paper0 = H.rgbOf(H.T.NEUTRAL.paper);
+    var sea = gh ? H.mix(H.rgbOf(H.T.NEUTRAL.ink), paper0, 0.6) : H.mix(H.rgbOf(F.cyan), H.rgbOf(F['FIRMADO.base']), 0.35), R = 12 * k, dip = sink(P.sp === undefined ? sp : P.sp), cy = y - 11 * k - P.bob * 2 * k + dip * 2.2 * k, i, a, L = P.look === undefined ? look : P.look;
     g.save(); g.lineJoin = 'round'; g.lineCap = 'round';
     g.globalAlpha = ringAlpha; g.lineWidth = Math.max(1, 2.2 * k); g.strokeStyle = H.css(H.rgbOf(F['PROPUESTA.base']));
     g.beginPath(); oval(g, x, y - 2 * k, 19 * k, 7.5 * k, 0, 2 * Math.PI); g.stroke();
     g.globalAlpha = 0.25; g.fillStyle = ink; g.beginPath(); oval(g, x, y - 2 * k, 13 * k, 4.5 * k, 0, 2 * Math.PI); g.fill();
-    g.globalAlpha = 1; g.strokeStyle = ink; g.lineWidth = Math.max(1, 1.8 * k);
+    g.globalAlpha = gh ? 0.5 : 1; g.strokeStyle = ink; g.lineWidth = Math.max(1, 1.8 * k);
     for (i = 0; i < 6; i++) {                      // legs: three a side; a lifted leg bends up and reaches forward
       var s = i < 3 ? -1 : 1, j = i % 3, up = P.legs[i] * 3.5 * k, bx = x + s * (6 + j * 3.5) * k, by = cy + 3 * k;
       g.beginPath(); g.moveTo(bx, by); g.lineTo(bx + s * 5 * k, by + 3 * k - up); g.lineTo(bx + s * (7 + P.legs[i] * 1.5 + dip * 2) * k, by + (7 - dip * 2) * k - up * 0.6); g.stroke();
