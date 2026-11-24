@@ -69,10 +69,17 @@
     if (root.AtlasGamepad && root.AtlasGamepad.paint) { root.AtlasGamepad.paint(x, 'Share'); }
     x.addEventListener('click', function () { b.click(); }); li.appendChild(x); ul.appendChild(li);
   }
-  function pass() { mount(); share(); }
+  // ready() → how many quests can be claimed now; the Echoes icon wears a dot and says it (Quests moved there, 2026-11-23).
+  function ready() {
+    var n = [].filter.call(doc.querySelectorAll('#voices section.quests button'), function (b) { return !b.disabled; }).length, e = doc.getElementById('tb-echoes'); if (!e) { return n; }
+    var was = e.dataset.ready || '0'; e.dataset.ready = String(n); e.setAttribute('aria-label', 'Echoes: events, quests and the web version' + (n ? ' · ' + n + (n === 1 ? ' quest' : ' quests') + ' ready to claim' : ''));
+    if (n > +was) { var l = doc.getElementById('tb-line'); if (l) { l.textContent = n + (n === 1 ? ' quest' : ' quests') + ' ready to claim · in Echoes'; } }
+    return n;
+  }
+  function pass() { mount(); share(); ready(); }
   if (doc && doc.head && !doc.getElementById('tb-css')) { var l = el('link', { id: 'tb-css', rel: 'stylesheet', href: '/game/ow_topbar.css' }); doc.head.appendChild(l); }
   if (doc && root.MutationObserver) { var q = false; new root.MutationObserver(function () { if (q) { return; } q = true; root.requestAnimationFrame(function () { q = false; pass(); }); }).observe(doc.body, { childList: true, subtree: true }); pass(); }
-  var api = { MENUS: MENUS, vline: vline };
+  var api = { MENUS: MENUS, vline: vline, ready: ready };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasTopBar = api;
 })(typeof window !== 'undefined' ? window : globalThis);

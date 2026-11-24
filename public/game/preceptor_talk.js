@@ -72,11 +72,11 @@
       var gap = 16 + 30 * Math.max(0.5, Number(sf.dataset.zoom) || 1) * k * (sf.width / (r.width || sf.width)); // the crab grows with the zoom
       var w = box.offsetWidth, h = box.offsetHeight;
       var off = !isFinite(cx) || !isFinite(cy) || cx < 0 || cy < 0 || cx > st.width || cy > st.height;
-      var above = cy - gap - h, below = cy + 14, up = above >= 8;
+      var above = cy - gap - h, below = cy + 14, up = above >= 58; // never over the top bar (ow_topbar.js)
       // A piece of news docks at the foot of the map, above the beacon bar (2026-11-15): it must be seen without covering
       // the crabs and the beacon it speaks about; the follow-cam keeps the crab in the middle band, away from the foot.
       var news = box.classList.contains('pt-news'), sb = stage.getBoundingClientRect().bottom, foot = 0;
-      ['coop-beacon', 'online-actions'].forEach(function (id) { var e = doc.getElementById(id); if (e && e.offsetParent) { foot = Math.max(foot, sb - e.getBoundingClientRect().top); } });
+      ['coop-beacon', 'online-actions'].forEach(function (id) { var e = doc.getElementById(id); var et = e && e.offsetParent ? e.getBoundingClientRect().top : -1; if (et > st.top + st.height / 2) { foot = Math.max(foot, sb - et); } /* only what sits low: the chips went up, 2026-11-23 */ });
       var dock = news || off || (!up && below + h > st.height - 8);
       // A crab off-screen must never drag the preceptor's voice over the title or outside the scene.
       var left = dock ? 8 : Math.max(8, Math.min(Math.max(8, st.width - w - 8), cx - w / 2));

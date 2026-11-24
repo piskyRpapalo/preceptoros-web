@@ -34,3 +34,7 @@
 /* the egg pill sits under the bar, never over its icons */
 #stage > #gestation#gestation{top:8px;left:158px;transform:none;max-width:calc(100% - 340px);min-width:44px}
 @media (max-width:560px){#stage > #gestation#gestation .g-words{display:none}#stage > #gestation#gestation{padding:6px}}
+/* a quest ready to claim: a gold dot on Echoes (the count is in its label and said once in the status line) */
+#map-communication.tb > .tb-echoes:not([data-ready="0"])[data-ready]::after{content:'';position:absolute;top:-2px;right:-2px;width:14px;height:14px;border-radius:50%;background:var(--affe58a);border:2px solid var(--a1d1b26)}
+/* one message on the map: while a piece of news is docked, the brief line under the bar keeps quiet (same sentence) */
+#stage:has(> #preceptor-talk.pt-news) #ow-brief{visibility:hidden}
