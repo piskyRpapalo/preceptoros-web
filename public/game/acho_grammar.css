@@ -31,8 +31,8 @@
 #gamepad .gp-mid.ag-face :is(.gp-b,.cats button){align-self:center;justify-self:center;background-image:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--afffdf6) 70%,var(--gp,var(--a1d1b26))) 0 40%,var(--afffdf6) 70%);box-shadow:0 3px 0 var(--a1d1b26),inset 0 -4px 6px color-mix(in srgb,var(--a1d1b26) 25%,transparent)}
 #gamepad .view-stick{--gp-svg:none!important}
 /* Icons alone on the face buttons (Sovereign, 2026-11-23): the name stays in aria-label and title. */
-#gamepad .gp-mid button[data-name]::after{content:none}
-#gamepad .gp-mid button[data-name]::before{inset:7px}
+#gamepad .gp-mid button[data-name][data-name]::after{content:none}
+#gamepad .gp-mid button[data-name][data-name]::before{inset:7px}
 #gamepad .view-joy.view-joy::before{content:none}
 /* Army, one button for the crab and its waves: crossed blades, an inked mask like every pad icon. */
 #gamepad .cats [data-cat=Army]{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 4l11 11M20 4L9 15M13 17l4 4M11 17l-4 4M15.5 13.5l3 3M8.5 13.5l-3 3'/%3E%3C/svg%3E")}
