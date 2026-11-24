@@ -12,10 +12,22 @@
   if (doc && !root.AtlasCoreografia) { var s = doc.createElement('script'); s.src = '/game/battle_choreography.js'; doc.head.appendChild(s); }
   // place(W, H) → how the choreography's 1000 × 600 field lies on a W × H canvas: along the long side of the screen, the
   // crab's squad from the near end (u = 0), the guardian's from the far one. Pure; tested in wave_field_cases.
-  function place(W, H, cx, cy) {
-    var wide = W >= H, L = (wide ? W * 0.84 : H * 0.68), k = L / 1000, sq = wide ? 0.62 : 0.9;
-    var at = function (x, y) { var u = (x - 40) * k, v = (y - 300) * k * sq; return wide ? { x: cx + u, y: cy + v } : { x: cx + v, y: cy - u }; };
-    return { wide: wide, k: k, at: at, crab: wide ? { x: W * 0.1, y: H * 0.5 } : { x: W * 0.5, y: H * 0.8 } };
+  // d (optional, a screen unit vector): the field points from the crab toward the contested building (2026-11-24), so
+  // the guardian's squad comes out of the side where its house stands; without d, the long side of the screen.
+  function place(W, H, cx, cy, d) {
+    d = d || (W >= H ? { x: 1, y: 0 } : { x: 0, y: -1 });
+    var ax = Math.abs(d.x), ay = Math.abs(d.y), m = Math.min(W, H) * 0.18, sq = 0.62 + 0.28 * ay;
+    var crab = { x: Math.max(m, Math.min(W - m, W * (0.5 - 0.4 * d.x))), y: Math.max(m, Math.min(H - m, H * (0.5 - 0.3 * d.y))) }; // never cut by the edge
+    var room = Math.min(ax > 1e-3 ? (d.x > 0 ? W - crab.x : crab.x) / ax : 1e9, ay > 1e-3 ? (d.y > 0 ? H - crab.y : crab.y) / ay : 1e9); // from the crab to the edge, along d
+    var L = Math.min(ax > 1e-3 ? W * 0.84 / ax : 1e9, ay > 1e-3 ? H * 0.68 / ay : 1e9, room * 0.94), k = L / 1000;
+    var at = function (x, y) { var u = (x - 40) * k, v = (y - 300) * k * sq; return { x: cx + d.x * u - d.y * v, y: cy + d.y * u + d.x * v }; };
+    return { wide: ax >= ay, k: k, at: at, d: d, crab: crab };
+  }
+  // aim(op, x, y) → the screen unit vector from the crab (x, y) to the contested hex named by op.lugar ('…:q,r'), or null.
+  function aim(op, x, y) {
+    var m = /:(-?\d+),(-?\d+)$/.exec(String(op.lugar || '')), MP = root.AtlasMapPainter, V = m && MP && MP.view && MP.view(); if (!V) { return null; }
+    var h = V.P(+m[1], +m[2]), p = V.turn(h.x, h.y), dx = V.G.cx + p.x * V.G.k - x, dy = V.G.cy + p.y * V.G.k - y, n = Math.sqrt(dx * dx + dy * dy);
+    return n > 4 ? { x: dx / n, y: dy / n } : null;
   }
   // pose(c, j, vt) → where unit j stands at presentation time vt and its life, interpolated between the 100 ms samples.
   function pose(c, j, vt) {
@@ -33,7 +45,7 @@
     var c = C.coreografia(log, T, op.semilla, combate.gana);
     c.hits = log.length; var all = T[0].concat(T[1]), n0 = T[0].length, dead = {}, vt = 0, vel = 1, last = null, raf = 0, vivo = true, done = false, told = -1, quieto = !!op.quieto;
     c.momentos.forEach(function (m) { if (m.tipo === 'cae') { dead[m.lado ? n0 + m.i : m.i] = m.t; } });
-    var END = c.fin + 1600, shift = null, dpr = Math.min(2, root.devicePixelRatio || 1);
+    var END = c.fin + 1600, shift = null, dir, dpr = Math.min(2, root.devicePixelRatio || 1);
     cv.style.display = 'none'; surf.dataset.field = '1'; var box = cv.parentNode; if (box && box.classList) { box.classList.add('field'); } // the card shrinks to a HUD
     function view() { var v = root.AtlasOpenworldView && root.AtlasOpenworldView(); return v && v.redraw ? v : null; }
     function H() { var MP = root.AtlasMapPainter, V = MP && MP.view && MP.view(); return V && V.H; }
@@ -41,7 +53,8 @@
     // the camera: once crab_stage has zoomed on the crab, slide the map so the crab stands at the near end of the field
     function camera(W, Hh) {
       var x = Number(surf.dataset.youx), y = Number(surf.dataset.youy); if (!surf.dataset.youx || !isFinite(x)) { return null; }
-      var P = place(W, Hh, x, y);
+      if (dir === undefined) { dir = aim(op, x, y); }
+      var P = place(W, Hh, x, y, dir);
       if (!shift && !surf.dataset.look) { shift = { x0: Number(surf.dataset.panx) || 0, y0: Number(surf.dataset.pany) || 0, dx: Math.round(P.crab.x - x), dy: Math.round(P.crab.y - y), t: vt }; }
       if (shift && (shift.dx || shift.dy)) {
         var p = quieto ? 1 : Math.min(1, (vt - shift.t) / 700), e = 1 - Math.pow(1 - p, 3);
