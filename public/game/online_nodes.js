@@ -142,7 +142,7 @@
       doc.dispatchEvent(new win.CustomEvent('online:walk-node', { detail: { id: n.id, q: n.q, r: n.r } }));
     });
     doc.addEventListener('world:nodes', function (event) {
-      var d = event.detail || {};
+      var d = event.detail || {}; api.last = d; /* kept for pieces that load later (node_houses.js) */
       render({ ok: d.ok === true, nodes: d.nodes, buildings: d.buildings, principalBuildings: d.principalBuildings,
         principalBuildingsCoverage: d.principalBuildingsCoverage, cause: d.cause });
     });
@@ -153,7 +153,7 @@
     render({ ok: false, nodes: [], cause: 'node_feed_not_checked' });
     return { state: function () { return { nodes: nodes.slice(), selected: select.value }; } };
   }
-  var api = { liveNodes: liveNodes, buildingView: function (b) { return b && buildingView(b); }, mount: mount, mounted: null };
+  var api = { liveNodes: liveNodes, buildingView: function (b) { return b && buildingView(b); }, mount: mount, mounted: null, last: null };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasOnlineNodes = api;
   if (root.document) { api.mounted = mount(root.document, root); }
