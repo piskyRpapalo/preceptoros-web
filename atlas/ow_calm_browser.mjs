@@ -80,7 +80,7 @@ async function main() {
       legacy.guide.css==='none' && legacy.welcome.visible,
       w + ': Help resurrects legacy tutorial or Guide, or hides Welcome: ' + JSON.stringify(legacy));
     ok(a.phase === 'arrive', w + ': phase before a visit is ' + a.phase);
-    ok(a.mid.length >= 4 && a.mid.every((b) => b.name && b.w >= 44 && b.h >= 44 && b.aria.toLowerCase().startsWith(b.name.toLowerCase()) && b.cs.includes(b.name)), w + ': a middle button has no visible name, is under 44 px or its name is not in its label: ' + JSON.stringify(a.mid));
+    ok(a.mid.length >= 4 && a.mid.every((b) => b.name && b.w >= 44 && b.h >= 44 && b.aria.toLowerCase().startsWith(b.name.toLowerCase()) && b.cs === 'none'), w + ': a middle button is under 44 px, its label does not begin with its name, or it still writes its name (icons alone, Sovereign 2026-11-23): ' + JSON.stringify(a.mid));
     ok(a.play && a.play.vis && a.play.border >= 3 && a.play.alone, w + ': Play is not the one primary action: ' + JSON.stringify(a.play));
     ok(a.padH <= 170, w + ': the gamepad grew and took the map\'s room: ' + a.padH);
     ok(!a.walk && a.embers === 0 && a.coordsW <= 1, w + ': something that cannot act yet is over the map: ' + JSON.stringify({ walk: a.walk, embers: a.embers, coords: a.coordsW }));

@@ -24,7 +24,6 @@
 #stage > #online-actions#online-actions{top:8px;right:8px;bottom:auto;left:auto;width:auto;transform:none;gap:4px}
 #online-actions#online-actions > #online-share{display:none}
 #online-actions#online-actions > button{flex:0 0 auto;max-width:none;min-height:44px;padding:0 10px;font-size:.72rem;font-weight:700;opacity:.82;border-width:1.5px;border-radius:999px;background:color-mix(in srgb,var(--a1d1b26) 70%,transparent);color:var(--afffdf6)}
-#stage > #online-panels#online-panels{inset:60px 8px auto}
 @media (forced-colors:active){#map-communication.tb > .tb-ic::before{background:ButtonText}#stage > .tb-menu{border-color:CanvasText;background:Canvas;color:CanvasText}}
 #stage > .tb-menu .tb-boss{padding:6px;border-radius:14px;border:2px dashed var(--afffdf6)}
 #stage > .tb-menu .tb-boss h3{margin:0 0 4px;font-size:.92rem}
