@@ -1,3 +1,17 @@
+# Legacy exact-head HITL fence — RETIRED as a CI job (2026-11-24)
+
+**Operational state:** The old `.github/workflows/hitl.yml` workflow was retired by the Sovereign's 2026-11-24 directive after repeated `sha_no_coincide` false-blocking results, including WEB #990. This document records **historical behavior**, not a current requirement to re-sign each PR head.
+
+**Current contract:** [Preceptor Companion CONTRACT.md](https://github.com/piskyRpapalo/preceptoros-companion/blob/main/CONTRACT.md), [Roadmap HITL-GITHUB-PRECEPTORS-20261124](https://github.com/piskyRpapalo/roadmap/blob/main/HITL-GITHUB-PRECEPTORS-20261124.md), Mesa #51 and the operational workflow. A bounded, owner-authorized HITL-GOAL covers its recognized mechanical steps, within effective destination grants and revocation controls. The owner does not re-sign each resulting commit. An agent must not mistake this documentation, a GitHub green code check, an owner-linked connector identity or a past PR merge for an authenticated grant.
+
+**Required technical checks stay:** `gate`, `phase`, `actions` drift detection, and production deploy/readback as applicable. The visitor's one-time explicit consent for public presence and node-owner consent for heartbeat are **independent and unchanged**. A functional GOAL ends only with real deployment, acceptance in destination and workflow receipt.
+
+**Branch protection:** the read-only API of the current connector did not expose `/branches/main/protection` (403) and `/rulesets` returned `[]`. Thus `NO_DATA(required_legacy_hitl_status_in_external_protection)`: if a repo/environment still requires the old `hitl` context, its authorized maintainer must remove that required context as a separate ruleset action. Deleting the workflow does **not** itself edit branch protection. Verify a new PR's actual checks and mergeability.
+
+**Archive:** `atlas/hitl_fence.py` and `tests/test_hitl_fence.py` retain the old exact-head and scoped-network-goal implementation as regression/history references. They are not consulted by an active `hitl` workflow. They must not be resurrected as release blockers without a new owner decision and an implemented authorization route. The remaining text below is historical.
+
+---
+
 # The merge fence (R-CERCO-MERGE) · how it works and how to activate it
 
 Status: **ACTIVE** on `main` (measured 2026-10-26 through the rulesets API, read-only): ruleset
