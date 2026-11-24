@@ -33,8 +33,9 @@
   }
   if (doc) {
     var hook = function () { var s = doc.getElementById('surface'); if (s && !s.dataset.nh) { s.dataset.nh = '1'; s.addEventListener('visitor:draw', paint); } };
-    var take = function (d) { var B = root.AtlasNodeBeacon; houses = pick(d, B ? B.TALKS : { 'primer-ancla': 1 }); /* loaded before world_feed (index.html): no read of its own */ var v = root.AtlasOpenworldView && root.AtlasOpenworldView(); if (v && v.redraw) { v.redraw(); } };
+    var take = function (d) { var B = root.AtlasNodeBeacon; houses = pick(d, B ? B.TALKS : { 'primer-ancla': 1 }); var v = root.AtlasOpenworldView && root.AtlasOpenworldView(); if (v && v.redraw) { v.redraw(); } };
     doc.addEventListener('world:nodes', function (ev) { hook(); take(ev.detail); });
+    var O = root.AtlasOnlineNodes; if (O && O.last) { hook(); take(O.last); } /* loaded late by gamepad.js: the last world:nodes online_nodes kept */
     hook(); if (root.MutationObserver && doc.body) { new root.MutationObserver(hook).observe(doc.body, { childList: true }); }
   }
   var api = { pick: pick, houses: function () { return houses.slice(); } };
