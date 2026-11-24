@@ -1,0 +1,96 @@
+// N crabs on the PUBLIC site (https://preceptoros.org/openworld/) through the PUBLIC presence authority — the real
+// multiplayer road, not the loopback rehearsal of shared_crabs_browser.mjs. Each crab is a person's visit: Play, the
+// consent box, «Share». Then every crab walks one hex and every other crab must hold it at that cell, LIVE; then one
+// page closes and the others must read it STALE, then gone. Short on purpose (~2 min): the authority runs on a daily
+// request quota (2026-11-23), and shared_crabs.js paces its looks (pace(): 1 s together, 4 s alone).
+// Clients: N local Chromium processes (CRABS=3 default) and, with PHONES="<serial>[,<serial>]", the Chrome of those
+// phones over adb (DevTools socket forwarded; the phone opens the public URL like a person would).
+// Prints one JSON receipt { piece, receipt VERDE|ROJO, medidas, fallos }. Nothing is published; visits are ephemeral.
+// Uso: node atlas/public_crabs_e2e.mjs   |   CRABS=2 PHONES=<serial> node atlas/public_crabs_e2e.mjs
+import { execFileSync } from 'node:child_process';
+import { launchChrome } from './chrome_launch.mjs';
+
+const URL0 = process.env.URL || 'https://preceptoros.org/openworld/';
+const PHONES = (process.env.PHONES || '').split(',').filter(Boolean), CRABS = Math.max(1, Number(process.env.CRABS || 3) - PHONES.length);
+const espera = (ms) => new Promise((r) => setTimeout(r, ms));
+const fallos = [], medidas = { url: URL0, clients: [] };
+const ok = (c, que) => { if (!c) { fallos.push(que); } return !!c; };
+const adb = (serial, ...a) => execFileSync('adb', ['-s', serial, ...a], { encoding: 'utf8' }).trim();
+
+async function attach(wsUrl) {
+  const ws = new WebSocket(wsUrl), pend = new Map(); let id = 0;
+  await new Promise((r, j) => { ws.addEventListener('open', r); ws.addEventListener('error', () => j(new Error('WebSocket CDP'))); });
+  ws.addEventListener('message', (m) => { const d = JSON.parse(m.data); if (d.id && pend.has(d.id)) { pend.get(d.id)(d); pend.delete(d.id); } });
+  const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
+  const ev = async (e) => { const r = await cmd('Runtime.evaluate', { expression: `(async () => JSON.stringify(await (${e})))()`, awaitPromise: true, returnByValue: true }); const v = r.result?.result?.value; return v === undefined ? null : JSON.parse(v); };
+  await cmd('Runtime.enable'); await cmd('Page.enable');
+  return { ev, cmd, close: () => { try { ws.close(); } catch {} } };
+}
+async function local(port) {
+  const ch = launchChrome(port); let lista = null;
+  for (let i = 0; i < 60 && !lista && !ch.failure(); i++) { await espera(250); try { lista = await (await fetch(`http://127.0.0.1:${port}/json`)).json(); } catch {} }
+  if (!lista) { throw new Error(ch.diagnostic()); }
+  const t = await attach(lista.find((x) => x.type === 'page').webSocketDebuggerUrl);
+  await t.cmd('Emulation.setDeviceMetricsOverride', { width: 360, height: 716, deviceScaleFactor: 2, mobile: true });
+  await t.cmd('Page.navigate', { url: URL0 });
+  return { ...t, name: 'chromium:' + port, gone: () => t.cmd('Page.navigate', { url: 'about:blank' }), end: () => { t.close(); ch.close && ch.close(); } };
+}
+async function phone(serial, cdp) {
+  adb(serial, 'forward', 'tcp:' + cdp, 'localabstract:chrome_devtools_remote');
+  adb(serial, 'shell', 'am', 'start', '--user', '0', '-n', 'com.android.chrome/com.google.android.apps.chrome.Main', '-a', 'android.intent.action.VIEW', '-d', "'" + URL0 + "'");
+  let made = null;
+  for (let i = 0; i < 40 && !made; i++) { await espera(500); try { made = (await (await fetch(`http://127.0.0.1:${cdp}/json`)).json()).find((x) => x.type === 'page' && x.url.startsWith(URL0)); } catch {} }
+  if (!made) { throw new Error('NO_DATA: the tab did not open on ' + serial); }
+  const t = await attach(made.webSocketDebuggerUrl);
+  return { ...t, name: adb(serial, 'shell', 'getprop', 'ro.product.model'), gone: () => t.cmd('Page.navigate', { url: 'about:blank' }),
+    end: async () => { try { await fetch(`http://127.0.0.1:${cdp}/json/close/${made.id}`); } catch {} t.close(); try { adb(serial, 'forward', '--remove', 'tcp:' + cdp); } catch {} } };
+}
+const until = async (t, expr, ms = 20000, every = 250) => { const t0 = Date.now(); let v = null; while (Date.now() - t0 < ms) { try { v = await t.ev(expr); } catch { v = null; } if (v) { return v; } await espera(every); } return v; };
+const STATE = `(() => { const m = window.AtlasSharedCrabs && AtlasSharedCrabs.mounted; return m ? m.state() : null; })()`;
+
+let T = [];
+async function enter(t) {
+  ok(await until(t, `document.readyState === 'complete' && !!(window.AtlasSharedCrabs && AtlasSharedCrabs.mounted && document.getElementById('play-now'))`, 40000), t.name + ': shared crabs not mounted');
+  await t.ev(`(document.getElementById('play-now').click(), true)`);
+  ok(await until(t, `(() => { const b = document.getElementById('online-share'); return !!b && !b.disabled; })()`, 30000), t.name + ': no Share after Play');
+  await t.ev(`(() => { const c = document.getElementById('online-consent'); if (!c.checked) { c.click(); } document.getElementById('online-share').click(); return true; })()`);
+  const id = await until(t, `(() => { const s = ${STATE}; return s && s.id; })()`, 30000);
+  ok(/^crab-[0-9a-f]{8}$/.test(id || ''), t.name + ': the public authority did not open the visit: ' + JSON.stringify(await t.ev(`({ line: document.getElementById('online-status').textContent, cause: document.getElementById('online-status').dataset.cause })`)));
+  return id;
+}
+async function main() {
+  for (let i = 0; i < CRABS; i++) { T.push(await local(9700 + (process.pid % 50) * 4 + i)); }
+  for (let i = 0; i < PHONES.length; i++) { T.push(await phone(PHONES[i], 9690 + i)); }
+  medidas.clients = T.map((t) => t.name);
+  const ids = []; for (const t of T) { ids.push(await enter(t)); }
+  medidas.crabs = ids; ok(new Set(ids).size === T.length && ids.every(Boolean), 'every client must be its own crab: ' + JSON.stringify(ids));
+  // Everyone sees everyone LIVE.
+  const all = async (t, me) => until(t, `(() => { const s = ${STATE}, v = s && s.view; if (!v) { return null; } const live = v.crabs.filter((c) => c.seal === 'LIVE').map((c) => c.id); return ${JSON.stringify(ids)}.every((x) => live.includes(x)) ? live.length : null; })()`, 30000);
+  medidas.everyone_sees = await Promise.all(T.map((t, i) => all(t, ids[i])));
+  medidas.everyone_sees.forEach((n, i) => ok(n >= T.length, T[i].name + ' does not see all ' + T.length + ' crabs LIVE'));
+  // Each walks one hex; each other must hold it at the new cell.
+  medidas.steps = [];
+  for (let i = 0; i < T.length; i++) {
+    const moved = await T[i].ev(`(() => { const C = AtlasOpenworldView().controls, w0 = C.walker(); for (const d of ['east', 'south-east', 'north-east', 'west']) { C.step(d); const w = C.walker(); if (w.q !== w0.q || w.r !== w0.r) { return { d, to: [w.q, w.r] }; } } return null; })()`);
+    if (!ok(moved, T[i].name + ' could not walk')) { continue; }
+    const t0 = Date.now();
+    const seen = await Promise.all(T.map((o, j) => j === i ? true : until(o, `(() => { const s = ${STATE}, c = s && s.view && s.view.crabs.find((x) => x.id === ${JSON.stringify(ids[i])}); return c && c.q === ${moved.to[0]} && c.r === ${moved.to[1]} ? c.seal : null; })()`, 15000, 200)));
+    medidas.steps.push({ who: T[i].name, to: moved.to, seen_by_all_ms: Date.now() - t0, seals: seen });
+    seen.forEach((s, j) => ok(j === i || s === 'LIVE', T[j].name + ' does not hold ' + T[i].name + ' at ' + moved.to.join(',')));
+  }
+  // The first page closes: the others read it STALE, then gone (the authority forgets it whole).
+  const last = T.length - 1, a = ids[0], t0 = Date.now(); await T[0].gone();
+  const stale = await until(T[last], `(() => { const s = ${STATE}, c = s && s.view && s.view.crabs.find((x) => x.id === ${JSON.stringify(a)}); return c && c.seal === 'STALE' ? true : null; })()`, 40000, 300);
+  const tStale = Date.now() - t0;
+  const gone = await until(T[last], `(() => { const s = ${STATE}; return s && s.view && !s.view.crabs.some((x) => x.id === ${JSON.stringify(a)}) ? true : null; })()`, 60000, 500);
+  medidas.leave = { stale_after_ms: stale ? tStale : null, gone_after_ms: gone ? Date.now() - t0 : null };
+  ok(stale, 'the others must read the closed crab STALE'); ok(gone, 'the authority must forget the closed crab');
+  // Disconnect the rest on purpose (consent off): nothing stays shared after the test.
+  for (const t of T.slice(1)) { try { await t.ev(`(document.getElementById('online-disconnect').click(), true)`); } catch {} }
+}
+main().catch((e) => { fallos.push(String(e && e.stack || e).split('\n').slice(0, 2).join(' | ')); })
+  .finally(async () => {
+    console.log(JSON.stringify({ piece: 'public-crabs-e2e', receipt: fallos.length ? 'ROJO' : 'VERDE', at: new Date().toISOString(), medidas, fallos }));
+    for (const t of T) { try { await t.end(); } catch {} }
+    process.exitCode = fallos.length ? 1 : 0; setTimeout(() => process.exit(), 500).unref();
+  });
