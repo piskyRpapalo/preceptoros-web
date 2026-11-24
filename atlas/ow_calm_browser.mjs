@@ -98,8 +98,8 @@ async function main() {
   ok(await hasta('document.documentElement.dataset.owPhase==="visit"', 10000), 'a visit does not move the phase to visit');
   await espera(400);
   const v = JSON.parse(await ev(MEASURE));
-  ok(v.walk && v.lockedBuildings === 7 && v.lockedEmbers === 0,
-    'visit must keep seven buildings locked and never show their mission embers: ' + JSON.stringify({ walk: v.walk, locked: v.lockedBuildings, lockedEmbers: v.lockedEmbers }));
+  ok(!v.walk && v.lockedBuildings === 7 && v.lockedEmbers === 0,
+    'visit must keep seven buildings locked, never show their mission embers, and no Walk crab over the map (the stick walks, 2026-11-23): ' + JSON.stringify({ walk: v.walk, locked: v.lockedBuildings, lockedEmbers: v.lockedEmbers }));
   await ev('localStorage.setItem("preceptoros.tour","skipped"); window.AtlasOwCalm.refresh()');
   ok(await hasta('document.documentElement.dataset.owPhase==="visit"', 3000), 'a skipped first adventure should stay in visit phase (not free)');
   const f = JSON.parse(await ev(MEASURE));
