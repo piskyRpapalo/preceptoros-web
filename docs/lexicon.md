@@ -31,7 +31,7 @@
 | scrub | scrub | Removing private names from public artifacts; figures and paths stay, names go. | in use |
 | NO_DATA | NO_DATA | Declared, never invented — always with a cause. | in use |
 | stamps | sellos de estado | LIVE · STALE · STATIC · SIMULATED · NO_DATA · ERROR. | in use |
-| propose-only | modo de propuesta L0 | Review-only mode; not a universal agent prohibition. Authorized preceptors may execute scoped merges or deployments under a verified owner decision/delegation and effective target grants; signing remains the Sovereign's. Current canonical definition: Babel. | in use (L0 mode) |
+| propose-only | modo de propuesta L0 | Review-only mode, not a global ban: an authorized preceptor may execute a scoped merge/deploy under a verified owner decision or GOAL; only the Sovereign signs. Canon: Babel. | in use (L0 mode) |
 | **HITL** (hitl) | REQUIERE_FIRMA · IronClaw | Human-in-the-loop: the gate AND the carbon's everyday gesture — "Say Hi" is its living example. FIRMO 2026-10-22. | in use |
 | the Signing Tray | la bandeja de firmas | The rack's pending table. A row closes with its measure; a close without a figure is a second opinion. | in use |
 | measured close | cierre con la medida | "RESOLVED" must carry a verifiable number next to it. | in use |
@@ -41,7 +41,7 @@
 | Official name | Replaces | Meaning | Status |
 |---|---|---|---|
 | the Rack | el rack (beelink) | The lab machine; home of the local loops and the Register. | in use |
-| the Arm | el brazo | Historical Mistral web-coder lane. Its former blanket no-push/no-merge restriction is not a global rule; effective permissions, mission and destination grants govern execution. It cannot sign as the Sovereign. | historical lane |
+| the Arm | el brazo | Historical Mistral web-coder lane; its old no-push/no-merge rule is not global (grants govern execution). It never signs as the Sovereign. | historical lane |
 | the Descent | el descenso | The Claude Code lane building the game's visual language (the Acho language). | in use |
 | the Codex lane (astra) | astra / Codex | The lane on the app side (L4a / tier-2 contract). | in use |
 | mana | — (new term; the Sovereign's word, mandate 2026-10-28) | The tutorial cabin's measurable resource, drawn on the global map. Collision scan 2026-10-28: no project term in the web repo; the word appears in tokenizer vocabularies, third-party locale strings and video-prompt text, none of them a project term. Only a MEASURED value is drawn; otherwise NO_DATA with its cause. | coined · pending merge |
@@ -141,7 +141,7 @@ oracle · notary · depin · coin · clearing · magic · token-as-a-name · **c
 ## H · Absorbed from the rack (measured 2026-10-18 — reuse before duplicating)
 
 - **The Eye's living glossary** (~40 entries in the rack). Fixed shape per entry: term · state · what it does · **where to see it** · source · note. Absorbed here: the shape and the rule (a term without a way to see it is a belief). Not duplicated: it keeps its own subject (how the swarm works); this doc covers official names.
-- **The Alphabet** — the rack's inter-silicon tongue. Its ID admission test is: exists in the system, tokenizes no more expensively than the longer form, and does not collide with an existing ID. **Audit · 2026-10-23 · seven signed names:** existence is confirmed by FIRMO <private-issue#52>/<private-issue#54>; the names use ordinary words and introduce no symbols. Token-cost result: **NO_DATA**, cause: no paired 20-message run with the local model tokenizer was supplied. Collision result: **the beacon / faro** collides with the existing rack ID faro in the organ category; rename-winner makes the beacon canonical for tutorial selection and keeps faro as a historical alias. The historic ID oraculo remains retired under the forbidden-name law and is not coined again. A full eight-repository collision scan remains NO_DATA. Historical Alphabet records are left intact.
+- **The Alphabet** — the rack's inter-silicon tongue. ID admission: exists in the system, tokenizes no dearer than the long form, collides with no existing ID. **Audit · 2026-10-23 · seven signed names:** existence is confirmed by FIRMO <private-issue#52>/<private-issue#54>; ordinary words, no symbols. Token cost: **NO_DATA** (no paired 20-message run with the local tokenizer). Collision result: **the beacon / faro** collides with the existing rack ID faro in the organ category; the beacon is canonical for tutorial selection; faro stays a historical alias. The historic ID oraculo stays retired (forbidden-name law). An eight-repository collision scan is NO_DATA; historical records stay intact.
 - **The HEXELION-era lexicon pages** — the name lineage (the Forge · the Tower · the Watchman · the Synod · the Sovereign) and the Necropolis pattern (CANONIZE / GUARD / DISCARD, each with its reason). Pattern reused to judge the signed style; names of retired nodes stay historical.
 - **The scrub list** — the fail-closed private-name list in the rack; distinct from section E (see D).
 - **`GLOSSARY-FORMAT` (mattpocock skills)** — format inspiration: opinionated terms, an *Avoid* line per term, project-specific terms only, multi-context map. Used here; nothing copied as canon.
