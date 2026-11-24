@@ -51,3 +51,47 @@ Measured on 2026-11-24 with `atlas/shared_crabs_browser.mjs` (two local Chromium
 - Two LIVE crabs together: **20 `/view` in 10 s**, about 1/s each. It was 2/s each.
 - One crab alone after the other left: **2 `/view` in 12 s**.
 - The whole two-crab walk stayed VERDE: steps, four readings, STALE and gone.
+
+## Three crabs on the public site (2026-11-24 13:14Z)
+
+`atlas/public_crabs_e2e.mjs` takes the public road: it opens https://preceptoros.org/openworld/ and uses the public presence authority (no loopback). Each crab is a person's visit: Play, the consent box, then Share.
+
+First receipt (VERDE, three Beelink Chromium processes):
+- Three different crabs, and each one saw all **3 LIVE**.
+- Each crab walked one hex. The other two held it at the new cell after **0.6–0.8 s**.
+- One page closed. The others read it **STALE at 7.6 s**, and the authority forgot it at **27.7 s**.
+- Afterwards, everyone else disconnected on purpose.
+
+For a physical phone, add `PHONES=<serial>`: its Chrome opens the public URL the way a person would. This needs the owner's go-ahead, because the Doogee is read-only by default.
+
+## The full journey, shared (2026-11-24 13:31Z · `FULL=1`)
+
+With `FULL=1`, every shared crab finishes the whole tutorial at the same time. Each one presses only the blinking «!», the way a newcomer would.
+
+Receipt, VERDE, three Beelink Chromium crabs on the public site:
+- Crabs `crab-13e76118`, `crab-1b1bbec1` and `crab-9adf1473`.
+- Each one went through meet → beacon → summon → practice → conquest → town → explore in **18 presses and about 75 s**, and stayed shared the whole way.
+- At the end, each crab saw the other two LIVE at the cell where they had actually finished.
+- First steps reached the others in 0.6–1.0 s.
+- When a page closed, the others read it STALE at 8.8 s and gone at 28.4 s.
+
+While the egg hatches (**about 15 s**), the «!» has nothing to mark. The line says so in words («Your egg is hatching into a troop…»), and Go waits. The driver waits with it and records `hatch_ms`.
+
+## The APP's crab joins (2026-11-24 14:25Z · `APPS=<cdp port>`)
+
+The APP (v16) opens the public OpenWorld inside its own WebView: Open World → «Explore public Open World».
+
+On an Android 14 image with System WebView **113**, Play failed with «Failed to execute 'generateKey' on 'SubtleCrypto': Algorithm: Unrecognized name». That WebView's WebCrypto has no Ed25519. Any phone with an old WebView (AOSP, no Play Store, not updated) was shut out of multiplayer.
+
+The fix is `public/game/ed25519_lite.js`:
+- It is RFC 8032 written with BigInt, and SHA-512 still comes from WebCrypto.
+- `visitor_account.js` loads it only when `generateKey('Ed25519')` throws `NotSupportedError`.
+- The keys and signatures are byte for byte the same (RFC §7.1 vectors, plus node:crypto in both directions), so the authority verifies them unchanged.
+- `info().crypto` says which path signed: `webcrypto` or `lite`.
+
+Receipt (Beelink, Android emulator `sdk_gphone64_x86_64` running the v16 APK, WebView 113; ed25519_lite injected before it was served):
+- The APP crab `crab-5bb9bc4e` and two Chromium crabs each saw all 3 LIVE on the public authority.
+- The APP crab's step reached the others in 1.8 s, and it held theirs.
+- When it left: STALE at 8.1 s, gone at 28.3 s.
+
+An emulator is a virtual device. This is not a physical receipt.
