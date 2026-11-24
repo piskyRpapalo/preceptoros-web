@@ -63,6 +63,7 @@ let T = [];
 async function enter(t) {
   ok(await until(t, `document.readyState === 'complete' && !!(window.AtlasSharedCrabs && AtlasSharedCrabs.mounted && document.getElementById('play-now'))`, 40000), t.name + ': shared crabs not mounted');
   await t.ev(`(document.getElementById('play-now').click(), true)`);
+  ok(await until(t, `!!document.getElementById('visitor-beacon')`, 60000), t.name + ': the visit did not start after Play'); // an old WebView signs with ed25519_lite: loading it and making the key takes seconds
   await until(t, `(() => { const b = document.getElementById('online-share'); return !!b && !b.disabled; })()`, 30000); // a reused page (the APP's) may keep Share busy a moment; the crab id below is the proof
   await t.ev(`(() => { const c = document.getElementById('online-consent'); if (!c.checked) { c.click(); } document.getElementById('online-share').click(); return true; })()`);
   const id = await until(t, `(() => { const s = ${STATE}; return s && s.id; })()`, 30000);
