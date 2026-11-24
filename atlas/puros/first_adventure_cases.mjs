@@ -17,16 +17,16 @@ test('after a loss, Later goes to explore without the town step (nothing opened)
 });
 test('the town opens 3 with the first win, one more each win; doctor never locked; no phase shortcut', () => {
   const open = (w) => C.ORDER.filter((id) => C.state({ town: true, id }, 'visit', w, []) === 'available');
-  assert.deepEqual([0, 1, 2, 5].map((w) => open(w).length), [0, 3, 4, 7]);
+  assert.deepEqual([0, 1, 2, 5].map((w) => open(w).length), [0, 3, 4, 6]);
   assert.equal(C.state({ town: true, id: 'doctor' }, 'arrive', 0, []), 'available');
   // No 'free' phase: even with 0 wins, phase never unlocks everything
   assert.ok(C.ORDER.every((id) => C.state({ town: true, id }, 'visit', 0, []) === 'locked'));
 });
 test('four states never mixed: built from this device, accredited only from a signed list, a win is not ownership', () => {
-  assert.equal(C.state({ town: true, id: 'lottery', own: true }, 'visit', 0, []), 'built');
-  assert.equal(C.state({ town: true, id: 'lottery' }, 'visit', 0, ['lottery']), 'accredited');
+  assert.equal(C.state({ town: true, id: 'choir', own: true }, 'visit', 0, []), 'built');
+  assert.equal(C.state({ town: true, id: 'choir' }, 'visit', 0, ['choir']), 'accredited');
   assert.equal(C.state({ id: 'choir', won: true }, 'visit', 1, []), 'available');
-  assert.match(C.why('lottery', 1), /opens after 1 more conquest/);
+  assert.match(C.why('choir', 1), /opens after 1 more conquest/);
 });
 test('the «!» has one target list per step, and every step has words', () => {
   A.IDS.forEach((id) => { assert.ok(A.target(id, {}).length >= 1, id); assert.ok(A.say(id).length > 20, id); });

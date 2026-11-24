@@ -2,9 +2,7 @@
  "$id": "preceptoros:building-interiors/1",
  "source": "docs/reparto-paneles-20261108.md §2 (Mesa, web PR #719): the map is the web menu; buildings are its panels",
  "law": "3 to 7 options per building; fewer merges with a neighbour, more opens one sub-list door",
- "exceptions": {
-  "lottery": "two options by design: see the odds before the roll, then roll (Mesa §2: if it asks for more buttons, it is corrupted)"
- },
+ "exceptions": {},
  "buildings": [
   {
    "id": "hostel",
@@ -168,30 +166,6 @@
    ]
   },
   {
-   "id": "lottery",
-   "name": "Honest lottery",
-   "role": "the draw",
-   "options": [
-    {
-     "id": "odds",
-     "label": "See the odds before you roll",
-     "missions": [
-      "D4"
-     ],
-     "piece": "public/game/gacha.js",
-     "action": "odds"
-    },
-    {
-     "id": "roll",
-     "label": "Roll",
-     "missions": [
-      "D4"
-     ],
-     "piece": "public/game/gacha.js"
-    }
-   ]
-  },
-  {
    "id": "coliseum",
    "name": "Coliseum",
    "role": "the duel",
@@ -227,6 +201,15 @@
       "D9"
      ],
      "piece": "public/game/live_invocation.js"
+    },
+    {
+     "id": "odds",
+     "label": "Summon odds, before you summon",
+     "missions": [
+      "D4"
+     ],
+     "piece": "public/game/gacha.js",
+     "action": "odds"
     },
     {
      "id": "arenas",

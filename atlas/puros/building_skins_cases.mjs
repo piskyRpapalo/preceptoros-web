@@ -7,7 +7,7 @@ test('every building with an interior has its own skin: a motto and an emblem pa
   assert.equal(new Set(Object.values(S.SKINS).map((s) => s[0])).size, Object.keys(S.SKINS).length, 'two buildings share a motto');
 });
 test('skinOf: the visitor\'s choice when known, else the building\'s own, else none', () => {
-  assert.equal(S.skinOf('customs', { skin: 'lottery' }), 'lottery');
+  assert.equal(S.skinOf('customs', { skin: 'doctor' }), 'doctor');
   assert.equal(S.skinOf('customs', { skin: 'casino' }), 'customs');
   assert.equal(S.skinOf('nowhere', null), null);
 });

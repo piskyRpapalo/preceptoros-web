@@ -12,8 +12,8 @@ test('the guardian arrow acts from the visit on; the builders\' embers also from
 });
 test('names: the important buildings always, the rest when walked near (no phase shortcut)', () => {
   C.KEY.forEach((id) => assert.equal(C.named(id, 6, 'arrive'), true));
-  assert.equal(C.named('lottery', 4, 'arrive'), false); assert.equal(C.named('lottery', C.CLOSE, 'visit'), true);
-  assert.equal(C.named('lottery', 6, 'visit'), false); // distance > CLOSE: never shown by phase alone
+  assert.equal(C.named('choir', 4, 'arrive'), false); assert.equal(C.named('choir', C.CLOSE, 'visit'), true);
+  assert.equal(C.named('choir', 6, 'visit'), false); // distance > CLOSE: never shown by phase alone
   assert.ok(C.KEY.includes('doctor'), 'the doctor stays among the basics');
 });
 test('label in name: the accessible name begins with the visible name, and keeps the old words', () => {

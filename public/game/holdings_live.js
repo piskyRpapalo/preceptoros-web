@@ -7,7 +7,7 @@
 (function (root) {
   'use strict';
   var STORES = [[3, 30], [0, 10], [2, 5]], LIFE_AFTER_WIN = 950;
-  var KINDS = ['workshop', 'lottery', 'customs', 'hostel', 'tower', 'choir', 'agora', 'doctor', 'coliseum', 'visitor-house']; // the contract's order
+  var KINDS = ['workshop', 'lottery', 'customs', 'hostel', 'tower', 'choir', 'agora', 'doctor', 'coliseum', 'visitor-house']; // the contract's order /* [deprecated 2026-11-24] 'lottery' only keeps the WASM ledger's kind index; the web shows no lottery */
   // key(place): a stable u32 for a building key, FNV-1a over its text (the same key always gives the same id).
   function key(place) {
     var h = 2166136261;

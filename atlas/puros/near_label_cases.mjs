@@ -8,7 +8,7 @@ function g() { const calls = []; return { calls, save() {}, restore() {}, beginP
   fillText(t, x, y) { calls.push(['text', t, this.font]); }, measureText(t) { return { width: t.length * 9 }; } }; }
 const V = { G: { k: 1, cx: 200, cy: 200 }, HSTEP: 4, height: () => 0, P: (q, r) => ({ x: q * 40, y: r * 30 }), turn: (x, y) => ({ x, y }),
   H: { css: (c) => 'rgb(' + c + ')', rgbOf: (t) => t, T: { NEUTRAL: { ink: '0,0,0', paper: '255,255,255' } } },
-  world: { cells: { at: {} }, markList: [{ id: 'coliseum', q: 2, r: 1 }, { id: 'agora', q: 9, r: 9 }, { id: 'lottery', q: 1, r: 0, fog: true }] } };
+  world: { cells: { at: {} }, markList: [{ id: 'coliseum', q: 2, r: 1 }, { id: 'agora', q: 9, r: 9 }, { id: 'customs', q: 1, r: 0, fog: true }] } };
 test('a node building within two hexes wears a larger name and becomes a tap target; far and fog ones do not', () => {
   const c = g(), hits = A.near(c, V, { q: 2, r: 0 }, 1);
   assert.deepEqual(hits.map((h) => h.m.id), ['coliseum']);

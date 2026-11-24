@@ -2,7 +2,7 @@
 // Every failure is NO_DATA with its cause. Resources: 0 copper, 1 light, 2 biomass, 3 oxygen. Life is per mille (0..1000).
 (function (root) {
   'use strict';
-  var KINDS = ['workshop', 'lottery', 'customs', 'hostel', 'tower', 'choir', 'agora', 'doctor', 'coliseum', 'visitor-house'];
+  var KINDS = ['workshop', 'lottery', 'customs', 'hostel', 'tower', 'choir', 'agora', 'doctor', 'coliseum', 'visitor-house']; /* [deprecated 2026-11-24] 'lottery' only keeps the WASM ledger's kind index; the web shows no lottery */
   var RES = ['copper', 'light', 'biomass', 'oxygen'];
   function nd(causa) { return { estado: 'NO_DATA', causa: causa }; }
   function fromExports(e) {

@@ -1,5 +1,5 @@
 // Building interiors, piece 2: the Acho sheet (docs/reparto-paneles-20261108.md §2). One «Town» button opens one
-// sheet: the nine buildings, then the options of the chosen one, from /game/building_interiors.json. LIVE is a press
+// sheet: the eight buildings, then the options of the chosen one, from /game/building_interiors.json. LIVE is a press
 // that does something (building_doors.js live: an action or a door); a piece alone, or none, says NO_DATA and its
 // cause. One mould: 44 px targets, an aria-live line, Escape goes back, reduced motion stays still.
 (function (root) {
@@ -72,7 +72,7 @@
   function openSheet() {
     sheet.hidden = false; btn.setAttribute('aria-expanded', 'true');
     if (data) { draw(want); want = null; focusFirst(); return; }
-    say('Loading the nine buildings…');
+    say('Loading the eight buildings…');
     load('/game/building_doors.js', 'AtlasBuildingDoors', function () { // the seals need the doors before the first draw
     var f = win.fetch ? win.fetch(URL_DOC, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }) : Promise.resolve(null);
     f.catch(function () { return null; }).then(function (d) {

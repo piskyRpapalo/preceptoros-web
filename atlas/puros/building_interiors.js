@@ -24,7 +24,7 @@
         else if (typeof o.piece !== 'string' || (existe && !existe(o.piece))) f.push('piece_missing:' + k);
       });
     });
-    if ((doc.buildings || []).length !== 9) f.push('nine_buildings');
+    if ((doc.buildings || []).length !== 8) { f.push('eight_buildings'); } // no lottery (2026-11-24)
     return f;
   }
   // cuenta(doc, live) → live is the one predicate (building_doors.js live). Without it this counts sources (pieces),

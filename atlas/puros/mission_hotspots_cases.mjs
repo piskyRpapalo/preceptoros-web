@@ -31,7 +31,7 @@ test('no duplicates: a code is placed once, and only at real buildings', () => {
   Object.keys(M.WAIT).forEach((id) => assert.ok(ids.has(id), id));
 });
 test('spots: the node\'s own building only, one per kind, never a fogged NPC', () => {
-  const list = [{ id: 'agora', q: 1, r: 0, fog: false }, { id: 'agora', q: 5, r: 2, fog: true }, { id: 'lottery', q: 2, r: 0, fog: false }, { id: 'agora', q: 3, r: 0, fog: false }];
+  const list = [{ id: 'agora', q: 1, r: 0, fog: false }, { id: 'agora', q: 5, r: 2, fog: true }, { id: 'tower', q: 2, r: 0, fog: false }, { id: 'agora', q: 3, r: 0, fog: false }];
   const s = M.spots(list);
   assert.deepEqual(s.map((x) => [x.m.q, x.codes.join()]), [[1, M.WAIT.agora.join()]]);
 });

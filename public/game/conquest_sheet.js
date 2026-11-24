@@ -13,12 +13,12 @@
   'use strict';
   var KEY = 'preceptoros.built'; // read only: what an earlier version built on this device keeps its flag
   var NAMES = { hostel: 'Hostel', coliseum: 'Coliseum', choir: 'Choir', workshop: 'Workshop', tower: 'Model tower', agora: 'Agora',
-    customs: 'Customs', lottery: 'Honest lottery', 'visitor-house': 'Visitor house', doctor: 'Doctor on duty' };
+    customs: 'Customs', 'visitor-house': 'Visitor house', doctor: 'Doctor on duty' };
   // a family-friendly line for each building (Sovereign, 2026-11-08: a title and a description, the technical part folded)
   var ABOUT = { hostel: 'Where new visitors are welcomed and can rest.', coliseum: 'Where waves meet in friendly duels.',
     choir: 'Where voices and messages sing together.', workshop: 'A bench to build and tinker with your own things.',
     tower: 'A small model of the tower, to look at and learn from.', agora: 'The public square where everyone meets.',
-    customs: 'The gate at the edge of town, with three keys.', lottery: 'An honest draw: anyone can check the luck.',
+    customs: 'The gate at the edge of town, with three keys.',
     'visitor-house': 'Your own house: your profile lives here.', doctor: 'Keeps the town easy to use for everyone.' };
   var LEVELS = ['none', 'name', 'skin', 'speech'];
   var LATER = { name: 'naming a building is not built yet', skin: 'building skins are not built yet',
@@ -34,7 +34,7 @@
   // Pure: types(mapKinds, built) → one row per kind: roof, tone, how many stand on this device, the level reached and why
   // the next level is not there yet. Today no kind reaches «name»: the level is honestly «none» for all.
   function types(mapKinds, built) {
-    return (mapKinds || []).map(function (k) {
+    return (mapKinds || []).filter(function (k) { return k[0]; }).map(function (k) {
       var placed = (built || []).filter(function (b) { return b.id === k[0]; }).length;
       return { id: k[0], name: NAMES[k[0]] || k[0], about: ABOUT[k[0]] || 'NO_DATA · no description yet', roof: k[1], tone: k[2], placed: placed, level: LEVELS[0], next: LEVELS[1], cause: LATER[LEVELS[1]] };
     });

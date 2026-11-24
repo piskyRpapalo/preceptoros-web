@@ -57,13 +57,13 @@
   function plan(world, KINDS, mixHash, built) {
     if (world && world.singleNexo === true) { return nexoPlan(world, KINDS, mixHash); }
     var marks = {}, list = [], at = world.cells.at;
-    slots(KINDS.length).forEach(function (c, i) { var k = KINDS[i]; if (!at[c[0] + ',' + c[1]]) { return; }
+    slots(KINDS.length).forEach(function (c, i) { var k = KINDS[i]; if (!k[0] || !at[c[0] + ',' + c[1]]) { return; } // an empty slot keeps the others in place
       var m = { q: c[0], r: c[1], id: k[0], roof: k[1], tone: k[2], fog: false, town: true }; marks[c[0] + ',' + c[1]] = m; list.push(m); });
     var out = world.cells.list.filter(function (c) { return c[3] !== 'water' && hexDist(c, [0, 0]) > TERR + 1; }), picked = [];
     out.sort(function (a, b) { return mixHash(a[0], a[1]) - mixHash(b[0], b[1]) || a[0] - b[0] || a[1] - b[1]; });
     out.forEach(function (c) {
       if (picked.some(function (p) { return hexDist(p, c) < SPACE; })) { return; }
-      var k = KINDS[mixHash(c[1], c[0]) % KINDS.length]; picked.push(c);
+      var k = KINDS[mixHash(c[1], c[0]) % KINDS.length]; picked.push(c); if (!k[0]) { return; }
       var m = { q: c[0], r: c[1], id: k[0], roof: k[1], tone: k[2], fog: true }; marks[c[0] + ',' + c[1]] = m; list.push(m);
     });
     (built || []).forEach(function (m) { var key = m.q + ',' + m.r; if (!marks[key] && at[key]) { m.fog = false; marks[key] = m; list.push(m); } }); // built in Settings

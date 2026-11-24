@@ -23,17 +23,17 @@ test('every door leads to a category that has its own button on the page', () =>
   Object.values(D.DOORS).forEach((cat) => assert.ok(cats.includes(cat), cat));
 });
 
-test('measured: LIVE options that do something when pressed are 16 of 31 pieces (9 actions, 7 doors)', () => {
+test('measured: LIVE options that do something when pressed are 15 of 30 pieces (9 actions, 6 doors; no lottery 2026-11-24)', () => {
   const live = options.filter((o) => o.piece);
   const acts = live.filter((o) => o.action).length, doors = live.filter((o) => !o.action && D.DOORS[o.id]).length;
-  assert.deepEqual([live.length, acts, acts + doors], [31, 9, 16]);
-  assert.equal(options.filter(D.live).length, 16);
+  assert.deepEqual([live.length, acts, acts + doors], [30, 9, 15]);
+  assert.equal(options.filter(D.live).length, 15);
 });
 
 test('verdict: no door, absent panel, no visit, open', () => {
   assert.equal(D.verdict('duel', { hidden: false }), null);
-  assert.deepEqual(D.verdict('roll', null), { open: false, line: 'NO_DATA · panel_not_on_this_page' });
-  assert.deepEqual(D.verdict('roll', { hidden: true }), { open: false, line: 'NO_DATA · no_visit_yet · press Play now first' });
+  assert.deepEqual(D.verdict('summons', null), { open: false, line: 'NO_DATA · panel_not_on_this_page' });
+  assert.deepEqual(D.verdict('summons', { hidden: true }), { open: false, line: 'NO_DATA · no_visit_yet · press Play now first' });
   assert.deepEqual(D.verdict('voices', { hidden: false, label: null }), { open: true, cat: 'Communication', line: 'opened · Communication' });
   assert.deepEqual(D.verdict('welcome-again', { hidden: false, label: 'Help' }), { open: true, cat: 'Welcome', line: 'opened · Help' });
 });
@@ -54,17 +54,17 @@ function page(hidden) {
 
 test('go: during a visit the panel opens, the sheet closes, focus lands on the first pressable control', () => {
   const p = page(false);
-  assert.equal(D.go({ id: 'roll', say: 'Honest lottery · Roll' }, p.sheet, p.say), true);
-  assert.deepEqual(p.log, ['open', 'aria-expanded=false', 'focus:beacon', 'building:act:door:roll']);
+  assert.equal(D.go({ id: 'summons', say: 'Coliseum · Summons' }, p.sheet, p.say), true);
+  assert.deepEqual(p.log, ['open', 'aria-expanded=false', 'focus:beacon', 'building:act:door:summons']);
   assert.equal(p.sheet.hidden, true);
-  assert.deepEqual(p.said, ['Honest lottery · Roll · opened · Army']);
+  assert.deepEqual(p.said, ['Coliseum · Summons · opened · Army']);
 });
 
 test('go: before a visit it says NO_DATA with its cause and touches nothing', () => {
   const p = page(true);
-  assert.equal(D.go({ id: 'roll', say: 'Honest lottery · Roll' }, p.sheet, p.say), false);
+  assert.equal(D.go({ id: 'summons', say: 'Coliseum · Summons' }, p.sheet, p.say), false);
   assert.deepEqual([p.log, p.sheet.hidden], [[], false]);
-  assert.deepEqual(p.said, ['Honest lottery · Roll · NO_DATA · no_visit_yet · press Play now first']);
+  assert.deepEqual(p.said, ['Coliseum · Summons · NO_DATA · no_visit_yet · press Play now first']);
 });
 
 test('go: an option without a door says nothing and does nothing', () => {

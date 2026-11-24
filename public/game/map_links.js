@@ -6,7 +6,7 @@
 (function (root) {
   'use strict';
   var ROUTES = ['map', 'help', 'chat', 'guide', 'hexelion', 'building'];
-  var BUILDINGS = ['hostel', 'coliseum', 'choir', 'workshop', 'lottery', 'customs', 'agora', 'visitor-house', 'doctor'];
+  var BUILDINGS = ['hostel', 'coliseum', 'choir', 'workshop', 'customs', 'agora', 'visitor-house', 'doctor'];
   // Pure: parse(search) → { go, id, ask } with only known values; anything else is dropped, never guessed.
   function parse(search) {
     var p = new URLSearchParams(String(search || '')), go = p.get('go'), id = p.get('id'), ask = p.get('ask');

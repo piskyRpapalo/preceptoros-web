@@ -64,14 +64,14 @@ test('the odds line is one Acho frame: one id for eye, reader and machine; the e
   const G = require('../../public/game/gacha.js'), F = require('../../public/game/state_frames.js'), C = require('../../public/game/acho_claim.js');
   let said = null;
   TA.run('odds', { load: (s, n, then) => then(G) }, (t) => { said = t; });
-  const frame = F.stateFrame({ id: 'lottery/odds', sentence: 'Honest lottery · See the odds before you roll · LIVE · ' + said });
+  const frame = F.stateFrame({ id: 'summon/odds', sentence: 'House · summons · LIVE · ' + said });
   assert.deepEqual(F.valida(frame), []); // under 1,024 B, a sentence on its atom, a declared sound
   const c = C.claim(frame);
   assert.equal(c.ok, true);
   assert.match(c.id, /^acho:[0-9a-f]{8}$/);
   assert.equal(c.rows[0].inspect, frame.atoms[0].i[0]);
   assert.match(frame.sound, /^NO_DATA/); // no harmonics declared: silence with its cause, never an invented tone
-  assert.equal(C.claim(F.stateFrame({ id: 'lottery/odds', sentence: 'another table' })).id === c.id, false);
+  assert.equal(C.claim(F.stateFrame({ id: 'summon/odds', sentence: 'another table' })).id === c.id, false);
 });
 
 test('the actions piece stays small', () => {

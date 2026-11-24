@@ -1,5 +1,5 @@
 // Buildings with personality (Sovereign 2026-11-15: «the panels inside are white and dull; each building, when opened,
-// must be different — the lottery, the doctor, the coliseum, each with its own unique, editable template»). The card a
+// must be different — the doctor, the coliseum, each with its own unique, editable template»). The card a
 // building opens wears its function: a backdrop, a frame for its options, an Acho emblem (ink strokes) and a motto.
 // building_sheet.js stays as it is (it sits at its byte ceiling): it already says which building it entered
 // (building:enter); this piece dresses the sheet from that, and undresses it on the Node list. Colours are the Acho
@@ -9,7 +9,6 @@
   'use strict';
   // kind → [motto, emblem path in a 0..48 box (ink strokes, round caps)]
   var SKINS = {
-    lottery: ['Every draw shows its odds.', 'M24 6l5 11 12 1-9 8 3 12-11-6-11 6 3-12-9-8 12-1z'],
     doctor: ['Care first, then the rest.', 'M19 8h10v11h11v10H29v11H19V29H8V19h11z'],
     coliseum: ['Fight clean, fight repeatable.', 'M10 38L34 10M34 10l4 0 0 4M38 38L14 10M14 10l-4 0 0 4M8 34l6 6M40 34l-6 6'],
     choir: ['Every voice in its place.', 'M14 16a10 10 0 0 1 0 16M20 11a17 17 0 0 1 0 26M26 6a24 24 0 0 1 0 36M8 22v4'],

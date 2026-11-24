@@ -57,9 +57,9 @@ await caso('PRNG: uniforme siempre dentro del rango (con rechazo)', () => {
   }
   return true;
 });
-await caso('loteria: frecuencias pegadas a los pesos enteros (20 000 sorteos)', () => {
+await caso('sorteo: frecuencias pegadas a los pesos enteros (20 000 sorteos)', () => {
   const g = K.generador('ef'.repeat(32)), p = [1, 3, 6], c = [0, 0, 0];
-  for (let i = 0; i < 20000; i++) { c[K.loteria(p, g)]++; }
+  for (let i = 0; i < 20000; i++) { c[K.sorteo(p, g)]++; }
   const ok = c.every((x, i) => Math.abs(x - 20000 * p[i] / 10) < 400);
   return ok || c.join();
 });

@@ -3,7 +3,7 @@
 // A building's card offers «Guide me there». The guide reads real facts only: the crab's hex from the place heading
 // (#map-h, «Place · q, r»), the building's hex from the painted map, and the step each arrow key would take from
 // AtlasMapChunks.dirOf — the very function the crab stick walks with, camera turn included. Nothing is simulated.
-// One state, three readers: the chip on the map (eye: «◎ Lottery · 4 hexes · →»), one spoken line in a status region
+// One state, three readers: the chip on the map (eye: «◎ Coliseum · 4 hexes · →»), one spoken line in a status region
 // that changes only when asked, when the best key changes, and on arrival (ear: sound_first.js / a screen reader),
 // and data-* on the chip (machine: data-target, data-dist, data-key, data-state). With the built-in sound on, an
 // optional short tone leans left or right with the key; reduced motion keeps the arrival without its pop.

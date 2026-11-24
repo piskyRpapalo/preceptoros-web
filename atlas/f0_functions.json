@@ -2,7 +2,7 @@
  "esquema": "atlas.f0/1",
  "nota": "Inventario vivo de funciones de /openworld/ (odd/tasks/mapa-25d-aldea.md, F0). Cada fila: los scripts que la sirven, el global que exportan y la guarda de navegador que la ejerce (fichero + texto exacto de su comprobación). La guarda tiene que correr en .github/workflows/gate.yml. Los soportes nuevos son configuración de autoridad fija HTTPS, transporte de presencia reutilizado y proyección de nodos solo lectura: no autorizan acciones ni son nuevas funciones F0; hasta que existan guardas de navegador independientes quedan documentados como soporte.",
  "pagina": "public/openworld/index.html",
- "soporte": ["/game/thread_window.js", "/game/openworld_online_config.js", "/game/crab_presence_remote.js", "/game/online_nodes.js", "/game/node_houses.js", "/game/army_plates.js"],
+ "soporte": ["/game/thread_window.js", "/game/openworld_online_config.js", "/game/crab_presence_remote.js", "/game/online_nodes.js", "/game/node_houses.js", "/game/army_plates.js", "/game/town_echoes.js"],
  "funciones": [
   {
    "id": "map",

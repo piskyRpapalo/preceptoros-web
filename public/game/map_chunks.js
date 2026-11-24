@@ -50,11 +50,11 @@
   }
 
 
-  // Landmarks: the node's town (town_plan.js, 2026-11-15): its ten buildings ring the town hall inside the coloured
-  // territory; outside, scattered grey buildings held by NPCs. Kinds: the nine town buildings and the model tower.
+  // Landmarks: the node's town (town_plan.js, 2026-11-15): its nine buildings ring the town hall inside the coloured
+  // territory; outside, scattered grey buildings held by NPCs. Kinds: the eight town buildings and the model tower.
   var KINDS = [['hostel', 'cone', 'PROPUESTA.base'], ['coliseum', 'arch', 'LIVE.base'], ['choir', 'dome', 'FIRMADO.base'],
     ['workshop', 'chimney', 'PROPUESTA.base'], ['tower', 'spire', 'cyan'], ['agora', 'dome', 'LIVE.base'], ['customs', 'flag', 'FIRMADO.base'],
-    ['lottery', 'dome', 'PROPUESTA.base'], ['visitor-house', 'cone', 'cyan'], ['doctor', 'flag', 'LIVE.base']];
+    [null], ['visitor-house', 'cone', 'cyan'], ['doctor', 'flag', 'LIVE.base']]; // [null]: a retired slot
   function mixHash(q, r) { var h = (q * 73856093) ^ (r * 19349663) ^ 20261108; h = (h ^ (h >>> 13)) * 1274126177; return (h ^ (h >>> 16)) >>> 0; }
   function hexDist(a, b) { var dq = a[0] - b[0], dr = a[1] - b[1]; return (Math.abs(dq) + Math.abs(dr) + Math.abs(dq + dr)) / 2; }
   var CITY = null, TP = root.AtlasTownPlan || (typeof require === 'function' ? require('./town_plan.js') : null);
@@ -166,7 +166,7 @@
   // The crab's body and glide: crab_body.js (without it, no crab: NO_DATA).
   // names(): buildings within REACH hexes of the crab carry a small Acho name pill; the map reads as it is walked.
   var REACH = 6, NAMES = { hostel: 'Hostel', coliseum: 'Coliseum', choir: 'Choir', workshop: 'Workshop', tower: 'Model tower',
-    agora: 'Agora', customs: 'Customs', lottery: 'Lottery', 'visitor-house': 'Visitor house', doctor: 'Doctor' };
+    agora: 'Agora', customs: 'Customs', 'visitor-house': 'Visitor house', doctor: 'Doctor' };
   function names(g, V, w, dpr, cx, cy) {
     if (!V.world.markList) { landmarks(V.world); }
     var k = V.G.k, ink = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.ink)), paper = V.H.css(V.H.rgbOf(V.H.T.NEUTRAL.paper)), fs = Math.round(11 * dpr);

@@ -32,3 +32,21 @@ test('age is written for people', () => {
 test('a long sentence is cut at 140 characters', () => {
   assert.equal(F.read({ id: 'a', event: { source: 'local' }, frame: { change: ['y'.repeat(400)] } }, 0).line.length, 140);
 });
+
+// Town echoes (public/game/town_echoes.js), held here so CI runs them with the feed they speak through.
+const T = createRequire(import.meta.url)('../../public/game/town_echoes.js');
+test('only locked → available is an opening', () => {
+  assert.deepEqual(T.opened({ workshop: 'locked', agora: 'locked', hostel: 'available' }, { workshop: 'available', agora: 'locked', hostel: 'available' }), ['workshop']);
+  assert.deepEqual(T.opened({ workshop: 'available' }, { workshop: 'available' }), []);
+  assert.deepEqual(T.opened(null, { workshop: 'available' }), []); // the first reading is not news
+});
+test('the echo names the building and carries its hex for the ring', () => {
+  const e = T.echo('workshop', 3, -2);
+  assert.equal(e.id, 'town/open/workshop/3,-2'); assert.equal(e.event.source, 'local'); assert.equal(e.event.kind, 'town.open');
+  assert.equal(e.frame.change[0], 'Workshop opens in the town · walk to it');
+});
+test('echo_feed reads it as a local echo on that hex', async () => {
+  const F = createRequire(import.meta.url)('../../public/game/echo_feed.js');
+  const r = F.read(T.echo('agora', -1, 4), 1000);
+  assert.deepEqual([r.source, r.kind, r.hex, r.line], ['local', 'town.open', [-1, 4], 'Agora opens in the town · walk to it']);
+});

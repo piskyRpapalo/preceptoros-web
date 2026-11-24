@@ -27,7 +27,7 @@
   function shows(what, ph) { return ph !== 'arrive'; }
   // Pure: label(name, aria) → the accessible name, beginning with the visible name (WCAG 2.5.3, label in name).
   function label(name, aria) { aria = String(aria || ''); return aria.toLowerCase().indexOf(name.toLowerCase()) === 0 ? aria : name + ' · ' + aria; }
-  var OPEN = ['hostel', 'coliseum', 'doctor'], ORDER = ['workshop', 'agora', 'visitor-house', 'lottery', 'choir', 'customs', 'tower'];
+  var OPEN = ['hostel', 'coliseum', 'doctor'], ORDER = ['workshop', 'agora', 'visitor-house', 'choir', 'customs', 'tower'];
   // Pure: state(m, ph, wins, signed) → 'accredited' | 'built' | 'available' | 'locked' for one of the node's buildings.
   function state(m, ph, wins, signed) {
     if (!m || !m.town) { return m && m.own ? 'built' : 'available'; }

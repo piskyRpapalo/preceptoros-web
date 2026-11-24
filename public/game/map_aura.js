@@ -12,7 +12,7 @@
   // near(): the node's buildings next to the crab (hex distance <= 2) wear their name 50 % larger, and that name answers a
   // direct tap (Sovereign, 2026-11-08, Q-01). Picture plus a tap target; the rectangles live only in page memory.
   var NAMES = { hostel: 'Hostel', coliseum: 'Coliseum', choir: 'Choir', workshop: 'Workshop', tower: 'Model tower', agora: 'Agora',
-    customs: 'Customs', lottery: 'Lottery', 'visitor-house': 'Visitor house', doctor: 'Doctor' }, hits = [];
+    customs: 'Customs', 'visitor-house': 'Visitor house', doctor: 'Doctor' }, hits = [];
   function near(g, V, w, dpr) {
     hits = []; if (!w || !V.world.markList) { return hits; }
     var sf = root.document && root.document.getElementById('surface'), bc = null; try { bc = JSON.parse(sf.dataset.beacon).cell; } catch (e) { bc = null; }

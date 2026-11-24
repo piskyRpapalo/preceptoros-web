@@ -9,7 +9,7 @@ const doc = JSON.parse(readFileSync(new URL('public/game/building_interiors.json
 const existe = (p) => existsSync(new URL(p, raiz));
 const clon = () => JSON.parse(JSON.stringify(doc));
 
-test('the served contract is valid: nine buildings, the law of the number, real pieces', () => {
+test('the served contract is valid: eight buildings (no lottery), the law of the number, real pieces', () => {
   assert.deepEqual(B.valida(doc, existe), []);
 });
 test('a building with eight options breaks the law', () => {
@@ -17,9 +17,8 @@ test('a building with eight options breaks the law', () => {
   while (b.options.length < 8) b.options.push({ id: 'x' + b.options.length, label: 'x', missions: ['Z'], piece: null, cause: 'x' });
   assert.ok(B.valida(d, existe).some((e) => e.startsWith('law_of_number:hostel')));
 });
-test('the lottery keeps two options only because the exception is declared', () => {
-  const d = clon(); delete d.exceptions.lottery;
-  assert.ok(B.valida(d, existe).includes('law_of_number:lottery:2'));
+test('no lottery in the web (Sovereign 2026-11-24): no lottery building, no exception kept for it', () => {
+  const d = clon(); assert.ok(!d.buildings.some((b) => /lotter/i.test(b.id + b.name))); assert.equal(d.exceptions.lottery, undefined);
 });
 test('a piece that does not exist is caught; NO_DATA needs its cause', () => {
   const d = clon(); d.buildings[0].options[0].piece = 'public/game/nope.js';
@@ -53,12 +52,12 @@ test('an option is LIVE only with an action or a door; a piece alone is NO_DATA'
   const can = all.filter(([, o]) => o.action || D.DOORS[o.id]);
   assert.deepEqual(B.cuenta(doc, D.live), { live: can.length, no_data: all.length - can.length });
   assert.equal(all.filter(([, o]) => D.live(o) && !o.action && !D.DOORS[o.id]).length, 0, 'false LIVE');
-  assert.equal(can.length, 16); // 9 actions + 7 doors, measured 2026-11-14
+  assert.equal(can.length, 15); // 9 actions + 6 doors (no lottery roll door, 2026-11-24)
 });
 test('sabotage: a piece with no operation can never count as LIVE', () => {
   assert.equal(D.live({ id: 'ghost', piece: 'public/game/gacha.js' }), false);
   assert.equal(D.live({ id: 'ghost', piece: null, action: 'odds' }), false); // an action still needs its piece
-  assert.equal(D.live({ id: 'roll', piece: 'public/game/gacha.js' }), true);
+  assert.equal(D.live({ id: 'summons', piece: 'public/game/gacha.js' }), true);
 });
 test('every door of the table is an option of the contract that has its piece', () => {
   Object.keys(D.DOORS).forEach((id) => assert.ok(all.some(([, o]) => o.id === id && o.piece), id));

@@ -131,6 +131,14 @@
       "where": "public/assets/caras/cara-habla0..4-180.webp (copies of PreceptorOS/assets/caras, which keeps the originals)",
       "status": "gone",
       "why": "Sovereign 2026-11-16: «esta es la cara que habla en la web; la que has puesto es antigua». Cut from the pixel sheet p0x/Cuarentena/pixel.png."
+    },
+    {
+      "id": "game.building.lottery",
+      "deprecated": "2026-11-24",
+      "replaced_by": "Army · House call (summons with honest odds)",
+      "where": "public/game/map_chunks.js KINDS, building_interiors.json, building_skins.*, conquest_sheet.js, map_aura.js, map_links.js, ow_calm.js; canon.loteria → canon.sorteo; odds frame id lottery/odds → summon/odds",
+      "status": "removed",
+      "why": "Sovereign 2026-11-24: «elimina lotería como concepto de la web». Kept only as the WASM ledger kind index in holdings_*.js KINDS (contract order), marked [deprecated 2026-11-24]."
     }
   ]
 }
