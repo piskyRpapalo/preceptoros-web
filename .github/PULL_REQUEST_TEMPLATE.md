@@ -1,8 +1,8 @@
-<!-- HITL · the silicon never signs · the merge is the Sovereign's FIRMO, one piece at a time -->
+<!-- HITL · Sovereign-authorized execution: exact-head FIRMO OR bounded owner HITL-GOAL where accepted by the actual gate. An agent never signs for the owner. -->
 
 ## FIRMO (carbon checklist)
 
-- [ ] Title carries HITL (no merge without its own FIRMO, one piece at a time)
+- [ ] Title carries HITL; cite either the Sovereign's exact-head decision or a valid `USES-GOAL` with the authenticated, scoped owner grant accepted by `atlas/hitl_fence.py`.
 - [ ] Red-before-green: the sabotage that proves the gate catches was seen RED before the fix
 - [ ] Gates green: two complete passes (a half answer is not green)
 - [ ] Zero forbidden names: oraculo, notario, depin, token, moneda, clearing, magia

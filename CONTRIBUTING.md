@@ -34,17 +34,8 @@ consequential action.
    and what is still missing. Issues carry opinions; PRs carry evidence.
 3. **The suite must be able to go red.** Sabotage-tested: a check your
    change cannot fail proves nothing.
-4. **Ceilings are law.** Files < 25 MiB; a served piece < 16 KiB where the
-   repo says so; receipts < 1,024 B; zero external requests at load; pure
-   standard library; no telemetry; no `Math.random()` in served code —
-   determinism is the medium, not a preference.
-5. **Propose-only.** No agent merges, signs, or deploys its own work. Every
-   consequential action (merge, deploy, secrets, anything of value) waits
-   for a human signature: `HITL` → `FIRMO` («REQUIRES_FIRMA» queda como alias histórico, FIRMO 2026-10-22). The signature gates
-   the **merge**, never the **building**: under THE MARCH (formerly ODD; FIRMO 2026-10-28; renamed by decree 2026-11-03) a
-   step that needs a signature never halts the work — the standing
-   signature is searched for in the corpus first, the modification is
-   recorded, and the work continues.
+4. **Current scoped ceilings are law.** The **general 16 KiB source-piece rule was revoked** by the Sovereign on 2026-11-01; do not confuse it with the separate 25 MiB deployed-chunk ceiling, 1,024-byte receipts, current asset/performance tests, zero external requests at load, no telemetry and deterministic served code. The [dated decree](https://github.com/piskyRpapalo/roadmap/blob/main/odd/DECRETO-TECHO-NUEVO-20261101.md) takes precedence over historical examples.
+5. **Execution is not signature.** L0 `propose-only` describes a review mode, not every preceptor forever. Under the ratified Preceptor Contract L1/L2 a preceptor can push branches/open PRs and **execute** a merge or deployment if the Sovereign has authorized that exact effect through the gate in use. WEB's `atlas/hitl_fence.py` supports authenticated exact-head HITL and a limited path-scoped owner `HITL-GOAL`; it does not grant general release privileges. An agent never fabricates FIRMO, steals a credential or bypasses a denied fence. THE MARCH enables independent authorized building while an unrelated decision is pending.
 6. **Public names in English.** Coin your pieces in English; keep your
    working language at home. History is append-only — we re-classify, we
    do not rewrite.
@@ -79,8 +70,7 @@ Sovereign still signs.
   Record the applicable scope (or `NO_DATA(standing_signature_not_verified)`),
   continue independently authorized building, and stop only an operation
   that lacks authority. The delivery gates (checks that can go red, the
-  receipt, `FIRMO` on the exact head) are never skipped: THE MARCH unblocks
-  building, not merging.
+  receipt, applicable exact-head or supported bounded-GOAL authorization) are never skipped. THE MARCH unblocks independently authorized building; integration uses the actual gate.
 - **Unattended mode.** When no human can answer, chain the feature on a
   feature branch, record the choice in the feature document's `## Log`,
   and continue.
@@ -88,11 +78,7 @@ Sovereign still signs.
   direction is that measured-green WEB work is prepared to land on `main`.
   Standing or pre-FIRMO covers the authorized class of *work*, not a future
   commit automatically. DRAFT is a review state, not terminal delivery.
-  Finish independent tests and a receipt; seek human `FIRMO` for the **exact
-  current HEAD**; only a human-authorized orchestration lane may merge that
-  HEAD to `main`. A new HEAD needs a new exact-head decision. Merged source is
-  not a published site: public SW/Worker deployment is a **separate human
-  gate** unless a verified standing order expressly includes that deployment.
+  Finish independent tests and a receipt; obtain the Sovereign's exact-head decision **or** an authenticated bounded `HITL-GOAL` actually recognized by the repo's gate. An authorized preceptor may execute the merge. Changes to the head invalidate exact-head coverage; a GOAL has its own revocation, expiry, paths and branch limits. Merged source is not a published site: public SW/Worker deployment requires separately verified authorization or an existing order that expressly covers it.
 
 ## Acho — the frame contract for contributors (Sovereign, 2026-11-02)
 
