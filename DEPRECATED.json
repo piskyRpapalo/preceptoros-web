@@ -139,6 +139,14 @@
       "where": "public/game/map_chunks.js KINDS, building_interiors.json, building_skins.*, conquest_sheet.js, map_aura.js, map_links.js, ow_calm.js; canon.loteria → canon.sorteo; odds frame id lottery/odds → summon/odds",
       "status": "removed",
       "why": "Sovereign 2026-11-24: «elimina lotería como concepto de la web». Kept only as the WASM ledger kind index in holdings_*.js KINDS (contract order), marked [deprecated 2026-11-24]."
+    },
+    {
+      "id": "game.node_houses",
+      "deprecated": "2026-11-24",
+      "replaced_by": "node_beacon.js: every node with its own building is drawn as the node0 tower (AtlasTownPlan.hall), named on that building; a node without a building is only a beacon (post + lantern)",
+      "where": "public/game/node_houses.js, atlas/puros/node_houses_cases.mjs, gamepad.js load list, sw-listas.js, f0_functions.json, gate.yml",
+      "status": "removed",
+      "why": "Sovereign 2026-11-24 (Mesa #51): the two small cone-roof houses and the orange lantern were read as node buildings; all node buildings must be the node0 tower family."
     }
   ]
 }

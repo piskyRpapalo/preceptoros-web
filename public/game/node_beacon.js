@@ -31,7 +31,9 @@
     return list.filter(function (n) { return n && typeof n.id === 'string' && n.id !== '' && n.alive === true &&
       n.seal === 'LIVE' && Number.isSafeInteger(n.q) && Number.isSafeInteger(n.r) &&
       typeof n.since === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(n.since); })
-      .map(function (n) { return { id: n.id, q: n.q, r: n.r, seal: 'LIVE', since: n.since }; });
+      .map(function (n) { // Sovereign 2026-11-24: every node with its own building stands as the node0 tower, named on it
+        var h = (d.colonia.buildings || []).find(function (b) { return b && b.node === n.id && typeof b.id === 'string'; });
+        return { id: n.id, q: n.q, r: n.r, seal: 'LIVE', since: n.since, principal: h ? { id: h.id, estado: 'LIVE' } : null }; });
   }
   function principalBuildings(d) {
     var S = root.AtlasOpenworldState;
@@ -103,16 +105,16 @@
       if ((talk || main) && TP && TP.hall) { // reuse the established dominant town-hall silhouette for principal buildings
         var e1 = V.P(n.q + 1, n.r), step = Math.max(8, Math.abs(e1.x - h0.x) * V.G.k), cx = x - 30 * k, cy = y - 0.5 * step * Math.min(1, 0.866 * (V.G.tilt || 1)); // stable hex pitch BEFORE orbit/tilt; only zoom changes size
         var hb = TP.hall(g, cx, cy, step, Math.min(1, 0.866 * (V.G.tilt || 1)), H, live);
-        var t0 = main ? main.id + ' · ' + nameOf(n) + ' · ' + main.estado : label(n), f0 = Math.round(13 * dpr); g.save(); g.font = '800 ' + f0 + 'px ui-rounded, system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineWidth = Math.max(1.5, 2.2 * k); g.strokeStyle = ink;
+        var t0 = main ? nameOf(n) + ' · ' + main.estado : label(n), f0 = Math.round(13 * dpr); g.save(); g.font = '800 ' + f0 + 'px ui-rounded, system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineWidth = Math.max(1.5, 2.2 * k); g.strokeStyle = ink;
         var w0 = g.measureText(t0).width + 20 * dpr, h0 = f0 + 14 * dpr, ly0 = hb.y0 - h0 / 2 - 6 * dpr, lx0 = Math.max(w0 / 2 + 4, Math.min(s.width - w0 / 2 - 4, cx));
+        for (var t1 = 0; t1 < 6 && placed.some(function (b) { return Math.abs(b.x - lx0) < (b.w + w0) / 2 && Math.abs(b.y - ly0) < (b.h + h0) / 2 + 2 * dpr; }); t1++) { ly0 -= h0 + 4 * dpr; }
         g.fillStyle = live ? H.css(gold) : paper; g.beginPath(); g.moveTo(lx0 - w0 / 2 + h0 / 2, ly0 - h0 / 2); g.arc(lx0 + w0 / 2 - h0 / 2, ly0, h0 / 2, -Math.PI / 2, Math.PI / 2);
         g.arc(lx0 - w0 / 2 + h0 / 2, ly0, h0 / 2, Math.PI / 2, Math.PI * 1.5); g.closePath(); g.fill(); g.stroke(); g.fillStyle = ink; g.fillText(t0, lx0, ly0 + dpr); g.restore();
         placed.push({ x: lx0, y: ly0, w: w0, h: h0 });
         hits.push({ n: n, x0: Math.min(hb.x0, lx0 - w0 / 2), x1: Math.max(hb.x1, lx0 + w0 / 2), y0: ly0 - h0 / 2, y1: hb.y1 });
         return;
       }
-      // A node without its own building yet is a small post with a lantern (2026-11-15: inside the town the full mast and pill
-      // crowded the ring); its name shows when the crab stands on it, and the keyboard door always says it.
+      // A node without its own building yet is only a beacon: a post with a lantern, never a building (2026-11-24).
       var ow = root.AtlasOpenworldView && root.AtlasOpenworldView(), w = ow && ow.controls && ow.controls.walker && ow.controls.walker();
       var close = !!w && (Math.abs(w.q - n.q) + Math.abs(w.r - n.r) + Math.abs(w.q + w.r - n.q - n.r)) / 2 < 1;
       if (!talk) { k *= 0.6; top = y - 44 * k; }
