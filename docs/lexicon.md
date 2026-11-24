@@ -31,7 +31,7 @@
 | scrub | scrub | Removing private names from public artifacts; figures and paths stay, names go. | in use |
 | NO_DATA | NO_DATA | Declared, never invented — always with a cause. | in use |
 | stamps | sellos de estado | LIVE · STALE · STATIC · SIMULATED · NO_DATA · ERROR. | in use |
-| propose-only | proponer sin ejecutar | Silicon writes and proposes; it never merges, never signs, never pushes to jetson. | in use |
+| propose-only | modo de propuesta L0 | Review-only mode; not a universal agent prohibition. Authorized preceptors may execute scoped merges or deployments under a verified owner decision/delegation and effective target grants; signing remains the Sovereign's. Current canonical definition: Babel. | in use (L0 mode) |
 | **HITL** (hitl) | REQUIERE_FIRMA · IronClaw | Human-in-the-loop: the gate AND the carbon's everyday gesture — "Say Hi" is its living example. FIRMO 2026-10-22. | in use |
 | the Signing Tray | la bandeja de firmas | The rack's pending table. A row closes with its measure; a close without a figure is a second opinion. | in use |
 | measured close | cierre con la medida | "RESOLVED" must carry a verifiable number next to it. | in use |
@@ -41,7 +41,7 @@
 | Official name | Replaces | Meaning | Status |
 |---|---|---|---|
 | the Rack | el rack (beelink) | The lab machine; home of the local loops and the Register. | in use |
-| the Arm | el brazo | The Mistral web-coder lane: writes, measures, receipts. Never merges, never signs, never pushes. | in use |
+| the Arm | el brazo | Historical Mistral web-coder lane. Its former blanket no-push/no-merge restriction is not a global rule; effective permissions, mission and destination grants govern execution. It cannot sign as the Sovereign. | historical lane |
 | the Descent | el descenso | The Claude Code lane building the game's visual language (the Acho language). | in use |
 | the Codex lane (astra) | astra / Codex | The lane on the app side (L4a / tier-2 contract). | in use |
 | mana | — (new term; the Sovereign's word, mandate 2026-10-28) | The tutorial cabin's measurable resource, drawn on the global map. Collision scan 2026-10-28: no project term in the web repo; the word appears in tokenizer vocabularies, third-party locale strings and video-prompt text, none of them a project term. Only a MEASURED value is drawn; otherwise NO_DATA with its cause. | coined · pending merge |
