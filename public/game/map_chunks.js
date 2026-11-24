@@ -69,18 +69,19 @@
   }
   // oval(g, …): an ellipse arc as a polygon (any 2D context, even the test double).
   function oval(g, x, y, rx, ry, a0, a1) { for (var i = 0; i <= 16; i++) { var a = a0 + (a1 - a0) * i / 16; g.lineTo(x + rx * Math.cos(a), y + ry * Math.sin(a)); } }
-  // building(g, m, x, top, o): a smaller prism on the cell's top, ink-outlined (comic), its roof by kind.
+  // building(g, m, x, top, o): a prism on the cell, ink-outlined, roof by kind; won = a visitor's white «html» page.
   function building(g, m, x, top, o, H) {
     var C = root.AtlasOwCalm; if (C && C.locked && C.locked(m)) { C.plot(g, x, top, o, H); return; } // ow_calm.js: a foundation until opened
     var k = o.k, F = H.T.FRONT_DOOR, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), base = H.mix(H.rgbOf(F[m.tone]), H.rgbOf(H.T.NEUTRAL.paper), 0.18);
     if (m.fog) { var l = Math.round(base[0] * 0.3 + base[1] * 0.59 + base[2] * 0.11); base = [l, l, l]; } // an NPC's building is grey
+    var html = m.won && !m.fog; if (html) { base = H.rgbOf(H.T.NEUTRAL.paper); }
     var ring = o.corner.map(function (q) { return [q[0] * 0.5, q[1] * 0.5]; }), hb = (m.roof === 'spire' ? 26 : 16) * k, y0 = top - 2 * k;
     if (k * 48 <= 12) { g.fillStyle = H.css(base); g.beginPath(); g.arc(x, y0 - 3 * k, Math.max(1.5, 5 * k), 0, 7); g.fill(); return; }
     g.lineWidth = Math.max(0.8, 1.6 * k); g.strokeStyle = ink;
     for (var i = 0; i < 6; i++) {
       var a = ring[i], e = ring[(i + 1) % 6];
       if ((a[1] + e[1]) / 2 <= 0) { continue; }
-      g.fillStyle = H.css(H.shade(base, (a[0] + e[0] < 0 ? 0.92 : 0.66) * o.lit));
+      g.fillStyle = H.css(H.shade(base, (a[0] + e[0] < 0 ? 0.92 : html ? 0.86 : 0.66) * o.lit));
       g.beginPath(); g.moveTo(x + a[0], y0 + a[1] - hb); g.lineTo(x + e[0], y0 + e[1] - hb); g.lineTo(x + e[0], y0 + e[1]); g.lineTo(x + a[0], y0 + a[1]); g.closePath(); g.fill(); g.stroke();
     }
     g.fillStyle = H.css(H.shade(base, 1.08 * o.lit)); g.beginPath();
@@ -95,6 +96,7 @@
     else { g.moveTo(x, rt); g.lineTo(x, rt - 16 * k); g.lineTo(x + 10 * k, rt - 12 * k); g.lineTo(x, rt - 8 * k); }
     g.fill(); g.stroke();
     if (m.roof === 'spire') { g.fillStyle = H.css(H.rgbOf(F.cyan)); g.beginPath(); g.arc(x, rt - 24 * k, 2.6 * k, 0, 7); g.fill(); g.stroke(); }
+    if (html && k > 0.4) { var sh = Math.max(8, 11 * k), sy = y0 - hb * 0.55; g.fillStyle = ink; g.font = '900 ' + Math.round(sh) + 'px monospace'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('</>', x, sy); }
   }
 
 
