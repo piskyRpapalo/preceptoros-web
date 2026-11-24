@@ -72,7 +72,7 @@
     return step({ visit: !!doc.getElementById('visitor-beacon') || !!st, met: met, claimed: !!s.claimed, troops: (s.troops || []).length, eggs: (s.eggs || []).length, canSummon: !!(s.copper >= 50), practised: practised, wins: wins(), seen: seen, later: later });
   }
   function visible(el) { return !!(el && !el.hidden && !el.disabled && el.getClientRects().length && el.offsetParent !== null); }
-  function mark(id) {
+  function mark(id, quiet) {
     var list = ['.revela .revela-ok'].concat(target(id, { at: at })), el = null; // an egg that hatches now covers the card: its Continue comes first
     var rv = doc.querySelector('#stage > .revela.on-map'), rb = rv && rv.querySelector('.revela-ok'); // a troop is being shown: its Continue comes first (the card waits behind it)
     if (rb && rb.getClientRects().length) { el = rb; }
@@ -82,19 +82,25 @@
     if (!el) { bang.hidden = true; return null; }
     el.dataset.faNext = '1'; var r = el.getBoundingClientRect();
     if ((r.bottom > root.innerHeight || r.top < 0) && el.scrollIntoView) { el.scrollIntoView({ block: 'nearest' }); }
-    // A floating ! overlaps neighbouring buttons in the compact gamepad. Its target has an inset highlight instead.
-    bang.hidden = !!el.closest('#gamepad'); if (!bang.hidden) { place(el); }
+    // The pad's four icon buttons are spaced (Acho pad, 2026-11-24): the «!» rides their corner too, never takes a touch.
+    bang.hidden = !!quiet; if (!quiet) { place(el); }
     return el;
   }
   // place(el): the «!» sits on the marked button's corner. A dialog grows after it is marked (the record button arrives
   // below the verdict), so the corner is read again twice a second while a mark stands: never left on an old spot.
-  function place(el) { var r = el.getBoundingClientRect(); bang.style.left = Math.round(r.right + root.scrollX - 12) + 'px'; bang.style.top = Math.round(r.top + root.scrollY - 12) + 'px'; }
+  // The «!» takes the first of four corner spots that touches no other button (never covers a neighbour).
+  function place(el) {
+    var r = el.getBoundingClientRect(), spots = [[r.right - 12, r.top - 12], [r.left - 12, r.top - 12], [r.right - 12, r.bottom - 12], [r.left - 12, r.bottom - 12]], pick = spots[0];
+    var others = Array.prototype.filter.call(doc.querySelectorAll('button'), function (b) { return b !== el && b.getClientRects().length; }).map(function (b) { return b.getBoundingClientRect(); });
+    pick = spots.find(function (p) { return !others.some(function (o) { return p[0] < o.right && p[0] + 24 > o.left && p[1] < o.bottom && p[1] + 24 > o.top; }); }) || spots[0];
+    bang.style.left = Math.round(pick[0] + root.scrollX) + 'px'; bang.style.top = Math.round(pick[1] + root.scrollY) + 'px';
+  }
   root.setInterval(function () { var e = !bang.hidden && doc.querySelector('[data-fa-next]'); if (e && e.isConnected) { place(e); } }, 500);
   function draw() {
     var t = get(), id = now();
     var waiting = !st && !doc.getElementById('visitor-beacon'), off = waiting || t === 'done' || t === 'skipped';
     // Welcome owns the arrival: the first adventure must not open a second tutorial card before a visit begins.
-    card.hidden = off; card.dataset.step = id; if (off) { bang.hidden = true; mark(waiting ? 'play' : ''); return; }
+    card.hidden = off; card.dataset.step = id; if (off) { bang.hidden = true; mark(waiting ? 'play' : '', true); return; } /* arrival: Welcome owns it, Play glows without a «!» */
     var i = index(id);
     count.textContent = 'First adventure · ' + (i + 1) + ' of ' + IDS.length;
     var words = say(id);
@@ -158,9 +164,9 @@
   skip.addEventListener('click', function () { stop(); put('skipped'); draw(); });
   play.addEventListener('visitor:render', function (e) { var d = e.detail || {}; if (d.state) { st = d.state; } draw(); });
   play.addEventListener('visitor:end', function () { st = null; at = ''; stop(); draw(); });
-  play.addEventListener('visitor:battle', function (e) { var d = e.detail || {}; if (d.practice || (d.combat && /coliseum|patrol/.test(String(d.place)))) { practised = true; } else if (d.combat && d.combat.gana === 'asalto') { threat = ''; } else if (d.combat && d.combat.gana !== 'asalto') { lost++; threat = ''; var at0 = /:(-?\d+,-?\d+)$/.exec(String(d.place || '')); if (at0) { lostAt[at0[1]] = 1; } } at = ''; root.setTimeout(draw, 50); });
+  play.addEventListener('visitor:battle', function (e) { var d = e.detail || {}; if (d.practice || (d.combat && /coliseum|patrol/.test(String(d.place)))) { practised = true; at = ''; } /* the coliseum's spot ends with its practice: Go comes back for the conquest (bang-walk 2026-11-24) */ else if (d.combat && d.combat.gana === 'asalto') { threat = ''; } else if (d.combat && d.combat.gana !== 'asalto') { lost++; threat = ''; var at0 = /:(-?\d+,-?\d+)$/.exec(String(d.place || '')); if (at0) { lostAt[at0[1]] = 1; } } at = ''; root.setTimeout(draw, 50); });
   var surface = doc.getElementById('surface'); if (surface && root.MutationObserver) { new root.MutationObserver(function () { if (!surface.dataset.sel) { at = ''; } draw(); }).observe(surface, { attributes: true, attributeFilter: ['data-sel'] }); }
-  root.addEventListener('resize', function () { mark(now()); });
+  root.addEventListener('resize', function () { if (card.hidden) { draw(); } else { mark(now()); } }); /* hidden card: draw() marks Play quietly */
   doc.addEventListener('click', function () { root.setTimeout(function () { if (!card.hidden) { mark(now()); } }, 150); }); // a panel opened: the «!» follows its button
   doc.addEventListener('scroll', function () { if (!card.hidden) { mark(now()); } }, true);
   // Help keeps the way back: «Resume the first adventure» clears a skip (a finished adventure can be walked again too).
