@@ -87,6 +87,12 @@
    "firma",
    "nodo",
    "nodos"
+  ],
+  "public/game/army_plates.js": [
+   "abre",
+   "adopcion",
+   "atlasincubadora",
+   "tropa"
   ]
  },
  "causas_por_fichero": {
@@ -101,6 +107,7 @@
   "public/app/app.css": "2026-11-18 · MVP-A0: identical official APP #345 public ZIP source_head cde2d0034d9d107ced9e16b88c095136d07ab37d, app.css SHA256 8a0093ef67c89d38f5365b814332a970f96c3a75b8e624df34983064d74f86b4. Exact protocol identifier / class / deterministic-intent words inherited from APP, not new Spanish WEB copy. This file+word exception is scoped and audited by tests/public_mini_web.test.mjs and lexicon ratchet; never global.",
   "public/app/index.html": "2026-11-18 · MVP-A0: identical official APP #345 public ZIP source_head cde2d0034d9d107ced9e16b88c095136d07ab37d, index.html SHA256 be7269b211c6ab24987f2a9b761ee7fd3c4ca730cb45f7b1bdb9fb04c62d0bd5. Exact protocol identifier / class / deterministic-intent words inherited from APP, not new Spanish WEB copy. This file+word exception is scoped and audited by tests/public_mini_web.test.mjs and lexicon ratchet; never global.",
   "public/app/node_registration.js": "2026-11-18 · MVP-A0: identical official APP #345 public ZIP source_head cde2d0034d9d107ced9e16b88c095136d07ab37d, node_registration.js SHA256 330e0f21473374b801ef90dcbc5b7dfef02b0a9267c43cd93d435d6c90d11cc1. Exact protocol identifier / class / deterministic-intent words inherited from APP, not new Spanish WEB copy. This file+word exception is scoped and audited by tests/public_mini_web.test.mjs and lexicon ratchet; never global.",
-  "public/app/offline_mini.js": "2026-11-18 · MVP-A0: identical official APP #345 public ZIP source_head cde2d0034d9d107ced9e16b88c095136d07ab37d, offline_mini.js SHA256 3fc11dea7d2dad97c37e18696fe65133e59e877ded68d00b4b403c599875353f. Exact protocol identifier / class / deterministic-intent words inherited from APP, not new Spanish WEB copy. This file+word exception is scoped and audited by tests/public_mini_web.test.mjs and lexicon ratchet; never global."
+  "public/app/offline_mini.js": "2026-11-18 · MVP-A0: identical official APP #345 public ZIP source_head cde2d0034d9d107ced9e16b88c095136d07ab37d, offline_mini.js SHA256 3fc11dea7d2dad97c37e18696fe65133e59e877ded68d00b4b403c599875353f. Exact protocol identifier / class / deterministic-intent words inherited from APP, not new Spanish WEB copy. This file+word exception is scoped and audited by tests/public_mini_web.test.mjs and lexicon ratchet; never global.",
+  "public/game/army_plates.js": "2026-11-24 · nombres de la API existente que army_plates.js lee sin cambiarla: army-wave-panel.js abre(), AtlasIncubadora.army() y los registros adopcion.tropa de la visita (visitor_eggs/visitor_account); no es texto visible"
  }
 }
