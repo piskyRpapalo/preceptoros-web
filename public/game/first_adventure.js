@@ -54,7 +54,7 @@
   if (!stage || !play) { return; }
   function get() { try { return root.localStorage.getItem(TOUR) || ''; } catch (e) { return ''; } }
   function put(v) { try { root.localStorage.setItem(TOUR, v); } catch (e) { /* not kept: the card still works this visit */ } if (root.AtlasOwCalm) { root.AtlasOwCalm.refresh(); } }
-  var threat = '', st = null, met = false, seen = false, practised = false, lost = 0, later = false, at = '', walking = 0, said = '';
+  var threat = '', st = null, stAt = 0, tick = 0, met = false, seen = false, practised = false, lost = 0, later = false, at = '', walking = 0, said = '';
   var card = doc.createElement('section'); card.id = 'fa'; card.setAttribute('aria-label', 'First adventure');
   var count = doc.createElement('p'); count.className = 'fa-count';
   var line = doc.createElement('p'); line.className = 'fa-line'; line.setAttribute('role', 'status');
@@ -110,8 +110,11 @@
     else if (id === 'conquest' && threat && !lost) { words = threat; }
     if (id === 'conquest' && lost) { words = 'The guardian wins this time (' + lost + (lost === 1 ? ' try' : ' tries') + '): nothing is conquered and the town stays as it was. Press Go: we walk to the next weakest guardian, or choose Later.'; }
     if (line.textContent !== words) { line.textContent = words; said = ''; }
-    go.hidden = !(id === 'practice' || id === 'conquest') || !!at; go.textContent = walking ? 'Stop' : 'Go';
     go.disabled = id === 'practice' && st && !(st.troops || []).length || hatching;
+    // While an egg hatches Go cannot be pressed: it counts the seconds down (state's own remaining), never a silent wait.
+    var left = (st && st.eggs || []).map(function (e) { return (e.remaining || 0) - Math.floor((Date.now() - stAt) / 1000); }), wait = go.disabled && left.length ? Math.max(0, (hatching ? Math.max : Math.min).apply(null, left)) : 0; // practice: the first troop; conquest: the whole squad
+    go.hidden = !(id === 'practice' || id === 'conquest') || !!at; go.textContent = walking ? 'Stop' : wait > 0 ? 'Go · ' + wait + ' s' : 'Go';
+    if (wait > 0 && !tick) { tick = root.setTimeout(function () { tick = 0; draw(); }, 1000); }
     okB.hidden = !(id === 'meet' || id === 'town' || id === 'explore' || (id === 'conquest' && lost)); okB.textContent = id === 'conquest' ? 'Later' : 'OK';
     card.dataset.step = id;
     // the preceptor's head speaks inside this card (talk_head.js); the map bubble stays free for real results
@@ -162,7 +165,7 @@
   });
   okB.addEventListener('click', function () { var id = now(); if (id === 'meet') { met = true; } else if (id === 'town') { seen = true; } else if (id === 'conquest') { later = true; } else if (id === 'explore') { put('done'); } draw(); });
   skip.addEventListener('click', function () { stop(); put('skipped'); draw(); });
-  play.addEventListener('visitor:render', function (e) { var d = e.detail || {}; if (d.state) { st = d.state; } draw(); });
+  play.addEventListener('visitor:render', function (e) { var d = e.detail || {}; if (d.state) { st = d.state; stAt = Date.now(); } draw(); });
   play.addEventListener('visitor:end', function () { st = null; at = ''; stop(); draw(); });
   play.addEventListener('visitor:battle', function (e) { var d = e.detail || {}; if (d.practice || (d.combat && /coliseum|patrol/.test(String(d.place)))) { practised = true; at = ''; } /* the coliseum's spot ends with its practice: Go comes back for the conquest (bang-walk 2026-11-24) */ else if (d.combat && d.combat.gana === 'asalto') { threat = ''; } else if (d.combat && d.combat.gana !== 'asalto') { lost++; threat = ''; var at0 = /:(-?\d+,-?\d+)$/.exec(String(d.place || '')); if (at0) { lostAt[at0[1]] = 1; } } at = ''; root.setTimeout(draw, 50); });
   var surface = doc.getElementById('surface'); if (surface && root.MutationObserver) { new root.MutationObserver(function () { if (!surface.dataset.sel) { at = ''; } draw(); }).observe(surface, { attributes: true, attributeFilter: ['data-sel'] }); }
