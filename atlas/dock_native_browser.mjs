@@ -18,7 +18,8 @@ async function main(){
  const cmd=(method,params={})=>new Promise(r=>{const id=++n;pend.set(id,r);ws.send(JSON.stringify({id,method,params}))});
  const ev=async expression=>{const r=await cmd('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(r.result?.exceptionDetails)throw Error(r.result.exceptionDetails.text);return r.result?.result?.value};
  await cmd('Runtime.enable');await cmd('Page.enable');
- const measure=()=>ev(`JSON.stringify((()=>{
+ const measure=(setup='')=>ev(`JSON.stringify((()=>{
+  ${setup}
   const p=document.getElementById('gamepad'), c=getComputedStyle(p), maskEl=document.getElementById('gp-play');
   const visible=e=>{const r=e.getBoundingClientRect(),cs=getComputedStyle(e);return !e.hidden&&r.width>0&&r.height>0&&cs.visibility!=='hidden'&&cs.display!=='none'};
   const buttons=[...p.querySelectorAll('.gp-mid button'),...document.querySelectorAll('#map-communication button')].filter(visible);
@@ -52,14 +53,11 @@ async function main(){
   ok(arrival.buttons.every(b=>b.w>=44&&b.h>=44&&b.aria),'J1 button below 44px or missing aria: '+JSON.stringify(arrival.buttons));
   await ev("document.getElementById('visitor-start').click()");
   for(let j=0;j<70&&await ev("document.documentElement.dataset.owPhase!=='visit'");j++)await wait(100);
-  await ev("document.querySelectorAll('#gamepad .gp-mid [data-fa-next]').forEach(b=>b.removeAttribute('data-fa-next'))");
-  const fallback=JSON.parse(await measure());
+  const fallback=JSON.parse(await measure("document.querySelectorAll('#gamepad .gp-mid [data-fa-next]').forEach(b=>b.removeAttribute('data-fa-next'));"));
   ok(fallback.primary.join()==='Communication','fallback not Talk: '+JSON.stringify(fallback.primary));
-  await ev("document.getElementById('gp-town').setAttribute('data-fa-next','')");
-  const next=JSON.parse(await measure());
+  const next=JSON.parse(await measure("document.querySelectorAll('#gamepad .gp-mid [data-fa-next]').forEach(b=>b.removeAttribute('data-fa-next'));document.getElementById('gp-town').setAttribute('data-fa-next','');"));
   ok(next.primary.join()==='gp-town','a real marked next must be sole primary: '+JSON.stringify(next.primary));
-  await ev("document.getElementById('log').insertAdjacentHTML('beforeend','<li class=\"turn them pending\" data-state=\"pending\">waiting</li>')");
-  const pending=JSON.parse(await measure());
+  const pending=JSON.parse(await measure("document.querySelectorAll('#gamepad .gp-mid [data-fa-next]').forEach(b=>b.removeAttribute('data-fa-next'));document.getElementById('gp-town').setAttribute('data-fa-next','');document.getElementById('log').insertAdjacentHTML('beforeend','<li class=\"turn them pending\" data-state=\"pending\">waiting</li>');"));
   ok(pending.primary.join()==='Communication','pending reply did not win over next: '+JSON.stringify(pending.primary));
   data.push({viewport:[w,h],arrival:arrival.primary,fallback:fallback.primary,next:next.primary,pending:pending.primary,buttons:arrival.buttons.length});
  }
