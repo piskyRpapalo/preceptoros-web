@@ -31,3 +31,17 @@ test('a forged signature, a wrong message or a short key is refused', async () =
   assert.equal(await E.verify(S, k.publicKey, sig, new TextEncoder().encode('stop')), false);
   assert.equal(await E.verify(S, k.publicKey.slice(1), sig, msg), false);
 });
+// db.js verificaWeb (2026-11-24): on a WebCrypto without Ed25519 (Android WebView 113 in the APP) the army ledger
+// verifies the visit's lite signatures with the same bytes — or the beacon copper and every summon fail.
+test('the army ledger verifies with the lite only when WebCrypto has no Ed25519', async () => {
+  const { readFileSync } = await import('node:fs'), vm = await import('node:vm');
+  const src = readFileSync(new URL('../../public/game/db.js', import.meta.url), 'utf8');
+  const noEd = { importKey: () => Promise.reject(Object.assign(new Error('Algorithm: Unrecognized name'), { name: 'NotSupportedError' })), digest: S.digest.bind(S) };
+  const load = (subtle) => { const root = { crypto: { subtle }, AtlasEd25519: E, TextEncoder, AtlasValores: createRequire(import.meta.url)('../../public/game/values.js') }; vm.runInNewContext(src, Object.assign(root, { globalThis: root }), { filename: 'db.js' }); return root.AtlasArmy; };
+  const k = await E.keypair(S), text = '{"esquema":"atlas.invocacion/2","tc":"tc1"}', sig = hex(await k.sign(new TextEncoder().encode(text)));
+  const A = load(noEd);
+  assert.equal(await A.verificaWeb(text, sig, hex(k.publicKey)), true);
+  assert.equal(await A.verificaWeb(text.replace('tc1', 'tc2'), sig, hex(k.publicKey)), false);
+  const other = Object.assign(new Error('bad key'), { name: 'DataError' });
+  await assert.rejects(load({ importKey: () => Promise.reject(other) }).verificaWeb(text, sig, hex(k.publicKey)), /bad key/); // only NotSupportedError falls back
+});
