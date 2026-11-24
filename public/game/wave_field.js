@@ -29,7 +29,7 @@
     if (!G || !C || !surf) { return null; }
     op = op || {};
     var stats = function (l) { return l.map(function (x) { var t = G.tirada(x.semilla, x.tc); return { t: t, max: t.stats.vida, vel: t.stats.velocidad, inercia: t.stats.inercia }; }); };
-    var T = [stats(def), stats(asa)], log = (op.log ? op.log() : combate.registro) || combate.registro;
+    var T = [stats(def), stats(asa)], log = op.log ? op.log() : [];
     var c = C.coreografia(log, T, op.semilla, combate.gana);
     c.hits = log.length; var all = T[0].concat(T[1]), n0 = T[0].length, dead = {}, vt = 0, vel = 1, last = null, raf = 0, vivo = true, done = false, told = -1, quieto = !!op.quieto;
     c.momentos.forEach(function (m) { if (m.tipo === 'cae') { dead[m.lado ? n0 + m.i : m.i] = m.t; } });
