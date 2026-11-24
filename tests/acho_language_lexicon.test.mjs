@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, statSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 
 const lexicon = readFileSync(new URL('../docs/lexicon.md', import.meta.url), 'utf8');
 const implementation = readFileSync(new URL('../docs/lexicon-implementation.md', import.meta.url), 'utf8');
@@ -19,6 +19,8 @@ test('lexicon stays a proposal while the acho-language alias map is explicit', (
   assert.match(runtime, /VERSION = 'preceptoros\.acho\/1', ALIAS = 'preceptoros\.bubble\/1'/);
 });
 
-test('lexicon remains below the file budget', () => {
-  assert.ok(statSync(new URL('../docs/lexicon.md', import.meta.url)).size < 16384);
+test('lexicon points to the current Babel vocabulary and no longer imposes the revoked general source-file cap', () => {
+  const entryContract = readFileSync(new URL('../AGENTS.md', import.meta.url), 'utf8');
+  assert.match(lexicon, /vocabulary now lives in the Babel registry/i);
+  assert.match(entryContract, /16,384-byte source-piece ceiling is revoked/i);
 });
