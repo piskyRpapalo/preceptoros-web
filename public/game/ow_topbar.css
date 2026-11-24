@@ -29,3 +29,5 @@
 #stage > .tb-menu .tb-boss h3{margin:0 0 4px;font-size:.92rem}
 #stage > .tb-menu .tb-boss p{margin:4px 0 0;font-size:.74rem;line-height:1.3}
 #stage > .tb-menu .tb-boss canvas{display:block;border-radius:10px;background:color-mix(in srgb,var(--afffdf6) 6%,transparent)}
+/* one message on the map: while a piece of news is docked, the brief line under the bar keeps quiet (same sentence) */
+#stage:has(> #preceptor-talk.pt-news) #ow-brief{visibility:hidden}
