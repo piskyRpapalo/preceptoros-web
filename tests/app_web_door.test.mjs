@@ -13,8 +13,8 @@ const PAGE = path.join(ROOT, 'public/get-the-app/index.html');
 const APK = path.join(ROOT, 'public/get-the-app/PreceptorOS-android-1.0.1.apk');
 const INSTALL_SH = '2bd8666979a67ea1ec8b01a01aac240acfc2cef6165b93e558d0b836d3df6e74';
 const APK_SHA = '8db3176a20ed973dab1f28642972bb97ab1ccd70ddbc7cf95f7a44affc7c4d8b';
-const NATIVE_URL = 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk';
-const NATIVE_SHA = '9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b';
+const NATIVE_URL = 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v16-20261124/PreceptorOS-android-0.3.1-v16.apk';
+const NATIVE_SHA = '0a8a996de1e7723f22740877a988c121dc59c056f02989e3e68b22da04497ab5';
 const RELEASE = JSON.parse(readFileSync(path.join(ROOT, 'public/release.json'), 'utf8'));
 const PRIVATE = /(127\.0\.0\.1|localhost|\b10\.\d+\.\d+\.\d+|\b192\.168\.\d+\.\d+|\b100\.\d+\.\d+\.\d+|\/api\/|21434)/i;
 
@@ -32,7 +32,7 @@ export function violations(html, apkBytes) {
   if (!native.includes('href="' + NATIVE_URL + '"')) {
     out.push('official native Android v7 link missing');
   }
-  if (!native.includes('data-asset="native-v7-apk">9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b')) {
+  if (!native.includes('data-asset="native-v16-apk">0a8a996de1e7723f22740877a988c121dc59c056f02989e3e68b22da04497ab5')) {
     out.push('native APK fingerprint not measured');
   }
   if (!native.includes('Node registration requires explicit consent and human approval') ||
@@ -70,7 +70,7 @@ test('four truthful doors: native first, legacy TWA, deterministic MINI and desk
   assert.deepEqual(violations(html, apk), []);
   assert.equal(RELEASE.native.url, NATIVE_URL, 'Release manifest and native CTA must agree');
   assert.equal(RELEASE.native.sha256, NATIVE_SHA, 'Release manifest and native SHA must agree');
-  assert.equal(RELEASE.native.bytes, 155998639, 'native v7 byte count must be measured');
+  assert.equal(RELEASE.native.bytes, 121756982, 'native v7 byte count must be measured');
   assert.equal(RELEASE.native.package, 'org.preceptoros.app');
 });
 

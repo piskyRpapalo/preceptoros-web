@@ -29,12 +29,12 @@
     // Pin all three asset facts: direct official Release, digest and bytes.
     // This bypasses a measured 404 on the old same-origin Worker APK route.
     // A plausible-looking third-party URL or fake 64-char digest is NOT enough.
-    var V7_URL = 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v7-20261119/PreceptorOS-android-0.3.0-v7.apk';
-    var V7_SHA = '9c4d227db2ba395cdb232bdd3eb6a52f83d344f3386a99bb5274d42837eebe6b';
+    var APK_URL = 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v16-20261124/PreceptorOS-android-0.3.1-v16.apk';
+    var APK_SHA = '0a8a996de1e7723f22740877a988c121dc59c056f02989e3e68b22da04497ab5';
     var android = d.android || {}, apk = os === 'android' &&
-      android.version === 'android-mvp-v7-20261119' &&
-      android.url === V7_URL && android.sha256 === V7_SHA &&
-      android.bytes === 155998639;
+      android.version === 'android-mvp-v16-20261124' &&
+      android.url === APK_URL && android.sha256 === APK_SHA &&
+      android.bytes === 121756982;
     var carril2 = {
       id: 'app', preseleccionado: INSTALADOR[os], clics: apk ? 1 : 2,
       sha256: apk ? android.sha256 : undefined,

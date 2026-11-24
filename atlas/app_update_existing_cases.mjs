@@ -21,12 +21,12 @@ test('WEB offers update instructions as an ordinary accessible link', () => {
 });
 
 test('native APP download stays distinct from the legacy OpenWorld TWA', () => {
-  assert.match(html, /The native Android v7 APK in door A has package <code>org.preceptoros.app<\/code>/);
+  assert.match(html, /The native Android v16 APK in door A has package <code>org.preceptoros.app<\/code>/);
   assert.match(html, /id="door-openworld"/);
   assert.match(html, /Historical OpenWorld TWA/);
   assert.match(html, /not a current APP download/);
   assert.doesNotMatch(html, /href="\/get-the-app\/PreceptorOS-android-1\.0\.1\.apk"/);
-  assert.match(android, /Download PreceptorOS APP \(APK, 156 MB\)/);
+  assert.match(android, /Download PreceptorOS APP \(APK, 122 MB\)/);
   assert.match(android, /link: \['\/get-the-app\/#update-existing-app', 'Open the PreceptorOS APP update instructions'\]/);
   assert.doesNotMatch(android.slice(android.indexOf('      update:')), /link: \[APK,/);
 });

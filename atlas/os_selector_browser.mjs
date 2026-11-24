@@ -46,7 +46,7 @@ try{
   got.links.forEach((a,i)=>{ok(a.href===['#door-native','#steps','#windows'][i],width+' bad system route '+a.id);ok(a.w>=44&&a.h>=44,width+' touch target '+a.id);ok(a.label.length>=30&&a.desc,width+' missing state '+a.id)});
   ok(got.legacy===0,width+' legacy TWA still a download link');
   ok(got.txt.includes('NO_DATA(windows_install_E2E_unverified)')&&got.txt.includes('NO_DATA(app_1_1_release_unverified)'),width+' missing honest NO_DATA');
-  ok(/android-mvp-v7-20261119\/PreceptorOS-android-0\.3\.0-v7\.apk$/.test(got.download),width+' wrong native release');
+  ok(/android-mvp-v16-20261124\/PreceptorOS-android-0\.3\.1-v16\.apk$/.test(got.download),width+' wrong native release');
   ok(!got.overflow,width+' horizontal overflow');
   await ev('document.getElementById("os-ubuntu").focus()');
   ok(await ev('document.activeElement?.id==="os-ubuntu"'),width+' keyboard focus');
