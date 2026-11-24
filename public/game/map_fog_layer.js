@@ -113,6 +113,7 @@
     var cx = W / 2, cy = Hh / 2, dx = p.x - cx, dy = p.y - cy, sc = Math.min((W / 2 - pad) / (Math.abs(dx) || 1), (Hh / 2 - pad) / (Math.abs(dy) || 1));
     var x = cx + dx * sc, y = cy + dy * sc, a = Math.atan2(dy, dx), H = V.H, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), paper = H.css(H.rgbOf(H.T.NEUTRAL.paper));
     var sf = root.document.getElementById('surface') || {}, dpr = W / (sf.clientWidth || W), r = 22 * dpr, t = going ? 'Stop' : n.d + ' hexes';
+    if (y < 64 * dpr + r) { y = 64 * dpr + r; } // below the top bar (ow_topbar.js, 2026-11-24): Talk · Sound · Echoes keep their row
     var yx = Number((sf.dataset || {}).youx), yy = Number((sf.dataset || {}).youy), far = 3.4 * r; // never on the crab (2026-11-15): slide along the edge
     if (isFinite(yx) && isFinite(yy) && Math.hypot(x - yx, y - yy) < far) {
       if (y <= pad + 1 || y >= Hh - pad - 1) { x = Math.max(pad, Math.min(W - pad, yx + (x >= yx ? far : -far))); } else { y = Math.max(pad, Math.min(Hh - pad, yy + (y >= yy ? far : -far))); }

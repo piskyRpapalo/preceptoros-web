@@ -60,6 +60,19 @@ test('the field lies on the canvas: phone (portrait) and desktop (landscape)', (
   });
 });
 
+test('the field points at the contested building, in every direction, and stays on the canvas', () => {
+  [[840, 1320], [1920, 900], [780, 780]].forEach(([W, H]) => {
+    for (let a = 0; a < 360; a += 15) {
+      const d = { x: Math.cos(a * Math.PI / 180), y: Math.sin(a * Math.PI / 180) }, c0 = F.place(W, H, 0, 0, d).crab, P = F.place(W, H, c0.x, c0.y, d);
+      [[85, 300], [915, 300], [500, 70], [500, 530], [40, 300], [960, 300]].forEach(([x, y]) => {
+        const s = P.at(x, y); assert.ok(s.x >= -1 && s.x <= W + 1 && s.y >= -1 && s.y <= H + 1, `${W}x${H} ${a}° ${x},${y} -> ${Math.round(s.x)},${Math.round(s.y)}`);
+      });
+      const near = P.at(85, 300), far = P.at(915, 300), v = { x: far.x - near.x, y: far.y - near.y }, n = Math.hypot(v.x, v.y);
+      assert.ok((v.x * d.x + v.y * d.y) / n > 0.999, `${W}x${H} ${a}°: the guardian's squad does not stand toward its house`);
+    }
+  });
+});
+
 test('sabotage: a field that lets the picture decide life is caught', () => {
   const f = fights[0], bad = { ...f.c, frames: f.c.frames.map((fr) => fr.map((v, i) => (i % 3 === 2 ? 99 : v))) };
   assert.notEqual(F.pose(bad, 0, bad.total).vida, F.pose(f.c, 0, f.c.total).vida);
