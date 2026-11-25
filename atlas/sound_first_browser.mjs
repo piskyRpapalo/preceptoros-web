@@ -106,6 +106,7 @@ async function main() {
   ok(llega.said.length === 0, 'openworld: something is spoken before any gesture: ' + JSON.stringify(llega.said));
   const play = JSON.parse(await ev(`JSON.stringify((() => { const r = document.getElementById('gp-play').getBoundingClientRect(); return [Math.round(r.left + r.width / 2), Math.round(r.top + r.height / 2)]; })())`));
   await raton(play[0], play[1]);
+  await espera(300); { const sg = JSON.parse(await ev(`JSON.stringify((() => { const r = document.getElementById('welcome-play').getBoundingClientRect(); return [Math.round(r.left + r.width / 2), Math.round(r.top + r.height / 2)]; })())`)); await raton(sg[0], sg[1]); } // Play reopens the one HITL entry; the signature is its own gesture
   const oye = await hasta((m) => m.said.length > 0 && /^Visitor-/.test(m.h1)); medidas.firstPress = { h1: oye.h1, said: oye.said };
   ok(oye.said.length > 0 && oye.said.includes(lugar(oye.h1)), 'openworld: after the first press the place is not spoken as the heading shows it: ' + JSON.stringify(medidas.firstPress));
   ok(oye.said.every((t) => !/Visitor-/.test(t)), 'the visitor id is spoken');
@@ -140,6 +141,7 @@ async function main() {
     return [Math.round(r.left + r.width/2),Math.round(r.top + r.height/2)];
   })())`));
   await raton(embeddedPlay[0], embeddedPlay[1]);
+  await espera(300); { const sg = JSON.parse(await ev(`JSON.stringify((() => { const r = document.getElementById('welcome-play').getBoundingClientRect(); return [Math.round(r.left + r.width / 2), Math.round(r.top + r.height / 2)]; })())`)); await raton(sg[0], sg[1]); } // Play reopens the one HITL entry; the signature is its own gesture
   const embeddedSaid = await hasta((m) => m.said.includes(lugar(m.h1)), 4500);
   medidas.embedded.after = { place: lugar(embeddedSaid.h1), said: embeddedSaid.said };
   ok(/^Visitor-/.test(embeddedSaid.h1) && embeddedSaid.said.includes(lugar(embeddedSaid.h1)),
