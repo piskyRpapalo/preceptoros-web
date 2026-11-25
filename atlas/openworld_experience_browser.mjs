@@ -59,6 +59,7 @@ async function probe() {
   d.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
   const gone=d.hidden;
   const play=q('#gp-play'); if(play&&!play.hidden)play.click();
+  await new Promise(r=>setTimeout(r,250)); const sign=q('#welcome-play'); if(sign&&sign.offsetParent)sign.click(); // One HITL: Play reopens the entry, the signature starts the visit
   for(let i=0;i<45 && play && !play.hidden;i++) {
     await new Promise(r=>setTimeout(r,100));
   }

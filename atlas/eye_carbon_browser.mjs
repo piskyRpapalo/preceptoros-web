@@ -90,6 +90,7 @@ async function main() {
   // #924 split Profile and Army: only after a signed local visit may Army open.
   // Read the genuine #army-visit status, not concatenated House/holdings text.
   const army = JSON.parse(await ev(`(async () => { const p=document.querySelector('.cats [data-cat=Army]'); document.querySelector('#visitor-start').click();
+    await new Promise(r=>setTimeout(r,250)); document.getElementById('welcome-play').click(); // One HITL: Start reopens the entry, the signature starts the visit
     for(let i=0;i<30 && !document.querySelector('#visitor-end');i++) await new Promise(r=>setTimeout(r,100));
     if (p.hidden) return JSON.stringify({visible:false,cause:'Army unavailable after visit started'});
     p.click(); const state=document.getElementById('army-visit'), s=state.closest('li'), r=s.getBoundingClientRect();

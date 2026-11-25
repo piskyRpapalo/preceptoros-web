@@ -62,6 +62,7 @@ async function main(){
  ok(await ev('window.__calls.length')===0,'request on page load');
  ok(await ev('!!document.getElementById("gp-play") && !!document.getElementById("question") && !!document.getElementById("chat-destination")'),'chat controls missing');
  await ev('document.getElementById("gp-play").click();true');await sleep(350);
+await ev('document.getElementById("welcome-play").click();true');await sleep(350); // One HITL: Play reopens the entry, the signature starts the visit
  await ev('(()=>{let x=document.getElementById("chat-destination");x.value="hexelion";x.dispatchEvent(new Event("change",{bubbles:true}));return true})()');
  const fill=(value)=>ev('(()=>{document.getElementById("question").value='+JSON.stringify(value)+';return true})()');
  const draft=()=>ev('document.getElementById("question").value');

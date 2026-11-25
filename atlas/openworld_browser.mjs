@@ -133,7 +133,8 @@ async function main() {
     mode.value='hexelion'; mode.dispatchEvent(new Event('change'));
     input.value='before visit'; form.requestSubmit(); await new Promise(r=>setTimeout(r,30));
     const withoutVisit=calls.length, informed=document.getElementById('log').textContent.includes('Start an ephemeral visit');
-    document.getElementById('visitor-start').click(); await new Promise(r=>setTimeout(r,700));
+    document.getElementById('visitor-start').click(); await new Promise(r=>setTimeout(r,250)); // One HITL (2026-11-24): Start reopens the entry; the signature starts the visit
+    document.getElementById('welcome-play').click(); await new Promise(r=>setTimeout(r,700));
     const profileAvailable=!document.querySelector('.cats [data-cat=Army]').hidden;
     document.querySelector('.cats [data-cat=Profile]').click();
     const profileHasVisit=!!document.querySelector('#visitor-play #visitor-end');

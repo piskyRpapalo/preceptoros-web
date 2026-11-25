@@ -32,18 +32,17 @@ async function main(){
   assert(await until('!!window.AtlasFirstAdventure&&!!document.getElementById("visitor-start")&&!!document.getElementById("fa")',12000),'visitor entry missing '+w);
   const a=JSON.parse(await metrics());assert(a.controllerCount===1&&a.markerCount===1&&a.scriptCount===1,'initial duplicate '+w+': '+JSON.stringify(a));
   await ev('document.getElementById("visitor-start").click()');
+  // One HITL (2026-11-24): Start reopens the single entry; the visit begins only on «Sign HITL»,
+  // and that signature already lights the visit's beacon (AtlasVisitorPlay.enter), so the journey goes meet → summon.
+  await wait(250);assert(await ev('!document.getElementById("visitor-beacon")'),'Start made a visit without HITL '+w);
+  await ev('document.getElementById("welcome-play").click()');
   assert(await until("document.getElementById('fa')?.dataset.step==='meet'",12000),'no meet after Play '+w);
   await wait(500);const meet=JSON.parse(await metrics());
   assert(meet.controllerCount===1&&meet.markerCount===1&&meet.scriptCount===1&&meet.headScripts===1,'gamepad reloaded tutorial/head '+w+': '+JSON.stringify(meet));
   await ev("document.getElementById('fa-ok').click()");
-  assert(await until("window.AtlasFirstAdventure.now()==='beacon' && document.getElementById('fa')?.dataset.step==='beacon'",7000),'split controller: model != card after meet '+w);
-  const pre=JSON.parse(await metrics());
-  assert(pre.marker==='Army','profile not highlighted before opening '+w+': '+JSON.stringify(pre));
-  await ev("document.querySelector('.cats [data-cat=Army]').click()");
-  assert(await until("document.querySelector('[data-fa-next]')?.id==='visitor-beacon'",7000),'beacon marker missing in Profile '+w);
+  assert(await until("window.AtlasFirstAdventure.now()==='summon' && document.getElementById('fa')?.dataset.step==='summon'",7000),'split controller: model != card after meet (signed beacon → summon) '+w);
   const opened=JSON.parse(await metrics());
-  await ev("document.getElementById('visitor-beacon').click()");
-  assert(await until("window.AtlasFirstAdventure.now()==='summon'",7000),'beacon did not advance to summon '+w);
+  assert(opened.marker==='Army','profile not highlighted before the summon '+w+': '+JSON.stringify(opened));
   const rewarded=JSON.parse(await metrics());
   assert((rewarded.resources||'').includes('Copper 100'),'beacon reward not measured '+w+': '+JSON.stringify(rewarded));
   // The reward may close Profile. In that case the next honest action is reopening it, not a vanished summon.

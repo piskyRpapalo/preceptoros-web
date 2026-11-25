@@ -52,6 +52,9 @@ async function main(){
   ok(/url\(/.test(arrival.mask||''),'Acho mask missing: '+w);
   ok(arrival.buttons.every(b=>b.w>=44&&b.h>=44&&b.aria),'J1 button below 44px or missing aria: '+JSON.stringify(arrival.buttons));
   await ev("document.getElementById('visitor-start').click()");
+  // One HITL (2026-11-24): Start reopens the single entry; the visit begins only on «Sign HITL».
+  await wait(250);ok(await ev("!document.getElementById('visitor-beacon')"),'Start made a visit without HITL at '+w);
+  await ev("document.getElementById('welcome-play').click()");
   for(let j=0;j<70&&await ev("document.documentElement.dataset.owPhase!=='visit'");j++)await wait(100);
   const fallback=JSON.parse(await measure("document.querySelectorAll('#gamepad .gp-mid [data-fa-next]').forEach(b=>b.removeAttribute('data-fa-next'));"));
   ok(fallback.primary.join()==='Communication','fallback not Talk: '+JSON.stringify(fallback.primary));

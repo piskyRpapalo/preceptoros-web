@@ -52,10 +52,10 @@
     return s.dataset.youx ? { x: Number(s.dataset.youx), y: Number(s.dataset.youy) } : null;
   }
   function framer(doc, win) {
-    var saved = null, set = null, lookWas = false;
+    var saved = null, set = null, lookWas = false, run = 0, moving = false; // moving: a glide still on its way (a sheet closed mid-glide still hands the camera back)
     function glide(s, V, from, to) {
-      var still = win.matchMedia && win.matchMedia('(prefers-reduced-motion: reduce)').matches, t0 = null, MS = still ? 0 : 320;
-      function f(ts) { if (t0 === null) { t0 = ts; } var p = MS ? Math.min(1, (ts - t0) / MS) : 1, e = 1 - Math.pow(1 - p, 3);
+      var still = win.matchMedia && win.matchMedia('(prefers-reduced-motion: reduce)').matches, t0 = null, MS = still ? 0 : 320, my = ++run; moving = true;
+      function f(ts) { if (my !== run) { return; } if (t0 === null) { t0 = ts; } var p = MS ? Math.min(1, (ts - t0) / MS) : 1, e = 1 - Math.pow(1 - p, 3); if (p >= 1) { moving = false; }
         s.dataset.panx = String(Math.round(from.x + (to.x - from.x) * e)); s.dataset.pany = String(Math.round(from.y + (to.y - from.y) * e)); V.redraw();
         if (p < 1) { win.requestAnimationFrame(f); } }
       win.requestAnimationFrame(f);
@@ -64,7 +64,7 @@
     return function (sheet, open) {
       var s = doc.getElementById('surface'), V = win.AtlasOpenworldView && win.AtlasOpenworldView();
       if (!s || !V || !V.redraw || s.dataset.stage || sheet.dataset.activeCategory === 'Communication') { return; }
-      if (!open) { if (saved && set && pan(s).x === set.x && pan(s).y === set.y) { if (!lookWas) { delete s.dataset.look; } glide(s, V, set, saved); } saved = set = null; return; }
+      if (!open) { if (saved && set && (moving || pan(s).x === set.x && pan(s).y === set.y)) { if (!lookWas) { delete s.dataset.look; } glide(s, V, set, saved); } saved = set = null; return; }
       var r = s.getBoundingClientRect(), sr = sheet.getBoundingClientRect(), k = r.width ? s.width / r.width : 1;
       var side = sr.left > r.left + r.width / 2; // a side sheet (wide screens) only shifts sideways
       var d = aim(target(s, V, sheet.id), s.width, s.height, side ? s.height : (sr.top - r.top) * k, side ? (sr.left - r.left) * k : s.width, 48 * k);

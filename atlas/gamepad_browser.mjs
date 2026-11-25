@@ -109,14 +109,16 @@ async function main() {
   medidas.quieto = await gesto();
   ok(medidas.quieto === 0, 'a gamepad button moves under prefers-reduced-motion: ' + medidas.quieto);
 
-  // Play on the gamepad is the page's own «Play now»: the visit starts and both Play buttons step aside.
+  // Play on the gamepad is the page's own «Play now»: it reopens the one HITL entry; once signed, both Play buttons step aside.
   medidas.play = JSON.parse(await ev(`(async () => { const g = document.getElementById('gp-play'), p = document.getElementById('play-now');
     const antes = { gp: !!g && !g.hidden, real: !!p && !p.hidden }; g && g.click();
+    await new Promise((r) => setTimeout(r, 300)); antes.unsigned = !document.getElementById('visitor-beacon') && document.activeElement && document.activeElement.id === 'welcome-play'; // Play reopens the one HITL entry
+    const w = document.getElementById('welcome-play'); w && w.click();
     for (let i = 0; i < 40 && p && !p.hidden; i++) await new Promise((r) => setTimeout(r, 100));
     await new Promise((r) => setTimeout(r, 50));
     return JSON.stringify({ antes, real: !!p && !p.hidden, gp: !!g && !g.hidden, profile: !document.querySelector('#gamepad .cats [data-cat=Army]').hidden }); })()`)); // one Army button holds the crab (2026-11-23)
   const p = medidas.play;
-  ok(p.antes.gp && p.antes.real && !p.real && !p.gp && p.profile, 'gamepad Play does not start the visit through Play now: ' + JSON.stringify(p));
+  ok(p.antes.gp && p.antes.real && p.antes.unsigned && !p.real && !p.gp && p.profile, 'gamepad Play must reopen the HITL entry, and Sign HITL start the visit: ' + JSON.stringify(p));
 
   console.log(JSON.stringify({ piece: 'gamepad', sabotaje: SAB || null, receipt: fallos.length ? 'ROJO' : 'VERDE', medidas, fallos }));
 }
