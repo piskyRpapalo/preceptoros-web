@@ -90,7 +90,8 @@ async function main() {
     await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: reduce ? 'reduce' : 'no-preference' }] });
     await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/?colony=alone` });
     ok(await hasta('!!document.getElementById("visitor-start") && !!window.AtlasTalkHead', 15000), w + ': page or head not loaded');
-    await ev('document.getElementById("visitor-start").click()');
+    await ev('document.getElementById("visitor-start").click()'); await espera(250);
+    await ev('document.getElementById("welcome-play").click()'); // One HITL: Start reopens the entry, the signature starts the visit
     ok(await hasta('!!document.getElementById("visitor-beacon")', 10000), w + ': visit');
     await ev('(()=>{const b=document.querySelector("#map-communication button[data-cat=Communication]"), q=document.querySelector("#map-communication select"); if(!b||!q)throw new Error("visible_chat_controls_missing"); b.click(); q.value="chat"; q.dispatchEvent(new Event("change",{bubbles:true})); return 1})()');
     const r = JSON.parse(await ev(ASK + '(' + reduce + ')')); medidas[w] = { steps: (r.steps || []).length, headW: r.headW, buttons: r.buttons };
