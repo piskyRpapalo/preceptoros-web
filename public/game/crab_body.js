@@ -50,16 +50,29 @@
   }
 
   // draw(g, x, y, k, P, H, alpha): the crab body in Acho (shell from the polar wave, claws, legs, eyes on stalks).
+  // ghost(g, x, cy, k, ink, white, bob): before the HITL signature (Sovereign 2026-11-25) the viewer is a classic sheet
+  // ghost: a white sheet with a wavy hem, two black eyes and two crab claws. Signing turns it into the living crab.
+  function ghost(g, x, cy, k, ink, white, bob) {
+    var w = 11 * k, top = cy - 13 * k, hem = cy + 9 * k, sw = Math.sin(bob * Math.PI) * 1.5 * k, i;
+    [-1, 1].forEach(function (s) { var cx = x + s * (w + 4 * k), cy2 = cy + 1 * k; // the claws, one a side
+      g.fillStyle = white; g.beginPath(); g.moveTo(x + s * w * 0.8, cy + 2 * k); g.lineTo(cx, cy2); g.stroke();
+      var m = s > 0 ? 0 : Math.PI; g.beginPath(); g.moveTo(cx, cy2); g.arc(cx, cy2, 4.2 * k, m + 0.6, m - 0.6 + 2 * Math.PI); g.closePath(); g.fill(); g.stroke(); }); // an open pincer, mouth outward
+    g.fillStyle = white; g.beginPath(); g.moveTo(x - w, hem); g.lineTo(x - w, cy - 3 * k); g.arc(x, cy - 3 * k, w, Math.PI, 0);
+    g.lineTo(x + w, hem); for (i = 0; i < 4; i++) { var x0 = x + w - (i + 0.5) * w / 2; g.quadraticCurveTo(x0 + sw, hem + (i % 2 ? -3 : 3) * k, x + w - (i + 1) * w / 2, hem); }
+    g.closePath(); g.fill(); g.stroke();
+    g.fillStyle = ink; [-1, 1].forEach(function (s) { g.beginPath(); g.ellipse(x + s * 4 * k, top + 9 * k, 1.9 * k, 2.8 * k, 0, 0, 2 * Math.PI); g.fill(); });
+  }
   function draw(g, x, y, k, P, H, ringAlpha, oval) {
     var F = H.T.FRONT_DOOR, ink = H.css(H.rgbOf(H.T.NEUTRAL.ink)), paper = H.rgbOf(H.T.NEUTRAL.paper);
-    // Look around without signing HITL (Sovereign 2026-11-24): the viewer's own crab is a ghost, grey and see-through.
-    var gh = root.AtlasVisitorGhost === true && !P.other, paper0 = H.rgbOf(H.T.NEUTRAL.paper);
-    var sea = gh ? H.mix(H.rgbOf(H.T.NEUTRAL.ink), paper0, 0.6) : H.mix(H.rgbOf(F.cyan), H.rgbOf(F['FIRMADO.base']), 0.35), R = 12 * k, dip = sink(P.sp === undefined ? sp : P.sp), cy = y - 11 * k - P.bob * 2 * k + dip * 2.2 * k, i, a, L = P.look === undefined ? look : P.look;
+    // Look around without signing HITL (Sovereign 2026-11-24/25): the viewer's own crab is a sheet ghost (ghost()).
+    var gh = root.AtlasVisitorGhost === true && !P.other;
+    var sea = H.mix(H.rgbOf(F.cyan), H.rgbOf(F['FIRMADO.base']), 0.35), R = 12 * k, dip = sink(P.sp === undefined ? sp : P.sp), cy = y - 11 * k - P.bob * 2 * k + dip * 2.2 * k, i, a, L = P.look === undefined ? look : P.look;
     g.save(); g.lineJoin = 'round'; g.lineCap = 'round';
     g.globalAlpha = ringAlpha; g.lineWidth = Math.max(1, 2.2 * k); g.strokeStyle = H.css(H.rgbOf(F['PROPUESTA.base']));
     g.beginPath(); oval(g, x, y - 2 * k, 19 * k, 7.5 * k, 0, 2 * Math.PI); g.stroke();
     g.globalAlpha = 0.25; g.fillStyle = ink; g.beginPath(); oval(g, x, y - 2 * k, 13 * k, 4.5 * k, 0, 2 * Math.PI); g.fill();
-    g.globalAlpha = gh ? 0.5 : 1; g.strokeStyle = ink; g.lineWidth = Math.max(1, 1.8 * k);
+    g.globalAlpha = 1; g.strokeStyle = ink; g.lineWidth = Math.max(1, 1.8 * k);
+    if (gh) { ghost(g, x, cy, k, ink, H.css(paper), P.bob || 0); g.restore(); return; }
     for (i = 0; i < 6; i++) {                      // legs: three a side; a lifted leg bends up and reaches forward
       var s = i < 3 ? -1 : 1, j = i % 3, up = P.legs[i] * 3.5 * k, bx = x + s * (6 + j * 3.5) * k, by = cy + 3 * k;
       g.beginPath(); g.moveTo(bx, by); g.lineTo(bx + s * 5 * k, by + 3 * k - up); g.lineTo(bx + s * (7 + P.legs[i] * 1.5 + dip * 2) * k, by + (7 - dip * 2) * k - up * 0.6); g.stroke();
