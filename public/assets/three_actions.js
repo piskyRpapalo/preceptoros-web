@@ -8,15 +8,15 @@
   var box = document.getElementById('four-actions');
   if (!box) return;
   var REL = 'https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/';
-  var APK = 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v16-20261124/PreceptorOS-android-0.3.1-v16.apk';
+  var APK = 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v22-20261125/PreceptorOS-android-0.3.1-v22.apk';
   var P = {
     android: {
       name: 'Android',
-      get: { lines: ['PreceptorOS Native Android 0.3.1 v16 (APK, 122 MB): six panels, the crab and a bundled experimental small local model.',
+      get: { lines: ['PreceptorOS Native Android 0.3.1 v22 (APK, 124 MB): six panels, the crab and a bundled experimental small local model.',
         'The old OpenWorld 1.0.1 TWA (1.34 MB) is a separate legacy web wrapper. It is not the PreceptorOS APP and has no model inside.',
         'Node joining requires your consent and Sovereign approval; installing alone is not LIVE.'],
-        link: [APK, 'Download PreceptorOS APP (APK, 122 MB)'], sha: '0a8a996de1e7723f22740877a988c121dc59c056f02989e3e68b22da04497ab5', download: true },
-      update: { lines: ['The native v16 APK updates a compatible Android org.preceptoros.app installation after Android checks the existing signing certificate. VersionCode 16 is higher than v7 and every earlier version.',
+        link: [APK, 'Download PreceptorOS APP (APK, 124 MB)'], sha: 'd29482b6247f95f2003ffa9ad6285affcac54ed1d7395a7f5807ef131196529d', download: true },
+      update: { lines: ['The native v22 APK updates a compatible Android org.preceptoros.app installation after Android checks the existing signing certificate. VersionCode 22 is higher than v7 and every earlier version.',
         'The public website cannot inspect an APP on another origin. It cannot read local identity or silently install updates; never uninstall or clear data to force an upgrade.',
         'Browser-only APP installations use their original trusted origin and separate update controls.'],
         link: ['/get-the-app/#update-existing-app', 'Open the PreceptorOS APP update instructions'] }

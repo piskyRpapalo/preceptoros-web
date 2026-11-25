@@ -18,14 +18,14 @@ function juez(t, r) {
   const shaA = Object.fromEntries(and.assets.map((a) => [a.nombre, a.sha256]));
   // 2026-11-19: native v7 APK is declared in r.native with a separate data-asset key; include its SHA in the fingerprint map.
   const nat = r.native || {};
-  const shaN = nat.sha256 ? { 'native-v16-apk': nat.sha256 } : {};
+  const shaN = nat.sha256 ? { 'native-v22-apk': nat.sha256 } : {};
   if (r.native) {
     if (!/^[a-f0-9]{64}$/.test(nat.sha256 || '')) fallos.push('native APK hash not valid');
     if (nat.url !== nat.source_url ||
-        nat.source_url !== 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v16-20261124/PreceptorOS-android-0.3.1-v16.apk') {
+        nat.source_url !== 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v22-20261125/PreceptorOS-android-0.3.1-v22.apk') {
       fallos.push('native direct GitHub Release differs from pinned source URL');
     }
-    if (!t.includes('data-asset="native-v16-apk">' + nat.sha256 + '</code>')) {
+    if (!t.includes('data-asset="native-v22-apk">' + nat.sha256 + '</code>')) {
       fallos.push('native APK fingerprint differs from card');
     }
     const m = t.match(/<script type="application\/json" id="gate-datos">([^<]+)<\/script>/);
@@ -50,7 +50,7 @@ function juez(t, r) {
       fallos.push('verified public release falsely marked unavailable');
     }
     const worker = leer('worker/index.js');
-    if (!worker.includes('url.pathname === \'/get-the-app/PreceptorOS-android-0.3.1-v16.apk\'') ||
+    if (!worker.includes('url.pathname === \'/get-the-app/PreceptorOS-android-0.3.1-v22.apk\'') ||
         !worker.includes(nat.source_url)) {
       fallos.push('native same-origin redirect not pinned to release asset');
     }
@@ -65,7 +65,7 @@ function juez(t, r) {
   }
   bajas.forEach((u) => { if (!(u.startsWith(base) && u.slice(base.length) in sha) &&
       !(and.version && u.startsWith(baseA) && u.slice(baseA.length) in shaA) &&
-      !(nat.publicado === true && u === nat.source_url && /^[a-f0-9]{64}$/.test(nat.sha256 || '') && nat.bytes === 121756982)) {
+      !(nat.publicado === true && u === nat.source_url && /^[a-f0-9]{64}$/.test(nat.sha256 || '') && nat.bytes === 123685798)) {
     fallos.push('download not in the card: ' + u);
   } });
   const huellas = [...t.matchAll(/<code class="sha" data-asset="([^"]+)">([0-9a-f]{64})<\/code>/g)];
@@ -131,7 +131,7 @@ test('SABOTAGE NORTE 5 a1 · an invented signed receipt or an invented sha256 tu
 // and no page may infer installed native version or report device telemetry without consent.
 test('Android release is offered as a one-click APK download and a distinct update action', () => {
   const native = R.native;
-  if (!native || !/^[0-9a-f]{64}$/.test(native.sha256) || native.bytes !== 121756982 ||
+  if (!native || !/^[0-9a-f]{64}$/.test(native.sha256) || native.bytes !== 123685798 ||
       native.publicado !== true) { throw new Error('native Android release unverified'); }
   const embedded = JSON.parse(PAGINA.match(/<script type="application\/json" id="gate-datos">([^<]+)<\/script>/)[1]);
   if (['url','sha256','version','bytes'].some((k) => embedded.android[k] !== native[k]) ||
@@ -173,7 +173,7 @@ test('Homepage exposes native Android v7 as download, while web wrapper stays on
   if (home.includes('/get-the-app/PreceptorOS-android-1.0.1.apk')) throw new Error('homepage promotes old wrapper');
   if (!js.includes("var APK = '" + native.source_url + "'")) throw new Error('homepage Android source is legacy APK');
   if ((js.split(native.sha256).length - 1) !== 1) throw new Error('Android native SHA must appear once');
-  if (!js.includes("'Download PreceptorOS APP (APK, 122 MB)'") ||
+  if (!js.includes("'Download PreceptorOS APP (APK, 124 MB)'") ||
       !js.includes("'Download the APP installer (install.sh)'")) throw new Error('download paths mislabeled');
   if (!js.includes('It is not the PreceptorOS APP and has no model inside')) throw new Error('legacy wrapper not distinguished');
   if (!js.includes('The public website cannot inspect an APP on another origin')) throw new Error('false update claim');
@@ -184,8 +184,8 @@ test('Homepage exposes native Android v7 as download, while web wrapper stays on
 // Native v7 publicly published, source URL and SHA pinned, legacy TWA secondary.
 test('Native v7 · manifest and gate declare the real public native APK', () => {
   const nat=R.native;
-  if (nat.version !== 'android-mvp-v16-20261124' || nat.sha256 !== '0a8a996de1e7723f22740877a988c121dc59c056f02989e3e68b22da04497ab5' ||
-      nat.bytes !== 121756982 || nat.package !== 'org.preceptoros.app' || nat.versionCode !== 16 ||
+  if (nat.version !== 'android-mvp-v22-20261125' || nat.sha256 !== 'd29482b6247f95f2003ffa9ad6285affcac54ed1d7395a7f5807ef131196529d' ||
+      nat.bytes !== 123685798 || nat.package !== 'org.preceptoros.app' || nat.versionCode !== 22 ||
       nat.publicado !== true || nat.estado !== 'MEDIDO' || nat.causa !== null) throw new Error('native release contract mismatch');
   if (nat.certificate_sha256 !== '16761a1e61376506acf4abdadfdddeb96ff18b4cc80a3d98205c91648e4c010f') throw new Error('native cert drift');
   const embedded=JSON.parse(PAGINA.match(/<script type="application\/json" id="gate-datos">([^<]+)<\/script>/)[1]);
@@ -201,7 +201,7 @@ test('Native v7 · direct Release is primary; optional exact Worker redirect sti
   let assetHits=0;
   const env={ASSETS:{fetch:async()=>{assetHits++;return new Response('not an APK',{status:404});}}};
   for(const method of ['GET','HEAD']){
-    const r=await worker.fetch(new Request('https://preceptoros.org/get-the-app/PreceptorOS-android-0.3.1-v16.apk',{method}),env);
+    const r=await worker.fetch(new Request('https://preceptoros.org/get-the-app/PreceptorOS-android-0.3.1-v22.apk',{method}),env);
     if (r.status !== 302 || r.headers.get('location') !== R.native.source_url || assetHits) {
       throw new Error('pinned Worker redirect did not route '+method+' to GitHub release');
     }

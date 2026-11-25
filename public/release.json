@@ -121,19 +121,19 @@
   "probado": "installed over 1.0.0 on an Android phone (same signature); its four shortcuts registered, 2026-11-09"
  },
  "native": {
-  "version": "android-mvp-v16-20261124",
-  "fecha": "2026-11-24",
-  "que": "Native Android v16 (APP main 6553e4a) with bundled local SmolLM2-135M (same model and JNI engine as v7). Public APK verified by HTTPS download SHA-256 on 2026-11-24. On-device first answer: NO_DATA(on_device_generation_not_run). Not a node LIVE grant.",
-  "sha256": "0a8a996de1e7723f22740877a988c121dc59c056f02989e3e68b22da04497ab5",
-  "bytes": 121756982,
+  "version": "android-mvp-v22-20261125",
+  "fecha": "2026-11-25",
+  "que": "Native Android v22 (APP main 56930aa) with bundled local SmolLM2-135M; the Talk runner is built for ARMv8.2+dotprod (no i8mm), so it runs on phones such as the Doogee S110. Public APK verified by HTTPS download SHA-256 on 2026-11-25. On-device answer: measured on Doogee S110 (Talk, this-phone model, no network) on 2026-11-25. Not a node LIVE grant.",
+  "sha256": "d29482b6247f95f2003ffa9ad6285affcac54ed1d7395a7f5807ef131196529d",
+  "bytes": 123685798,
   "package": "org.preceptoros.app",
-  "versionCode": 16,
+  "versionCode": 22,
   "publicado": true,
   "estado": "MEDIDO",
   "causa": null,
   "remedio": "Install the signed APK; configure your identity and request owner review explicitly. Aduana approval, provisioning and a fresh heartbeat are separate gates.",
-  "url": "https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v16-20261124/PreceptorOS-android-0.3.1-v16.apk",
-  "source_url": "https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v16-20261124/PreceptorOS-android-0.3.1-v16.apk",
+  "url": "https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v22-20261125/PreceptorOS-android-0.3.1-v22.apk",
+  "source_url": "https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v22-20261125/PreceptorOS-android-0.3.1-v22.apk",
   "certificate_sha256": "16761a1e61376506acf4abdadfdddeb96ff18b4cc80a3d98205c91648e4c010f"
  }
 }
