@@ -13,8 +13,8 @@ const hash=blob=>createHash('sha256').update(blob).digest('hex');
 const manifest=JSON.parse(read('public/app/package-manifest.json'));
 const files=Object.keys(manifest.files);
 const official='e9074a88b7b8e00847ea0d789241fe95d62536d3bb84963028ab85dc003d50da';
-const nativeUrl='https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v16-20261124/PreceptorOS-android-0.3.1-v16.apk';
-const nativeSha='0a8a996de1e7723f22740877a988c121dc59c056f02989e3e68b22da04497ab5';
+const nativeUrl='https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v22-20261125/PreceptorOS-android-0.3.1-v22.apk';
+const nativeSha='d29482b6247f95f2003ffa9ad6285affcac54ed1d7395a7f5807ef131196529d';
 test('official APP source and all 15 asset digests match the manifest',()=>{
   assert.equal(manifest.schema,'preceptoros.public-mini-package/1');
   assert.equal(manifest.source_repository,'piskyRpapalo/preceptoros-app');
@@ -71,8 +71,8 @@ test('WEB public door prioritizes real Android v7, distinguishes static MINI and
   const release = JSON.parse(read('public/release.json')).native;
   assert.equal(release.url, nativeUrl);
   assert.equal(release.sha256, nativeSha);
-  assert.equal(release.bytes, 121756982);
-  assert.doesNotMatch(door, /href="\/get-the-app\/PreceptorOS-android-0\.3\.1-v16\.apk"/, 'no dead local native APK download');
+  assert.equal(release.bytes, 123685798);
+  assert.doesNotMatch(door, /href="\/get-the-app\/PreceptorOS-android-0\.3\.1-v22\.apk"/, 'no dead local native APK download');
   assert.match(door,/id="native-android-download"/);
   assert.match(door,/Legacy OpenWorld 1\.0\.1/);
   assert.match(door,/href="\/app\/">Open the browser MINI/);

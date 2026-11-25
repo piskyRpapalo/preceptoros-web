@@ -151,9 +151,9 @@ async function main() {
   // A 156 MB APK cannot be relied on as a public static Cloudflare asset.
   // The observed local Worker route returned 404 in production on 2026-11-20.
   // Both visible CTAs must go directly to the official signed GitHub Release.
-  const native = 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v16-20261124/PreceptorOS-android-0.3.1-v16.apk';
+  const native = 'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v22-20261125/PreceptorOS-android-0.3.1-v22.apk';
   const pinned = medida.guia.nativeRoute === native && medida.guia.nativeDoorRoute === native &&
-    medida.guia.nativeSha === '0a8a996de1e7723f22740877a988c121dc59c056f02989e3e68b22da04497ab5';
+    medida.guia.nativeSha === 'd29482b6247f95f2003ffa9ad6285affcac54ed1d7395a7f5807ef131196529d';
   ok(medida.guia.bajas + (pinned ? 1 : 0) >= 3 && medida.guia.huellas >= 2 && medida.guia.filas >= 4,
     '/get-the-app/ lost direct verified GitHub Release, fingerprints or test table');
   ok(!/\bundefined\b|\bNaN\b/.test(medida.guia.texto), 'missing value shown on /get-the-app/');

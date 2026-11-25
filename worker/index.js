@@ -32,10 +32,11 @@ export default {
     // One pinned APK release redirect: public GitHub asset, no credentials, no generic proxy.
     // The old 1.34 MB TWA remains available separately. Never serve a 156 MB APK from assets.
     if ((request.method === 'GET' || request.method === 'HEAD') &&
-        (url.pathname === '/get-the-app/PreceptorOS-android-0.3.1-v16.apk' ||
+        (url.pathname === '/get-the-app/PreceptorOS-android-0.3.1-v22.apk' ||
+         url.pathname === '/get-the-app/PreceptorOS-android-0.3.1-v16.apk' || // old v16 links land on the current APK (same signer)
          url.pathname === '/get-the-app/PreceptorOS-android-0.3.0-v7.apk')) { // old v7 links land on the current APK (same signer)
       return withSecurity(Response.redirect(
-        'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v16-20261124/PreceptorOS-android-0.3.1-v16.apk', 302), url.pathname);
+        'https://github.com/piskyRpapalo/preceptoros-app/releases/download/android-mvp-v22-20261125/PreceptorOS-android-0.3.1-v22.apk', 302), url.pathname);
     }
     if (url.pathname === '/api/world-state') return worldState(request, env);
     return withSecurity(await env.ASSETS.fetch(request), url.pathname);
