@@ -94,10 +94,13 @@ async function main() {
   ok(/NO_DATA · /.test(antes.line) && antes.profile !== 'true' && antes.sheet, 'before Play, Summons does not say NO_DATA with its cause: ' + JSON.stringify([antes.line, antes.profile, antes.sheet]));
   await pulsa('#building-sheet .bs-bar > .bs-tool:last-child');
 
-  // 1 · one press: an ephemeral crab, no login, nothing stored.
-  await pulsa('#gp-play');
-  const crab = await hasta((m) => /^Visitor-[0-9a-f]{8} · /.test(m.h1)); medidas.play = { presses: 1, h1: crab.h1, stored: crab.stored };
-  ok(/^Visitor-[0-9a-f]{8} · /.test(crab.h1) && crab.login === 0 && crab.stored === 0, 'Play now does not make an ephemeral crab in one press: ' + JSON.stringify(medidas.play));
+  // 1 · Play reopens the one HITL entry (2026-11-24) and makes no crab by itself; «Sign HITL» makes an ephemeral crab, no login, nothing stored.
+  await pulsa('#gp-play'); await espera(300);
+  const unsigned = await ev(`!document.getElementById('visitor-beacon') && window.AtlasVisitorGhost === true && document.activeElement && document.activeElement.id === 'welcome-play'`);
+  ok(unsigned, 'Play must reopen the HITL entry (focus on Sign HITL) without making a crab');
+  await pulsa('#welcome-play');
+  const crab = await hasta((m) => /^Visitor-[0-9a-f]{8} · /.test(m.h1)); medidas.play = { presses: 2, signed: true, h1: crab.h1, stored: crab.stored };
+  ok(/^Visitor-[0-9a-f]{8} · /.test(crab.h1) && crab.login === 0 && crab.stored === 0, 'Sign HITL does not make an ephemeral crab: ' + JSON.stringify(medidas.play));
 
   // 2 · a tap on a near hex walks: the heading says the new place.
   const lugar = (h) => h.replace(/^Visitor-[0-9a-f]{8} · /, '');
