@@ -23,7 +23,8 @@
     liveStatus.textContent = (data.ok ? 'Live nodes: ' + data.live + '.' : 'Live nodes: NO_DATA · ' + (data.cause || 'publisher unavailable') + '.') +
       ' Shared visitors: NO_DATA unless open authority is measured.';
   });
-  function close() { card.hidden = true; }
+  var byOpen = null; // the Help category open() pressed; closing the card releases it so the map gets its full frame back
+  function close() { card.hidden = true; if (byOpen && byOpen.getAttribute('aria-pressed') === 'true') { byOpen.click(); } byOpen = null; }
   // One signature (Sovereign 2026-11-24): without HITL the visitor only looks, as a ghost crab; the signed account ends it.
   root.AtlasVisitorGhost = true;
   play.addEventListener('visitor:render', function (e) { root.AtlasVisitorGhost = !(e.detail && e.detail.account); });
@@ -57,7 +58,7 @@
       throw error;
     } finally { go.disabled = false; }
   }
-  root.AtlasWelcome = { enter: enter, look: close, open: function () { var c = doc.querySelector('.cats [data-cat=Welcome]'), li = card.closest && card.closest('[data-cat]'); if (c && (!li || li.style.display === 'none')) { c.click(); }
+  root.AtlasWelcome = { enter: enter, look: close, open: function () { var c = doc.querySelector('.cats [data-cat=Welcome]'), li = card.closest && card.closest('[data-cat]'); if (c && (!li || li.style.display === 'none')) { c.click(); byOpen = c; }
     card.hidden = false; if (go) { go.focus({ preventScroll: true }); } } };
   if (go) { go.addEventListener('click', function () { enter(true, skip && skip.checked).catch(function () {}); }); }
   if (doc.getElementById('visitor-beacon')) { close(); } else { card.hidden = false; if (go) { go.focus({ preventScroll: true }); } }
