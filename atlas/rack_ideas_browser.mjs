@@ -108,7 +108,8 @@ async function main() {
   medidas.visita = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)); let started = false;
     document.getElementById('visitor-play').addEventListener('visitor:render', (e) => { if (e.detail && e.detail.account) started = true; });
     const vis = (e) => e && !e.hidden && e.offsetParent, b = ['#welcome-play', '#gp-play', '#play-now'].map((q) => document.querySelector(q)).find(vis);
-    if (b) b.click(); for (let i = 0; i < 100 && !started; i++) await w(100);
+    if (b) b.click(); await w(250); const g = document.getElementById('welcome-play'); if (!started && vis(g)) g.click(); // One HITL: Play reopens the entry, the signature starts the visit
+    for (let i = 0; i < 100 && !started; i++) await w(100);
     return JSON.stringify({ pressed: b ? '#' + b.id : null, started }); })()`));
   ok(medidas.visita.started, 'the visit did not start from Play: ' + JSON.stringify(medidas.visita));
   ok(pedidas.length === 0, 'starting the visit asked the network: ' + pedidas.slice(0, 3));
