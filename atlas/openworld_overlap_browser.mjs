@@ -95,7 +95,10 @@ try {
     m.welcome_help_listen = await t.ev(`({ welcome: !!document.getElementById('sheet-welcome'), listen: !!document.getElementById('listen'), help: !!document.querySelector('#entry-tools, [data-cat=Help], #help') })`);
     ok(m.welcome_help_listen.welcome && m.welcome_help_listen.listen && m.welcome_help_listen.help, w + ': Welcome/Help/Listen lost');
     await t.ev(`document.getElementById('gp-play').click()`); await espera(400);
-    await t.ev(`(() => { for (const s of ['#play-now', '#visitor-start']) { const e = document.querySelector(s); if (e && e.offsetParent) { e.click(); return s; } } return null; })()`);
+    // Codex 2026-11-24 regression: Play never creates an account by itself; it reopens the one HITL entry.
+    ok(await t.ev(`!document.getElementById('visitor-beacon') && !document.getElementById('visitor-step') && window.AtlasVisitorGhost === true`), w + ': Play created a visit without the HITL signature');
+    await t.ev(`(() => { for (const s of ['#play-now', '#visitor-start']) { const e = document.querySelector(s); if (e && e.offsetParent) { e.click(); return s; } } return null; })()`); await espera(200);
+    await t.ev(`document.getElementById('welcome-play') && document.getElementById('welcome-play').offsetParent && document.getElementById('welcome-play').click()`);
     ok(await until(t, `!!document.getElementById('visitor-step')`), w + ': the visit did not start');
     await espera(400);
     // Keyboard: Players → Nodes in that order (Share lives in Settings since 2026-11-23, ow_topbar.js).

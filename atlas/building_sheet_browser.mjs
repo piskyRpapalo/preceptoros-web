@@ -157,7 +157,8 @@ async function main() {
     await foto('building-sheet-' + n + '.png');
     // With a visit, the seven doors really open: the panel is pressed, the sheet closes, focus lands in the panel.
     if (n === '360') {
-      await ev(`document.getElementById('play-now') && document.getElementById('play-now').click()`);
+      await ev(`document.getElementById('play-now') && document.getElementById('play-now').click()`); await new Promise((r) => setTimeout(r, 200));
+      await ev(`document.getElementById('welcome-play') && document.getElementById('welcome-play').offsetParent && document.getElementById('welcome-play').click()`); // Play reopens the one HITL entry; «Sign HITL» starts the visit
       const abiertas = [], cerradas = [];
       for (const b of contrato.buildings) { for (const o of b.options.filter((x) => DOORS.DOORS[x.id] && DOORS.live(x))) {
         const cat = DOORS.DOORS[o.id]; let r = null;

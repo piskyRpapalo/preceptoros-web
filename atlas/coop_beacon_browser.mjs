@@ -117,7 +117,7 @@ async function main() {
     }
     if (!ok(await until(t, `!!(window.AtlasSharedCrabs && window.AtlasSharedCrabs.mounted && document.getElementById('play-now'))`, 30000), t.name + ': the page did not mount shared crabs')) { throw new Error('NO_DATA: ' + t.name + ' cannot run'); }
     await t.ev(SPY);
-    await t.ev(`(document.getElementById('play-now').click(), true)`);
+    await t.ev(`(document.getElementById('play-now').click(), true)`); await new Promise((r) => setTimeout(r, 200)); await t.ev(`(document.getElementById('welcome-play') && document.getElementById('welcome-play').offsetParent && document.getElementById('welcome-play').click(), true)`);
     ok(await until(t, `(() => { const b = document.getElementById('shared-crabs-join'); return !!b && !b.hidden; })()`, 20000), t.name + ': no share button');
     ok(await t.ev(`!document.getElementById('coop-beacon')`), t.name + ': the beacon bar must not exist before consent');
     await t.ev(`(document.getElementById('shared-crabs-join').click(), true)`);

@@ -215,14 +215,14 @@
       renderPeople(null); updateButton();
     }
     box.addEventListener('visitor:render', function (e) {
-      account = e.detail && e.detail.account ? e.detail.account : null;
+      var was = account; account = e.detail && e.detail.account ? e.detail.account : null;
       // A real visitor is independent of a colony node. Reuse the EXISTING local free-walk
       // cabin (0,0) when no node is LIVE. This is a crab spawn, NOT a node/service admission.
       if (account && remote && !walker()) {
         var ow = root.AtlasOpenworldView && root.AtlasOpenworldView();
         if (ow && ow.controls && ow.controls.start) { ow.controls.start(true); }
       }
-      updateButton(); if (account) { held = false; auto(); }
+      updateButton(); if (account && account !== was) { held = false; } if (account) { auto(); } // a re-render never undoes Disconnect; only a new HITL visit does
     });
     box.addEventListener('visitor:end', function () {
       account = null; held = false;
