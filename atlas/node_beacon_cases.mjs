@@ -89,3 +89,12 @@ test('airplane-mode node beacon refuses API traffic and does not keep stale LIVE
   assert.equal(calls, 0, 'offline must attempt zero network calls');
   assert.equal(context.module.exports.nodes().length, 0, 'offline must not retain old LIVE');
 });
+// Sovereign 2026-11-25: «la línea negra del suelo es la frontera del edificio del nodo; debe haber solo 1». The three
+// public nodes of that day stood at (0,0), (2,0), (3,0) — one plot. Each cédula nodo.N now stands at plot N-1's centre.
+test('one node building per plot: nodo.1..3 land in three different radius-8 plots; no cédula keeps its own cell', () => {
+  const C = createRequire(import.meta.url)('../public/game/map_chart.js'), at = (id, q, cedula) => ({ id, q, r: 0, alive: true, seal: 'LIVE', since: '2026-11-25', cedula });
+  const got = B.pick({ colonia: { nodes: [at('primer-ancla', 0, 'nodo.1.primer-ancla'), at('doggee-s110', 2, 'nodo.2.doggee-s110'), at('tank-3', 3, 'nodo.3.tank-3'), at('x', 5)], buildings: [] } });
+  assert.deepEqual(got.map((n) => [n.q, n.r]), [[0, 0], [17, -8], [8, 9], [5, 0]]);
+  assert.deepEqual(got.slice(0, 3).map((n) => [n.q, n.r]), C.neighbourhood([0, 0], 8).slice(0, 3), 'the same plots the map draws');
+  assert.equal(new Set(got.slice(0, 3).map((n) => C.key(C.chunkOf(n.q, n.r, 8)))).size, 3, 'three plots, one tower each');
+});

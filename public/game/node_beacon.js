@@ -1,15 +1,11 @@
-// The real nodes on the map (Sovereign 2026-11-15; WORLD/ACHO/LIVE NODE commission). Four separate truths, never mixed:
-// admitted in World (the gateway's /api/world-state lists it, at its own cell) · heartbeat (LIVE only with one in the last
-// 5 minutes, else asleep with its age and cause) · can talk (a chatbot is declared for it: today only Node 0 (the Beelink host), where
-// Hexelion runs) · can run tasks (never claimed here). Each node is a mast with a lantern, lit only when LIVE. Three ways
-// to perceive one truth: the eye (mast, lamp, words), the ear (its description spoken and a short motif, only when the
-// visitor turned the spoken world on), the machine (an «acho:event» with status, source and age). A tap — or the node's
-// keyboard door — opens «Talk to Node 0»: the Hexelion model answers (map_chat.js → classroom_chat.js → the gateway's chat).
+// The real nodes on the map (Sovereign 2026-11-15). Four truths, never mixed: admitted in World (/api/world-state) ·
+// heartbeat (LIVE only with one in the last 5 minutes) · can talk (a declared chatbot: today only Node 0, Hexelion) ·
+// can run tasks (never claimed). Eye (tower, lamp, words), ear (spoken + motif) and machine («acho:event») share one truth.
 // Projection only: this file sends nothing about the visitor; the only call is its read of /api/world-state.
 (function (root) {
   'use strict';
   var NAMES = { 'primer-ancla': 'Node 0', onexstation: 'Onexstation', 'doggee-s110': 'Doogee S110', 'tank-3': 'Tank 3' };
-  var TALKS = { 'primer-ancla': 'Node 0' }; // the public name of its chatbot (the Hexelion model answers through the gateway) // the chatbot each node declares; absent = cannot talk (NO_DATA)
+  var TALKS = { 'primer-ancla': 'Node 0' }; // the chatbot each node declares; absent = cannot talk (NO_DATA)
   var WS = '/api/world-state', nodes = [], landmarks = [], hits = [], asked = 0, cause = '', told = {}; // WS: a worker route, not a file
   var DAY = 86400000;
   function nameOf(n) { return NAMES[n.id] || n.id; }
@@ -26,6 +22,7 @@
   }
   // Pure: only measured LIVE rows from Aduana are map doors. Pending admission and STALE stay in the publisher's
   // historical state; a missing measurement never becomes a visible node or inherited chatbot.
+  var PLOTS = [[0,0],[17,-8],[8,9],[-9,17],[-17,8],[-8,-9],[9,-17]]; // map_chart neighbourhood([0,0], 8)
   function pick(d) {
     var list = d && d.colonia && Array.isArray(d.colonia.nodes) ? d.colonia.nodes : [];
     return list.filter(function (n) { return n && typeof n.id === 'string' && n.id !== '' && n.alive === true &&
@@ -33,7 +30,9 @@
       typeof n.since === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(n.since); })
       .map(function (n) { // Sovereign 2026-11-24: every node with its own building stands as the node0 tower, named on it
         var h = (d.colonia.buildings || []).find(function (b) { return b && b.node === n.id && typeof b.id === 'string'; });
-        return { id: n.id, q: n.q, r: n.r, seal: 'LIVE', since: n.since, principal: h ? { id: h.id, estado: 'LIVE' } : null }; });
+        // 2026-11-25: one node per plot; nodo.N stands at plot N-1's centre
+        var m = /^nodo\.([1-7])\./.exec(n.cedula || ''), c = m ? PLOTS[m[1] - 1] : [n.q, n.r];
+        return { id: n.id, q: c[0], r: c[1], seal: 'LIVE', since: n.since, principal: h ? { id: h.id, estado: 'LIVE' } : null }; });
   }
   function principalBuildings(d) {
     var S = root.AtlasOpenworldState;
