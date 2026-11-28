@@ -22,7 +22,7 @@ The integrated direction is:
 
 **Existing OpenWorld state and geometry → bounded deterministic simulation → validated intent → existing authority boundary (Aduana, subject to a future approved contract) → one authoritative world event/history → existing WEB projections and ACHO readers.**
 
-The last two stages are not currently available for NPC/world mutations. They are requirements, not implemented components.
+The last two stages are not currently available for NPC/world mutations. They are requirements, not implemented components. Atlas canon/state-consumption-contract-20261112.md remains a shared-state consumption proposal; it does not supply the missing WEB world writer or replay authority.
 
 ### Non-negotiable distinctions
 
@@ -86,6 +86,7 @@ All five requested repository HEADs were checked against their main branches on 
 | aduana | 1a2167a2cef5f7d419775b6ad116039b503c3960 | MATCH |
 | preceptoros-app | 57cce851cefafa1511e154ee040f9492c0a9c07b | MATCH |
 | babel | d871b3b390e23a22cb306fc74ec7bbb67e573646 | MATCH |
+| roadmap (historical context) | b5c7d1d0ab8bc80efa8160f0096d4264ab5e96a1 | MATCH |
 
 Aduana's default branch is stale at codex/node-gateway-worker-20261016. This audit deliberately pins and inspects the requested main HEAD, not the default branch.
 
@@ -169,6 +170,8 @@ Do not compare these radii as if they used the same unit. UI wording must state 
 - For game simulations, optional ACHO seal may be SIMULATED only; never LIVE or FIRMADO. Audio-off suppresses output but not verdict/state. Reduced motion preserves the same final state. Keep keyboard controls and minimum 44 px targets.
 
 ### 3.7 R2 source gap and implementation status
+
+The existing docs/visitor-conquest.md says a verified practice victory records a local conquest. That historical text conflicts with the accepted R2 contract and must be reconciled in the future R2 implementation/documentation slice; it is not authority to preserve practice conquest. docs/visitor-battles.md is likewise historical evidence for the practice replay path, not a replacement for the accepted mode contract.
 
 The source still contains the accepted-boundary defects. They are recorded, not modified:
 
@@ -411,7 +414,7 @@ Do not silently equate light with luz or copper with cobre and do not infer that
 
 ### 7.2 Holdings
 
-holdings_live.js and the Rust/WASM ledger define a visit-local game simulation: garrisons, yields, oxygen upkeep, raids, and retaking. The source states that the holdings are not stored or sent. Commission C records that the main page loader omits the live/WASM path. Treat this as existing code, not a durable shared economy.
+holdings_live.js and the Rust/WASM ledger define a visit-local game simulation: garrisons, per-tick integer yields, oxygen upkeep, raids, and retaking. The WASM wrapper exposes a RefCell-backed in-page ledger; it is not durable account storage. The source states that the holdings are not stored or sent. Commission C records that the main page loader omits the live/WASM path. Treat this as existing code, not a durable shared economy.
 
 holdings_map.js emits ACHO events and map projections from the local ledger. It does not make the ledger authoritative or persistent.
 
@@ -817,6 +820,8 @@ All WEB links below are pinned to 6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4 unles
 - [Acho language](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/docs/acho-language.md)
 - [Acho visual/audio contract LF-2](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/docs/acho-visual-audio-contract.md)
 - [Historical map canon and status](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/docs/canon-map-details-20261107.md)
+- [Deprecated historical world plan (preserved, not overwritten)](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/docs/worlds/2026-10-25-plan-mundos-jugables.md)
+- [Roadmap colony addendum](https://github.com/piskyRpapalo/roadmap/blob/b5c7d1d0ab8bc80efa8160f0096d4264ab5e96a1/odd/ADDENDUM-VECTORIALIDAD-COLONIA-20261101.md)
 
 ### Aduana
 
