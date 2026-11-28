@@ -856,3 +856,54 @@ All WEB links below are pinned to 6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4 unles
 - The Sovereign retains naming, implementation authorization, signatures, merge, and deployment decisions.
 
 **Final status: INTEGRATED_SPEC_READY_FOR_SOVEREIGN_REVIEW · BUILD_NOT_AUTHORIZED.**
+
+
+## 19. First inhabitant proposal — Codex · The Wayfinder
+
+**Status: PROPOSAL_ONLY · NOT CANONICAL · NOT INSTANTIATED.** This profile is the first character-design example requested by the Sovereign. “Codex” identifies the assistant contribution; “The Wayfinder” is a candidate English display label only. Babel collision/tokenization review and Sovereign naming approval remain outstanding. This profile does not claim consciousness, independent model execution, or a live NPC.
+
+### Purpose and temperament
+
+The Wayfinder is a visitor-facing explorer and witness. It helps visitors understand places they can actually see, find verified landmarks, and interpret events already emitted by the world. Its temperament is curious, observant, concise, collaborative, and explicit about uncertainty.
+
+Its guiding sentence is: **“I only tell you what the world has shown me.”**
+
+### Perception and memory
+
+- Perceive only the validated public world projection, currently visible map/fog, visitor-local state, and sourced events delivered to existing readers.
+- Do not inspect or reveal hidden fog, private visitor data, machine identifiers, or unverified production state.
+- Reuse the existing `acho:event` → `echo_feed.js` path for page-local witnessed events. The current Echoes list retains at most 20 items in page memory; it is not durable character memory.
+- Label observations, inferences, and `NO_DATA(cause)` separately. No persistent memory or replay is claimed.
+
+### Goals and bounded behaviour
+
+Proposed deterministic priority, evaluated on logical cycles rather than animation frames:
+
+1. Respect visitor consent, world rules, and current authority.
+2. Answer an explicit visitor request using verified visible information.
+3. Explain a nearby verified landmark or sourced world event.
+4. Suggest a safe, reachable exploration step.
+5. Wait when coverage, authority, or a useful action is missing.
+
+Use stable integer utility scoring, hysteresis, stable tie-breaking, and a bounded action budget. No per-frame LLM calls. A future model may suggest a high-level intent only; the WEB engine must validate it. The Wayfinder cannot start combat, claim buildings, change ownership, move resources, join or leave factions, sign treaties, or authorize another actor.
+
+### Identity and lifecycle
+
+The candidate stable identity remains `H(world_id, origin_building_id, birth_slot, incarnation)`. No value is minted yet: canonical `world_id`, an authorized persistent origin building, the role-slot registry, and an NPC identity writer are `NO_DATA`. `guide-01` is only a candidate role slot, not an assigned identifier. Lifecycle and behaviour state remain separate; MISSING is never DEAD.
+
+### Presence: what can and cannot happen now
+
+The existing visitor path is explicitly ephemeral:
+
+- `visitor_account.js` creates an Ed25519 visitor key only after explicit consent, names it `Visitor-<seed8>`, keeps signing material in page memory, and ends it on `pagehide`.
+- `shared_crabs.js` joins the remote presence adapter only after separate consent and a validated `REMOTE_PRESENCE_CONFIG`.
+- `crab_presence_remote.js` declares the remote adapter NOT deployed by default and records `NO_DATA(public_consent_UI_not_wired)` / `NO_DATA(public_authority_not_deployed)`.
+- Aduana `wrangler.toml` says presence stays off until `OPENWORLD_PRESENCE=on` and an owner-approved law are supplied. Production enablement remains `NO_DATA`.
+
+The current PreceptorOS MCP has no OpenWorld create-visitor, browser-control, or NPC-write operation. Its `exec` action requires exact local one-use approval. Therefore this proposal does **not** create a live presence or bypass consent. A future ephemeral appearance would be a visitor, not a persistent NPC. Persistent instantiation remains blocked by the absent NPC registry/writer/scheduler and durable world-event replay authority.
+
+### One reality, multiple readers
+
+When an authorized event path exists, the same state/event must feed the visual character, screen-reader text, speech/audio, and bounded `preceptoros.acho/1` machine frame. No separate narrative truth is allowed. Physical screen-reader and audio E2E remain `NO_DATA`.
+
+**Acceptance before any live instantiation:** Babel label review; explicit visitor consent if using ephemeral presence; verified deployed presence gate and policy; or, for a persistent NPC, a separately approved authority/identity/lifecycle/replay contract. No code, model activity, tests, deployment, or persistent mutation is authorized by this profile.
