@@ -73,7 +73,7 @@ Truthful positioning candidate already recorded by Commission D:
 
 “Designed for local-first AI on hardware you control. Explore OpenWorld.”
 
-No vocabulary is coined or canonicalized by this document.
+No vocabulary is coined or canonicalized by this document. Alphabet evidence remains NO_DATA(tokenizer_not_run_and_full_collision_scan_incomplete).
 
 ## 2. Verified source baseline
 
@@ -112,14 +112,14 @@ The Sovereign accepted all five specification boundaries in #7231808714. That ac
 
 ### 3.1 Canonical combat mode
 
-The place resolver is the authority for the encounter mode:
+R2 baseline: D6=CANON_MEASURED; D7=PARTIAL. The place resolver is the authority for the encounter mode:
 
 - Practice place → practice.
 - NPC building place → guardian encounter.
 
 Resolve this mode before canonical result construction and verification. Put it in the canonical result and every relevant round frame. Verification recomputes the mode from the place resolver. The UI, ACHO, quest update, and conquest gate consume the verified result mode.
 
-Preserve the historical digest formula and ordered squad exactly. The mode is derived from the place resolver; do not add a nonce, change RNG, reorder the squad, or alter the historical seed formula.
+Preserve the exact historical digest formula: SHA-256 of preceptoros.visitor-battle/1|place.id|visitSeed|JSON.stringify(orderedSquad). The mode is derived from the place resolver before result construction; place identity already binds the mode, so do not append mode to the seed input. Do not add a nonce, change RNG, reorder the squad, or alter the historical formula.
 
 **Current source gap:** visitor_battle.js resolves a place and computes the historical seed from place ID, visit seed, and ordered squad, but its result does not yet carry canonical mode. Its round sentence is hard-coded as “practice”. visitor_battle_ui.js adds result.practice after verify. visitor_conquest.js then clones the result and deletes that field before re-verification. This is precisely the non-canonical post-verification mutation rejected by the accepted R2 contract.
 
@@ -159,7 +159,14 @@ Do not compare these radii as if they used the same unit. UI wording must state 
 - Balance and fairness remain NO_DATA until a reproducible seeded benchmark exists.
 - Physical screen-reader and audible-output E2E remain NO_DATA.
 
-### 3.6 R2 source gap and implementation status
+### 3.6 Loader, quest, balance, and accessibility boundaries
+
+- The dynamic load graph exists: index → map_drag → map_view_joystick → gamepad.js → dynamic scripts. gamepad.js appends map_fog_layer.js, ow_calm.js, and peers without an explicit dependency/onload chain. visitor_battle_ui.js also appends duel_face, conquest_sheet, and combat_acho dynamically. The sequencing race is SOURCE_ONLY; runtime impact is NO_DATA. Acceptance requires a browser harness that delays and reorders responses and proves required globals are ready before first fog draw and combat challenge.
+- One post-verified-guardian event must update visitor_play state, the existing quest board, next action, and first_adventure from the same game state. game.fought(won) runs only after verified guardian combat. Do not overload visitor:tick, which is used for gestation.
+- Remove or qualify unsupported first_adventure odds/probability statements (including 53%, 17%, 7%, “half”, “one in ten”, and “four in five”). Balance/fairness remain NO_DATA until a reproducible seeded benchmark exists.
+- For game simulations, optional ACHO seal may be SIMULATED only; never LIVE or FIRMADO. Audio-off suppresses output but not verdict/state. Reduced motion preserves the same final state. Keep keyboard controls and minimum 44 px targets.
+
+### 3.7 R2 source gap and implementation status
 
 The source still contains the accepted-boundary defects. They are recorded, not modified:
 
@@ -186,7 +193,7 @@ Browser GET /api/world-state → WEB worker/index.js → worker/world_state.js �
 
 **Visitor-presence path**
 
-Visitor → Aduana presence route → OpenWorldPresence Durable Object → signed /open, /step, /view records → ephemeral presence projection. This is separate from the node-heartbeat and building-declaration path.
+Visitor → Aduana presence route → OpenWorldPresence Durable Object → consent-gated /open, Ed25519 sequence-chained /step, bounded /view → ephemeral presence projection. This is separate from the node-heartbeat and building-declaration path.
 
 **Presentation-event path**
 
@@ -321,11 +328,12 @@ This is a read path. It is not a general world-mutation path.
 
 - Handles /open, /step, and /view.
 - Uses an explicit OPENWORLD_PRESENCE=on configuration gate and a bounded law.
-- Verifies Ed25519 signatures and a sequence/previous-hash chain for accepted visitor actions.
+- For /step updates, verifies Ed25519 signatures and a sequence/previous-hash chain. /open is consent-gated; /view is a bounded read.
 - Uses Durable Object storage transactions for the current presence snapshot.
 - Expires visits after the configured gone_after interval.
 - Deletes the stored presence snapshot when no visits remain.
 - Is visitor presence and cooperation authority, not NPC or territorial authority.
+- The deployment documentation states that the feature remains OFF unless OPENWORLD_PRESENCE=on and an approved law plus required bindings are supplied. The law is shape-validated; it is not itself a signed world policy. Production enablement and public-browser E2E remain NO_DATA.
 
 **D1 node_heartbeats**
 
@@ -344,7 +352,7 @@ This is a read path. It is not a general world-mutation path.
 
 **Current gap**
 
-The Durable Object keeps ephemeral presence state. The D1 tables keep heartbeat and building-declaration evidence. The reviewed source does not establish a durable world event journal with replay for NPC decisions, territorial conquest, title transfers, faction changes, diplomacy, or trade.
+The Durable Object keeps ephemeral presence state. The D1 tables keep heartbeat and building-declaration evidence. The reviewed source does not establish a durable world event journal with replay for NPC decisions, territorial conquest, title transfers, faction changes, diplomacy, or trade. Commission B also records that APP grant_journal is grant-only, not a world journal; Atlas carta/1 is closed and Atlas lugar/1 remains a proposal.
 
 ### 6.3 Required semantic separation
 
@@ -422,7 +430,7 @@ APP politica_v2_validator.py validates a closed v2 document and fails closed on 
 
 APP politica_vista.py reads the v1 runtime policy and reports posture and signature as NO_DATA where v1 has no such fields. Policy v2 is not the active runtime policy.
 
-The five postures—peaceful, hostile, cooperative, closed, and open—remain a proposal for future policy behaviour, not an active faction system.
+The five postures—peaceful, hostile, cooperative, closed, and open—remain a proposal for future policy behaviour, not an active faction system. The v2 validator also records NO_DATA(owner_key_binding_to_nodo_not_wired); atlas.oferta/1 is not defined.
 
 WEB does not edit APP in this mission. APP continues independently.
 
@@ -566,23 +574,23 @@ The design must produce agency, understandable consequences, and fair recovery. 
 
 ## 12. Source-to-contract-to-consumer matrix
 
-| Capability | Existing producer / source | Contract and consumers | Persistence / replay | Projection and evidence |
+| Capability | Existing producer / authority | Contract and consumers | Persistence / replay | Visual / screen-reader / speech-audio / machine projection | Tests and evidence grade |
 |---|---|---|---|---|
-| Map and fog | map_fog_layer.js; fog_of_war.js | Axial hex map/fog rules; map painter and building UI | Visit/page memory; no persistent discovery journal | Visual fog/guardian; tests exist; no test run in this SPEC pass |
-| Encounter squad | visitor_battle.js npcPlace() | Building-key deterministic patrol; visitor battle UI | Re-derived from key; no character registry | Visual battle and replay; deterministic source present |
-| Guardian behaviour | guardian_pressure.js | Distance/visit-win projection; map_fog_layer.js; Talk news; read() | Page-local seen/alerted state | Visual pose, news, conditional notes, machine read(); not autonomous |
-| Combat | visitor_battle.js; visitor_battle_ui.js; combat_acho.js | historical-ticks/1, replay verification, accepted R2 boundaries | Visit seed and ordered squad; bounded round frames | Visual/status/machine readers; historical browser evidence in docs; no fresh tests or physical E2E |
-| Visit conquest | visitor_conquest.js; visitor_battle_ui.js | Same visit + verified guardian result; visitor:changed and map fog | Page/visit local; cleared at visitor:end/pagehide | Map flag and labeled list; not title or persistent ownership |
-| Node presence | Aduana heartbeat route and presence DO | atlas.latido/1 / atlas.paso/1 family; WEB worker/world feed | D1 heartbeat history append-only; DO presence TTL/ephemeral | Node seals and map projection; production multi-client E2E NO_DATA |
-| Building declaration | Aduana registraEdificio() | Authenticated node → assigned building declaration and receipt | D1 node_buildings append-only, one per node | Public building projection; not ownership or transfer |
-| World read projection | worker/world_state.js; world_feed.js; openworld_state.js | preceptoros.openworld-estado/2 | Reads latest heartbeat/building evidence; no general world-event replay | Map/node projection and coverage causes |
-| Echo presentation | producers of acho:event; echo_feed.js; town_echoes.js | Existing presentation bus; Echoes menu and map ring | Last 20 in page memory; no durable journal | Visual + role=log; physical speech/audio not verified |
-| Holdings | holdings_live.js; holdings_wasm.js; holdings_map.js | Rust/WASM visit-local ledger | Visit-local, not stored/sent; main loader omits live/WASM | Map and ACHO module exist; integrated live route NO_DATA |
-| Caravan/trade | atlas/puros/caravan.js | E2 PROPOSE-ONLY contract | No account settlement or durable debit/credit | Proposal only; no trade event projection |
-| Policy/factions | APP politica_v2_validator.py; politica_vista.py | v2 validator isolated; runtime reads v1 | No faction/treaty writer | Posture/signature NO_DATA in v1 view; no WEB social state |
-| Simulated identity | No authorized producer found | Proposed stable ID/FSM contract in §5 | No registry, lifecycle writer, or replay | NO_DATA(persistent_simulated_identity_not_implemented) |
-| World memory | echo_feed.js is only page-local presentation; Aduana stores presence/heartbeat/building evidence | No general world-event journal contract | No world-event replay | NO_DATA(world_event_writer_and_replay_contract_absent) |
-| Diplomacy/title transfer | No authorized producer found | Human signature boundary required | No durable treaty or title history | NO_DATA(faction_treaty_and_title_writer_not_found) |
+| Map and fog | WEB visitor movement; map_fog_layer.js; fog_of_war.js. No world mutation authority. | Axial hex map/fog rules; map painter and building UI | Visit/page memory; no persistent discovery journal | Visual fog; screen-reader/speech/audio parity not established; machine geometry is source-only | SOURCE_ONLY in this pass; test files exist but were not run |
+| Encounter squad | visitor_battle.js npcPlace(); local visitor UI only, not an authorized persistent producer. | Building-key deterministic patrol; visitor battle UI | Re-derived from key; no character registry | Visual battle; SR/speech/audio beyond combat reader not E2E; machine result is local | IMPLEMENTED; no fresh test execution |
+| Guardian behaviour | guardian_pressure.js; no autonomous or persistent writer. | Distance/visit-win projection; map_fog_layer.js; Talk news; read() | Page-local seen/alerted state | Visual pose; Talk news source; conditional notes; machine read(); physical SR/audio E2E NO_DATA | IMPLEMENTED projection only; no fresh E2E |
+| Combat | Local visitor UI produces a candidate result; no persistent world authority. | historical-ticks/1, replay verification, accepted R2 boundaries | Visit seed and ordered squad; bounded round frames | Visual fighter cards; per-round status text; physical speech/audio not verified; local ACHO/data attributes | IMPLEMENTED; historical local Chromium evidence in docs, not rerun; no physical E2E |
+| Visit conquest | visitor_conquest.js consumes visitor:battle; local visit UI only, no Aduana territorial writer. | Same visit + verified guardian result; visitor:changed and map fog | Page/visit local; cleared at visitor:end/pagehide | Map flag and labeled list; aria label exists; live SR/speech/audio parity not verified; machine record is local | IMPLEMENTED visit-local; historical Chromium evidence in docs, not rerun |
+| Node presence | Authenticated node heartbeat sender to Aduana; visitor /step is Ed25519-authorized. | Aduana heartbeat/presence contracts; WEB worker/world feed | D1 heartbeat rows append-only; DO presence TTL/ephemeral; DO events are not a replay journal | Node seals/map; inhabitants.js say text; actual SR/speech/audio E2E NO_DATA; machine schema preceptoros.openworld-estado/2 | IMPLEMENTED source; no fresh test run; production/multiclient E2E NO_DATA |
+| Building declaration | Authenticated admitted node/owner key to Aduana registraEdificio(); not a player conquest producer. | Building declaration schema and receipt; WEB world-state projection | D1 node_buildings append-only, one per node; no title history | Visual public building projection; no title/SR/speech claim; machine receipt and projection | IMPLEMENTED source; no fresh tests; ownership E2E NO_DATA |
+| World read projection | WEB worker/world_state.js reads Aduana GET /api/v1/latidos; world_feed.js consumes GET /api/world-state. Read-only producer chain. | preceptoros.openworld-estado/2; openworld_state.js and inhabitants.js | Latest heartbeat/building evidence; no general world-event replay | Map/node projection; say field exists but physical SR/speech/audio E2E NO_DATA; machine coverage/cause | IMPLEMENTED source; no fresh test run; public E2E not verified |
+| Echo presentation | Local/gateway producers of acho:event; no authority to mutate durable world state. | Existing presentation bus; Echoes menu and map ring | Last 20 in page memory; no durable journal | Visual ring/list; role=log; physical speech/audio not verified; machine event/frame | IMPLEMENTED presentation; no persistent history or fresh E2E |
+| Holdings | Local visitor battle/visit path only; no durable economic authority. | Rust/WASM visit-local ledger | Visit-local WASM memory; not stored/sent; main loader omits live/WASM | Map/ACHO module source; screen-reader words exist in module; speech/audio E2E NO_DATA | IMPLEMENTED module, integration NO_DATA; no fresh test run |
+| Caravan/trade | PROPOSE-ONLY contract; no authorized debit/credit producer. | E2 PROPOSE-ONLY contract | No account settlement or durable debit/credit | No operational projection; machine proposal contract only | SOURCE_ONLY/PROPOSED; no settlement tests or E2E |
+| Policy/factions | APP v2 validator only; no active faction/policy mutation producer. | v2 validator isolated; runtime reads v1 | No faction/treaty writer | v1 view posture/signature NO_DATA; no WEB social projection | IMPLEMENTED validator; integration and faction E2E NO_DATA |
+| Simulated identity | No authorized producer found. | Proposed stable ID/FSM contract in §5 | No registry, lifecycle writer, or replay | No persistent visual/SR/speech/audio/machine identity projection | NO_DATA(authorized_NPC_writer_and_identity_registry_not_found) |
+| World memory | No authorized world-event producer; echo_feed.js is presentation only. | No general world-event journal contract | No world-event replay | No durable history projection; Echoes list is page-local | NO_DATA(world_event_writer_and_replay_contract_absent) |
+| Diplomacy/title transfer | No authorized producer found; NPCs may only propose in future. | Human signature boundary required | No durable treaty or title history | No visual/SR/speech/audio/machine event projection | NO_DATA(faction_treaty_and_title_writer_not_found) |
 
 ## 13. Dependency graph and implementation sequence
 
