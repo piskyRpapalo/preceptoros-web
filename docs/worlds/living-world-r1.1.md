@@ -87,6 +87,8 @@ All five requested repository HEADs were checked against their main branches on 
 | preceptoros-app | 57cce851cefafa1511e154ee040f9492c0a9c07b | MATCH |
 | babel | d871b3b390e23a22cb306fc74ec7bbb67e573646 | MATCH |
 
+Aduana's default branch is stale at codex/node-gateway-worker-20261016. This audit deliberately pins and inspects the requested main HEAD, not the default branch.
+
 WEB had zero open PRs at the verification point. No matching Living World R1.1 SPEC branch existed before this documentation-only branch.
 
 ### 2.1 Existing evidence recovered; no archaeology repeated
@@ -330,7 +332,8 @@ This is a read path. It is not a general world-mutation path.
 - Uses an explicit OPENWORLD_PRESENCE=on configuration gate and a bounded law.
 - For /step updates, verifies Ed25519 signatures and a sequence/previous-hash chain. /open is consent-gated; /view is a bounded read.
 - Uses Durable Object storage transactions for the current presence snapshot.
-- Expires visits after the configured gone_after interval.
+- Expires visits after the configured gone_after interval (the documented candidate cap is 120 seconds and 16 visits).
+- The reducer retains only a small bounded event window for views; it is not a replay journal.
 - Deletes the stored presence snapshot when no visits remain.
 - Is visitor presence and cooperation authority, not NPC or territorial authority.
 - The deployment documentation states that the feature remains OFF unless OPENWORLD_PRESENCE=on and an approved law plus required bindings are supplied. The law is shape-validated; it is not itself a signed world policy. Production enablement and public-browser E2E remain NO_DATA.
@@ -341,7 +344,7 @@ This is a read path. It is not a general world-mutation path.
 - Monotonic sequence guard.
 - No-update and no-delete triggers.
 - Aduana reads only the latest row for each configured node for the public projection.
-- This is heartbeat evidence, not a complete replayable world event history.
+- Writes are scoped-idempotent by node/sequence; this is heartbeat evidence, not a complete replayable world event history.
 
 **D1 node_buildings**
 
@@ -785,18 +788,24 @@ All WEB links below are pinned to 6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4 unles
 - [AGENTS.md](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/AGENTS.md)
 - [visitor_battle.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/visitor_battle.js#L1-L48)
 - [visitor_battle_ui.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/visitor_battle_ui.js#L24-L60)
+- [visitor_conquest_browser.mjs](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/atlas/visitor_conquest_browser.mjs)
+- [gamepad.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/gamepad.js)
+- [first_adventure.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/first_adventure.js)
+- [visitor_eggs.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/visitor_eggs.js)
+- [visitor_view.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/visitor_view.js)
+- [npc_occupancy retirement guard](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/atlas/npc_occupancy_cases.mjs)
 - [visitor_conquest.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/visitor_conquest.js#L1-L40)
 - [guardian_pressure.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/guardian_pressure.js#L1-L75)
 - [map_fog_layer.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/map_fog_layer.js#L1-L48)
 - [fog_of_war.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/fog_of_war.js#L8-L45)
 - [inhabitants.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/inhabitants.js#L1-L31)
-- [agent_state.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/agent_state.js#L1-L85)
+- [agent_state.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/agent_state.js#L1-L87)
 - [openworld_state.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/openworld_state.js#L1-L109)
 - [world_feed.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/world_feed.js#L1-L90)
 - [worker/index.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/worker/index.js#L1-L45)
 - [worker/world_state.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/worker/world_state.js#L1-L44)
 - [echo_feed.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/echo_feed.js#L1-L80)
-- [town_echoes.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/town_echoes.js#L1-L43)
+- [town_echoes.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/town_echoes.js#L1-L42)
 - [combat_acho.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/combat_acho.js#L1-L55)
 - [state_frames.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/state_frames.js#L1-L49)
 - [holdings_live.js](https://github.com/piskyRpapalo/preceptoros-web/blob/6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4/public/game/holdings_live.js#L1-L90)
@@ -836,6 +845,7 @@ All WEB links below are pinned to 6ae932b7cdbfce3d0a3bd443d7ce11a067f9acb4 unles
 - No APP repository was modified.
 - The local native H / ACHO v0.4, v0.6, v0.6.7 and Native ~19 MB track remains PAUSED. No load, inference, training, benchmark, lease, or artifact change was performed or requested.
 - No code, tests, deployment, merge, or production action was performed.
+- The Beacon/Preceptor notification and empty Help-panel defects from the supplied screenshots remain a separate WEB UI-quality issue; they are not silently folded into this world-state contract.
 - The only proposed repository change is this documentation-only SPEC.
 - The next implementation candidate is the bounded WEB-B-R2 code correction, subject to a separate explicit BUILD authorization.
 - The Sovereign retains naming, implementation authorization, signatures, merge, and deployment decisions.
